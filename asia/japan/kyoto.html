@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kyoto Guide | Global Explorer Guides</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Leaflet CSS for Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        deepblue: {
+                            950: '#060B19',
+                            900: '#0B132B',
+                            800: '#15234B',
+                            700: '#1E336B',
+                        },
+                        neon: {
+                            cyan: '#00F0FF',
+                            blue: '#0070FF',
+                            purple: '#8A2BE2',
+                            yellow: '#FFD700',
+                            red: '#FF003F',
+                            pink: '#FF69B4'
+                        }
+                    },
+                    animation: {
+                        'fade-in-down': 'fadeInDown 0.5s ease-out',
+                        'fade-in': 'fadeIn 0.3s ease-out',
+                    },
+                    keyframes: {
+                        fadeInDown: {
+                            '0%': { opacity: '0', transform: 'translateY(-20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #060B19; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1E336B; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0070FF; 
+        }
+        
+        /* Custom Leaflet Map Pins (Google Red) */
+        .leaflet-popup-content-wrapper {
+            background-color: #fff;
+            color: #333;
+            border-radius: 8px;
+            box-shadow: 0 3px 14px rgba(0,0,0,0.4);
+        }
+        .leaflet-popup-tip {
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body class="bg-deepblue-950 text-slate-200 font-sans min-h-screen relative overflow-x-hidden">
+
+    <!-- Immersive Hero Background Image -->
+    <div class="absolute top-0 left-0 w-full h-[450px] md:h-[500px] z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-[url('images/kyoto_hero.jpg')] bg-cover bg-center bg-no-repeat opacity-40 mix-blend-luminosity"></div>
+        <!-- Gradient overlay to fade seamlessly into the deep blue background -->
+        <div class="absolute inset-0 bg-gradient-to-b from-deepblue-950/10 via-deepblue-950/60 to-deepblue-950"></div>
+    </div>
+
+    <!-- Ambient Background Glow -->
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon-purple/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neon-pink/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <main class="container mx-auto px-4 py-8 md:py-16 relative z-20 max-w-5xl">
+        
+        <!-- Navigation Bar -->
+        <nav class="mb-12 animate-fade-in-down flex flex-wrap items-center gap-4">
+            <a href="../../index.html" class="flex items-center justify-center w-11 h-11 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-pink/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0" title="Back to Home">
+                <i class="ph ph-house text-xl group-hover:scale-110 transition-transform"></i>
+            </a>
+            <a href="japan.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-pink/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0">
+                <i class="ph ph-arrow-left text-lg group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-medium text-sm">Back to Japan</span>
+            </a>
+            
+            <div class="ml-auto flex items-center gap-3 bg-deepblue-900/40 border border-deepblue-700/50 rounded-full px-4 py-2 backdrop-blur-sm shadow-inner shrink-0">
+                <img src="https://flagcdn.com/w40/jp.png" alt="Germany" class="w-6 h-auto rounded-[2px] shadow-sm">
+                <div class="flex items-center gap-2 text-sm font-medium tracking-wide">
+                    <span class="text-slate-200 uppercase text-xs tracking-wider font-bold">Japan</span>
+                    <span class="text-deepblue-500 text-xs">•</span>
+                    <span class="text-neon-pink text-xs">Kansai</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero & Introduction Section -->
+        <header class="mb-16 animate-fade-in-down animation-delay-100 text-center">
+            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-deepblue-900 border border-deepblue-700 mb-6 shadow-[0_0_30px_rgba(255,105,180,0.15)]">
+                <i class="ph ph-map-pin text-4xl text-neon-pink"></i>
+            </div>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-neon-pink via-white to-neon-purple">
+                Explore Kyoto
+            </h1>
+            
+            <div class="bg-deepblue-900/40 border border-deepblue-800 rounded-3xl p-8 md:p-10 text-left backdrop-blur-sm mt-10">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                    <i class="ph ph-scroll text-neon-pink"></i> A Brief History
+                </h2>
+                <p class="text-lg text-slate-400 font-light leading-relaxed">Kyoto, the imperial capital of Japan for over a millennium, is the undisputed cultural heart of the nation. It is a city where time seems to stand still among thousands of classical Buddhist temples, serene Zen gardens, and vivid Shinto shrines. Beyond its breathtaking UNESCO World Heritage sites, Kyoto offers the enchanting atmosphere of traditional geisha districts, perfectly preserved wooden machiya townhouses, and the seasonal beauty of cherry blossoms and autumn leaves. Exploring Kyoto is a profound journey into the absolute essence of traditional Japanese aesthetics and spirituality.</p>
+            </div>
+        </header>
+
+        <!-- Interactive Map Section -->
+        <section class="mb-16 animate-fade-in-down" style="animation-delay: 0.2s;">
+            <h2 class="text-3xl font-bold text-white mb-6">Attractions Map</h2>
+            <div id="map" class="h-[400px] w-full rounded-3xl border border-deepblue-700 shadow-2xl z-10 relative"></div>
+        </section>
+
+        <!-- Places List Section -->
+        <section class="flex flex-col gap-6 pb-20 animate-fade-in-down" style="animation-delay: 0.3s;">
+            <h2 class="text-3xl font-bold text-white mb-2">Top Sights & Activities</h2>
+            <!-- 1. Kyoto Sento Imperial Palace -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-pink/50 hover:shadow-[0_0_30px_rgba(255,105,180,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/kyoto_1.jpg" alt="Kyoto Sento Imperial Palace" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-pink text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ¥1,500
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-pink transition-colors">Kyoto Sento Imperial Palace</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">A magnificent, incredibly serene former imperial palace featuring exceptionally beautiful, expansive strolling gardens and elegant tea houses that offer a profound glimpse into aristocratic history.</p>
+                </div>
+            </div>
+
+            <!-- 2. Ninenzaka -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-pink/50 hover:shadow-[0_0_30px_rgba(255,105,180,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/kyoto_2.jpg" alt="Ninenzaka" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-pink text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-pink transition-colors">Ninenzaka</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">A beautifully preserved, gently sloping pedestrian lane incredibly rich with traditional wooden machiya houses, charming tea shops, and a wonderfully authentic, romantic atmosphere.</p>
+                </div>
+            </div>
+
+            <!-- 3. Sannenzaka -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-pink/50 hover:shadow-[0_0_30px_rgba(255,105,180,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/kyoto_3.jpg" alt="Sannenzaka" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-pink text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-pink transition-colors">Sannenzaka</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">A deeply historic, highly picturesque stone-paved street famously lined with traditional craft shops and vibrant cafes, perfectly capturing the classic, timeless essence of ancient Kyoto.</p>
+                </div>
+            </div>
+
+            <!-- 4. Chionin Temple -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-pink/50 hover:shadow-[0_0_30px_rgba(255,105,180,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/kyoto_4.jpg" alt="Chionin Temple" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-pink text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ¥500
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-pink transition-colors">Chionin Temple</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">A massive, highly significant Buddhist temple complex that serves as the head temple of the Jodo sect, famously featuring colossal wooden architecture and deeply spiritual, tranquil grounds.</p>
+                </div>
+            </div>
+
+            <!-- 5. Chionin Sanmon Gate -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-pink/50 hover:shadow-[0_0_30px_rgba(255,105,180,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/kyoto_5.jpg" alt="Chionin Sanmon Gate" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-pink text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-pink transition-colors">Chionin Sanmon Gate</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The absolute largest, most imposing wooden temple gate in all of Japan, a breathtaking, incredibly massive structure that serves as the spectacular, deeply awe-inspiring entrance to Chionin.</p>
+                </div>
+            </div>
+
+            <!-- 6. Maruyama Park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-pink/50 hover:shadow-[0_0_30px_rgba(255,105,180,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/kyoto_6.jpg" alt="Maruyama Park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-pink text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-pink transition-colors">Maruyama Park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Kyoto's most popular, deeply beloved public park, exceptionally famous for its magnificent, massive weeping cherry tree that spectacularly illuminates the surrounding traditional gardens in spring.</p>
+                </div>
+            </div>
+
+            <!-- 7. Yasaka Shrine -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-pink/50 hover:shadow-[0_0_30px_rgba(255,105,180,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/kyoto_7.jpg" alt="Yasaka Shrine" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-pink text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-pink transition-colors">Yasaka Shrine</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">One of Kyoto's most important, visually striking Shinto shrines, uniquely famous for its vibrant vermilion gates, hundreds of glowing lanterns, and deeply energetic, lively atmosphere.</p>
+                </div>
+            </div>
+
+            <!-- 8. Nene-no-michi -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-pink/50 hover:shadow-[0_0_30px_rgba(255,105,180,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/kyoto_8.jpg" alt="Nene-no-michi" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-pink text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-pink transition-colors">Nene-no-michi</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">A wonderfully peaceful, beautifully maintained stone-paved pedestrian path named after a historical figure, elegantly lined with traditional walls, serene temples, and charming, quiet alleys.</p>
+                </div>
+            </div>
+
+            <!-- 9. Hokan-ji Temple -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-pink/50 hover:shadow-[0_0_30px_rgba(255,105,180,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/kyoto_9.jpg" alt="Hokan-ji Temple" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-pink text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ¥500
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-pink transition-colors">Hokan-ji Temple</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Universally famous for the iconic Yasaka Pagoda, a soaring, remarkably beautiful five-story wooden tower that serves as the absolute, undisputed visual centerpiece of the historic Higashiyama district.</p>
+                </div>
+            </div>
+
+            <!-- 10. Kiyomizu-dera -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-pink/50 hover:shadow-[0_0_30px_rgba(255,105,180,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/kyoto_10.jpg" alt="Kiyomizu-dera" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-pink text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ¥500
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-pink transition-colors">Kiyomizu-dera</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">A spectacular, globally celebrated temple built masterfully onto a steep hillside, famously featuring a massive wooden stage constructed without a single nail that offers breathtaking, panoramic views.</p>
+                </div>
+            </div>
+
+            <!-- 11. Kyoto Shinkyogoku Shopping Street -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-pink/50 hover:shadow-[0_0_30px_rgba(255,105,180,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/kyoto_11.jpg" alt="Kyoto Shinkyogoku Shopping Street" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-pink text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-pink transition-colors">Kyoto Shinkyogoku Shopping Street</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">A vibrant, incredibly bustling covered shopping arcade packed with an eclectic, endless mix of traditional souvenir shops, lively arcades, and delicious local street food.</p>
+                </div>
+            </div>
+
+            <!-- 12. Nishiki Tenmangu Shrine -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-pink/50 hover:shadow-[0_0_30px_rgba(255,105,180,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/kyoto_12.jpg" alt="Nishiki Tenmangu Shrine" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-pink text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-pink transition-colors">Nishiki Tenmangu Shrine</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">A highly atmospheric, uniquely situated Shinto shrine wonderfully tucked directly into the bustling shopping district, famously featuring water lanterns and a deeply serene, contrasting calm.</p>
+                </div>
+            </div>
+
+            <!-- 13. Nishi Honganji Temple -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-pink/50 hover:shadow-[0_0_30px_rgba(255,105,180,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/kyoto_13.jpg" alt="Nishi Honganji Temple" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-pink text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ¥500
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-pink transition-colors">Nishi Honganji Temple</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">A massive, profoundly historic UNESCO World Heritage temple featuring incredibly grand, spectacularly ornate wooden halls that represent the absolute pinnacle of Momoyama-period architecture.</p>
+                </div>
+            </div>
+
+            <!-- 14. Fushimi Inari Taisha -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-pink/50 hover:shadow-[0_0_30px_rgba(255,105,180,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/kyoto_14.jpg" alt="Fushimi Inari Taisha" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-pink text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-pink transition-colors">Fushimi Inari Taisha</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">A mesmerizing, globally iconic Shinto shrine incredibly famous for its seemingly endless, deeply immersive pathway of thousands of vibrant vermilion torii gates winding up the sacred mountain.</p>
+                </div>
+            </div>
+
+            <!-- 15. Senbon Torii -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-pink/50 hover:shadow-[0_0_30px_rgba(255,105,180,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/kyoto_15.jpg" alt="Senbon Torii" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-pink text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-pink transition-colors">Senbon Torii</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The absolute most famous, densely packed section of the vermilion gate trail, creating a spectacular, highly hypnotic visual tunnel that is profoundly striking and deeply photogenic.</p>
+                </div>
+            </div>
+
+            <!-- 16. Arashiyama Bamboo Forest -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-pink/50 hover:shadow-[0_0_30px_rgba(255,105,180,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/kyoto_16.jpg" alt="Arashiyama Bamboo Forest" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-pink text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-pink transition-colors">Arashiyama Bamboo Forest</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">A deeply enchanting, incredibly atmospheric pathway winding through a towering, dense grove of massive bamboo stalks that beautifully sway and whisper in the wind, offering a surreal, otherworldly experience.</p>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
+        <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+    </footer>
+
+    <!-- Map Initialization Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize Leaflet Map centered on Ulm
+            const map = L.map('map').setView([34.9900, 135.7600], 12);
+
+            // Use Google Maps style palette map (Google Streets)
+            L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                attribution: '&copy; Google Maps',
+                maxZoom: 20
+            }).addTo(map);
+
+            // Define locations
+            const locations = [
+                { name: "Kyoto Sento Imperial Palace", lat: 35.023400, lng: 135.764500 },
+                { name: "Ninenzaka", lat: 34.997600, lng: 135.780100 },
+                { name: "Sannenzaka", lat: 34.996600, lng: 135.780600 },
+                { name: "Chionin Temple", lat: 35.006200, lng: 135.783400 },
+                { name: "Chionin Sanmon Gate", lat: 35.005500, lng: 135.782000 },
+                { name: "Maruyama Park", lat: 35.003500, lng: 135.781600 },
+                { name: "Yasaka Shrine", lat: 35.003600, lng: 135.778500 },
+                { name: "Nene-no-michi", lat: 35.001600, lng: 135.780800 },
+                { name: "Hokan-ji Temple", lat: 34.998400, lng: 135.779400 },
+                { name: "Kiyomizu-dera", lat: 34.994800, lng: 135.785000 },
+                { name: "Kyoto Shinkyogoku Shopping Street", lat: 35.005200, lng: 135.767400 },
+                { name: "Nishiki Tenmangu Shrine", lat: 35.004900, lng: 135.767600 },
+                { name: "Nishi Honganji Temple", lat: 34.991400, lng: 135.751600 },
+                { name: "Fushimi Inari Taisha", lat: 34.967100, lng: 135.772700 },
+                { name: "Senbon Torii", lat: 34.966900, lng: 135.775300 },
+                { name: "Arashiyama Bamboo Forest", lat: 35.017500, lng: 135.672000 },
+            ];
+
+            // Custom icon configuration using Google Maps style red pin
+            const iconOptions = {
+                iconUrl: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32],
+            };
+            const customIcon = L.icon(iconOptions);
+
+            // Add markers to map
+            locations.forEach(loc => {
+                L.marker([loc.lat, loc.lng], {icon: customIcon}).addTo(map)
+                    .bindPopup(`<strong class="font-sans text-base text-gray-900">${loc.name}</strong>`);
+            });
+
+            // Adjust bounds to fit all markers
+            const group = new L.featureGroup(locations.map(loc => L.marker([loc.lat, loc.lng])));
+            map.fitBounds(group.getBounds(), { padding: [50, 50] });
+            
+            // Scroll to Top Functionality
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                } else {
+                    scrollTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                }
+            });
+
+            scrollTopBtn.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+    </script>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-12 h-12 bg-neon-pink text-deepblue-950 rounded-full shadow-[0_0_20px_rgba(255,105,180,0.4)] opacity-0 pointer-events-none transition-all duration-300 translate-y-4 hover:bg-white hover:scale-110" aria-label="Scroll to top">
+        <i class="ph ph-arrow-up text-xl font-bold"></i>
+    </button>
+</body>
+</html>
