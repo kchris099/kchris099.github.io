@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Porto Guide | Global Explorer Guides</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Leaflet CSS for Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        deepblue: {
+                            950: '#060B19',
+                            900: '#0B132B',
+                            800: '#15234B',
+                            700: '#1E336B',
+                        },
+                        neon: {
+                            cyan: '#00F0FF',
+                            blue: '#0070FF',
+                            purple: '#8A2BE2',
+                            yellow: '#FFD700'
+                        }
+                    },
+                    animation: {
+                        'fade-in-down': 'fadeInDown 0.5s ease-out',
+                        'fade-in': 'fadeIn 0.3s ease-out',
+                    },
+                    keyframes: {
+                        fadeInDown: {
+                            '0%': { opacity: '0', transform: 'translateY(-20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #060B19; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1E336B; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0070FF; 
+        }
+        
+        /* Custom Leaflet Map Pins (Google Red) */
+        .leaflet-popup-content-wrapper {
+            background-color: #fff;
+            color: #333;
+            border-radius: 8px;
+            box-shadow: 0 3px 14px rgba(0,0,0,0.4);
+        }
+        .leaflet-popup-tip {
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body class="bg-deepblue-950 text-slate-200 font-sans min-h-screen relative overflow-x-hidden">
+
+    <!-- Immersive Hero Background Image -->
+    <div class="absolute top-0 left-0 w-full h-[450px] md:h-[500px] z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-[url('images/porto_hero.jpg')] bg-cover bg-center bg-no-repeat opacity-40 mix-blend-luminosity"></div>
+        <!-- Gradient overlay to fade seamlessly into the deep blue background -->
+        <div class="absolute inset-0 bg-gradient-to-b from-deepblue-950/10 via-deepblue-950/60 to-deepblue-950"></div>
+    </div>
+
+    <!-- Ambient Background Glow -->
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon-purple/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neon-cyan/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <main class="container mx-auto px-4 py-8 md:py-16 relative z-20 max-w-5xl">
+        
+        <!-- Navigation Bar -->
+        <nav class="mb-12 animate-fade-in-down flex flex-wrap items-center gap-4">
+            <a href="../../index.html" class="flex items-center justify-center w-11 h-11 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0" title="Back to Home">
+                <i class="ph ph-house text-xl group-hover:scale-110 transition-transform"></i>
+            </a>
+            <a href="portugal.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0">
+                <i class="ph ph-arrow-left text-lg group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-medium text-sm">Back to Portugal</span>
+            </a>
+            
+            <div class="ml-auto flex items-center gap-3 bg-deepblue-900/40 border border-deepblue-700/50 rounded-full px-4 py-2 backdrop-blur-sm shadow-inner shrink-0">
+                <img src="https://flagcdn.com/w40/pt.png" alt="Germany" class="w-6 h-auto rounded-[2px] shadow-sm">
+                <div class="flex items-center gap-2 text-sm font-medium tracking-wide">
+                    <span class="text-slate-200 uppercase text-xs tracking-wider font-bold">Portugal</span>
+                    <span class="text-deepblue-500 text-xs">•</span>
+                    <span class="text-neon-cyan text-xs">Portugal</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero & Introduction Section -->
+        <header class="mb-16 animate-fade-in-down animation-delay-100 text-center">
+            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-deepblue-900 border border-deepblue-700 mb-6 shadow-[0_0_30px_rgba(0,240,255,0.15)]">
+                <i class="ph ph-map-pin text-4xl text-neon-cyan"></i>
+            </div>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple">
+                Explore Porto
+            </h1>
+            
+            <div class="bg-deepblue-900/40 border border-deepblue-800 rounded-3xl p-8 md:p-10 text-left backdrop-blur-sm mt-10">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                    <i class="ph ph-scroll text-neon-cyan"></i> A Brief History
+                </h2>
+                <p class="text-lg text-slate-400 font-light leading-relaxed">Porto is a highly charismatic, steeply terraced coastal city famous worldwide for its namesake Port wine and stunning, highly colorful riverfront. The city's historic Ribeira district beautifully features narrow cobblestone streets, vibrant tiled facades, and spectacular views across the Douro River. It perfectly balances a deeply authentic, slightly gritty historic charm with incredible culinary sophistication.</p>
+            </div>
+        </header>
+
+        <!-- Interactive Map Section -->
+        <section class="mb-16 animate-fade-in-down" style="animation-delay: 0.2s;">
+            <h2 class="text-3xl font-bold text-white mb-6">Attractions Map</h2>
+            <div id="map" class="h-[400px] w-full rounded-3xl border border-deepblue-700 shadow-2xl z-10 relative"></div>
+        </section>
+
+        <!-- Places List Section -->
+        <section class="flex flex-col gap-6 pb-20 animate-fade-in-down" style="animation-delay: 0.3s;">
+            <h2 class="text-3xl font-bold text-white mb-2">Top Sights & Activities</h2>
+                <!-- 1. Porto Cathedral -->
+                <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                    <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                        <img src="images/porto_1.jpg" alt="Porto Cathedral" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                            <i class="ph ph-ticket"></i> Free
+                        </div>
+                    </div>
+                    <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                        <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Porto Cathedral</h3>
+                        <p class="text-slate-400 font-light leading-relaxed">A Romanesque monument dating back to the 12th century, serving as one of the oldest and most important religious edifices in the city's history.</p>
+                    </div>
+                </div>
+    
+                <!-- 2. Chapel of Souls -->
+                <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                    <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                        <img src="images/porto_2.jpg" alt="Chapel of Souls" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                            <i class="ph ph-ticket"></i> Free
+                        </div>
+                    </div>
+                    <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                        <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Chapel of Souls</h3>
+                        <p class="text-slate-400 font-light leading-relaxed">An 18th-century chapel notable for its exterior, which was covered in 1929 with thousands of azulejo tiles depicting the lives of Saint Francis and Saint Catherine.</p>
+                    </div>
+                </div>
+    
+                <!-- 3. Bolhão Market -->
+                <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                    <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                        <img src="images/porto_3.jpg" alt="Bolhão Market" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                            <i class="ph ph-ticket"></i> Free
+                        </div>
+                    </div>
+                    <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                        <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Bolhão Market</h3>
+                        <p class="text-slate-400 font-light leading-relaxed">A historic, neoclassical municipal market opened in 1914, remaining a central part of Porto's daily commercial and culinary life.</p>
+                    </div>
+                </div>
+    
+                <!-- 4. Jardins do Palacio de Cristal -->
+                <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                    <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                        <img src="images/porto_4.jpg" alt="Jardins do Palacio de Cristal" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                            <i class="ph ph-ticket"></i> Free
+                        </div>
+                    </div>
+                    <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                        <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Jardins do Palacio de Cristal</h3>
+                        <p class="text-slate-400 font-light leading-relaxed">A 19th-century landscaped garden overlooking the Douro River, originally built to surround an industrial exhibition palace that was later demolished.</p>
+                    </div>
+                </div>
+    
+                <!-- 5. Miradouro da Ponte da Arrábida -->
+                <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                    <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                        <img src="images/porto_5.jpg" alt="Miradouro da Ponte da Arrábida" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                            <i class="ph ph-ticket"></i> Free
+                        </div>
+                    </div>
+                    <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                        <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Miradouro da Ponte da Arrábida</h3>
+                        <p class="text-slate-400 font-light leading-relaxed">A viewing platform established on the concrete arch of the Arrábida Bridge, which was the largest concrete arch in the world when it opened in 1963.</p>
+                    </div>
+                </div>
+    
+                <!-- 6. Cais da Ribeira -->
+                <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                    <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                        <img src="images/porto_6.jpg" alt="Cais da Ribeira" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                            <i class="ph ph-ticket"></i> Free
+                        </div>
+                    </div>
+                    <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                        <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Cais da Ribeira</h3>
+                        <p class="text-slate-400 font-light leading-relaxed">The historic riverside district of Porto, long functioning as a bustling commercial port for the export of port wine and traditional goods.</p>
+                    </div>
+                </div>
+    
+                <!-- 7. Luís I Bridge -->
+                <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                    <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                        <img src="images/porto_7.jpg" alt="Luís I Bridge" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                            <i class="ph ph-ticket"></i> Free
+                        </div>
+                    </div>
+                    <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                        <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Luís I Bridge</h3>
+                        <p class="text-slate-400 font-light leading-relaxed">A double-deck metal arch bridge opened in 1886, designed by a disciple of Gustave Eiffel to connect Porto with the port wine lodges of Vila Nova de Gaia.</p>
+                    </div>
+                </div>
+    
+                <!-- 8. Clérigos Church -->
+                <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                    <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                        <img src="images/porto_8.jpg" alt="Clérigos Church" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                            <i class="ph ph-ticket"></i> Free
+                        </div>
+                    </div>
+                    <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                        <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Clérigos Church</h3>
+                        <p class="text-slate-400 font-light leading-relaxed">A Baroque church completed in 1750, recognized for its towering 75-meter bell tower that historically served as a navigational landmark for ships on the Douro.</p>
+                    </div>
+                </div>
+    
+        </section>
+
+    </main>
+
+    <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
+        <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+    </footer>
+
+    <!-- Map Initialization Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize Leaflet Map centered on Ulm
+            const map = L.map('map').setView([41.1450, -8.6150], 14);
+
+            // Use Google Maps style palette map (Google Streets)
+            L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                attribution: '&copy; Google Maps',
+                maxZoom: 20
+            }).addTo(map);
+
+            // Define locations
+            const locations = [
+                { name: "Porto Cathedral", lat: 41.142800, lng: -8.611100 },
+                { name: "Chapel of Souls", lat: 41.149800, lng: -8.605300 },
+                { name: "Bolhão Market", lat: 41.149300, lng: -8.606700 },
+                { name: "Jardins do Palacio de Cristal", lat: 41.148100, lng: -8.625800 },
+                { name: "Miradouro da Ponte da Arrábida", lat: 41.147200, lng: -8.638500 },
+                { name: "Cais da Ribeira", lat: 41.140400, lng: -8.612000 },
+                { name: "Luís I Bridge", lat: 41.139900, lng: -8.609400 },
+                { name: "Clérigos Church", lat: 41.145800, lng: -8.614600 },
+            ];
+
+            // Custom icon configuration using Google Maps style red pin
+            const iconOptions = {
+                iconUrl: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32],
+            };
+            const customIcon = L.icon(iconOptions);
+
+            // Add markers to map
+            locations.forEach(loc => {
+                L.marker([loc.lat, loc.lng], {icon: customIcon}).addTo(map)
+                    .bindPopup(`<strong class="font-sans text-base text-gray-900">${loc.name}</strong>`);
+            });
+
+            // Adjust bounds to fit all markers
+            const group = new L.featureGroup(locations.map(loc => L.marker([loc.lat, loc.lng])));
+            map.fitBounds(group.getBounds(), { padding: [50, 50] });
+            
+            // Scroll to Top Functionality
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                } else {
+                    scrollTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                }
+            });
+
+            scrollTopBtn.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+    </script>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-12 h-12 bg-neon-cyan text-deepblue-950 rounded-full shadow-[0_0_20px_rgba(0,240,255,0.4)] opacity-0 pointer-events-none transition-all duration-300 translate-y-4 hover:bg-white hover:scale-110" aria-label="Scroll to top">
+        <i class="ph ph-arrow-up text-xl font-bold"></i>
+    </button>
+</body>
+</html>
