@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garmisch-Partenkirchen Guide | Global Explorer Guides</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Leaflet CSS for Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        deepblue: {
+                            950: '#060B19',
+                            900: '#0B132B',
+                            800: '#15234B',
+                            700: '#1E336B',
+                        },
+                        neon: {
+                            cyan: '#00F0FF',
+                            blue: '#0070FF',
+                            purple: '#8A2BE2',
+                            yellow: '#FFD700'
+                        }
+                    },
+                    animation: {
+                        'fade-in-down': 'fadeInDown 0.5s ease-out',
+                        'fade-in': 'fadeIn 0.3s ease-out',
+                    },
+                    keyframes: {
+                        fadeInDown: {
+                            '0%': { opacity: '0', transform: 'translateY(-20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #060B19; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1E336B; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0070FF; 
+        }
+        
+        /* Custom Leaflet Map Pins (Google Red) */
+        .leaflet-popup-content-wrapper {
+            background-color: #fff;
+            color: #333;
+            border-radius: 8px;
+            box-shadow: 0 3px 14px rgba(0,0,0,0.4);
+        }
+        .leaflet-popup-tip {
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body class="bg-deepblue-950 text-slate-200 font-sans min-h-screen relative overflow-x-hidden">
+
+    <!-- Immersive Hero Background Image -->
+    <div class="absolute top-0 left-0 w-full h-[450px] md:h-[500px] z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-[url('images/garmisch-partenkirchen_hero.jpg')] bg-cover bg-center bg-no-repeat opacity-40 mix-blend-luminosity"></div>
+        <!-- Gradient overlay to fade seamlessly into the deep blue background -->
+        <div class="absolute inset-0 bg-gradient-to-b from-deepblue-950/10 via-deepblue-950/60 to-deepblue-950"></div>
+    </div>
+
+    <!-- Ambient Background Glow -->
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon-purple/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neon-cyan/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <main class="container mx-auto px-4 py-8 md:py-16 relative z-20 max-w-5xl">
+        
+        <!-- Navigation Bar -->
+        <nav class="mb-12 animate-fade-in-down flex flex-wrap items-center gap-4">
+            <a href="../../index.html" class="flex items-center justify-center w-11 h-11 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0" title="Back to Home">
+                <i class="ph ph-house text-xl group-hover:scale-110 transition-transform"></i>
+            </a>
+            <a href="germany.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0">
+                <i class="ph ph-arrow-left text-lg group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-medium text-sm">Back to Germany</span>
+            </a>
+            
+            <div class="ml-auto flex items-center gap-3 bg-deepblue-900/40 border border-deepblue-700/50 rounded-full px-4 py-2 backdrop-blur-sm shadow-inner shrink-0">
+                <img src="https://flagcdn.com/w40/de.png" alt="Germany" class="w-6 h-auto rounded-[2px] shadow-sm">
+                <div class="flex items-center gap-2 text-sm font-medium tracking-wide">
+                    <span class="text-slate-200 uppercase text-xs tracking-wider font-bold">Germany</span>
+                    <span class="text-deepblue-500 text-xs">•</span>
+                    <span class="text-neon-cyan text-xs">Southern Germany</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero & Introduction Section -->
+        <header class="mb-16 animate-fade-in-down animation-delay-100 text-center">
+            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-deepblue-900 border border-deepblue-700 mb-6 shadow-[0_0_30px_rgba(0,240,255,0.15)]">
+                <i class="ph ph-map-pin text-4xl text-neon-cyan"></i>
+            </div>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple">
+                Explore Garmisch-Partenkirchen
+            </h1>
+            
+            <div class="bg-deepblue-900/40 border border-deepblue-800 rounded-3xl p-8 md:p-10 text-left backdrop-blur-sm mt-10">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                    <i class="ph ph-scroll text-neon-cyan"></i> A Brief History
+                </h2>
+                <p class="text-lg text-slate-400 font-light leading-relaxed">Garmisch-Partenkirchen, nestled spectacularly in the shadow of the Zugspitze—Germany's highest peak—was formed in 1935 when two fiercely independent, historic alpine towns were merged for the Winter Olympics. For centuries prior, they were vital, wealthy stops on the medieval trade route between Italy and Augsburg. Today, the town is a premier destination for alpine sports, profoundly renowned for its breathtaking mountain vistas, beautifully painted traditional Bavarian houses (Lüftlmalerei), and deeply rooted, authentic alpine cultural traditions.</p>
+            </div>
+        </header>
+
+        <!-- Interactive Map Section -->
+        <section class="mb-16 animate-fade-in-down" style="animation-delay: 0.2s;">
+            <h2 class="text-3xl font-bold text-white mb-6">Attractions Map</h2>
+            <div id="map" class="h-[400px] w-full rounded-3xl border border-deepblue-700 shadow-2xl z-10 relative"></div>
+        </section>
+
+        <!-- Places List Section -->
+        <section class="flex flex-col gap-6 pb-20 animate-fade-in-down" style="animation-delay: 0.3s;">
+            <h2 class="text-3xl font-bold text-white mb-2">Top Sights & Activities</h2>
+ 
+
+            <!-- 2. Explore the Zugspitze -->
+            
+            <!-- 1. Zugspitze -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/garmisch-partenkirchen_1.jpg" alt="Zugspitze" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Varies</div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Zugspitze</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">
+                        Visiting the Zugspitze is a must if you’re seeking a striking alpine adventure. As Germany’s highest peak, reaching 2,962 meters, it offers unparalleled panoramic views of the Bavarian Alps and Austria. Your journey can start with an exciting ride on the cogwheel train or cable car, both of which climb steep inclines and reveal stunning landscapes.
+                    </p>
+                </div>
+            </div>
+
+
+            <!-- 2. Partnach Gorge -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/garmisch-partenkirchen_2.jpg" alt="Partnach Gorge" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Varies</div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Partnach Gorge</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">
+                        Immerse yourself in the natural beauty of Partnach Gorge, a geological wonder located near Garmisch-Partenkirchen. This site is not just a spectacle; it tells a story of water power and geological evolution with its high rock faces and rushing river cutting through the landscape. The gorge, with its history dating back millions of years, offers an engaging experience as you walk along its illuminated paths.
+                    </p>
+                </div>
+            </div>
+
+
+            <!-- 3. Stroll Around the Historic Town Center -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/garmisch-partenkirchen_3.jpg" alt="Stroll Around the Historic Town Center" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free</div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Historic Town Center</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">
+                        Garmisch-Partenkirchen’s historic town center is a delightful mix of Bavarian tradition and modern charm. Walking through its cobbled streets feels like stepping back in time, where every corner reveals traditional Bavarian architecture and the vibrant art of Lüftlmalerei—uniquely painted exteriors that tell local tales. As you explore, you’ll find an array of cozy cafes and unique local shops that offer a true taste of Bavarian culture.
+                    </p>
+                </div>
+            </div>
+
+
+            <!-- 4. Hike the Wank Mountain -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/garmisch-partenkirchen_4.jpg" alt="Hike the Wank Mountain" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Varies</div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Wank Mountain</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">
+                        Wank Mountain provides a perfect escape for those who enjoy hiking with awe-inspiring scenery. The mountain is famous for its gentle climbing paths that make it accessible to both seasoned hikers and families looking for a pleasant day outdoors. As you ascend, whether on foot or by cable car, you’ll be treated to sweeping views of the Wetterstein mountains and the lush valleys below.
+                    </p>
+                </div>
+            </div>
+
+
+            <!-- 5. Olympic Ski Stadium -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/garmisch-partenkirchen_5.jpg" alt="Olympic Ski Stadium" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Varies</div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Olympic Ski Stadium</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">
+                        When you visit the Olympic Ski Stadium, you’re stepping into a piece of history dating back to the 1936 Winter Olympics. This stadium isn’t just significant for its sporting past but also as a historical artifact with stories about its design and the events it has hosted over the decades. A guided tour will immerse you in the heritage of this iconic site, offering insights into its construction, importance during the Olympics, and its role today.
+                    </p>
+                </div>
+            </div>
+
+</section>
+
+    </main>
+
+    <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
+        <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+    </footer>
+
+    <!-- Map Initialization Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize Leaflet Map centered on Garmisch-Partenkirchen
+            const map = L.map('map').setView([47.4924, 11.0963], 14);
+
+            // Use Google Maps style palette map (Google Streets)
+            L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                attribution: '&copy; Google Maps',
+                maxZoom: 20
+            }).addTo(map);
+
+            // Define locations
+            const locations = [
+                { name: "Zugspitze", lat: 47.412832, lng: 10.978503 },
+                { name: "Partnach Gorge", lat: 47.464649, lng: 11.122121 },
+                { name: "Historic Town Center", lat: 47.488173, lng: 11.098565 },
+                { name: "Wank Mountain", lat: 47.493030, lng: 11.095951 },
+                { name: "Olympic Ski Stadium", lat: 47.497210, lng: 11.099245 },
+            ];
+
+            // Custom icon configuration using Google Maps style red pin
+            const iconOptions = {
+                iconUrl: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32],
+            };
+            const customIcon = L.icon(iconOptions);
+
+            // Add markers to map
+            locations.forEach(loc => {
+                L.marker([loc.lat, loc.lng], {icon: customIcon}).addTo(map)
+                    .bindPopup(`<strong class="font-sans text-base text-gray-900">${loc.name}</strong>`);
+            });
+
+            // Adjust bounds to fit all markers
+            const group = new L.featureGroup(locations.map(loc => L.marker([loc.lat, loc.lng])));
+            map.fitBounds(group.getBounds(), { padding: [50, 50] });
+            
+            // Scroll to Top Functionality
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                } else {
+                    scrollTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                }
+            });
+
+            scrollTopBtn.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+    </script>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-12 h-12 bg-neon-cyan text-deepblue-950 rounded-full shadow-[0_0_20px_rgba(0,240,255,0.4)] opacity-0 pointer-events-none transition-all duration-300 translate-y-4 hover:bg-white hover:scale-110" aria-label="Scroll to top">
+        <i class="ph ph-arrow-up text-xl font-bold"></i>
+    </button>
+</body>
+</html>
