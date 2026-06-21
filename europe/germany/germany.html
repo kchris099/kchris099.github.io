@@ -130,6 +130,9 @@
         <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
     </footer>
 
+    <!-- Blacklist script for dynamic toggling without build step -->
+    <script src="blacklist.js"></script>
+
     <!-- JavaScript Application Logic -->
     <script>
         // Data Set of Germany Regions and their prominent cities/areas
@@ -157,19 +160,39 @@
 
         let allDestinations = [];
 
+        let blacklist = new Set();
+        if (typeof blacklistText !== 'undefined') {
+            blacklistText.split('\n').forEach(line => {
+                const trimmed = line.trim();
+                if (trimmed && !trimmed.startsWith('#')) {
+                    blacklist.add(trimmed.toLowerCase());
+                }
+            });
+        }
+
         const initApp = () => {
             const container = document.getElementById('regions-container');
             
-            Object.keys(germanyData).sort().sort().sort().forEach((region, index) => {
+            Object.keys(germanyData).sort().forEach((region, index) => {
                 // Ensure alphabetical order for the cities/destinations
-                const destinations = [...germanyData[region]].sort();
+                const destinations = [...germanyData[region]].sort((a, b) => {
+                    const aActive = !blacklist.has(a.toLowerCase());
+                    const bActive = !blacklist.has(b.toLowerCase());
+                    if (aActive && !bActive) return -1;
+                    if (!aActive && bActive) return 1;
+                    return a.localeCompare(b);
+                });
+
+                let activeCount = 0;
 
                 // Add to flattened array for search
                 destinations.forEach(dest => {
+                    const isActive = !blacklist.has(dest.toLowerCase());
+                    if (isActive) activeCount++;
                     allDestinations.push({
                         name: dest,
                         region: region,
-                        url: formatPath(dest) + '.html'
+                        url: isActive ? formatPath(dest) + '.html' : '#'
                     });
                 });
 
@@ -200,7 +223,7 @@
                         </div>
                         <div>
                             <h2 class="text-xl font-bold text-white tracking-wide">${region}</h2>
-                            ${!isSingleDestination ? `<p class="text-sm text-slate-400 font-light">${destinations.length} guides</p>` : `<p class="text-sm text-slate-400 font-light">Explore Destination &rarr;</p>`}
+                            ${!isSingleDestination ? `<p class="text-sm text-slate-400 font-light">${activeCount} guides</p>` : `<p class="text-sm text-slate-400 font-light">Explore Destination &rarr;</p>`}
                         </div>
                     </div>
                     ${!isSingleDestination ? `<i class="ph ph-caret-down text-xl text-slate-500 transition-transform duration-300 transform dropdown-icon"></i>` : ''}
@@ -226,15 +249,27 @@
                     list.className = 'flex flex-col gap-y-1';
                     
                     destinations.forEach(dest => {
+                        const isActive = !blacklist.has(dest.toLowerCase());
                         const listItem = document.createElement('li');
-                        const link = document.createElement('a');
-                        link.href = formatPath(dest) + '.html';
-                        link.className = 'flex items-center gap-3 text-slate-300 hover:text-neon-yellow transition-colors py-2 group/link text-sm md:text-base border-b border-deepblue-800/30 last:border-0';
-                        link.innerHTML = `
-                            <i class="ph ph-map-trifold text-xl text-deepblue-500 group-hover/link:text-neon-yellow transition-colors"></i>
-                            <span class="font-medium">${dest}</span>
-                        `;
-                        listItem.appendChild(link);
+                        
+                        if (isActive) {
+                            const link = document.createElement('a');
+                            link.href = formatPath(dest) + '.html';
+                            link.className = 'flex items-center gap-3 text-slate-300 hover:text-neon-yellow transition-colors py-2 group/link text-sm md:text-base border-b border-deepblue-800/30 last:border-0';
+                            link.innerHTML = `
+                                <i class="ph ph-map-trifold text-xl text-deepblue-500 group-hover/link:text-neon-yellow transition-colors"></i>
+                                <span class="font-medium">${dest}</span>
+                            `;
+                            listItem.appendChild(link);
+                        } else {
+                            const div = document.createElement('div');
+                            div.className = 'flex items-center gap-3 text-slate-500 py-2 cursor-not-allowed text-sm md:text-base border-b border-deepblue-800/30 last:border-0';
+                            div.innerHTML = `
+                                <i class="ph ph-map-trifold text-xl opacity-50 text-deepblue-500"></i>
+                                <span class="font-medium">${dest}</span>
+                            `;
+                            listItem.appendChild(div);
+                        }
                         list.appendChild(listItem);
                     });
 
@@ -307,15 +342,28 @@
                 } else {
                     results.forEach(result => {
                         const li = document.createElement('li');
-                        li.innerHTML = `
-                            <a href="${result.url}" class="flex items-center justify-between px-6 py-3 hover:bg-deepblue-800/80 transition-colors group">
-                                <div class="flex flex-col">
-                                    <span class="text-white font-medium group-hover:text-neon-cyan transition-colors">${result.name}</span>
-                                    <span class="text-xs text-slate-500">${result.region}</span>
+                        const isActive = !blacklist.has(result.name.toLowerCase());
+                        if (isActive) {
+                            li.innerHTML = `
+                                <a href="${result.url}" class="flex items-center justify-between px-6 py-3 hover:bg-deepblue-800/80 transition-colors group">
+                                    <div class="flex flex-col">
+                                        <span class="text-white font-medium group-hover:text-neon-cyan transition-colors">${result.name}</span>
+                                        <span class="text-xs text-slate-500">${result.region}</span>
+                                    </div>
+                                    <i class="ph ph-arrow-right text-slate-600 group-hover:text-neon-cyan group-hover:translate-x-1 transition-all"></i>
+                                </a>
+                            `;
+                        } else {
+                            li.innerHTML = `
+                                <div class="flex items-center justify-between px-6 py-3 cursor-not-allowed group">
+                                    <div class="flex flex-col">
+                                        <span class="text-slate-500 font-medium">${result.name}</span>
+                                        <span class="text-xs text-slate-600">${result.region}</span>
+                                    </div>
+                                    <i class="ph ph-arrow-right opacity-50 text-slate-600"></i>
                                 </div>
-                                <i class="ph ph-arrow-right text-slate-600 group-hover:text-neon-cyan group-hover:translate-x-1 transition-all"></i>
-                            </a>
-                        `;
+                            `;
+                        }
                         searchResultsList.appendChild(li);
                     });
                 }
@@ -330,9 +378,19 @@
                     return;
                 }
 
-                const filtered = allDestinations
-                    .filter(d => normalizeText(d.name).includes(query))
-                    .slice(0, 8);
+                // Filter and sort destinations
+                let filtered = allDestinations
+                    .filter(d => normalizeText(d.name).includes(query));
+                    
+                filtered.sort((a, b) => {
+                    const aActive = !blacklist.has(a.name.toLowerCase());
+                    const bActive = !blacklist.has(b.name.toLowerCase());
+                    if (aActive && !bActive) return -1;
+                    if (!aActive && bActive) return 1;
+                    return a.name.localeCompare(b.name);
+                });
+                
+                filtered = filtered.slice(0, 8);
                 
                 renderResults(filtered);
             });

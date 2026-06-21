@@ -151,6 +151,22 @@
             </div>
             <div class="bg-deepblue-900/40 border border-deepblue-800 rounded-3xl p-4 md:p-8 backdrop-blur-sm shadow-2xl relative overflow-hidden">
                 <div id="world-map" style="width: 100%; height: 500px; z-index: 10;"></div>
+                
+                <!-- Map Legend -->
+                <div class="absolute bottom-6 left-6 bg-deepblue-950/80 border border-deepblue-700/50 backdrop-blur-md rounded-xl p-4 shadow-xl z-20 flex flex-col gap-2 pointer-events-none">
+                    <div class="flex items-center gap-2 mb-1">
+                        <div class="w-3 h-3 rounded-full bg-neon-cyan shadow-[0_0_8px_#00F0FF]"></div>
+                        <span class="text-white font-semibold text-sm">Guide Available</span>
+                    </div>
+                    <div class="text-slate-300 text-sm flex justify-between gap-6">
+                        <span>Countries:</span>
+                        <span id="legend-countries-count" class="font-bold text-white">12</span>
+                    </div>
+                    <div class="text-slate-300 text-sm flex justify-between gap-6">
+                        <span>Destinations:</span>
+                        <span id="legend-destinations-count" class="font-bold text-white">45</span>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -416,6 +432,26 @@
     "Zimbabwe": "zw"
 };
 
+        const availableGuides = {
+            "AZ": { name: "Azerbaijan", url: "asia/azerbaijan/azerbaijan.html" },
+            "JP": { name: "Japan", url: "asia/japan/japan.html" },
+            "QA": { name: "Qatar", url: "asia/qatar/qatar.html" },
+            "TR": { name: "Turkey", url: "asia/turkey/turkey.html" },
+            "AE": { name: "United Arab Emirates", url: "asia/united-arab-emirates/united-arab-emirates.html" },
+            "AT": { name: "Austria", url: "europe/austria/austria.html" },
+            "CZ": { name: "Czech Republic", url: "europe/czech-republic/czech-republic.html" },
+            "DE": { name: "Germany", url: "europe/germany/germany.html" },
+            "MT": { name: "Malta", url: "europe/malta/malta.html" },
+            "PL": { name: "Poland", url: "europe/poland/poland.html" },
+            "PT": { name: "Portugal", url: "europe/portugal/portugal.html" },
+            "ES": { name: "Spain", url: "europe/spain/spain.html" }
+        };
+
+        // Helper to check if a country is active
+        const isCountryActive = (countryName) => {
+            return Object.values(availableGuides).some(g => g.name === countryName);
+        };
+
         // Flatten data for search functionality
         let allCountries = [];
         
@@ -424,26 +460,33 @@
             return name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-');
         };
 
-        // 1. Initialize Application UI
         const initApp = () => {
             const container = document.getElementById('continents-container');
             
+            // To automatically count countries, we just count the keys in availableGuides:
+            document.getElementById('legend-countries-count').innerText = Object.keys(availableGuides).length;
+            
             Object.keys(travelData).forEach((continent, index) => {
-                // Ensure alphabetical order
-                const countries = [...travelData[continent]].sort();
+                // Ensure alphabetical order, active first, then inactive
+                const countries = [...travelData[continent]].sort((a, b) => {
+                    const aActive = isCountryActive(a);
+                    const bActive = isCountryActive(b);
+                    if (aActive && !bActive) return -1;
+                    if (!aActive && bActive) return 1;
+                    return a.localeCompare(b);
+                });
                 
                 // Add to flattened array for search
                 countries.forEach(country => {
                     allCountries.push({
                         name: country,
                         continent: continent,
-                        url: formatPath(continent) + '/' + formatPath(country) + '/' + formatPath(country) + '.html'
+                        url: isCountryActive(country) ? formatPath(continent) + '/' + formatPath(country) + '/' + formatPath(country) + '.html' : '#'
                     });
                 });
 
                 // Generate Continent Card HTML
                 const card = document.createElement('div');
-                // Removed 'overflow-hidden' and added 'relative' to allow absolute popup child to overflow outside of the card
                 card.className = `bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-2xl relative transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,112,255,0.15)] hover:border-neon-blue/30 flex flex-col group animation-delay-${index * 100}`;
                 card.style.animation = `fadeInDown 0.6s ease-out ${(index * 0.1)}s both`;
                 card.style.zIndex = '1';
@@ -466,25 +509,37 @@
 
                 // Card Body (Countries List Popup)
                 const body = document.createElement('div');
-                // Applied absolute positioning, high z-index, and opacity transition for pop-over effect
                 body.className = 'dropdown-content absolute top-[calc(100%+8px)] left-0 w-full bg-deepblue-950/95 border border-deepblue-700/80 backdrop-blur-xl rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.7)] transition-all duration-300 opacity-0 pointer-events-none translate-y-[-10px] z-50';
                 
                 const listContainer = document.createElement('div');
                 listContainer.className = 'px-6 py-4 max-h-[300px] overflow-y-auto custom-scrollbar';
                 
                 const list = document.createElement('ul');
-                list.className = 'flex flex-col gap-y-1'; // Changed to 1 item per row
+                list.className = 'flex flex-col gap-y-1';
                 
                 countries.forEach(country => {
+                    const active = isCountryActive(country);
                     const listItem = document.createElement('li');
-                    const link = document.createElement('a');
-                    link.href = formatPath(continent) + '/' + formatPath(country) + '/' + formatPath(country) + '.html';
-                    link.className = 'flex items-center gap-3 text-slate-300 hover:text-neon-cyan transition-colors py-2 group/link text-sm md:text-base';
-                    link.innerHTML = `
-                        <img src="https://flagcdn.com/w20/${countryCodes[country] || 'xx'}.png" alt="${country} flag" class="w-5 rounded-[2px] shadow-sm">
-                        <span class="font-medium">${country}</span>
-                    `;
-                    listItem.appendChild(link);
+                    
+                    if (active) {
+                        const link = document.createElement('a');
+                        link.href = formatPath(continent) + '/' + formatPath(country) + '/' + formatPath(country) + '.html';
+                        link.className = 'flex items-center gap-3 text-slate-300 hover:text-neon-cyan transition-colors py-2 group/link text-sm md:text-base';
+                        link.innerHTML = `
+                            <img src="https://flagcdn.com/w20/${countryCodes[country] || 'xx'}.png" alt="${country} flag" class="w-5 rounded-[2px] shadow-sm">
+                            <span class="font-medium">${country}</span>
+                        `;
+                        listItem.appendChild(link);
+                    } else {
+                        const div = document.createElement('div');
+                        div.className = 'flex items-center gap-3 text-slate-500 py-2 text-sm md:text-base cursor-not-allowed';
+                        div.innerHTML = `
+                            <img src="https://flagcdn.com/w20/${countryCodes[country] || 'xx'}.png" alt="${country} flag" class="w-5 rounded-[2px] opacity-50">
+                            <span class="font-medium">${country}</span>
+                        `;
+                        listItem.appendChild(div);
+                    }
+                    
                     list.appendChild(listItem);
                 });
 
@@ -551,15 +606,29 @@
                 } else {
                     results.forEach(result => {
                         const li = document.createElement('li');
-                        li.innerHTML = `
-                            <a href="${result.url}" class="flex items-center justify-between px-6 py-3 hover:bg-deepblue-800/80 transition-colors group">
-                                <div class="flex flex-col items-start text-left">
-                                    <span class="text-white font-medium group-hover:text-neon-cyan transition-colors">${result.name}</span>
-                                    <span class="text-xs text-slate-500">${result.continent}</span>
+                        const active = isCountryActive(result.name);
+                        
+                        if (active) {
+                            li.innerHTML = `
+                                <a href="${result.url}" class="flex items-center justify-between px-6 py-3 hover:bg-deepblue-800/80 transition-colors group">
+                                    <div class="flex flex-col items-start text-left">
+                                        <span class="text-white font-medium group-hover:text-neon-cyan transition-colors">${result.name}</span>
+                                        <span class="text-xs text-slate-500">${result.continent}</span>
+                                    </div>
+                                    <img src="https://flagcdn.com/w20/${countryCodes[result.name] || 'xx'}.png" alt="flag" class="w-6 rounded-sm shadow-sm">
+                                </a>
+                            `;
+                        } else {
+                            li.innerHTML = `
+                                <div class="flex items-center justify-between px-6 py-3 cursor-not-allowed group">
+                                    <div class="flex flex-col items-start text-left">
+                                        <span class="text-slate-500 font-medium">${result.name}</span>
+                                        <span class="text-xs text-slate-600">${result.continent}</span>
+                                    </div>
+                                    <img src="https://flagcdn.com/w20/${countryCodes[result.name] || 'xx'}.png" alt="flag" class="w-6 rounded-sm shadow-sm opacity-50">
                                 </div>
-                                <img src="https://flagcdn.com/w20/${countryCodes[result.name] || 'xx'}.png" alt="flag" class="w-6 rounded-sm shadow-sm">
-                            </a>
-                        `;
+                            `;
+                        }
                         searchResultsList.appendChild(li);
                     });
                 }
@@ -575,9 +644,19 @@
                 }
 
                 // Filter countries (limit to top 10 matches for better UX)
-                const filtered = allCountries
-                    .filter(c => c.name.toLowerCase().includes(query))
-                    .slice(0, 8);
+                let filtered = allCountries
+                    .filter(c => c.name.toLowerCase().includes(query));
+                    
+                // Sort active first, then inactive, then alphabetically
+                filtered.sort((a, b) => {
+                    const aActive = isCountryActive(a.name);
+                    const bActive = isCountryActive(b.name);
+                    if (aActive && !bActive) return -1;
+                    if (!aActive && bActive) return 1;
+                    return a.name.localeCompare(b.name);
+                });
+                
+                filtered = filtered.slice(0, 8);
                 
                 renderResults(filtered);
             });
@@ -599,19 +678,23 @@
 
         
         // 3. Map Functionality
-        const availableGuides = {
-            "DE": { name: "Germany", url: "europe/germany/germany.html" },
-            "JP": { name: "Japan", url: "asia/japan/japan.html" },
-            "CZ": { name: "Czech Republic", url: "europe/czech-republic/czech-republic.html" },
-            "AT": { name: "Austria", url: "europe/austria/austria.html" },
-            "PT": { name: "Portugal", url: "europe/portugal/portugal.html" },
-            "ES": { name: "Spain", url: "europe/spain/spain.html" },
-            "MT": { name: "Malta", url: "europe/malta/malta.html" },
-            "AE": { name: "United Arab Emirates", url: "asia/united-arab-emirates/united-arab-emirates.html" },
-            "TR": { name: "Turkey", url: "asia/turkey/turkey.html" },
-            "AZ": { name: "Azerbaijan", url: "asia/azerbaijan/azerbaijan.html" },
-            "QA": { name: "Qatar", url: "asia/qatar/qatar.html" },
-            "PL": { name: "Poland", url: "europe/poland/poland.html" }
+        const getTooltipHtml = (officialName, regionName, code, isActive) => {
+            const flagUrl = `https://flagcdn.com/w40/${code.toLowerCase()}.png`;
+            const headerHtml = `
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                    <img src="${flagUrl}" style="width:24px; border-radius:2px; box-shadow:0 1px 3px rgba(0,0,0,0.5);" alt="flag">
+                    <b style="color:white; font-size:16px;">${officialName}</b>
+                </div>
+                <div style="font-size:12px; color:#94a3b8; margin-bottom:6px;">
+                    <i class="ph ph-globe-hemisphere-west"></i> Region: ${regionName}
+                </div>
+            `;
+            
+            if (isActive) {
+                return headerHtml + `<div style="font-size:13px;color:#00F0FF;margin-top:4px;font-weight:600;display:flex;align-items:center;gap:4px;"><i class="ph ph-book-open"></i> Click to view guides &rarr;</div>`;
+            } else {
+                return headerHtml + `<div style="font-size:13px;color:#64748b;margin-top:4px;display:flex;align-items:center;gap:4px;"><i class="ph ph-clock"></i> Guides coming soon</div>`;
+            }
         };
 
         const setupMap = () => {
@@ -641,10 +724,36 @@
                     }
                 },
                 selectedRegions: Object.keys(availableGuides),
+                markers: [
+                    { name: 'Malta', coords: [35.9375, 14.3973] } // Coordinates for Malta
+                ],
+                markerStyle: {
+                    initial: {
+                        fill: '#00F0FF',
+                        stroke: '#060B19',
+                        strokeWidth: 1.5,
+                        r: 4
+                    },
+                    hover: {
+                        fill: '#0070FF',
+                        stroke: '#060B19',
+                        strokeWidth: 1.5,
+                        r: 6
+                    }
+                },
+                onMarkerTooltipShow(event, tooltip, index) {
+                    const code = "MT";
+                    const officialName = "Malta";
+                    const regionName = "Europe";
+                    const isActive = !!availableGuides[code];
+                    tooltip.text(getTooltipHtml(officialName, regionName, code, isActive), true);
+                },
+                onMarkerClick(event, index) {
+                    window.location.href = availableGuides["MT"].url;
+                },
                 onRegionTooltipShow(event, tooltip, code) {
-                    let officialName = tooltip.text(); // Fallback to map name
+                    let officialName = tooltip.text();
                     
-                    // Reverse-lookup our official name from the country code dictionary
                     for (const [name, cCode] of Object.entries(countryCodes)) {
                         if (cCode.toLowerCase() === code.toLowerCase()) {
                             officialName = name;
@@ -652,7 +761,6 @@
                         }
                     }
                     
-                    // Find region/continent
                     let regionName = "Unknown Region";
                     for (const [continent, countries] of Object.entries(travelData)) {
                         if (countries.includes(officialName)) {
@@ -661,28 +769,8 @@
                         }
                     }
 
-                    const flagUrl = `https://flagcdn.com/w40/${code.toLowerCase()}.png`;
-                    const headerHtml = `
-                        <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
-                            <img src="${flagUrl}" style="width:24px; border-radius:2px; box-shadow:0 1px 3px rgba(0,0,0,0.5);" alt="flag">
-                            <b style="color:white; font-size:16px;">${officialName}</b>
-                        </div>
-                        <div style="font-size:12px; color:#94a3b8; margin-bottom:6px;">
-                            <i class="ph ph-globe-hemisphere-west"></i> Region: ${regionName}
-                        </div>
-                    `;
-
-                    if (availableGuides[code]) {
-                        tooltip.text(
-                            headerHtml + `<div style="font-size:13px;color:#00F0FF;margin-top:4px;font-weight:600;display:flex;align-items:center;gap:4px;"><i class="ph ph-book-open"></i> Click to view guides &rarr;</div>`,
-                            true
-                        );
-                    } else {
-                        tooltip.text(
-                            headerHtml + `<div style="font-size:13px;color:#64748b;margin-top:4px;display:flex;align-items:center;gap:4px;"><i class="ph ph-clock"></i> Guides coming soon</div>`,
-                            true
-                        );
-                    }
+                    const isActive = !!availableGuides[code];
+                    tooltip.text(getTooltipHtml(officialName, regionName, code, isActive), true);
                 },
                 onRegionClick(event, code) {
                     if (availableGuides[code]) {
