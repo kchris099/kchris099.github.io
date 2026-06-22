@@ -20,7 +20,6 @@ Quedlinburg
 Weimar
 
 # Eastern Germany
-Berlin
 Leipzig
 Moritzburg
 
@@ -42,9 +41,8 @@ Augsburg
 Baden-Baden
 Bamberg
 Black Forest
-Dinkelsbühl
-Esslingen
-Freiburg
+    Dinkelsbühl
+    Freiburg
 Füssen
 Garmisch-Partenkirchen
 Lake Constance
