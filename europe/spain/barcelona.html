@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barcelona Travel Guide | Global Explorer Guides</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Leaflet CSS for Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        deepblue: {
+                            950: '#060B19',
+                            900: '#0B132B',
+                            800: '#15234B',
+                            700: '#1E336B',
+                        },
+                        neon: {
+                            cyan: '#00F0FF',
+                            blue: '#0070FF',
+                            purple: '#8A2BE2',
+                            yellow: '#FFD700'
+                        }
+                    },
+                    animation: {
+                        'fade-in-down': 'fadeInDown 0.5s ease-out',
+                        'fade-in': 'fadeIn 0.3s ease-out',
+                    },
+                    keyframes: {
+                        fadeInDown: {
+                            '0%': { opacity: '0', transform: 'translateY(-20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #060B19; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1E336B; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0070FF; 
+        }
+        
+        /* Custom Leaflet Map Pins (Google Red) */
+        .leaflet-popup-content-wrapper {
+            background-color: #fff;
+            color: #333;
+            border-radius: 8px;
+            box-shadow: 0 3px 14px rgba(0,0,0,0.4);
+        }
+        .leaflet-popup-tip {
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body class="bg-deepblue-950 text-slate-200 font-sans min-h-screen relative overflow-x-hidden">
+
+    <!-- Immersive Hero Background Image -->
+    <div class="absolute top-0 left-0 w-full h-[450px] md:h-[500px] z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-[url('images/barcelona_hero.jpg')] bg-cover bg-center bg-no-repeat opacity-40 mix-blend-luminosity"></div>
+        <!-- Gradient overlay to fade seamlessly into the deep blue background -->
+        <div class="absolute inset-0 bg-gradient-to-b from-deepblue-950/10 via-deepblue-950/60 to-deepblue-950"></div>
+    </div>
+
+    <!-- Ambient Background Glow -->
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon-purple/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neon-cyan/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <main class="container mx-auto px-4 py-8 md:py-16 relative z-20 max-w-5xl">
+        
+        <!-- Navigation Bar -->
+        <nav class="mb-12 animate-fade-in-down flex flex-wrap items-center gap-4">
+            <a href="../../index.html" class="flex items-center justify-center w-11 h-11 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0" title="Back to Home">
+                <i class="ph ph-house text-xl group-hover:scale-110 transition-transform"></i>
+            </a>
+            <a href="spain.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0">
+                <i class="ph ph-arrow-left text-lg group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-medium text-sm">Back to Spain</span>
+            </a>
+            
+            <div class="ml-auto flex items-center gap-3 bg-deepblue-900/40 border border-deepblue-700/50 rounded-full px-4 py-2 backdrop-blur-sm shadow-inner shrink-0">
+                <img src="https://flagcdn.com/w40/es.png" alt="Spain" class="w-6 h-auto rounded-[2px] shadow-sm">
+                <div class="flex items-center gap-2 text-sm font-medium tracking-wide">
+                    <span class="text-slate-200 uppercase text-xs tracking-wider font-bold">Spain</span>
+                    <span class="text-deepblue-500 text-xs">•</span>
+                    <span class="text-neon-cyan text-xs">Spain</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero & Introduction Section -->
+        <header class="mb-16 animate-fade-in-down animation-delay-100 text-center">
+            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-deepblue-900 border border-deepblue-700 mb-6 shadow-[0_0_30px_rgba(0,240,255,0.15)]">
+                <i class="ph ph-map-pin text-4xl text-neon-cyan"></i>
+            </div>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple pb-4">
+                Explore Barcelona
+            </h1>
+            
+            <div class="bg-deepblue-900/40 border border-deepblue-800 rounded-3xl p-8 md:p-10 text-left backdrop-blur-sm mt-10">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                    <i class="ph ph-scroll text-neon-cyan"></i> A Brief History
+                </h2>
+                <p class="text-lg text-slate-400 font-light leading-relaxed">Barcelona possesses a profound historical depth stretching back to its founding as the Roman colony of Barcino. Over the centuries, it grew into a dominant medieval maritime power within the Crown of Aragon, profoundly shaping the Mediterranean trade network. Today, its cultural identity is powerfully defined by its immense Gothic Quarter and the spectacular 19th-century Modernista architectural movement spearheaded by Antoni Gaudí.</p>
+            </div>
+        </header>
+
+        <!-- Interactive Map Section -->
+        <section class="mb-16 animate-fade-in-down" style="animation-delay: 0.2s;">
+            <h2 class="text-3xl font-bold text-white mb-6">Attractions Map</h2>
+            <div id="map" class="h-[400px] w-full rounded-3xl border border-deepblue-700 shadow-2xl z-10 relative"></div>
+        </section>
+
+        <!-- Places List Section -->
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="grid gap-8">
+            <!-- 1. Basílica de la Sagrada Família -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/barcelona_1.jpg" alt="Basílica de la Sagrada Família" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i>    €26</div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Basílica de la Sagrada Família</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">An unfinished Catholic minor basilica designed by Catalan architect Antoni Gaudí. Construction began in 1882, combining Gothic and curvilinear Art Nouveau forms, and relies solely on private donations.</p>
+                </div>
+            </div>
+            <!-- 2. Bateries antiaèries del Turó de la Rovira -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/barcelona_2.jpg" alt="Bateries antiaèries del Turó de la Rovira" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i>    Free</div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Bateries antiaèries del Turó de la Rovira</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">A historic military site featuring concrete remnants of anti-aircraft defenses constructed in 1937 during the Spanish Civil War to defend Barcelona from aerial bombings.</p>
+                </div>
+            </div>
+            <!-- 3. Montjuïc Castle -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/barcelona_3.jpg" alt="Montjuïc Castle" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i>    €12</div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Montjuïc Castle</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">A military fortress dating back to 1640, built on a hill overlooking the harbor. It historically served as a prison and military command post, playing a central role in the War of the Spanish Succession.</p>
+                </div>
+            </div>
+            <!-- 4. Casa Batlló -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/barcelona_4.jpg" alt="Casa Batlló" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i>    €35</div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Casa Batlló</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">A residential building in the center of Barcelona, remodeled by Antoni Gaudí in 1904. Its exterior features a skeletal organic design and a colorful mosaic facade made from broken ceramic tiles.</p>
+                </div>
+            </div>
+            <!-- 5. Casa Milà -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/barcelona_5.jpg" alt="Casa Milà" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i>    €35</div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Casa Milà</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Known as La Pedrera, this is a modernist building constructed between 1906 and 1912 by Antoni Gaudí. It was the last private residence designed by him, noted for its undulating stone facade and wrought iron balconies.</p>
+                </div>
+            </div>
+            <!-- 6. Museu Picasso de Barcelona -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/barcelona_6.jpg" alt="Museu Picasso de Barcelona" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i>    €15</div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Museu Picasso de Barcelona</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">An art museum housing an extensive collection of artworks by the 20th-century Spanish artist Pablo Picasso, with a particular focus on his formative years and early relationship with the city of Barcelona.</p>
+                </div>
+            </div>
+            <!-- 7. Arc de Triomf -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/barcelona_7.jpg" alt="Arc de Triomf" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i>    Free</div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Arc de Triomf</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">A triumphal arch built in the Neo-Mudéjar style by architect Josep Vilaseca i Casanovas. It served as the main access gate for the 1888 Barcelona Universal Exposition.</p>
+                </div>
+            </div>
+            <!-- 8. El Born Centre de Cultura i Memòria -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/barcelona_8.jpg" alt="El Born Centre de Cultura i Memòria" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i>    Free</div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">El Born Centre de Cultura i Memòria</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">A cultural facility housed in a 19th-century cast-iron market building. It preserves archaeological remains of the streets and houses from 1700, destroyed during the War of the Spanish Succession.</p>
+                </div>
+            </div>
+            <!-- 9. Basílica de Santa Maria del Mar -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/barcelona_9.jpg" alt="Basílica de Santa Maria del Mar" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i>    €5</div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Basílica de Santa Maria del Mar</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">A church in the Ribera district, constructed between 1329 and 1383 at the height of the Crown of Aragon's maritime and mercantile expansion. It is a prominent example of Catalan Gothic architecture.</p>
+                </div>
+            </div>
+            <!-- 10. Catedral de Barcelona -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/barcelona_10.jpg" alt="Catedral de Barcelona" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i>    €14</div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Catedral de Barcelona</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Gothic cathedral and seat of the Archbishop of Barcelona, constructed from the 13th to 15th centuries over a former Romanesque church. The neo-Gothic facade was added in the late 19th century.</p>
+                </div>
+            </div>
+            <!-- 11. La Rambla -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/barcelona_11.jpg" alt="La Rambla" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i>    Free</div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">La Rambla</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">A tree-lined pedestrian street stretching 1.2 kilometers through central Barcelona. Originally a seasonal stream, it became a central promenade in the 15th century and serves as a boundary between the Gothic Quarter and El Raval.</p>
+                </div>
+            </div>
+            <!-- 12. Plaça d'Espanya -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/barcelona_12.jpg" alt="Plaça d'Espanya" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i>    Free</div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Plaça d'Espanya</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">One of Barcelona's primary squares, designed by Josep Puig i Cadafalch and built for the 1929 International Exposition at the foot of Montjuïc. It serves as a major transit hub.</p>
+                </div>
+            </div>
+            <!-- 13. Torres Venecianes -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/barcelona_13.jpg" alt="Torres Venecianes" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i>    Free</div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Torres Venecianes</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Two 47-meter-tall towers situated at the junction of Plaça d'Espanya and Avinguda de la Reina Maria Cristina, modeled after the campanile of St Mark's Basilica in Venice for the 1929 International Exposition.</p>
+                </div>
+            </div>
+            <!-- 14. Museu Nacional d'Art de Catalunya -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/barcelona_14.jpg" alt="Museu Nacional d'Art de Catalunya" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i>    €12</div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Museu Nacional d'Art de Catalunya</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The national museum of Catalan visual art located in the Palau Nacional, which was built for the 1929 International Exposition. It houses a vast collection of Romanesque church paintings.</p>
+                </div>
+            </div>
+            <!-- 15. Torre de Comunicacions de Montjuïc -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/barcelona_15.jpg" alt="Torre de Comunicacions de Montjuïc" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i>    Free</div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Torre de Comunicacions de Montjuïc</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">A telecommunications tower built for the 1992 Summer Olympics to transmit television coverage. Designed by Santiago Calatrava, its structure resembles an athlete holding the Olympic Flame.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+    <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
+        <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+    </footer>
+
+    <!-- Map Initialization Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize Leaflet Map centered on Ulm
+            const map = L.map('map').setView([48.3984, 9.9916], 14);
+
+            // Use Google Maps style palette map (Google Streets)
+            L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                attribution: '&copy; Google Maps',
+                maxZoom: 20
+            }).addTo(map);
+
+            // Define locations
+            const locations = [
+        { name: "Basílica de la Sagrada Família", lat: 41.403505, lng: 2.174428 },
+        { name: "Bateries antiaèries del Turó de la Rovira", lat: 41.4194, lng: 2.1611 },
+        { name: "Montjuïc Castle", lat: 41.363300, lng: 2.166202 },
+        { name: "Casa Batlló", lat: 41.391545, lng: 2.164696 },
+        { name: "Casa Milà", lat: 41.395400, lng: 2.161762 },
+        { name: "Museu Picasso de Barcelona", lat: 41.385104, lng: 2.181201 },
+        { name: "Arc de Triomf", lat: 41.392240, lng: 2.180769 },
+        { name: "El Born Centre de Cultura i Memòria", lat: 41.3854, lng: 2.1843 },
+        { name: "Basílica de Santa Maria del Mar", lat: 41.383780, lng: 2.182006 },
+        { name: "Catedral de Barcelona", lat: 41.383930, lng: 2.176554 },
+        { name: "La Rambla", lat: 41.379076, lng: 2.175060 },
+        { name: "Plaça d'Espanya", lat: 41.374603, lng: 2.148917 },
+        { name: "Torres Venecianes", lat: 41.374103, lng: 2.149971 },
+        { name: "Museu Nacional d'Art de Catalunya", lat: 41.368401, lng: 2.153423 },
+        { name: "Torre de Comunicacions de Montjuïc", lat: 41.364278, lng: 2.150607 },
+    ];
+
+            // Custom icon configuration using Google Maps style red pin
+            const iconOptions = {
+                iconUrl: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32],
+            };
+            const customIcon = L.icon(iconOptions);
+
+            // Add markers to map
+            locations.forEach(loc => {
+                L.marker([loc.lat, loc.lng], {icon: customIcon}).addTo(map)
+                    .bindPopup(`<strong class="font-sans text-base text-gray-900">${loc.name}</strong>`);
+            });
+
+            // Adjust bounds to fit all markers
+            const group = new L.featureGroup(locations.map(loc => L.marker([loc.lat, loc.lng])));
+            map.fitBounds(group.getBounds(), { padding: [50, 50] });
+            
+            // Scroll to Top Functionality
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                } else {
+                    scrollTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                }
+            });
+
+            scrollTopBtn.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+    </script>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-12 h-12 bg-neon-cyan text-deepblue-950 rounded-full shadow-[0_0_20px_rgba(0,240,255,0.4)] opacity-0 pointer-events-none transition-all duration-300 translate-y-4 hover:bg-white hover:scale-110" aria-label="Scroll to top">
+        <i class="ph ph-arrow-up text-xl font-bold"></i>
+    </button>
+</body>
+</html>

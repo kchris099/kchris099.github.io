@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Greece | Global Explorer Guides</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        deepblue: {
+                            950: '#060B19',
+                            900: '#0B132B',
+                            800: '#15234B',
+                            700: '#1E336B',
+                        },
+                        neon: {
+                            cyan: '#00F0FF',
+                            blue: '#0070FF',
+                            purple: '#8A2BE2',
+                            yellow: '#FFD700' // Added yellow for German flag accent
+                        }
+                    },
+                    animation: {
+                        'fade-in-down': 'fadeInDown 0.5s ease-out',
+                        'fade-in': 'fadeIn 0.3s ease-out',
+                    },
+                    keyframes: {
+                        fadeInDown: {
+                            '0%': { opacity: '0', transform: 'translateY(-20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #060B19; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1E336B; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0070FF; 
+        }
+    </style>
+</head>
+<body class="bg-deepblue-950 text-slate-200 font-sans min-h-screen relative overflow-x-hidden">
+
+    <!-- Ambient Background Glow (Subtly shifted colors for Germany page) -->
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon-yellow/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neon-cyan/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <main class="container mx-auto px-4 py-8 md:py-16 relative z-20 max-w-6xl">
+        
+        <!-- Navigation Bar -->
+        <nav class="mb-12 animate-fade-in-down">
+            <a href="../../index.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg">
+                <i class="ph ph-arrow-left text-lg group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-medium text-sm">Back to Destinations</span>
+            </a>
+        </nav>
+
+        <!-- Hero Section -->
+        <header class="text-center mb-16 animate-fade-in-down animation-delay-100">
+            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-deepblue-900 border border-deepblue-700 mb-6 shadow-[0_0_30px_rgba(255,215,0,0.15)]">
+                <img src="https://flagcdn.com/w80/gr.png" alt="Flag of Qatar" class="w-10 rounded-sm">
+            </div>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-neon-yellow via-white to-neon-cyan pb-4">
+                Greece Guide
+            </h1>
+            <p class="text-lg md:text-xl text-slate-400 mb-10 max-w-3xl mx-auto font-light leading-relaxed">
+                Step into a world where ancient myths seamlessly blend with the sparkling waters of the Mediterranean. Greece offers an unparalleled journey through the cradle of Western civilization, inviting you to stand beneath the shadow of the Acropolis and uncover millennia of philosophical and architectural triumphs.
+            </p>
+
+            <!-- Search Bar Container -->
+            <div class="relative max-w-2xl mx-auto w-full">
+                <div class="relative flex items-center group">
+                    <i class="ph ph-magnifying-glass absolute left-5 text-2xl text-slate-400 group-focus-within:text-neon-cyan transition-colors"></i>
+                    <input 
+                        type="text" 
+                        id="search-input"
+                        placeholder="Search for a city or region (e.g., Munich, Berlin)..." 
+                        class="w-full bg-deepblue-900/80 border border-deepblue-700/50 text-white rounded-full py-4 pl-14 pr-6 focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan shadow-lg shadow-deepblue-900/50 backdrop-blur-sm transition-all text-lg placeholder-slate-500"
+                    >
+                </div>
+
+                <!-- Search Results Dropdown -->
+                <div id="search-results" class="absolute top-full mt-3 w-full bg-deepblue-900/95 border border-deepblue-700 rounded-2xl shadow-2xl backdrop-blur-md hidden z-50 overflow-hidden max-h-80 overflow-y-auto animate-fade-in text-left">
+                    <ul id="search-results-list" class="flex flex-col py-2">
+                        <!-- Populated by JS -->
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <!-- Regions Grid -->
+        <section id="regions-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-32">
+            <!-- Region Tiles Populated by JS -->
+        </section>
+
+    </main>
+
+    <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
+        <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Data Set of Germany Regions and their prominent cities/areas
+        const greeceData = {
+    "Athens": [
+        "Athens"
+    ]
+};
+// Icons map for regions to add visual variety
+        const regionIcons = {};
+
+        // Helper function to create URL-friendly paths
+        const formatPath = (name) => {
+            return name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        };
+
+        let allDestinations = [];
+
+        const initApp = () => {
+            const container = document.getElementById('regions-container');
+            
+            Object.keys(greeceData).sort().forEach((region, index) => {
+                // Ensure alphabetical order for the cities/destinations
+                const destinations = [...greeceData[region]].sort();
+
+                // Add to flattened array for search
+                destinations.forEach(dest => {
+                    allDestinations.push({
+                        name: dest,
+                        region: region,
+                        url: formatPath(dest) + '.html'
+                    });
+                });
+
+                // Generate Region Card HTML
+                const isSingleDestination = destinations.length === 1 && destinations[0] === region;
+
+                let card;
+                if (isSingleDestination) {
+                    card = document.createElement('a');
+                    card.href = formatPath(destinations[0]) + '.html';
+                } else {
+                    card = document.createElement('div');
+                }
+                
+                // Keep existing classes, dynamically handling the color if needed, but we can just copy existing class
+                // We'll extract the exact class from the old html using regex in the python script.
+                // For the inner HTML:
+                
+                card.style.animation = `fadeInDown 0.6s ease-out ${(index * 0.1) + 0.3}s both`;
+                card.style.zIndex = '1';
+                
+                let headerClass = 'w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none focus:bg-deepblue-800/50 hover:bg-deepblue-800/30 transition-colors rounded-2xl relative z-10';
+                
+                let innerHtml = `
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-deepblue-700 to-deepblue-800 border border-deepblue-700 flex items-center justify-center text-neon-yellow group-hover:scale-110 transition-transform shadow-inner">
+                            <i class="ph ph-map-pin text-2xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-white tracking-wide">${region}</h2>
+                            ${!isSingleDestination ? `<p class="text-sm text-slate-400 font-light">${destinations.length} guides</p>` : `<p class="text-sm text-slate-400 font-light">Explore Destination &rarr;</p>`}
+                        </div>
+                    </div>
+                    ${!isSingleDestination ? `<i class="ph ph-caret-down text-xl text-slate-500 transition-transform duration-300 transform dropdown-icon"></i>` : ''}
+                `;
+
+                if (isSingleDestination) {
+                    card.className = `block bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-2xl relative transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,215,0,0.1)] hover:border-neon-yellow/30 group`;
+                    card.innerHTML = `<div class="${headerClass}">${innerHtml}</div>`;
+                    container.appendChild(card);
+                } else {
+                    card.className = `bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-2xl relative transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,215,0,0.1)] hover:border-neon-yellow/30 flex flex-col group`;
+                    const header = document.createElement('button');
+                    header.className = headerClass;
+                    header.innerHTML = innerHtml;
+
+                    const body = document.createElement('div');
+                    body.className = 'dropdown-content absolute top-[calc(100%+8px)] left-0 w-full bg-deepblue-950/95 border border-deepblue-700/80 backdrop-blur-xl rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.7)] transition-all duration-300 opacity-0 pointer-events-none translate-y-[-10px] z-50';
+                    
+                    const listContainer = document.createElement('div');
+                    listContainer.className = 'px-6 py-4 max-h-[350px] overflow-y-auto custom-scrollbar';
+                    
+                    const list = document.createElement('ul');
+                    list.className = 'flex flex-col gap-y-1';
+                    
+                    destinations.forEach(dest => {
+                        const listItem = document.createElement('li');
+                        const link = document.createElement('a');
+                        link.href = formatPath(dest) + '.html';
+                        link.className = 'flex items-center gap-3 text-slate-300 hover:text-neon-yellow transition-colors py-2 group/link text-sm md:text-base border-b border-deepblue-800/30 last:border-0';
+                        link.innerHTML = `
+                            <i class="ph ph-map-trifold text-xl text-deepblue-500 group-hover/link:text-neon-yellow transition-colors"></i>
+                            <span class="font-medium">${dest}</span>
+                        `;
+                        listItem.appendChild(link);
+                        list.appendChild(listItem);
+                    });
+
+                    listContainer.appendChild(list);
+                    body.appendChild(listContainer);
+
+                    header.addEventListener('click', (e) => {
+                        e.stopPropagation(); 
+                        const isOpen = body.classList.contains('opacity-100');
+                        
+                        document.querySelectorAll('.dropdown-content').forEach(el => {
+                            el.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                            el.classList.add('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
+                            el.parentElement.style.zIndex = '1';
+                        });
+                        document.querySelectorAll('.dropdown-icon').forEach(el => el.classList.remove('rotate-180', 'text-neon-yellow'));
+
+                        if (!isOpen) {
+                            body.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
+                            body.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                            header.querySelector('.dropdown-icon').classList.add('rotate-180', 'text-neon-yellow');
+                            card.style.zIndex = '50'; 
+                        }
+                    });
+
+                    body.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                    });
+
+                    card.appendChild(header);
+                    card.appendChild(body);
+                    container.appendChild(card);
+                }
+            });
+
+            // Close all dropdowns when clicking anywhere outside
+            document.addEventListener('click', () => {
+                document.querySelectorAll('.dropdown-content').forEach(el => {
+                    el.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                    el.classList.add('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
+                    el.parentElement.style.zIndex = '1';
+                });
+                document.querySelectorAll('.dropdown-icon').forEach(el => el.classList.remove('rotate-180', 'text-neon-cyan'));
+            });
+        };
+
+        // Search Functionality
+        const setupSearch = () => {
+            const searchInput = document.getElementById('search-input');
+            const searchResults = document.getElementById('search-results');
+            const searchResultsList = document.getElementById('search-results-list');
+
+            const normalizeText = (text) => {
+                return text.toLowerCase()
+                    .replace(/ä/g, 'a')
+                    .replace(/ö/g, 'o')
+                    .replace(/ü/g, 'u')
+                    .replace(/ß/g, 'ss')
+                    .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            };
+
+            const renderResults = (results) => {
+                searchResultsList.innerHTML = '';
+                if (results.length === 0) {
+                    searchResultsList.innerHTML = `
+                        <li class="px-6 py-4 text-slate-400 text-center">
+                            No guides found.
+                        </li>
+                    `;
+                } else {
+                    results.forEach(result => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `
+                            <a href="${result.url}" class="flex items-center justify-between px-6 py-3 hover:bg-deepblue-800/80 transition-colors group">
+                                <div class="flex flex-col">
+                                    <span class="text-white font-medium group-hover:text-neon-cyan transition-colors">${result.name}</span>
+                                    <span class="text-xs text-slate-500">${result.region}</span>
+                                </div>
+                                <i class="ph ph-arrow-right text-slate-600 group-hover:text-neon-cyan group-hover:translate-x-1 transition-all"></i>
+                            </a>
+                        `;
+                        searchResultsList.appendChild(li);
+                    });
+                }
+                searchResults.classList.remove('hidden');
+            };
+
+            searchInput.addEventListener('input', (e) => {
+                const query = normalizeText(e.target.value.trim());
+                
+                if (query.length === 0) {
+                    searchResults.classList.add('hidden');
+                    return;
+                }
+
+                const filtered = allDestinations
+                    .filter(d => normalizeText(d.name).includes(query))
+                    .slice(0, 8);
+                
+                renderResults(filtered);
+            });
+
+            // Close search results when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+                    searchResults.classList.add('hidden');
+                }
+            });
+
+            // Show results again when clicking on input if it has value
+            searchInput.addEventListener('focus', () => {
+                if (searchInput.value.trim().length > 0) {
+                    searchResults.classList.remove('hidden');
+                }
+            });
+        };
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            initApp();
+            setupSearch();
+            
+            // Scroll to Top Functionality
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                } else {
+                    scrollTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                }
+            });
+
+            scrollTopBtn.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+    </script>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-12 h-12 bg-neon-cyan text-deepblue-950 rounded-full shadow-[0_0_20px_rgba(0,240,255,0.4)] opacity-0 pointer-events-none transition-all duration-300 translate-y-4 hover:bg-white hover:scale-110" aria-label="Scroll to top">
+        <i class="ph ph-arrow-up text-xl font-bold"></i>
+    </button>
+</body>
+</html>
