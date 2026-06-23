@@ -48,8 +48,6 @@ Garmisch-Partenkirchen
 Lake Constance
 Lindau
 Ludwigsburg
-Munich
-Nuremberg
 Nördlingen
 Rothenburg ob der Tauber
 Stuttgart

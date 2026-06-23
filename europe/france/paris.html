@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paris Guide | Global Explorer Guides</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Outfit', 'sans-serif'] },
+                    colors: {
+                        deepblue: { 950: '#060B19', 900: '#0B132B', 800: '#15234B', 700: '#1E336B' },
+                        neon: { cyan: '#00F0FF', blue: '#0070FF', purple: '#8A2BE2', yellow: '#FFD700' }
+                    },
+                    animation: { 'fade-in-down': 'fadeInDown 0.5s ease-out', 'fade-in': 'fadeIn 0.3s ease-out' },
+                    keyframes: {
+                        fadeInDown: { '0%': { opacity: '0', transform: 'translateY(-20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #060B19; }
+        ::-webkit-scrollbar-thumb { background: #1E336B; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0070FF; }
+        .leaflet-popup-content-wrapper { background-color: #fff; color: #333; border-radius: 8px; box-shadow: 0 3px 14px rgba(0,0,0,0.4); }
+        .leaflet-popup-tip { background-color: #fff; }
+    </style>
+</head>
+<body class="bg-deepblue-950 text-slate-200 font-sans min-h-screen relative overflow-x-hidden">
+    <div class="absolute top-0 left-0 w-full h-[450px] md:h-[500px] z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-[url('images/paris_hero.jpg')] bg-cover bg-center bg-no-repeat opacity-40 mix-blend-luminosity"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-deepblue-950/10 via-deepblue-950/60 to-deepblue-950"></div>
+    </div>
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon-purple/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neon-cyan/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <main class="container mx-auto px-4 py-8 md:py-16 relative z-20 max-w-5xl">
+        <nav class="mb-12 animate-fade-in-down flex flex-wrap items-center gap-4">
+            <a href="../../index.html" class="flex items-center justify-center w-11 h-11 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0" title="Back to Home">
+                <i class="ph ph-house text-xl group-hover:scale-110 transition-transform"></i>
+            </a>
+            <a href="france.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0">
+                <i class="ph ph-arrow-left text-lg group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-medium text-sm">Back to France</span>
+            </a>
+            <div class="ml-auto flex items-center gap-3 bg-deepblue-900/40 border border-deepblue-700/50 rounded-full px-4 py-2 backdrop-blur-sm shadow-inner shrink-0">
+                <img src="https://flagcdn.com/w40/fr.png" alt="France flag" class="w-6 h-auto rounded-[2px] shadow-sm">
+                <div class="flex items-center gap-2 text-sm font-medium tracking-wide">
+                    <span class="text-slate-200 uppercase text-xs tracking-wider font-bold">France</span>
+                    <span class="text-deepblue-500 text-xs">&rsaquo;</span>
+                    <span class="text-neon-cyan text-xs">France</span>
+                </div>
+            </div>
+        </nav>
+
+        <header class="mb-16 animate-fade-in-down animation-delay-100 text-center">
+            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-deepblue-900 border border-deepblue-700 mb-6 shadow-[0_0_30px_rgba(0,240,255,0.15)]">
+                <i class="ph ph-map-pin text-4xl text-neon-cyan"></i>
+            </div>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple pb-4">
+                Explore Paris
+            </h1>
+            <div class="bg-deepblue-900/40 border border-deepblue-800 rounded-3xl p-8 md:p-10 text-left backdrop-blur-sm mt-10">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                    <i class="ph ph-scroll text-neon-cyan"></i> A Brief History
+                </h2>
+                <p class="text-lg text-slate-400 font-light leading-relaxed">Paris grew from a settlement on the Seine into the capital of the French monarchy, the Revolution, and the modern republic. Its churches, palaces, museums, boulevards, and railway districts record medieval expansion, royal patronage, Haussmann-era rebuilding, and the development of national cultural institutions.</p>
+            </div>
+        </header>
+
+        <section class="mb-16 animate-fade-in-down" style="animation-delay: 0.2s;">
+            <h2 class="text-3xl font-bold text-white mb-6">Attractions Map</h2>
+            <div id="map" class="h-[400px] w-full rounded-3xl border border-deepblue-700 shadow-2xl z-10 relative"></div>
+        </section>
+
+        <section class="flex flex-col gap-6 pb-20 animate-fade-in-down" style="animation-delay: 0.3s;">
+            <h2 class="text-3xl font-bold text-white mb-2">Top Sights & Activities</h2>
+            
+            <!-- 1. Eiffel Tower -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/paris_1.jpg" alt="Eiffel Tower" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <a href="https://www.toureiffel.paris/en/rates-opening-times" target="_blank" rel="noopener noreferrer" title="Official ticket source" class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg hover:bg-deepblue-900">
+                        <i class="ph ph-ticket"></i> From €14.50
+                    </a>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Eiffel Tower</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Eiffel Tower was built for the Exposition Universelle of 1889 and became the most recognized structure of modern Paris. Designed by Gustave Eiffel&#x27;s company, it marked a new scale of iron construction in the city.</p>
+                </div>
+            </div>
+
+            <!-- 2. Louvre Museum -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/paris_2.jpg" alt="Louvre Museum" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <a href="https://www.louvre.fr/en/visit/hours-admission" target="_blank" rel="noopener noreferrer" title="Official ticket source" class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg hover:bg-deepblue-900">
+                        <i class="ph ph-ticket"></i> €22
+                    </a>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Louvre Museum</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Louvre grew from a royal fortress and palace into the national museum opened in 1793. Its collections and courtyards connect the history of French monarchy with the formation of a public museum in the republic.</p>
+                </div>
+            </div>
+
+            <!-- 3. Basilique du Sacré-Cœur de Montmartre -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/paris_3.jpg" alt="Basilique du Sacré-Cœur de Montmartre" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <a href="https://www.sacre-coeur-montmartre.com/english/" target="_blank" rel="noopener noreferrer" title="Official ticket source" class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg hover:bg-deepblue-900">
+                        <i class="ph ph-ticket"></i> Free (Dome: €8)
+                    </a>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Basilique du Sacré-Cœur de Montmartre</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Sacré-Cœur was built between 1875 and 1914 on Montmartre after the Franco-Prussian War and the Paris Commune. Its hilltop position and white stone exterior make it a major landmark over northern Paris.</p>
+                </div>
+            </div>
+
+            <!-- 4. Notre-Dame Cathedral of Paris -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/paris_4.jpg" alt="Notre-Dame Cathedral of Paris" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <a href="https://www.notredamedeparis.fr/en/" target="_blank" rel="noopener noreferrer" title="Official ticket source" class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg hover:bg-deepblue-900">
+                        <i class="ph ph-ticket"></i> Free
+                    </a>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Notre-Dame Cathedral of Paris</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Notre-Dame was begun in the 12th century and became one of the main Gothic cathedrals of Europe. Its place on the Île de la Cité tied it to the religious and political center of medieval Paris.</p>
+                </div>
+            </div>
+
+            <!-- 5. Sainte-Chapelle -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/paris_5.jpg" alt="Sainte-Chapelle" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <a href="https://www.sainte-chapelle.fr/en" target="_blank" rel="noopener noreferrer" title="Official ticket source" class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg hover:bg-deepblue-900">
+                        <i class="ph ph-ticket"></i> €13
+                    </a>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Sainte-Chapelle</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Sainte-Chapelle was built in the 1240s by Louis IX to house major relics within the royal palace complex. Its tall stained glass walls remain one of the clearest monuments of French Rayonnant Gothic.</p>
+                </div>
+            </div>
+
+            <!-- 6. Arc de Triomphe -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/paris_6.jpg" alt="Arc de Triomphe" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <a href="https://www.monuments-nationaux.fr/en/monuments/arc-de-triomphe" target="_blank" rel="noopener noreferrer" title="Official ticket source" class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg hover:bg-deepblue-900">
+                        <i class="ph ph-ticket"></i> €16
+                    </a>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Arc de Triomphe</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Arc de Triomphe was commissioned by Napoleon in 1806 and completed in 1836. It anchors the western end of the historic axis of Paris and later became a major site of national commemoration.</p>
+                </div>
+            </div>
+
+            <!-- 7. Musée de l&#x27;Orangerie -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/paris_7.jpg" alt="Musée de l&#x27;Orangerie" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <a href="https://www.musee-orangerie.fr/en" target="_blank" rel="noopener noreferrer" title="Official ticket source" class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg hover:bg-deepblue-900">
+                        <i class="ph ph-ticket"></i> €12.50
+                    </a>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Musée de l&#x27;Orangerie</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Orangerie on the Tuileries edge became a museum in the 20th century and is known for Monet&#x27;s Water Lilies installations. The building links former royal garden space with modern state museum culture.</p>
+                </div>
+            </div>
+
+            <!-- 8. Musée d&#x27;Orsay -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/paris_8.jpg" alt="Musée d&#x27;Orsay" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <a href="https://www.musee-orsay.fr/en" target="_blank" rel="noopener noreferrer" title="Official ticket source" class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg hover:bg-deepblue-900">
+                        <i class="ph ph-ticket"></i> €16
+                    </a>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Musée d&#x27;Orsay</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Musée d&#x27;Orsay occupies a former railway station built for the 1900 exposition and converted into a museum in 1986. Its collections focus on 19th-century art and the transition from academic painting to modern movements.</p>
+                </div>
+            </div>
+
+            <!-- 9. Place des Vosges -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/paris_9.jpg" alt="Place des Vosges" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <a href="https://www.paris.fr/lieux/place-des-vosges-5208" target="_blank" rel="noopener noreferrer" title="Official ticket source" class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg hover:bg-deepblue-900">
+                        <i class="ph ph-ticket"></i> Free
+                    </a>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Place des Vosges</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Place des Vosges was laid out in the early 17th century as one of the first planned royal squares in Paris. Its arcades and brick facades reflect the urban design of the Marais under Henri IV.</p>
+                </div>
+            </div>
+
+            <!-- 10. Maison de Victor Hugo -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/paris_10.jpg" alt="Maison de Victor Hugo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <a href="https://maisonsvictorhugo.paris.fr/en" target="_blank" rel="noopener noreferrer" title="Official ticket source" class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg hover:bg-deepblue-900">
+                        <i class="ph ph-ticket"></i> Free
+                    </a>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Maison de Victor Hugo</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Victor Hugo lived in the Place des Vosges apartment from 1832 to 1848, and the museum now presents his life and work within the rooms of the former residence. It connects literary history with the domestic interior of the 19th century.</p>
+                </div>
+            </div>
+
+            <!-- 11. Petit Palais -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/paris_11.jpg" alt="Petit Palais" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <a href="https://www.petitpalais.paris.fr/en" target="_blank" rel="noopener noreferrer" title="Official ticket source" class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg hover:bg-deepblue-900">
+                        <i class="ph ph-ticket"></i> Free
+                    </a>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Petit Palais</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Petit Palais was built for the 1900 Exposition Universelle and now houses the City of Paris Museum of Fine Arts. Its Beaux-Arts architecture and collections form part of the ceremonial avenue around the Champs-Élysées.</p>
+                </div>
+            </div>
+
+            <!-- 12. Esplanade des Invalides -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/paris_12.jpg" alt="Esplanade des Invalides" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <a href="https://www.paris.fr/lieux/esplanade-des-invalides-2475" target="_blank" rel="noopener noreferrer" title="Official ticket source" class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg hover:bg-deepblue-900">
+                        <i class="ph ph-ticket"></i> Free
+                    </a>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Esplanade des Invalides</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Esplanade des Invalides is the broad public lawn facing the Invalides complex and the Seine. It frames one of the major military and ceremonial landscapes of central Paris.</p>
+                </div>
+            </div>
+
+            <!-- 13. Hôtel des Invalides -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/paris_13.jpg" alt="Hôtel des Invalides" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <a href="https://www.musee-armee.fr/en/your-visit/admission-prices.html" target="_blank" rel="noopener noreferrer" title="Official ticket source" class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg hover:bg-deepblue-900">
+                        <i class="ph ph-ticket"></i> €17
+                    </a>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Hôtel des Invalides</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Invalides complex was founded by Louis XIV in the 17th century as a hospital and residence for soldiers. It now houses museums and Napoleon&#x27;s tomb under the Dôme des Invalides.</p>
+                </div>
+            </div>
+
+            <!-- 14. Panthéon -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/paris_14.jpg" alt="Panthéon" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <a href="https://www.monuments-nationaux.fr/en/monuments/pantheon" target="_blank" rel="noopener noreferrer" title="Official ticket source" class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg hover:bg-deepblue-900">
+                        <i class="ph ph-ticket"></i> €13
+                    </a>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Panthéon</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Panthéon was built in the 18th century as the church of Sainte-Geneviève and later turned into a secular mausoleum for notable French figures. It reflects the political shifts between monarchy, revolution, and republic.</p>
+                </div>
+            </div>
+
+            <!-- 15. Hôtel de la Marine -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/paris_15.jpg" alt="Hôtel de la Marine" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <a href="https://www.hotel-de-la-marine.paris/en" target="_blank" rel="noopener noreferrer" title="Official ticket source" class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg hover:bg-deepblue-900">
+                        <i class="ph ph-ticket"></i> €13
+                    </a>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Hôtel de la Marine</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Hôtel de la Marine was built in the 18th century on Place de la Concorde and long served the French naval administration. It is now a restored monument and museum presenting state interiors and collections.</p>
+                </div>
+            </div>
+
+            <!-- 16. Musée Rodin -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/paris_16.jpg" alt="Musée Rodin" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <a href="https://www.musee-rodin.fr/en" target="_blank" rel="noopener noreferrer" title="Official ticket source" class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg hover:bg-deepblue-900">
+                        <i class="ph ph-ticket"></i> €14
+                    </a>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Musée Rodin</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Rodin Museum opened in the former Hôtel Biron and garden, where Auguste Rodin lived and worked. The site links sculpture, architecture, and landscape in a former private mansion used as a museum since 1919.</p>
+                </div>
+            </div>
+
+            <!-- 17. Jardin du Luxembourg -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/paris_17.jpg" alt="Jardin du Luxembourg" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <a href="https://jardin.senat.fr/" target="_blank" rel="noopener noreferrer" title="Official ticket source" class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg hover:bg-deepblue-900">
+                        <i class="ph ph-ticket"></i> Free
+                    </a>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Jardin du Luxembourg</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Luxembourg Garden was laid out for Marie de&#x27; Medici in the 17th century and later became a major public park on the Left Bank. The garden joins formal planning, civic use, and the nearby senate complex.</p>
+                </div>
+            </div>
+
+            <!-- 18. Palais Garnier -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/paris_18.jpg" alt="Palais Garnier" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <a href="https://www.operadeparis.fr/en/visit/palais-garnier" target="_blank" rel="noopener noreferrer" title="Official ticket source" class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg hover:bg-deepblue-900">
+                        <i class="ph ph-ticket"></i> €15
+                    </a>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Palais Garnier</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Palais Garnier was completed in 1875 as the opera house of the Second Empire and remains one of the key buildings of Haussmann-era Paris. Its grand stair, auditorium, and facade shaped the modern theater district.</p>
+                </div>
+            </div>
+
+            <!-- 19. Galeries Lafayette Haussmann -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/paris_19.jpg" alt="Galeries Lafayette Haussmann" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <a href="https://haussmann.galerieslafayette.com/en/" target="_blank" rel="noopener noreferrer" title="Official ticket source" class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg hover:bg-deepblue-900">
+                        <i class="ph ph-ticket"></i> Free
+                    </a>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Galeries Lafayette Haussmann</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Galeries Lafayette Haussmann grew from a department store founded in the late 19th century and became known for its central dome and Paris retail culture. The building reflects the rise of modern commercial architecture in the capital.</p>
+                </div>
+            </div>
+
+            <!-- 20. Château de Versailles -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/paris_20.jpg" alt="Château de Versailles" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <a href="https://en.chateauversailles.fr/plan-your-visit/tickets-and-prices" target="_blank" rel="noopener noreferrer" title="Official ticket source" class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg hover:bg-deepblue-900">
+                        <i class="ph ph-ticket"></i> €21
+                    </a>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Château de Versailles</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Palace of Versailles was expanded under Louis XIV into the ceremonial center of the French monarchy. State rooms, galleries, and court spaces shaped the political culture of the ancien régime.</p>
+                </div>
+            </div>
+
+            <!-- 21. Gardens of Versailles -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/paris_21.jpg" alt="Gardens of Versailles" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <a href="https://en.chateauversailles.fr/plan-your-visit/tickets-and-prices" target="_blank" rel="noopener noreferrer" title="Official ticket source" class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg hover:bg-deepblue-900">
+                        <i class="ph ph-ticket"></i> From €11
+                    </a>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Gardens of Versailles</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Gardens of Versailles were laid out by André Le Nôtre to extend the palace into a vast planned landscape of water, sculpture, and axial design. They remain a major part of the Versailles estate and court setting.</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
+        <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const map = L.map('map').setView([48.856600, 2.352200], 14);
+            L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                attribution: '&copy; Google Maps',
+                maxZoom: 20
+            }).addTo(map);
+            const locations = [{"name": "Eiffel Tower", "lat": 48.8584, "lng": 2.2945}, {"name": "Louvre Museum", "lat": 48.8606, "lng": 2.3376}, {"name": "Basilique du Sacré-Cœur de Montmartre", "lat": 48.8867, "lng": 2.3431}, {"name": "Notre-Dame Cathedral of Paris", "lat": 48.853, "lng": 2.3499}, {"name": "Sainte-Chapelle", "lat": 48.8554, "lng": 2.345}, {"name": "Arc de Triomphe", "lat": 48.8738, "lng": 2.295}, {"name": "Musée de l'Orangerie", "lat": 48.8638, "lng": 2.3224}, {"name": "Musée d'Orsay", "lat": 48.86, "lng": 2.3266}, {"name": "Place des Vosges", "lat": 48.8554, "lng": 2.365}, {"name": "Maison de Victor Hugo", "lat": 48.8555, "lng": 2.365}, {"name": "Petit Palais", "lat": 48.866, "lng": 2.3136}, {"name": "Esplanade des Invalides", "lat": 48.8582, "lng": 2.3127}, {"name": "Hôtel des Invalides", "lat": 48.8566, "lng": 2.3126}, {"name": "Panthéon", "lat": 48.8462, "lng": 2.346}, {"name": "Hôtel de la Marine", "lat": 48.8671, "lng": 2.3211}, {"name": "Musée Rodin", "lat": 48.8556, "lng": 2.3155}, {"name": "Jardin du Luxembourg", "lat": 48.8462, "lng": 2.3372}, {"name": "Palais Garnier", "lat": 48.8719, "lng": 2.3316}, {"name": "Galeries Lafayette Haussmann", "lat": 48.872, "lng": 2.3324}, {"name": "Château de Versailles", "lat": 48.8049, "lng": 2.1204}, {"name": "Gardens of Versailles", "lat": 48.8057, "lng": 2.1162}];
+            const customIcon = L.icon({
+                iconUrl: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32],
+            });
+            locations.forEach(loc => {
+                L.marker([loc.lat, loc.lng], {icon: customIcon}).addTo(map)
+                    .bindPopup(`<strong class="font-sans text-base text-gray-900">${loc.name}</strong>`);
+            });
+            const group = new L.featureGroup(locations.map(loc => L.marker([loc.lat, loc.lng])));
+            map.fitBounds(group.getBounds(), { padding: [50, 50] });
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                } else {
+                    scrollTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                }
+            });
+            scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        });
+    </script>
+
+    <button id="scrollTopBtn" class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-12 h-12 bg-neon-cyan text-deepblue-950 rounded-full shadow-[0_0_20px_rgba(0,240,255,0.4)] opacity-0 pointer-events-none transition-all duration-300 translate-y-4 hover:bg-white hover:scale-110" aria-label="Scroll to top">
+        <i class="ph ph-arrow-up text-xl font-bold"></i>
+    </button>
+</body>
+</html>

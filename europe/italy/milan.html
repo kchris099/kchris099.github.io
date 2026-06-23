@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Milan Guide | Global Explorer Guides</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Outfit', 'sans-serif'] },
+                    colors: {
+                        deepblue: { 950: '#060B19', 900: '#0B132B', 800: '#15234B', 700: '#1E336B' },
+                        neon: { cyan: '#00F0FF', blue: '#0070FF', purple: '#8A2BE2', yellow: '#FFD700' }
+                    },
+                    animation: { 'fade-in-down': 'fadeInDown 0.5s ease-out', 'fade-in': 'fadeIn 0.3s ease-out' },
+                    keyframes: {
+                        fadeInDown: { '0%': { opacity: '0', transform: 'translateY(-20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #060B19; }
+        ::-webkit-scrollbar-thumb { background: #1E336B; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0070FF; }
+        .leaflet-popup-content-wrapper { background-color: #fff; color: #333; border-radius: 8px; box-shadow: 0 3px 14px rgba(0,0,0,0.4); }
+        .leaflet-popup-tip { background-color: #fff; }
+    </style>
+</head>
+<body class="bg-deepblue-950 text-slate-200 font-sans min-h-screen relative overflow-x-hidden">
+    <div class="absolute top-0 left-0 w-full h-[450px] md:h-[500px] z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-[url('images/milan_hero.jpg')] bg-cover bg-center bg-no-repeat opacity-40 mix-blend-luminosity"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-deepblue-950/10 via-deepblue-950/60 to-deepblue-950"></div>
+    </div>
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon-purple/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neon-cyan/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <main class="container mx-auto px-4 py-8 md:py-16 relative z-20 max-w-5xl">
+        <nav class="mb-12 animate-fade-in-down flex flex-wrap items-center gap-4">
+            <a href="../../index.html" class="flex items-center justify-center w-11 h-11 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0" title="Back to Home">
+                <i class="ph ph-house text-xl group-hover:scale-110 transition-transform"></i>
+            </a>
+            <a href="italy.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0">
+                <i class="ph ph-arrow-left text-lg group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-medium text-sm">Back to Italy</span>
+            </a>
+            <div class="ml-auto flex items-center gap-3 bg-deepblue-900/40 border border-deepblue-700/50 rounded-full px-4 py-2 backdrop-blur-sm shadow-inner shrink-0">
+                <img src="https://flagcdn.com/w40/it.png" alt="Italy flag" class="w-6 h-auto rounded-[2px] shadow-sm">
+                <div class="flex items-center gap-2 text-sm font-medium tracking-wide">
+                    <span class="text-slate-200 uppercase text-xs tracking-wider font-bold">Italy</span>
+                    <span class="text-deepblue-500 text-xs">&rsaquo;</span>
+                    <span class="text-neon-cyan text-xs">Northern Italy</span>
+                </div>
+            </div>
+        </nav>
+
+        <header class="mb-16 animate-fade-in-down animation-delay-100 text-center">
+            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-deepblue-900 border border-deepblue-700 mb-6 shadow-[0_0_30px_rgba(0,240,255,0.15)]">
+                <i class="ph ph-map-pin text-4xl text-neon-cyan"></i>
+            </div>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple pb-4">
+                Explore Milan
+            </h1>
+            <div class="bg-deepblue-900/40 border border-deepblue-800 rounded-3xl p-8 md:p-10 text-left backdrop-blur-sm mt-10">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                    <i class="ph ph-scroll text-neon-cyan"></i> A Brief History
+                </h2>
+                <p class="text-lg text-slate-400 font-light leading-relaxed">Milan developed from a Roman settlement into a medieval commune, a Visconti and Sforza court, and later one of Italy&#x27;s main industrial and financial centers. Its cathedral district, rail terminals, basilicas, and civic buildings show layers of political power, commerce, and urban expansion.</p>
+            </div>
+        </header>
+
+        <section class="mb-16 animate-fade-in-down" style="animation-delay: 0.2s;">
+            <h2 class="text-3xl font-bold text-white mb-6">Attractions Map</h2>
+            <div id="map" class="h-[400px] w-full rounded-3xl border border-deepblue-700 shadow-2xl z-10 relative"></div>
+        </section>
+
+        <section class="flex flex-col gap-6 pb-20 animate-fade-in-down" style="animation-delay: 0.3s;">
+            <h2 class="text-3xl font-bold text-white mb-2">Top Sights & Activities</h2>
+            
+            <!-- 1. Duomo di Milano -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/milan_1.jpg" alt="Duomo di Milano" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <a href="https://ticket.duomomilano.it/en/" target="_blank" rel="noopener noreferrer" title="Official ticket source" class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg hover:bg-deepblue-900">
+                        <i class="ph ph-ticket"></i> From €10
+                    </a>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Duomo di Milano</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Milan Cathedral was begun in 1386 and continued across many centuries, producing one of Europe&#x27;s largest Gothic churches. The cathedral became the main religious monument of the city and a symbol of Milan&#x27;s civic and episcopal status.</p>
+                </div>
+            </div>
+
+            <!-- 2. Sforzesco Castle -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/milan_2.jpg" alt="Sforzesco Castle" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <a href="https://www.milanocastello.it/en" target="_blank" rel="noopener noreferrer" title="Official ticket source" class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg hover:bg-deepblue-900">
+                        <i class="ph ph-ticket"></i> €5
+                    </a>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Sforzesco Castle</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Sforza Castle was rebuilt in the 15th century by the Sforza dynasty on the site of an earlier Visconti fortress. It later served military functions and now houses civic museums that trace the courtly and urban history of Milan.</p>
+                </div>
+            </div>
+
+            <!-- 3. Arco della Pace -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/milan_3.jpg" alt="Arco della Pace" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <a href="https://www.yesmilano.it/en/see-and-do/venues/arco-della-pace" target="_blank" rel="noopener noreferrer" title="Official ticket source" class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg hover:bg-deepblue-900">
+                        <i class="ph ph-ticket"></i> Free
+                    </a>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Arco della Pace</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Arco della Pace was begun in the Napoleonic period and completed under Austrian rule in the 19th century. It stands at the end of Corso Sempione as a ceremonial urban gate tied to modern Milanese planning.</p>
+                </div>
+            </div>
+
+            <!-- 4. Basilica di San Lorenzo, Milano -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/milan_4.jpg" alt="Basilica di San Lorenzo, Milano" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <a href="https://www.basilicasanlorenzo.com/" target="_blank" rel="noopener noreferrer" title="Official ticket source" class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg hover:bg-deepblue-900">
+                        <i class="ph ph-ticket"></i> Free
+                    </a>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Basilica di San Lorenzo, Milano</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">San Lorenzo is an early Christian church rebuilt and altered across later centuries near one of the oldest monumental zones of Milan. Its long history and nearby Roman remains connect it with the late antique city.</p>
+                </div>
+            </div>
+
+            <!-- 5. Colonne di San Lorenzo -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/milan_5.jpg" alt="Colonne di San Lorenzo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <a href="https://www.yesmilano.it/en/see-and-do/venues/columns-san-lorenzo" target="_blank" rel="noopener noreferrer" title="Official ticket source" class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg hover:bg-deepblue-900">
+                        <i class="ph ph-ticket"></i> Free
+                    </a>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Colonne di San Lorenzo</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Columns of San Lorenzo are a Roman colonnade relocated to the basilica area in late antiquity. They remain one of the clearest surviving groups of Roman monumental stonework in Milan&#x27;s center.</p>
+                </div>
+            </div>
+
+            <!-- 6. Basilica of Sant&#x27;Ambrogio -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/milan_6.jpg" alt="Basilica of Sant&#x27;Ambrogio" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <a href="https://www.basilicasantambrogio.it/en/" target="_blank" rel="noopener noreferrer" title="Official ticket source" class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg hover:bg-deepblue-900">
+                        <i class="ph ph-ticket"></i> Free
+                    </a>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Basilica of Sant&#x27;Ambrogio</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Basilica of Sant&#x27;Ambrogio was founded in the 4th century by Ambrose, bishop of Milan, and rebuilt in Romanesque form during the Middle Ages. It is one of the main churches associated with the city&#x27;s religious history.</p>
+                </div>
+            </div>
+
+            <!-- 7. Galleria Vittorio Emanuele II -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/milan_7.jpg" alt="Galleria Vittorio Emanuele II" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <a href="https://www.yesmilano.it/en/see-and-do/venues/galleria-vittorio-emanuele-ii" target="_blank" rel="noopener noreferrer" title="Official ticket source" class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg hover:bg-deepblue-900">
+                        <i class="ph ph-ticket"></i> Free
+                    </a>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Galleria Vittorio Emanuele II</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Galleria was built between 1865 and 1877 as a glazed commercial arcade joining Piazza del Duomo with La Scala. It became one of the main symbols of unified Italy&#x27;s urban modernization in Milan.</p>
+                </div>
+            </div>
+
+            <!-- 8. Milan Central Station -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/milan_8.jpg" alt="Milan Central Station" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <a href="https://www.milanocentrale.it/en/" target="_blank" rel="noopener noreferrer" title="Official ticket source" class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg hover:bg-deepblue-900">
+                        <i class="ph ph-ticket"></i> Free
+                    </a>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Milan Central Station</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Milano Centrale opened in 1931 as the city&#x27;s main long-distance railway station. Its monumental design and scale reflect the expansion of modern transport networks and the political ambitions of the early 20th century.</p>
+                </div>
+            </div>
+
+            <!-- 9. Porta Garibaldi -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/milan_9.jpg" alt="Porta Garibaldi" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <a href="https://www.yesmilano.it/en" target="_blank" rel="noopener noreferrer" title="Official ticket source" class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg hover:bg-deepblue-900">
+                        <i class="ph ph-ticket"></i> Free
+                    </a>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Porta Garibaldi</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Porta Garibaldi area connects a surviving 19th-century city gate with one of Milan&#x27;s main modern rail and business districts. It shows the shift from historic fortification lines to contemporary transport infrastructure.</p>
+                </div>
+            </div>
+
+            <!-- 10. Pinacoteca di Brera -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/milan_10.jpg" alt="Pinacoteca di Brera" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <a href="https://pinacotecabrera.org/en/visit/" target="_blank" rel="noopener noreferrer" title="Official ticket source" class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg hover:bg-deepblue-900">
+                        <i class="ph ph-ticket"></i> €15
+                    </a>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Pinacoteca di Brera</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Pinacoteca di Brera grew from Napoleonic-era collections and remains one of Italy&#x27;s main public art museums. The former Jesuit and academy complex presents painting closely tied to the history of Lombardy and the Italian states.</p>
+                </div>
+            </div>
+
+            <!-- 11. Basilica di Santa Maria delle Grazie -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/milan_11.jpg" alt="Basilica di Santa Maria delle Grazie" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <a href="https://legraziemilano.it/en/" target="_blank" rel="noopener noreferrer" title="Official ticket source" class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg hover:bg-deepblue-900">
+                        <i class="ph ph-ticket"></i> Free
+                    </a>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Basilica di Santa Maria delle Grazie</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Santa Maria delle Grazie was built for the Dominicans in the 15th century and later became famous for Leonardo da Vinci&#x27;s Last Supper in the adjoining refectory. The church reflects Renaissance patronage under the Sforza court.</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
+        <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const map = L.map('map').setView([45.464200, 9.190000], 14);
+            L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                attribution: '&copy; Google Maps',
+                maxZoom: 20
+            }).addTo(map);
+            const locations = [{"name": "Duomo di Milano", "lat": 45.4642, "lng": 9.1916}, {"name": "Sforzesco Castle", "lat": 45.4705, "lng": 9.1794}, {"name": "Arco della Pace", "lat": 45.4778, "lng": 9.1738}, {"name": "Basilica di San Lorenzo, Milano", "lat": 45.4596, "lng": 9.1817}, {"name": "Colonne di San Lorenzo", "lat": 45.4598, "lng": 9.1811}, {"name": "Basilica of Sant'Ambrogio", "lat": 45.4627, "lng": 9.1751}, {"name": "Galleria Vittorio Emanuele II", "lat": 45.4659, "lng": 9.19}, {"name": "Milan Central Station", "lat": 45.4855, "lng": 9.2046}, {"name": "Porta Garibaldi", "lat": 45.4831, "lng": 9.1877}, {"name": "Pinacoteca di Brera", "lat": 45.4719, "lng": 9.1881}, {"name": "Basilica di Santa Maria delle Grazie", "lat": 45.4659, "lng": 9.17}];
+            const customIcon = L.icon({
+                iconUrl: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32],
+            });
+            locations.forEach(loc => {
+                L.marker([loc.lat, loc.lng], {icon: customIcon}).addTo(map)
+                    .bindPopup(`<strong class="font-sans text-base text-gray-900">${loc.name}</strong>`);
+            });
+            const group = new L.featureGroup(locations.map(loc => L.marker([loc.lat, loc.lng])));
+            map.fitBounds(group.getBounds(), { padding: [50, 50] });
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                } else {
+                    scrollTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                }
+            });
+            scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        });
+    </script>
+
+    <button id="scrollTopBtn" class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-12 h-12 bg-neon-cyan text-deepblue-950 rounded-full shadow-[0_0_20px_rgba(0,240,255,0.4)] opacity-0 pointer-events-none transition-all duration-300 translate-y-4 hover:bg-white hover:scale-110" aria-label="Scroll to top">
+        <i class="ph ph-arrow-up text-xl font-bold"></i>
+    </button>
+</body>
+</html>
