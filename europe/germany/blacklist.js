@@ -20,10 +20,8 @@ Quedlinburg
 Weimar
 
 # Eastern Germany
-Berlin
 Leipzig
 Moritzburg
-Potsdam
 
 # Northern Germany
 Bremen
@@ -44,15 +42,12 @@ Baden-Baden
 Bamberg
 Black Forest
     Dinkelsbühl
-Esslingen
     Freiburg
 Füssen
 Garmisch-Partenkirchen
-Karlsruhe
 Lake Constance
 Lindau
 Ludwigsburg
-Mainz
 Nördlingen
 Rothenburg ob der Tauber
 Stuttgart
