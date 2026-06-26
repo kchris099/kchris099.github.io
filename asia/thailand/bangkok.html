@@ -4,29 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bangkok Guide | Global Explorer Guides</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Outfit', 'sans-serif'] },
-                    colors: {
-                        deepblue: { 950: '#060B19', 900: '#0B132B', 800: '#15234B', 700: '#1E336B' },
-                        neon: { cyan: '#00F0FF', blue: '#0070FF', purple: '#8A2BE2', yellow: '#FFD700' }
-                    },
-                    animation: { 'fade-in-down': 'fadeInDown 0.5s ease-out', 'fade-in': 'fadeIn 0.3s ease-out' },
-                    keyframes: {
-                        fadeInDown: { '0%': { opacity: '0', transform: 'translateY(-20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
-                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } }
-                    }
-                }
-            }
-        }
-    </script>
+    <link rel="stylesheet" href="../../assets/tailwind.css">
+    <link rel="stylesheet" href="../../assets/outfit.css">
+    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
+    <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
+    <script src="../../assets/leaflet/leaflet.js"></script>
     <style>
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #060B19; }
@@ -54,7 +36,7 @@
                 <span class="font-medium text-sm">Back to Thailand</span>
             </a>
             <div class="ml-auto flex items-center gap-3 bg-deepblue-900/40 border border-deepblue-700/50 rounded-full px-4 py-2 backdrop-blur-sm shadow-inner shrink-0">
-                <img src="https://flagcdn.com/w40/th.png" alt="Thailand flag" class="w-6 h-auto rounded-[2px] shadow-sm">
+                <img src="../../assets/flags/w40/th.png" alt="Thailand flag" class="w-6 h-auto rounded-[2px] shadow-sm">
                 <div class="flex items-center gap-2 text-sm font-medium tracking-wide">
                     <span class="text-slate-200 uppercase text-xs tracking-wider font-bold">Thailand</span>
                     <span class="text-deepblue-500 text-xs">&rsaquo;</span>
@@ -214,17 +196,78 @@
             }).addTo(map);
             const locations = [{"name": "The Grand Palace", "lat": 13.75, "lng": 100.4913}, {"name": "Wat Arun", "lat": 13.7437, "lng": 100.4889}, {"name": "Wat Suthat", "lat": 13.7527, "lng": 100.5011}, {"name": "National Museum Bangkok", "lat": 13.7576, "lng": 100.4912}, {"name": "The Shrine of Erawan", "lat": 13.744, "lng": 100.5402}, {"name": "ICONSIAM Thai Street Food", "lat": 13.7262, "lng": 100.5102}, {"name": "centralwOrld", "lat": 13.7466, "lng": 100.5393}, {"name": "Terminal 21 Asok", "lat": 13.737, "lng": 100.5604}];
             const customIcon = L.icon({
-                iconUrl: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
+                iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
                 iconSize: [32, 32],
                 iconAnchor: [16, 32],
                 popupAnchor: [0, -32],
             });
+            const destinationCenter = [13.746700, 100.532900];
+            const mapContext = {"largeRegion": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.0205, "maxCenterLng": 0.044};
+            const markers = [];
             locations.forEach(loc => {
-                L.marker([loc.lat, loc.lng], {icon: customIcon}).addTo(map)
-                    .bindPopup(`<strong class="font-sans text-base text-gray-900">${loc.name}</strong>`);
+                markers.push(
+                    L.marker([loc.lat, loc.lng], {icon: customIcon}).addTo(map)
+                        .bindPopup(`<strong class="font-sans text-base text-gray-900">${loc.name}</strong>`)
+                );
             });
-            const group = new L.featureGroup(locations.map(loc => L.marker([loc.lat, loc.lng])));
-            map.fitBounds(group.getBounds(), { padding: [50, 50] });
+            const group = new L.featureGroup(markers);
+            let bounds = group.getBounds();
+            const ne = bounds.getNorthEast();
+            const sw = bounds.getSouthWest();
+            const latSpan = ne.lat - sw.lat;
+            const lngSpan = ne.lng - sw.lng;
+            const maxSpan = Math.max(latSpan, lngSpan);
+            const isDegenerate = latSpan < 1e-9 && lngSpan < 1e-9;
+            const markerCenterLat = (ne.lat + sw.lat) / 2;
+            const markerCenterLng = (ne.lng + sw.lng) / 2;
+            if (isDegenerate) {
+                const frameSpan = mapContext.compactRegion ? 0.026 : 0.045;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - frameSpan / 2, destinationCenter[1] - frameSpan / 2],
+                    [destinationCenter[0] + frameSpan / 2, destinationCenter[1] + frameSpan / 2]
+                );
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                const latReach = Math.max(mapContext.maxCenterLat, latSpan / 2) * 1.45;
+                const lngReach = Math.max(mapContext.maxCenterLng, lngSpan / 2) * 1.45;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - latReach, destinationCenter[1] - lngReach],
+                    [destinationCenter[0] + latReach, destinationCenter[1] + lngReach]
+                );
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                const halfLat = latSpan / 2 * 1.1;
+                const halfLng = lngSpan / 2 * 1.1;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (maxSpan < 0.02 && locations.length <= 2) {
+                const frameSpan = Math.max(maxSpan * 3, 0.035);
+                bounds = L.latLngBounds(
+                    [markerCenterLat - frameSpan / 2, markerCenterLng - frameSpan / 2],
+                    [markerCenterLat + frameSpan / 2, markerCenterLng + frameSpan / 2]
+                );
+            }
+            const fitOptions = {};
+            if (mapContext.largeRegion && locations.length >= 3) {
+                fitOptions.padding = [40, 40];
+                fitOptions.maxZoom = 8;
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                fitOptions.padding = [24, 24];
+            } else if (mapContext.denseUrban) {
+                fitOptions.padding = [18, 18];
+            } else if (mapContext.spreadUrban) {
+                fitOptions.padding = [20, 20];
+            } else if (locations.length >= 3 && maxSpan >= 0.02) {
+                fitOptions.padding = maxSpan >= 0.08 ? [20, 20] : [30, 30];
+            } else if (isDegenerate || locations.length <= 2) {
+                fitOptions.padding = mapContext.compactRegion ? [16, 16] : [36, 36];
+                if (isDegenerate || maxSpan < 0.015) {
+                    fitOptions.maxZoom = mapContext.compactRegion ? 15 : 14;
+                }
+            } else {
+                fitOptions.padding = [50, 50];
+            }
+            map.fitBounds(bounds, fitOptions);
             const scrollTopBtn = document.getElementById('scrollTopBtn');
             window.addEventListener('scroll', () => {
                 if (window.scrollY > 300) {
