@@ -1,18 +1,174 @@
 (function () {
+    const DEV_PORT = 8765;
+    const SYNC_CHANNEL_NAME = "tg-country-activation";
+
+    let mapInstance = null;
+    let apiBase = null;
+    let syncChannel = null;
+
     const readTG = () => window.TG || {};
+
+    const normalizeCode = (code) => String(code || "").toUpperCase();
 
     const findGuideByCountryName = (countryName) => {
         const guides = Object.values(readTG().allCountryGuides || {});
         return guides.find((guide) => guide.name === countryName) || null;
     };
 
+    const apiCandidates = () => {
+        const bases = [];
+        if (location.origin && location.origin !== "null") {
+            bases.push(`${location.origin}/__dev__/api/countries`);
+        }
+        bases.push(`http://127.0.0.1:${DEV_PORT}/__dev__/api/countries`);
+        bases.push(`http://localhost:${DEV_PORT}/__dev__/api/countries`);
+        return bases;
+    };
+
+    const probeApi = async () => {
+        for (const base of apiCandidates()) {
+            try {
+                const response = await fetch(`${base}/TH`, { cache: "no-store", mode: "cors" });
+                if (response.ok) {
+                    apiBase = base;
+                    return true;
+                }
+            } catch (_error) {
+                // Try the next candidate.
+            }
+        }
+        return false;
+    };
+
+    const writeActivation = async (iso2, active) => {
+        if (!apiBase) {
+            const hasApi = await probeApi();
+            if (!hasApi) {
+                throw new Error("no api");
+            }
+        }
+        const response = await fetch(`${apiBase}/${normalizeCode(iso2)}`, {
+            method: "POST",
+            mode: "cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ active }),
+        });
+        if (!response.ok) {
+            let message = `write failed (${response.status})`;
+            try {
+                const payload = await response.json();
+                if (payload && typeof payload.error === "string" && payload.error) {
+                    message = payload.error;
+                }
+            } catch (_error) {
+                // Ignore malformed error bodies.
+            }
+            throw new Error(message);
+        }
+        const payload = await response.json();
+        return Boolean(payload.active);
+    };
+
+    const broadcastActivation = (iso2, active) => {
+        if (!syncChannel) {
+            return;
+        }
+        syncChannel.postMessage({ iso2: normalizeCode(iso2), active });
+    };
+
+    const MAP_MARKER_STYLE = {
+        active: {
+            initial: { fill: "#00F0FF", stroke: "#060B19", strokeWidth: 1.5, r: 4 },
+            hover: { fill: "#0070FF", stroke: "#060B19", strokeWidth: 1.5, r: 6 },
+        },
+        inactive: {
+            initial: { fill: "#15234B", stroke: "#475569", strokeWidth: 1.5, r: 4 },
+            hover: { fill: "#1E336B", stroke: "#64748b", strokeWidth: 1.5, r: 5 },
+        },
+    };
+
+    let mapMarkerEntries = [];
+    let mapMarkerCount = 0;
+
     window.TGActivation = {
+        registerMap(map, markerEntries) {
+            mapInstance = map;
+            mapMarkerEntries = markerEntries || this.buildMapMarkerEntries();
+            mapMarkerCount = mapMarkerEntries.length;
+        },
+
+        getMapMarkerEntry(index) {
+            return mapMarkerEntries[index] || null;
+        },
+
+        resolveRegionName(countryName, travelData) {
+            const regions = travelData || readTG().travelData || {};
+            for (const [continent, countries] of Object.entries(regions)) {
+                if (countries.includes(countryName)) {
+                    return continent;
+                }
+            }
+            return "Unknown Region";
+        },
+
+        buildMapMarkerEntries() {
+            const tg = readTG();
+            const markerMap = tg.mapCountryMarkers || {};
+            const allGuides = tg.allCountryGuides || {};
+            const available = tg.availableGuides || {};
+            return Object.entries(markerMap)
+                .filter(([code]) => allGuides[code])
+                .sort(([left], [right]) => left.localeCompare(right))
+                .map(([code, marker]) => ({
+                    code,
+                    name: marker.name,
+                    coords: marker.coords,
+                    active: Boolean(available[code]),
+                }));
+        },
+
+        buildMapMarkerPayloads(entries) {
+            return (entries || mapMarkerEntries).map(({ name, coords, active }) => ({
+                name,
+                coords,
+                style: active ? MAP_MARKER_STYLE.active : MAP_MARKER_STYLE.inactive,
+            }));
+        },
+
+        getMapMarkerDefaultStyle() {
+            return MAP_MARKER_STYLE.active;
+        },
+
+        getIso2ForCountry(countryName, countryCodes) {
+            const allGuides = readTG().allCountryGuides || {};
+            for (const [code, guide] of Object.entries(allGuides)) {
+                if (guide.name === countryName) {
+                    return code;
+                }
+            }
+            const flagCode = (countryCodes || {})[countryName];
+            return flagCode ? normalizeCode(flagCode) : "XX";
+        },
+
+        getCountryStatus(code) {
+            const iso2 = normalizeCode(code);
+            const allGuides = readTG().allCountryGuides || {};
+            if (!allGuides[iso2]) {
+                return "unavailable";
+            }
+            return (readTG().availableGuides || {})[iso2] ? "active" : "inactive";
+        },
+
         isCountryVisuallyActive(countryName) {
-            return Object.values(readTG().availableGuides || {}).some((guide) => guide.name === countryName);
+            const code = (readTG().countryCodes || {})[countryName];
+            if (!code) {
+                return false;
+            }
+            return this.getCountryStatus(code) === "active";
         },
 
         isCodeVisuallyActive(code) {
-            return Boolean((readTG().availableGuides || {})[code]);
+            return this.getCountryStatus(code) === "active";
         },
 
         getCountryPageUrl(countryName) {
@@ -21,7 +177,26 @@
         },
 
         getGuideByCode(code) {
-            return (readTG().allCountryGuides || {})[code] || null;
+            return (readTG().allCountryGuides || {})[normalizeCode(code)] || null;
+        },
+
+        setCountryActiveInMemory(iso2, active) {
+            const code = normalizeCode(iso2);
+            const tg = readTG();
+            const allGuides = tg.allCountryGuides || {};
+            const guide = allGuides[code];
+            if (!guide) {
+                return false;
+            }
+            if (!tg.availableGuides) {
+                tg.availableGuides = {};
+            }
+            if (active) {
+                tg.availableGuides[code] = guide;
+            } else {
+                delete tg.availableGuides[code];
+            }
+            return true;
         },
 
         updateLegendCounts() {
@@ -42,10 +217,64 @@
             }
         },
 
+        renderStatusDot(iso2, countryName) {
+            const status = this.getCountryStatus(iso2);
+            const toggleable = status !== "unavailable";
+            const labels = {
+                active: `${countryName} is active on the homepage (click to hide)`,
+                inactive: `${countryName} is hidden on the homepage (click to show)`,
+                unavailable: `${countryName} has no built guide yet`,
+            };
+            const disabled = toggleable ? "" : " disabled";
+            const toggleClass = toggleable ? " country-status-dot--toggleable" : "";
+            return `
+                <button
+                    type="button"
+                    class="country-status-dot country-status-dot--${status}${toggleClass}"
+                    data-iso2="${normalizeCode(iso2)}"
+                    data-country-name="${countryName}"
+                    aria-label="${labels[status]}"
+                    title="${labels[status]}"
+                    ${disabled}
+                ></button>
+            `;
+        },
+
+        getCountrySortRank(country, countryCodes) {
+            const status = this.getCountryStatus(this.getIso2ForCountry(country, countryCodes));
+            if (status === "active") {
+                return 0;
+            }
+            if (status === "inactive") {
+                return 1;
+            }
+            return 2;
+        },
+
+        countCountriesWithGuides(countries, countryCodes) {
+            return countries.filter(
+                (country) =>
+                    this.getCountryStatus(this.getIso2ForCountry(country, countryCodes)) !== "unavailable",
+            ).length;
+        },
+
+        sortCountriesForDisplay(countries, countryCodes) {
+            return [...countries].sort((a, b) => {
+                const rankA = this.getCountrySortRank(a, countryCodes);
+                const rankB = this.getCountrySortRank(b, countryCodes);
+                if (rankA !== rankB) {
+                    return rankA - rankB;
+                }
+                return a.localeCompare(b);
+            });
+        },
+
         renderCountryListItem(country, continent, countryCodes) {
             const active = this.isCountryVisuallyActive(country);
             const url = this.getCountryPageUrl(country);
-            const code = (countryCodes || {})[country] || "xx";
+            const flagCode = (countryCodes || {})[country] || "xx";
+            const iso2 = this.getIso2ForCountry(country, countryCodes);
+            const statusDot = this.renderStatusDot(iso2, country);
 
             if (url) {
                 const tone = active
@@ -53,17 +282,23 @@
                     : "text-slate-500 hover:text-slate-300";
                 const imageClass = active ? "shadow-sm" : "opacity-50";
                 return `
-                    <a href="${url}" class="flex items-center gap-3 ${tone} transition-colors py-2 group/link text-sm md:text-base">
-                        <img src="assets/flags/w20/${code}.png" alt="${country} flag" class="w-5 rounded-[2px] ${imageClass}">
-                        <span class="font-medium">${country}</span>
-                    </a>
+                    <div class="country-status-row" data-country-name="${country}" data-continent="${continent}">
+                        <a href="${url}" class="country-status-link ${tone} group/link">
+                            <img src="assets/flags/w20/${flagCode}.png" alt="${country} flag" class="w-5 rounded-[2px] ${imageClass}">
+                            <span class="font-medium truncate">${country}</span>
+                        </a>
+                        ${statusDot}
+                    </div>
                 `;
             }
 
             return `
-                <div class="flex items-center gap-3 text-slate-500 py-2 text-sm md:text-base cursor-not-allowed">
-                    <img src="assets/flags/w20/${code}.png" alt="${country} flag" class="w-5 rounded-[2px] opacity-50">
-                    <span class="font-medium">${country}</span>
+                <div class="country-status-row" data-country-name="${country}" data-continent="${continent}">
+                    <div class="country-status-label text-slate-500 cursor-not-allowed">
+                        <img src="assets/flags/w20/${flagCode}.png" alt="${country} flag" class="w-5 rounded-[2px] opacity-50">
+                        <span class="font-medium truncate">${country}</span>
+                    </div>
+                    ${statusDot}
                 </div>
             `;
         },
@@ -102,7 +337,7 @@
         },
 
         getTooltipHtml(officialName, regionName, code, countryCodes) {
-            const flagUrl = `assets/flags/w40/${code.toLowerCase()}.png`;
+            const flagUrl = `assets/flags/w40/${String(code).toLowerCase()}.png`;
             const hasGuide = Boolean(this.getGuideByCode(code));
             const active = this.isCodeVisuallyActive(code);
             const headerHtml = `
@@ -123,5 +358,151 @@
             }
             return `${headerHtml}<div style="font-size:13px;color:#64748b;margin-top:4px;display:flex;align-items:center;gap:4px;"><i class="ph ph-clock"></i> Guides coming soon</div>`;
         },
+
+        refreshDropdownLists(countryCodes) {
+            const travelData = readTG().travelData || {};
+            document.querySelectorAll("ul[data-continent]").forEach((list) => {
+                const continent = list.dataset.continent;
+                const countries = travelData[continent];
+                if (!continent || !countries) {
+                    return;
+                }
+                const sorted = this.sortCountriesForDisplay(countries, countryCodes);
+                list.innerHTML = sorted
+                    .map(
+                        (country) =>
+                            `<li class="country-status-item">${this.renderCountryListItem(country, continent, countryCodes)}</li>`,
+                    )
+                    .join("");
+            });
+        },
+
+        refreshOpenSearch() {
+            const input = document.getElementById("search-input");
+            if (input && input.value.trim()) {
+                input.dispatchEvent(new Event("input", { bubbles: true }));
+            }
+        },
+
+        refreshMapMarkers() {
+            if (!mapInstance || typeof mapInstance.addMarkers !== "function") {
+                return;
+            }
+
+            const entries = this.buildMapMarkerEntries();
+            const payloads = this.buildMapMarkerPayloads(entries);
+
+            if (mapMarkerCount > 0 && typeof mapInstance.removeMarkers === "function") {
+                mapInstance.removeMarkers(
+                    Array.from({ length: mapMarkerCount }, (_, index) => index),
+                );
+            }
+
+            if (payloads.length) {
+                mapInstance.addMarkers(payloads);
+            }
+
+            mapMarkerEntries = entries;
+            mapMarkerCount = payloads.length;
+        },
+
+        refreshMap() {
+            if (!mapInstance) {
+                return;
+            }
+            const activeCodes = Object.keys(readTG().availableGuides || {});
+            if (typeof mapInstance.setSelectedRegions === "function") {
+                mapInstance.setSelectedRegions(activeCodes);
+            }
+            this.refreshMapMarkers();
+        },
+
+        applyActivationChange(iso2, active, countryCodes) {
+            this.setCountryActiveInMemory(iso2, active);
+            this.updateLegendCounts();
+            if (countryCodes) {
+                this.refreshDropdownLists(countryCodes);
+            }
+            this.refreshOpenSearch();
+            this.refreshMap();
+        },
+
+        async toggleCountry(iso2, countryCodes) {
+            const code = normalizeCode(iso2);
+            if (this.getCountryStatus(code) === "unavailable") {
+                return false;
+            }
+
+            const previousActive = this.getCountryStatus(code) === "active";
+            const nextActive = !previousActive;
+            this.applyActivationChange(code, nextActive, countryCodes);
+
+            try {
+                const confirmed = await writeActivation(code, nextActive);
+                if (confirmed !== nextActive) {
+                    this.applyActivationChange(code, confirmed, countryCodes);
+                }
+                broadcastActivation(code, confirmed);
+                return confirmed;
+            } catch (error) {
+                this.applyActivationChange(code, previousActive, countryCodes);
+                throw error;
+            }
+        },
+
+        bindActivationControls(root, countryCodes) {
+            // Capture phase: dropdown bodies call stopPropagation(), which would
+            // otherwise prevent this delegated handler from seeing the click.
+            const scope = root || document;
+            scope.addEventListener("click", async (event) => {
+                const button = event.target.closest(".country-status-dot--toggleable");
+                if (!button || button.disabled || button.classList.contains("country-status-dot--busy")) {
+                    return;
+                }
+                event.preventDefault();
+                event.stopPropagation();
+
+                button.classList.add("country-status-dot--busy");
+                try {
+                    await this.toggleCountry(button.dataset.iso2, countryCodes);
+                } catch (error) {
+                    button.classList.add("country-status-dot--error");
+                    window.setTimeout(() => button.classList.remove("country-status-dot--error"), 900);
+                    const message = error instanceof Error ? error.message : "toggle failed";
+                    if (message.includes("no api")) {
+                        button.title = "Start serve-dev.bat to toggle countries locally.";
+                    } else {
+                        button.title = message;
+                    }
+                    console.warn(`Country toggle failed for ${button.dataset.iso2}:`, message);
+                } finally {
+                    button.classList.remove("country-status-dot--busy");
+                }
+            }, true);
+        },
+
+        initSyncListener(countryCodes) {
+            if (typeof BroadcastChannel === "undefined") {
+                return;
+            }
+            if (!syncChannel) {
+                syncChannel = new BroadcastChannel(SYNC_CHANNEL_NAME);
+            }
+            if (this._syncListenerBound) {
+                return;
+            }
+            this._syncListenerBound = true;
+            syncChannel.addEventListener("message", (event) => {
+                const iso2 = normalizeCode(event.data?.iso2);
+                if (!iso2 || typeof event.data?.active !== "boolean") {
+                    return;
+                }
+                this.applyActivationChange(iso2, event.data.active, countryCodes);
+            });
+        },
     };
+
+    if (typeof BroadcastChannel !== "undefined") {
+        syncChannel = new BroadcastChannel(SYNC_CHANNEL_NAME);
+    }
 })();

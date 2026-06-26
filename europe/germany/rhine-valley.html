@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="../../assets/tailwind.css">
     <link rel="stylesheet" href="../../assets/outfit.css">
     <link rel="stylesheet" href="../../assets/phosphor-regular.css">
+    <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
+    <link rel="stylesheet" href="../../assets/homepage-activation.css">
+    <link rel="stylesheet" href="../../assets/destination-activation.css">
     <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
     <script src="../../assets/leaflet/leaflet.js"></script>
     <style>
@@ -46,9 +49,19 @@
         </nav>
 
         <header class="mb-16 animate-fade-in-down animation-delay-100 text-center">
-            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-deepblue-900 border border-deepblue-700 mb-6 shadow-[0_0_30px_rgba(0,240,255,0.15)]">
-                <i class="ph ph-map-pin text-4xl text-neon-cyan"></i>
-            </div>
+            <button
+                type="button"
+                id="destination-active-toggle"
+                class="country-active-toggle country-active-toggle--active country-active-toggle--readonly"
+                data-iso2="DE"
+                data-slug="rhine-valley"
+                data-active="true"
+                data-interactive="true"
+                aria-label="Toggle Rhine Valley visibility on Germany guide"
+                aria-pressed="true"
+            >
+                <i class="ph ph-map-pin text-4xl text-neon-cyan pointer-events-none" aria-hidden="true"></i>
+            </button>
             <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple pb-4">
                 Explore Rhine Valley
             </h1>
@@ -157,9 +170,7 @@
 
     <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
         <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
-    </footer>
-
-    <script>
+    </footer>    <script>
         document.addEventListener('DOMContentLoaded', () => {
             const map = L.map('map').setView([50.083609, 7.804319], 14);
             L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
@@ -220,8 +231,8 @@
                     [markerCenterLat - halfLat, markerCenterLng - halfLng],
                     [markerCenterLat + halfLat, markerCenterLng + halfLng]
                 );
-            } else if (maxSpan < 0.02 && locations.length <= 2) {
-                const frameSpan = Math.max(maxSpan * 3, 0.035);
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                const frameSpan = Math.max(maxSpan * 4, 0.006);
                 bounds = L.latLngBounds(
                     [markerCenterLat - frameSpan / 2, markerCenterLng - frameSpan / 2],
                     [markerCenterLat + frameSpan / 2, markerCenterLng + frameSpan / 2]
@@ -246,7 +257,10 @@
                 fitOptions.padding = [20, 20];
             } else if (locations.length >= 3 && maxSpan >= 0.02) {
                 fitOptions.padding = maxSpan >= 0.08 ? [20, 20] : [30, 30];
-            } else if (isDegenerate || locations.length <= 2) {
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                fitOptions.padding = [12, 12];
+                fitOptions.maxZoom = 16;
+            } else if (isDegenerate || locations.length === 1) {
                 fitOptions.padding = mapContext.compactRegion ? [16, 16] : [36, 36];
                 if (isDegenerate || maxSpan < 0.015) {
                     fitOptions.maxZoom = mapContext.compactRegion ? 15 : 14;

@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="../../assets/outfit.css">
     <link rel="stylesheet" href="../../assets/phosphor-regular.css">
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
+    <link rel="stylesheet" href="../../assets/homepage-activation.css">
+    <link rel="stylesheet" href="../../assets/destination-activation.css">
     <style>
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #060B19; }
@@ -62,12 +64,14 @@
     <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
         <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
     </footer>
-    
+    <script src="blacklist.js"></script>
+    <script src="../../assets/destination-activation.js"></script>
     <script>
         const polandData = {"Kraków": ["Kraków"], "Warsaw": ["Warsaw"], "Wrocław": ["Wrocław"]};
         const regionIcons = {};
         const destinationPaths = {"Kraków": "krakow", "Warsaw": "warsaw", "Wrocław": "wroclaw"};
         const hasRegions = false;
+        const countryIso2 = "PL";
 
         const normalizeText = (text) => {
             return text.toLowerCase()
@@ -75,159 +79,25 @@
                 .replace(/\u00e4/g, 'a').replace(/\u00f6/g, 'o').replace(/\u00fc/g, 'u').replace(/\u00df/g, 'ss');
         };
 
-        const blacklist = new Set();
+        let blacklist = new Set();
 
         const formatPath = (name) => {
             return name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
         };
         const destinationUrl = (name) => `${destinationPaths[name] || formatPath(name)}.html`;
 
-        const isActive = (name) => !blacklist.has(normalizeText(name));
-        let allDestinations = [];
-
-        const initApp = () => {
-            const container = document.getElementById('regions-container');
-            Object.keys(polandData).sort().forEach((region, index) => {
-                const destinations = [...polandData[region]].sort((a, b) => {
-                    const aActive = isActive(a);
-                    const bActive = isActive(b);
-                    if (aActive && !bActive) return -1;
-                    if (!aActive && bActive) return 1;
-                    return a.localeCompare(b);
-                });
-                const activeCount = destinations.filter(isActive).length;
-                destinations.forEach(dest => allDestinations.push({ name: dest, region, url: isActive(dest) ? destinationUrl(dest) : '#' }));
-
-                const directCard = !hasRegions;
-                const card = directCard ? document.createElement('a') : document.createElement('div');
-                if (directCard) card.href = destinationUrl(destinations[0]);
-                card.style.animation = `fadeInDown 0.6s ease-out ${(index * 0.1) + 0.3}s both`;
-                card.style.zIndex = '1';
-                const headerClass = 'w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none focus:bg-deepblue-800/50 hover:bg-deepblue-800/30 transition-colors rounded-2xl relative z-10';
-                const icon = directCard ? 'ph-map-pin' : (regionIcons[region] || 'ph-map-pin');
-                const subline = directCard ? 'Explore Destination &rarr;' : `${activeCount} guides`;
-                const innerHtml = `
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-deepblue-700 to-deepblue-800 border border-deepblue-700 flex items-center justify-center text-neon-yellow group-hover:scale-110 transition-transform shadow-inner">
-                            <i class="ph ${icon} text-2xl"></i>
-                        </div>
-                        <div>
-                            <h2 class="text-xl font-bold text-white tracking-wide">${region}</h2>
-                            <p class="text-sm text-slate-400 font-light">${subline}</p>
-                        </div>
-                    </div>
-                    ${directCard ? '' : '<i class="ph ph-caret-down text-xl text-slate-500 transition-transform duration-300 transform dropdown-icon"></i>'}
-                `;
-
-                if (directCard) {
-                    card.className = 'block bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-2xl relative transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,215,0,0.1)] hover:border-neon-yellow/30 group';
-                    card.innerHTML = `<div class="${headerClass}">${innerHtml}</div>`;
-                    container.appendChild(card);
-                    return;
-                }
-
-                card.className = 'bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-2xl relative transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,215,0,0.1)] hover:border-neon-yellow/30 flex flex-col group';
-                const header = document.createElement('button');
-                header.className = headerClass;
-                header.innerHTML = innerHtml;
-                const body = document.createElement('div');
-                body.className = 'dropdown-content absolute top-[calc(100%+8px)] left-0 w-full bg-deepblue-950/95 border border-deepblue-700/80 backdrop-blur-xl rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.7)] transition-all duration-300 opacity-0 pointer-events-none translate-y-[-10px] z-50';
-                const listContainer = document.createElement('div');
-                listContainer.className = 'px-6 py-4 max-h-[350px] overflow-y-auto custom-scrollbar';
-                const list = document.createElement('ul');
-                list.className = 'flex flex-col gap-y-1';
-                destinations.forEach(dest => {
-                    const item = document.createElement('li');
-                    if (isActive(dest)) {
-                        item.innerHTML = `<a href="${destinationUrl(dest)}" class="flex items-center gap-3 text-slate-300 hover:text-neon-yellow transition-colors py-2 group/link text-sm md:text-base border-b border-deepblue-800/30 last:border-0"><i class="ph ph-map-trifold text-xl text-deepblue-500 group-hover/link:text-neon-yellow transition-colors"></i><span class="font-medium">${dest}</span></a>`;
-                    } else {
-                        item.innerHTML = `<div class="flex items-center gap-3 text-slate-500 py-2 cursor-not-allowed text-sm md:text-base border-b border-deepblue-800/30 last:border-0"><i class="ph ph-map-trifold text-xl opacity-50 text-deepblue-500"></i><span class="font-medium">${dest}</span></div>`;
-                    }
-                    list.appendChild(item);
-                });
-                listContainer.appendChild(list);
-                body.appendChild(listContainer);
-                header.addEventListener('click', (event) => {
-                    event.stopPropagation();
-                    const isOpen = body.classList.contains('opacity-100');
-                    document.querySelectorAll('.dropdown-content').forEach(el => {
-                        el.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
-                        el.classList.add('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
-                        el.parentElement.style.zIndex = '1';
-                    });
-                    document.querySelectorAll('.dropdown-icon').forEach(el => el.classList.remove('rotate-180', 'text-neon-yellow'));
-                    if (!isOpen) {
-                        body.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
-                        body.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
-                        header.querySelector('.dropdown-icon').classList.add('rotate-180', 'text-neon-yellow');
-                        card.style.zIndex = '50';
-                    }
-                });
-                body.addEventListener('click', event => event.stopPropagation());
-                card.appendChild(header);
-                card.appendChild(body);
-                container.appendChild(card);
+        document.addEventListener('DOMContentLoaded', async () => {
+            await TGDestinationActivation.init({
+                iso2: countryIso2,
+                countryData: polandData,
+                regionIcons,
+                destinationPaths,
+                hasRegions,
+                blacklist,
+                normalizeText,
+                destinationUrl,
             });
-            document.addEventListener('click', () => {
-                document.querySelectorAll('.dropdown-content').forEach(el => {
-                    el.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
-                    el.classList.add('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
-                    el.parentElement.style.zIndex = '1';
-                });
-                document.querySelectorAll('.dropdown-icon').forEach(el => el.classList.remove('rotate-180', 'text-neon-yellow'));
-            });
-        };
-
-        const setupSearch = () => {
-            const searchInput = document.getElementById('search-input');
-            const searchResults = document.getElementById('search-results');
-            const searchResultsList = document.getElementById('search-results-list');
-            const renderResults = (results) => {
-                searchResultsList.innerHTML = '';
-                if (results.length === 0) {
-                    searchResultsList.innerHTML = '<li class="px-6 py-4 text-slate-400 text-center">No guides found.</li>';
-                } else {
-                    results.forEach(result => {
-                        const item = document.createElement('li');
-                        if (isActive(result.name)) {
-                            item.innerHTML = `<a href="${result.url}" class="flex items-center justify-between px-6 py-3 hover:bg-deepblue-800/80 transition-colors group"><div class="flex flex-col"><span class="text-white font-medium group-hover:text-neon-cyan transition-colors">${result.name}</span><span class="text-xs text-slate-500">${result.region}</span></div><i class="ph ph-arrow-right text-slate-600 group-hover:text-neon-cyan group-hover:translate-x-1 transition-all"></i></a>`;
-                        } else {
-                            item.innerHTML = `<div class="flex items-center justify-between px-6 py-3 cursor-not-allowed group"><div class="flex flex-col"><span class="text-slate-500 font-medium">${result.name}</span><span class="text-xs text-slate-600">${result.region}</span></div><i class="ph ph-arrow-right opacity-50 text-slate-600"></i></div>`;
-                        }
-                        searchResultsList.appendChild(item);
-                    });
-                }
-                searchResults.classList.remove('hidden');
-            };
-            searchInput.addEventListener('input', event => {
-                const query = normalizeText(event.target.value.trim());
-                if (!query) {
-                    searchResults.classList.add('hidden');
-                    return;
-                }
-                let filtered = allDestinations.filter(dest => normalizeText(dest.name).includes(query));
-                filtered.sort((a, b) => {
-                    const aActive = isActive(a.name);
-                    const bActive = isActive(b.name);
-                    if (aActive && !bActive) return -1;
-                    if (!aActive && bActive) return 1;
-                    return a.name.localeCompare(b.name);
-                });
-                renderResults(filtered.slice(0, 8));
-            });
-            document.addEventListener('click', event => {
-                if (!searchInput.contains(event.target) && !searchResults.contains(event.target)) {
-                    searchResults.classList.add('hidden');
-                }
-            });
-            searchInput.addEventListener('focus', () => {
-                if (searchInput.value.trim()) searchResults.classList.remove('hidden');
-            });
-        };
-
-        document.addEventListener('DOMContentLoaded', () => {
-            initApp();
-            setupSearch();
+            TGDestinationActivation.setupSearch();
             const scrollTopBtn = document.getElementById('scrollTopBtn');
             window.addEventListener('scroll', () => {
                 if (window.scrollY > 300) {

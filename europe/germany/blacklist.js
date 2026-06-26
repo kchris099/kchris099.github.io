@@ -11,8 +11,6 @@ const blacklistText = `
 
 # Central Germany
 Eisenach
-Erfurt
-Goslar
 Harz Mountains
 Kassel
 Mühlhausen
@@ -20,7 +18,6 @@ Quedlinburg
 Weimar
 
 # Eastern Germany
-Leipzig
 Moritzburg
 
 # Northern Germany
@@ -54,6 +51,12 @@ Stuttgart
 Tübingen
 Ulm
 Würzburg
+
+Goslar
+
+Erfurt
+
+Leipzig
 `;
 
 

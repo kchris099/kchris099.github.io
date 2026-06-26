@@ -47,6 +47,7 @@
     <link rel="stylesheet" href="assets/jsvectormap.min.css" />
     <script src="assets/jsvectormap.min.js"></script>
     <script src="assets/world.js"></script>
+    <link rel="stylesheet" href="assets/homepage-activation.css">
     <script src="assets/homepage-activation.js"></script>
 </head>
 <body class="bg-deepblue-950 text-slate-200 font-sans min-h-screen relative overflow-x-hidden">
@@ -516,13 +517,7 @@
             TGActivation.updateLegendCounts();
             
             Object.keys(travelData).forEach((continent, index) => {
-                const countries = [...travelData[continent]].sort((a, b) => {
-                    const aActive = isCountryActive(a);
-                    const bActive = isCountryActive(b);
-                    if (aActive && !bActive) return -1;
-                    if (!aActive && bActive) return 1;
-                    return a.localeCompare(b);
-                });
+                const countries = TGActivation.sortCountriesForDisplay(travelData[continent], countryCodes);
                 
                 countries.forEach(country => {
                     allCountries.push({
@@ -546,7 +541,7 @@
                         </div>
                         <div>
                             <h2 class="text-xl font-bold text-white tracking-wide">${continent}</h2>
-                            <p class="text-sm text-slate-400 font-light">${countries.length} destinations</p>
+                            <p class="text-sm text-slate-400 font-light">${TGActivation.countCountriesWithGuides(countries, countryCodes)} countries</p>
                         </div>
                     </div>
                     <i class="ph ph-caret-down text-xl text-slate-500 transition-transform duration-300 transform dropdown-icon"></i>
@@ -560,9 +555,11 @@
                 
                 const list = document.createElement('ul');
                 list.className = 'flex flex-col gap-y-1';
-                
+                list.dataset.continent = continent;
+
                 countries.forEach(country => {
                     const listItem = document.createElement('li');
+                    listItem.className = 'country-status-item';
                     listItem.innerHTML = TGActivation.renderCountryListItem(country, continent, countryCodes);
                     list.appendChild(listItem);
                 });
@@ -606,6 +603,9 @@
                 });
                 document.querySelectorAll('.dropdown-icon').forEach(el => el.classList.remove('rotate-180', 'text-neon-cyan'));
             });
+
+            TGActivation.bindActivationControls(container, countryCodes);
+            TGActivation.initSyncListener(countryCodes);
         };
 
         const setupSearch = () => {
@@ -694,10 +694,9 @@
                 return;
             }
 
-            const markerEntries = Object.entries(mapCountryMarkers)
-                .filter(([code]) => !!availableGuides[code]);
+            const markerEntries = TGActivation.buildMapMarkerEntries();
 
-            new jsVectorMap({
+            TGActivation.registerMap(new jsVectorMap({
                 selector: '#world-map',
                 map: 'world',
                 backgroundColor: 'transparent',
@@ -723,42 +722,19 @@
                     }
                 },
                 selectedRegions: Object.keys(availableGuides),
-                markers: markerEntries.map(([, marker]) => ({
-                    name: marker.name,
-                    coords: marker.coords
-                })),
-                markerStyle: {
-                    initial: {
-                        fill: '#00F0FF',
-                        stroke: '#060B19',
-                        strokeWidth: 1.5,
-                        r: 4
-                    },
-                    hover: {
-                        fill: '#0070FF',
-                        stroke: '#060B19',
-                        strokeWidth: 1.5,
-                        r: 6
-                    }
-                },
+                markers: TGActivation.buildMapMarkerPayloads(markerEntries),
+                markerStyle: TGActivation.getMapMarkerDefaultStyle(),
                 onMarkerTooltipShow(event, tooltip, index) {
-                    const [code, marker] = markerEntries[index] || [];
-                    if (!code || !marker) {
+                    const entry = TGActivation.getMapMarkerEntry(index);
+                    if (!entry) {
                         return;
                     }
-                    const officialName = marker.name;
-                    let regionName = "Unknown Region";
-                    for (const [continent, countries] of Object.entries(travelData)) {
-                        if (countries.includes(officialName)) {
-                            regionName = continent;
-                            break;
-                        }
-                    }
-                    tooltip.text(getTooltipHtml(officialName, regionName, code), true);
+                    const regionName = TGActivation.resolveRegionName(entry.name, travelData);
+                    tooltip.text(getTooltipHtml(entry.name, regionName, entry.code), true);
                 },
                 onMarkerClick(event, index) {
-                    const [code] = markerEntries[index] || [];
-                    const guide = allCountryGuides[code];
+                    const entry = TGActivation.getMapMarkerEntry(index);
+                    const guide = entry ? allCountryGuides[entry.code] : null;
                     if (guide) {
                         window.location.href = guide.url;
                     }
@@ -781,7 +757,6 @@
                         }
                     }
 
-                    const isActive = !!availableGuides[code];
                     tooltip.text(getTooltipHtml(officialName, regionName, code), true);
                 },
                 onRegionClick(event, code) {
@@ -790,7 +765,7 @@
                         window.location.href = guide.url;
                     }
                 }
-            });
+            }), markerEntries);
         };
 
         let pageInitialized = false;
@@ -925,13 +900,7 @@
 
             const allCountries = [];
             Object.keys(travelData).forEach((continent) => {
-                const countries = [...travelData[continent]].sort((a, b) => {
-                    const aActive = isCountryActive(a);
-                    const bActive = isCountryActive(b);
-                    if (aActive && !bActive) return -1;
-                    if (!aActive && bActive) return 1;
-                    return a.localeCompare(b);
-                });
+                const countries = TGActivation.sortCountriesForDisplay(travelData[continent], countryCodes);
 
                 countries.forEach((country) => {
                     allCountries.push({
@@ -953,7 +922,7 @@
                         </div>
                         <div>
                             <h2 class="text-xl font-bold text-white tracking-wide">${continent}</h2>
-                            <p class="text-sm text-slate-400 font-light">${countries.length} destinations</p>
+                            <p class="text-sm text-slate-400 font-light">${TGActivation.countCountriesWithGuides(countries, countryCodes)} countries</p>
                         </div>
                     </div>
                     <i class="ph ph-caret-down text-xl text-slate-500 transition-transform duration-300 transform dropdown-icon"></i>
@@ -964,9 +933,11 @@
 
                 const list = document.createElement('ul');
                 list.className = 'px-6 py-4 max-h-[300px] overflow-y-auto custom-scrollbar flex flex-col gap-y-1';
+                list.dataset.continent = continent;
 
                 countries.forEach((country) => {
                     const li = document.createElement('li');
+                    li.className = 'country-status-item';
                     li.innerHTML = TGActivation.renderCountryListItem(country, continent, countryCodes);
                     list.appendChild(li);
                 });
@@ -1003,6 +974,9 @@
                 });
                 document.querySelectorAll('.dropdown-icon').forEach((element) => element.classList.remove('rotate-180', 'text-neon-cyan'));
             });
+
+            TGActivation.bindActivationControls(container, countryCodes);
+            TGActivation.initSyncListener(countryCodes);
 
             TGActivation.updateLegendCounts();
 
@@ -1064,12 +1038,12 @@
                 return;
             }
 
-            const markerEntries = Object.entries(mapCountryMarkers).filter(([code]) => availableGuides[code]);
+            const markerEntries = TGActivation.buildMapMarkerEntries();
             const getTooltipHtml = (officialName, regionName, code) => (
                 TGActivation.getTooltipHtml(officialName, regionName, code, countryCodes)
             );
 
-            new jsVectorMap({
+            TGActivation.registerMap(new jsVectorMap({
                 selector: '#world-map',
                 map: 'world',
                 backgroundColor: 'transparent',
@@ -1082,26 +1056,19 @@
                     selectedHover: { fill: '#0070FF' }
                 },
                 selectedRegions: Object.keys(availableGuides),
-                markers: markerEntries.map(([, marker]) => ({ name: marker.name, coords: marker.coords })),
-                markerStyle: {
-                    initial: { fill: '#00F0FF', stroke: '#060B19', strokeWidth: 1.5, r: 4 },
-                    hover: { fill: '#0070FF', stroke: '#060B19', strokeWidth: 1.5, r: 6 }
-                },
+                markers: TGActivation.buildMapMarkerPayloads(markerEntries),
+                markerStyle: TGActivation.getMapMarkerDefaultStyle(),
                 onMarkerTooltipShow(event, tooltip, index) {
-                    const [code, marker] = markerEntries[index] || [];
-                    if (!code || !marker) return;
-                    let regionName = 'Unknown Region';
-                    for (const [continent, countries] of Object.entries(travelData)) {
-                        if (countries.includes(marker.name)) {
-                            regionName = continent;
-                            break;
-                        }
-                    }
-                    tooltip.text(getTooltipHtml(marker.name, regionName, code), true);
+                    const entry = TGActivation.getMapMarkerEntry(index);
+                    if (!entry) return;
+                    tooltip.text(
+                        getTooltipHtml(entry.name, TGActivation.resolveRegionName(entry.name, travelData), entry.code),
+                        true,
+                    );
                 },
                 onMarkerClick(event, index) {
-                    const [code] = markerEntries[index] || [];
-                    const guide = allCountryGuides[code];
+                    const entry = TGActivation.getMapMarkerEntry(index);
+                    const guide = entry ? allCountryGuides[entry.code] : null;
                     if (guide) {
                         window.location.href = guide.url;
                     }
@@ -1129,7 +1096,7 @@
                         window.location.href = guide.url;
                     }
                 }
-            });
+            }), markerEntries);
         })();
     </script>
 
