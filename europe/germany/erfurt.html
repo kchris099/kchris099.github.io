@@ -164,8 +164,8 @@
                     [markerCenterLat - halfLat, markerCenterLng - halfLng],
                     [markerCenterLat + halfLat, markerCenterLng + halfLng]
                 );
-            } else if (maxSpan < 0.02 && locations.length <= 2) {
-                const frameSpan = Math.max(maxSpan * 3, 0.035);
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                const frameSpan = Math.max(maxSpan * 4, 0.006);
                 bounds = L.latLngBounds(
                     [markerCenterLat - frameSpan / 2, markerCenterLng - frameSpan / 2],
                     [markerCenterLat + frameSpan / 2, markerCenterLng + frameSpan / 2]
@@ -190,7 +190,10 @@
                 fitOptions.padding = [20, 20];
             } else if (locations.length >= 3 && maxSpan >= 0.02) {
                 fitOptions.padding = maxSpan >= 0.08 ? [20, 20] : [30, 30];
-            } else if (isDegenerate || locations.length <= 2) {
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                fitOptions.padding = [12, 12];
+                fitOptions.maxZoom = 16;
+            } else if (isDegenerate || locations.length === 1) {
                 fitOptions.padding = mapContext.compactRegion ? [16, 16] : [36, 36];
                 if (isDegenerate || maxSpan < 0.015) {
                     fitOptions.maxZoom = mapContext.compactRegion ? 15 : 14;

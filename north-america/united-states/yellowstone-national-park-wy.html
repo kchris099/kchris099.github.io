@@ -202,7 +202,7 @@
                 popupAnchor: [0, -32],
             });
             const destinationCenter = [44.727117, -110.722445];
-            const mapContext = {"largeRegion": false, "nationalPark": true, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": false, "maxCenterLat": 0.302383, "maxCenterLng": 0.242945};
+            const mapContext = {"largeRegion": false, "nationalPark": true, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": false, "maxCenterLat": 0.302383, "maxCenterLng": 0.242945};
             const markers = [];
             locations.forEach(loc => {
                 markers.push(
@@ -226,7 +226,7 @@
                     [destinationCenter[0] - frameSpan / 2, destinationCenter[1] - frameSpan / 2],
                     [destinationCenter[0] + frameSpan / 2, destinationCenter[1] + frameSpan / 2]
                 );
-            } else if (mapContext.nationalPark && locations.length >= 3) {
+            } else if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
                 const expand = maxSpan < 0.12 ? 1.15 : 1.1;
                 const halfLat = latSpan / 2 * expand;
                 const halfLng = lngSpan / 2 * expand;
@@ -256,9 +256,13 @@
                 );
             }
             const fitOptions = {};
-            if (mapContext.nationalPark && locations.length >= 3) {
-                fitOptions.padding = maxSpan < 0.12 ? [24, 24] : [28, 28];
-                fitOptions.maxZoom = maxSpan < 0.12 ? 14 : 9;
+            if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                fitOptions.padding = maxSpan < 0.12
+                    ? [24, 24]
+                    : (maxSpan < 0.5 ? [24, 24] : [28, 28]);
+                fitOptions.maxZoom = maxSpan < 0.12
+                    ? 14
+                    : (maxSpan < 0.5 ? 10 : 9);
             } else if (mapContext.largeRegion && locations.length >= 3) {
                 fitOptions.padding = [40, 40];
                 fitOptions.maxZoom = 8;

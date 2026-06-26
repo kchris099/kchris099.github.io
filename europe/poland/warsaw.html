@@ -101,7 +101,7 @@
                 <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
                     <img src="images/warsaw_3.jpg" alt="Archcathedral Basilica of St. John the Baptist" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
-                        <i class="ph ph-ticket"></i> Free (zł5)
+                        <i class="ph ph-ticket"></i> Free (cathedral museum zł5)
                     </div>
                 </div>
                 <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
@@ -216,7 +216,7 @@
                 popupAnchor: [0, -32],
             });
             const destinationCenter = [52.235000, 21.020000];
-            const mapContext = {"largeRegion": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.0702, "maxCenterLng": 0.0701};
+            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.0702, "maxCenterLng": 0.0701};
             const markers = [];
             locations.forEach(loc => {
                 markers.push(
@@ -240,6 +240,14 @@
                     [destinationCenter[0] - frameSpan / 2, destinationCenter[1] - frameSpan / 2],
                     [destinationCenter[0] + frameSpan / 2, destinationCenter[1] + frameSpan / 2]
                 );
+            } else if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                const expand = maxSpan < 0.12 ? 1.15 : 1.1;
+                const halfLat = latSpan / 2 * expand;
+                const halfLng = lngSpan / 2 * expand;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
             } else if (mapContext.largeRegion && locations.length >= 3) {
                 const latReach = Math.max(mapContext.maxCenterLat, latSpan / 2) * 1.45;
                 const lngReach = Math.max(mapContext.maxCenterLng, lngSpan / 2) * 1.45;
@@ -262,7 +270,14 @@
                 );
             }
             const fitOptions = {};
-            if (mapContext.largeRegion && locations.length >= 3) {
+            if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                fitOptions.padding = maxSpan < 0.12
+                    ? [24, 24]
+                    : (maxSpan < 0.5 ? [24, 24] : [28, 28]);
+                fitOptions.maxZoom = maxSpan < 0.12
+                    ? 14
+                    : (maxSpan < 0.5 ? 10 : 9);
+            } else if (mapContext.largeRegion && locations.length >= 3) {
                 fitOptions.padding = [40, 40];
                 fitOptions.maxZoom = 8;
             } else if (mapContext.islandCity && locations.length >= 3) {

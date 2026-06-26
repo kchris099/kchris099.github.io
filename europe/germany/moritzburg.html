@@ -105,20 +105,20 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const map = L.map('map').setView([51.167552, 13.679483], 14);
+            const map = L.map('map').setView([51.167553, 13.679483], 14);
             L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
                 attribution: '&copy; Google Maps',
                 maxZoom: 20
             }).addTo(map);
-            const locations = [{"name": "Schloss Moritzburg", "lat": 51.167558, "lng": 13.679487}, {"name": "Schlosspark", "lat": 51.167545, "lng": 13.679479}];
+            const locations = [{"name": "Schloss Moritzburg", "lat": 51.167561, "lng": 13.679487}, {"name": "Schlosspark", "lat": 51.167545, "lng": 13.679479}];
             const customIcon = L.icon({
                 iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
                 iconSize: [32, 32],
                 iconAnchor: [16, 32],
                 popupAnchor: [0, -32],
             });
-            const destinationCenter = [51.167552, 13.679483];
-            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": false, "maxCenterLat": 7e-06, "maxCenterLng": 4e-06};
+            const destinationCenter = [51.167553, 13.679483];
+            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": false, "maxCenterLat": 8e-06, "maxCenterLng": 4e-06};
             const markers = [];
             locations.forEach(loc => {
                 markers.push(
@@ -164,8 +164,8 @@
                     [markerCenterLat - halfLat, markerCenterLng - halfLng],
                     [markerCenterLat + halfLat, markerCenterLng + halfLng]
                 );
-            } else if (maxSpan < 0.02 && locations.length <= 2) {
-                const frameSpan = Math.max(maxSpan * 3, 0.035);
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                const frameSpan = Math.max(maxSpan * 4, 0.006);
                 bounds = L.latLngBounds(
                     [markerCenterLat - frameSpan / 2, markerCenterLng - frameSpan / 2],
                     [markerCenterLat + frameSpan / 2, markerCenterLng + frameSpan / 2]
@@ -190,7 +190,10 @@
                 fitOptions.padding = [20, 20];
             } else if (locations.length >= 3 && maxSpan >= 0.02) {
                 fitOptions.padding = maxSpan >= 0.08 ? [20, 20] : [30, 30];
-            } else if (isDegenerate || locations.length <= 2) {
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                fitOptions.padding = [12, 12];
+                fitOptions.maxZoom = 16;
+            } else if (isDegenerate || locations.length === 1) {
                 fitOptions.padding = mapContext.compactRegion ? [16, 16] : [36, 36];
                 if (isDegenerate || maxSpan < 0.015) {
                     fitOptions.maxZoom = mapContext.compactRegion ? 15 : 14;
