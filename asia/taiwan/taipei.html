@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taipei Guide | Global Explorer Guides</title>
+    <link rel="stylesheet" href="../../assets/tailwind.css">
+    <link rel="stylesheet" href="../../assets/outfit.css">
+    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
+    <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
+    <link rel="stylesheet" href="../../assets/homepage-activation.css">
+    <link rel="stylesheet" href="../../assets/destination-activation.css">
+    <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
+    <script src="../../assets/leaflet/leaflet.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #060B19; }
+        ::-webkit-scrollbar-thumb { background: #1E336B; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0070FF; }
+        .leaflet-popup-content-wrapper { background-color: #fff; color: #333; border-radius: 8px; box-shadow: 0 3px 14px rgba(0,0,0,0.4); }
+        .leaflet-popup-tip { background-color: #fff; }
+    </style>
+</head>
+<body class="bg-deepblue-950 text-slate-200 font-sans min-h-screen relative overflow-x-hidden">
+    <div class="absolute top-0 left-0 w-full h-[450px] md:h-[500px] z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50" style="background-image: url('images/taipei_hero.jpg')"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-deepblue-950/10 via-deepblue-950/60 to-deepblue-950"></div>
+    </div>
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon-purple/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neon-cyan/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <main class="container mx-auto px-4 py-8 md:py-16 relative z-20 max-w-5xl">
+        <nav class="mb-12 animate-fade-in-down flex flex-wrap items-center gap-4">
+            <a href="../../index.html" class="flex items-center justify-center w-11 h-11 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0" title="Back to Home">
+                <i class="ph ph-house text-xl group-hover:scale-110 transition-transform"></i>
+            </a>
+            <a href="taiwan.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0">
+                <i class="ph ph-arrow-left text-lg group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-medium text-sm">Back to Taiwan</span>
+            </a>
+            <div class="ml-auto flex items-center gap-3 bg-deepblue-900/40 border border-deepblue-700/50 rounded-full px-4 py-2 backdrop-blur-sm shadow-inner shrink-0">
+                <img src="../../assets/flags/w40/tw.png" alt="Taiwan flag" class="w-6 h-auto rounded-[2px] shadow-sm">
+                <div class="flex items-center gap-2 text-sm font-medium tracking-wide">
+                    <span class="text-slate-200 uppercase text-xs tracking-wider font-bold">Taiwan</span>
+                    <span class="text-deepblue-500 text-xs">&rsaquo;</span>
+                    <span class="text-neon-cyan text-xs">Taipei</span>
+                </div>
+            </div>
+        </nav>
+
+        <header class="mb-16 animate-fade-in-down animation-delay-100 text-center">
+            <button
+                type="button"
+                id="destination-active-toggle"
+                class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
+                data-iso2="TW"
+                data-slug="taipei"
+                data-active="false"
+                data-interactive="true"
+                aria-label="Toggle Taipei visibility on Taiwan guide"
+                aria-pressed="false"
+            >
+                <i class="ph ph-map-pin text-4xl text-slate-500 pointer-events-none" aria-hidden="true"></i>
+            </button>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple pb-4">
+                Explore Taipei
+            </h1>
+            <div class="bg-deepblue-900/40 border border-deepblue-800 rounded-3xl p-8 md:p-10 text-left backdrop-blur-sm mt-10">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                    <i class="ph ph-scroll text-neon-cyan"></i> A Brief History
+                </h2>
+                <p class="text-lg text-slate-400 font-light leading-relaxed">Taipei developed from a Qing-era walled settlement and later Japanese colonial capital into the administrative centre of the Republic of China on Taiwan. Rapid post-war growth replaced many wooden neighbourhoods with commercial towers, yet districts such as Dadaocheng and Wanhua preserve merchant shophouses, temples, and memorial spaces from earlier periods.</p>
+            </div>
+        </header>
+
+        <section class="mb-16 animate-fade-in-down" style="animation-delay: 0.2s;">
+            <h2 class="text-3xl font-bold text-white mb-6">Attractions Map</h2>
+            <div id="map" class="h-[400px] w-full rounded-3xl border border-deepblue-700 shadow-2xl z-10 relative"></div>
+        </section>
+
+        <section class="flex flex-col gap-6 pb-20 animate-fade-in-down" style="animation-delay: 0.3s;">
+            <h2 class="text-3xl font-bold text-white mb-2">Top Sights & Activities</h2>
+            
+            <!-- 1. Taipei 101 Shopping center -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_1.jpg" alt="Taipei 101 Shopping center" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Taipei 101 Shopping center</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Taipei 101 is a 508-metre tower completed in 2004 that held the world height record until 2010. Its stacked pagoda form incorporates tuned mass dampers visible on observation decks. Retail floors and offices occupy the lower levels in the Xinyi financial district east of the city centre.</p>
+                </div>
+            </div>
+
+            <!-- 2. Taipei 101 Observatory -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_2.jpg" alt="Taipei 101 Observatory" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> NT$600
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Taipei 101 Observatory</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Taipei 101 is a 508-metre tower completed in 2004 that held the world height record until 2010. Its stacked pagoda form incorporates tuned mass dampers visible on observation decks. Retail floors and offices occupy the lower levels in the Xinyi financial district east of the city centre.</p>
+                </div>
+            </div>
+
+            <!-- 3. Chiang Kai-shek Memorial Hall -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_3.jpg" alt="Chiang Kai-shek Memorial Hall" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Chiang Kai-shek Memorial Hall</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Chiang Kai-shek Memorial Hall is a large white-walled monument in central Taipei completed in 1980. Its octagonal blue-tiled roof shelters a bronze statue of the former Republic of China president, with exhibition galleries below documenting 20th-century Chinese civil war history. Liberty Square flanked by the National Concert Hall and Theatre frames the approach.</p>
+                </div>
+            </div>
+
+            <!-- 4. National Concert Hall -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_4.jpg" alt="National Concert Hall" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">National Concert Hall</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The National Concert Hall stands on the north side of Liberty Square in central Taipei, completed in 1987 as part of the Chiang Kai-shek Memorial complex. Its tiered Chinese palace-style roof houses a main auditorium for symphony concerts, opera, and national ceremonies, facing the matching National Theater across the vast ceremonial plaza.</p>
+                </div>
+            </div>
+
+            <!-- 5. Liberty Square -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_5.jpg" alt="Liberty Square" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Liberty Square</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Liberty Square Archway frames the vast plaza leading to the Chiang Kai-shek Memorial Hall in central Taipei. The ceremonial space hosts national day gatherings and daily honour guard ceremonies at the monument steps, with the National Theatre and Concert Hall lining the flanks.</p>
+                </div>
+            </div>
+
+            <!-- 6. National Theater -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_6.jpg" alt="National Theater" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">National Theater</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The National Theater occupies the east flank of Liberty Square in Taipei, opened in 1987 alongside the National Concert Hall. The building&#x27;s traditional palace-inspired design frames a main stage for Chinese opera, dance, and drama, forming one half of the republican capital&#x27;s principal performing-arts pair on the memorial district axis.</p>
+                </div>
+            </div>
+
+            <!-- 7. Taipei Guest House -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_7.jpg" alt="Taipei Guest House" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Taipei Guest House</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Taipei Guest House is a Baroque-influenced mansion completed in 1901 as the Japanese governor-general&#x27;s residence in central Taipei. The Republic of China government later used it for state receptions and ceremonies; guided open days allow visitors to see salons, stair halls, and gardens within the Ministry of Foreign Affairs compound near the presidential office district.</p>
+                </div>
+            </div>
+
+            <!-- 8. Taipei Zoo -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_8.jpg" alt="Taipei Zoo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> NT$100
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Taipei Zoo</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Taipei Zoo in Wenshan district is one of Asia&#x27;s largest city zoos, opened in its present Maokong foothill site in 1986. Outdoor habitats display Taiwanese species alongside giant pandas, with walkways through temperate forest zones; the grounds connect by gondola to the Maokong tea hills above the southern suburbs.</p>
+                </div>
+            </div>
+
+            <!-- 9. Bitan Tourist Attraction -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_9.jpg" alt="Bitan Tourist Attraction" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Bitan Tourist Attraction</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Bitan suspension bridge and riverside park lie on the Xindian River in Xindian district, popular for boat rentals and riverside cycling. The pedestrian span connects promenades lined with tea houses above the green water gorge where the river leaves the Taipei basin toward the mountains.</p>
+                </div>
+            </div>
+
+            <!-- 10. Taipei Arena -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_10.jpg" alt="Taipei Arena" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Taipei Arena</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Taipei Arena is a multi-purpose indoor stadium in the Nanjing East Road corridor of central Taipei, opened in 2005. Its oval roof shelters concerts, sporting events, and trade exhibitions for audiences of about 15,000, making it one of the city&#x27;s main large-scale performance venues outside the Liberty Square arts complex.</p>
+                </div>
+            </div>
+
+            <!-- 11. National Palace Museum -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_11.jpg" alt="National Palace Museum" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> NT$350
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">National Palace Museum</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The National Palace Museum in Shilin holds Chinese imperial art collections evacuated to Taiwan in the 1940s, including jade, bronze, and scroll paintings from the former Beijing Palace Museum stores. Rotating galleries display masterpieces such as the jade cabbage in climate-controlled rooms on a hillside campus.</p>
+                </div>
+            </div>
+
+            <!-- 12. Chiang Kai-Shek Shilin Residence -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_12.jpg" alt="Chiang Kai-Shek Shilin Residence" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> NT$100
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Chiang Kai-Shek Shilin Residence</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Chiang Kai-shek Memorial Hall is a large white-walled monument in central Taipei completed in 1980. Its octagonal blue-tiled roof shelters a bronze statue of the former Republic of China president, with exhibition galleries below documenting 20th-century Chinese civil war history. Liberty Square flanked by the National Concert Hall and Theatre frames the approach.</p>
+                </div>
+            </div>
+
+            <!-- 13. Shilin Night Market -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_13.jpg" alt="Shilin Night Market" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Shilin Night Market</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Shilin Night Market surrounds the former Shilin market buildings in northern Taipei&#x27;s Shilin district. Vendors sell fried chicken steaks, oyster omelettes, and sweets in covered arcades and side alleys, making it one of the capital&#x27;s busiest and most famous evening food destinations.</p>
+                </div>
+            </div>
+
+            <!-- 14. National Revolutionary Martyrs&#x27; Shrine -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_14.jpg" alt="National Revolutionary Martyrs&#x27; Shrine" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">National Revolutionary Martyrs&#x27; Shrine</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The National Revolutionary Martyrs&#x27; Shrine in Taipei&#x27;s Zhongshan district honours armed forces personnel who died in service of the Republic of China. The 1969 complex follows northern Chinese palace architecture and hosts hourly honour-guard ceremonies at its main gate, with memorial tablets and exhibits on 20th-century military campaigns.</p>
+                </div>
+            </div>
+
+            <!-- 15. Miramar Ferris Wheel -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_15.jpg" alt="Miramar Ferris Wheel" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> NT$150
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Miramar Ferris Wheel</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Miramar Ferris Wheel crowns the Miramar Entertainment Park shopping complex in Taipei&#x27;s Dazhi area. The illuminated wheel rises above the Keelung River levee, giving enclosed cabins views of neighbouring Neihu and Songshan districts and the surrounding department-store and cinema complex built in the early 2000s.</p>
+                </div>
+            </div>
+
+            <!-- 16. Taipei Children&#x27;s Amusement Park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_16.jpg" alt="Taipei Children&#x27;s Amusement Park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> NT$30
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Taipei Children&#x27;s Amusement Park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Taipei Children&#x27;s Amusement Park in Shilin district is a municipal theme park with rides, water play areas, and theatre stages aimed at families. Attractions range from gentle carousels to roller coasters on landscaped grounds beside the Keelung River, linked by MRT to the Shilin and Miramar entertainment corridor.</p>
+                </div>
+            </div>
+
+            <!-- 17. Taipei North Gate (ChengEn Gate) -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_17.jpg" alt="Taipei North Gate (ChengEn Gate)" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Taipei North Gate (ChengEn Gate)</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Taipei North Gate, or Cheng&#x27;en Gate, is the -preserved section of the Qing-era city wall in central Taipei, completed in 1884. The granite-and-brick portal once guarded the northern approach to the walled settlement; it now stands beside elevated roads as a heritage landmark marking the old administrative centre&#x27;s boundary.</p>
+                </div>
+            </div>
+
+            <!-- 18. Raohe Night Market -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_18.jpg" alt="Raohe Night Market" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Raohe Night Market</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Raohe Night Market stretches along Raohe Street in Taipei&#x27;s Songshan district near Ciyou Temple. Evening stalls sell pepper buns, stinky tofu, and grilled seafood beneath lantern-lit awnings on one of the city&#x27;s oldest purpose-built night-market streets, drawing crowds from the nearby Keelung River corridor.</p>
+                </div>
+            </div>
+
+            <!-- 19. Dharma Drum Mountain Nung Chan Monastery -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_19.jpg" alt="Dharma Drum Mountain Nung Chan Monastery" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Dharma Drum Mountain Nung Chan Monastery</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Dharma Drum Mountain Nung Chan Monastery in Taipei&#x27;s Beitou foothills is a major Chan Buddhist monastery founded by Master Sheng Yen. The hillside campus includes meditation halls, lecture spaces, and quiet courtyards where practitioners and visitors join retreats and dharma assemblies above the geothermal hot-spring district.</p>
+                </div>
+            </div>
+
+            <!-- 20. National Dr. Sun Yat-Sen Memorial Hall -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_20.jpg" alt="National Dr. Sun Yat-Sen Memorial Hall" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">National Dr. Sun Yat-Sen Memorial Hall</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The National Dr. Sun Yat-Sen Memorial Hall in Xinyi district honours the revolutionary leader considered founder of the Republic of China. Completed in 1972, its grand hall contains a seated bronze statue and exhibition galleries on Sun&#x27;s political career, set within gardens and performance spaces east of Taipei 101.</p>
+                </div>
+            </div>
+
+            <!-- 21. Songshan Cultural and Creative Park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_21.jpg" alt="Songshan Cultural and Creative Park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Songshan Cultural and Creative Park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Songshan Cultural and Creative Park occupies a former tobacco factory complex in Taipei&#x27;s Songshan district, converted after 2011 into exhibition halls, design shops, and event spaces. Brick warehouses and art-deco offices from the Japanese colonial industrial period frame a central boulevard popular for weekend markets and design fairs.</p>
+                </div>
+            </div>
+
+            <!-- 22. Eslite Spectrum Songyan -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_22.jpg" alt="Eslite Spectrum Songyan" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Eslite Spectrum Songyan</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Eslite Spectrum Songyan is a cultural-retail complex beside Songshan Cultural and Creative Park in eastern Taipei. The multi-storey hall combines Eslite bookstore floors with food courts, performance spaces, and design boutiques in a glass-fronted building that anchors the Songyan creative district around the former tobacco factory site.</p>
+                </div>
+            </div>
+
+            <!-- 23. Kishu An Forest of Literature -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_23.jpg" alt="Kishu An Forest of Literature" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Kishu An Forest of Literature</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Kishu An Forest of Literature is a restored Japanese-era timber residence in Taipei&#x27;s Zhongshan district, reopened as a literary salon and exhibition space. The single-storey wooden house and surrounding camphor trees provide a quiet reading environment for poetry events and small publishing displays away from the surrounding office towers.</p>
+                </div>
+            </div>
+
+            <!-- 24. Dadaocheng -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_24.jpg" alt="Dadaocheng" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Dadaocheng</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Dadaocheng is a historic merchant quarter along the Tamsui River in northern central Taipei, flourishing in the late Qing and Japanese periods as a tea and textile trading port. Dihua Street shophouses, temples, and pier warehouses survive among cafes and cultural studios in one of the city&#x27;s oldest commercial neighbourhoods.</p>
+                </div>
+            </div>
+
+            <!-- 25. Ningxia Night Market -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_25.jpg" alt="Ningxia Night Market" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Ningxia Night Market</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Ningxia Night Market is a compact food alley in Taipei&#x27;s Datong district near the old city core. Stalls specialise in Taiwanese snacks such as oyster omelettes, taro balls, and herbal soups along a single pedestrian lane that predates the larger tourist night markets in Shilin and Raohe.</p>
+                </div>
+            </div>
+
+            <!-- 26. Bopiliao Historical Block -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_26.jpg" alt="Bopiliao Historical Block" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Bopiliao Historical Block</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Bopiliao Historical Block in Wanhua displays restored Qing and Japanese-era lanes with tea houses and educational exhibits on Taipei urban history. The compact pedestrian zone illustrates building styles that preceded modern tower development along Guangzhou Street near Longshan Temple.</p>
+                </div>
+            </div>
+
+            <!-- 27. Xinfu Market -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_27.jpg" alt="Xinfu Market" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Xinfu Market</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Xinfu Market is a covered public market in Taipei&#x27;s Wanhua district supplying fresh produce, meat, and dry goods to neighbourhood shoppers. The post-war concrete halls and stall rows reflect everyday commercial life in the old west-side quarter near Longshan Temple, distinct from the tourist-oriented night markets elsewhere in the city.</p>
+                </div>
+            </div>
+
+            <!-- 28. Jieyun Temple -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_28.jpg" alt="Jieyun Temple" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Jieyun Temple</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Jieyun Temple in Taipei&#x27;s Zhongshan district is a neighbourhood folk temple dedicated to local deities and community guardian spirits. The compact courtyard shrine with carved timber eaves serves residents of the surrounding lanes, continuing daily incense offerings and festival processions typical of Taipei&#x27;s urban temple network.</p>
+                </div>
+            </div>
+
+            <!-- 29. Crescent Bridge -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_29.jpg" alt="Crescent Bridge" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Crescent Bridge</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Crescent Bridge is a pedestrian suspension span over the Xindian River in New Taipei&#x27;s Xindian district, opened as part of a riverside recreation project. The curved deck links promenades and cycle paths on opposite banks, offering views of forested gorges where the river leaves the Taipei basin toward the southern mountains.</p>
+                </div>
+            </div>
+
+            <!-- 30. The Red House -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_30.jpg" alt="The Red House" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">The Red House</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Red House is a red-brick market building completed in 1908 during Japanese rule, now housing craft shops and performance spaces in Ximending. Its octagonal entrance hall and cruciform market halls are protected as a municipal historic site beside the pedestrian core of Taipei&#x27;s youth district.</p>
+                </div>
+            </div>
+
+            <!-- 31. Ximending Shopping District -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_31.jpg" alt="Ximending Shopping District" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Ximending Shopping District</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Ximending is Taipei&#x27;s pedestrian shopping and entertainment quarter west of the old city wall line, developed from early cinema and department-store strips in the 20th century. Neon-signed lanes, street performers, and youth fashion boutiques fill blocks around the Red House, making it one of the busiest evening districts in the capital.</p>
+                </div>
+            </div>
+
+            <!-- 32. Nishi Honganji Square -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_32.jpg" alt="Nishi Honganji Square" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Nishi Honganji Square</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nishi Honganji Square is a landscaped plaza beside the historic Nishi Hongongji-related precinct near Ximending in central Taipei. The open space and restored brick structures recall Japanese-era Buddhist institutional architecture in the old west gate quarter, now used for community events and as a pedestrian gathering point in the Wanhua district.</p>
+                </div>
+            </div>
+
+            <!-- 33. Huashan 1914 Creative Park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_33.jpg" alt="Huashan 1914 Creative Park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Huashan 1914 Creative Park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Huashan 1914 Creative Park occupies a former sake distillery warehouse complex near Zhongxiao station. Studios, exhibition halls, and cafés fill timber-framed buildings from the Japanese colonial industrial period, hosting design fairs and weekend performances in the Zhongzheng district.</p>
+                </div>
+            </div>
+
+            <!-- 34. Jianguo Holiday Flower Market -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_34.jpg" alt="Jianguo Holiday Flower Market" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Jianguo Holiday Flower Market</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Jianguo Holiday Flower Market operates under elevated roads in Taipei&#x27;s Daan district on weekend mornings. Wholesale and retail vendors sell orchids, bonsai, and cut flowers along partitioned aisles beneath the Jianguo overpass, forming one of the city&#x27;s largest periodic plant markets for gardeners and florists.</p>
+                </div>
+            </div>
+
+            <!-- 35. Qingtiangang Grassland -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_35.jpg" alt="Qingtiangang Grassland" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Qingtiangang Grassland</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Qingtiangang Grassland is a rolling volcanic plateau within Yangmingshan National Park north of Taipei, grazed in the Japanese era and now open meadow. Wind-sculpted silvergrass and cattle trails cross the exposed ridge with views toward Taipei basin, reachable by park roads from Shilin and Beitou.</p>
+                </div>
+            </div>
+
+            <!-- 36. Yangmingshan Zhongshan Hall -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_36.jpg" alt="Yangmingshan Zhongshan Hall" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Yangmingshan Zhongshan Hall</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Yangmingshan National Park covers volcanic peaks and hot springs north of Taipei city limits. Trails pass fumaroles, sulfur vents, and seasonal flower beds on slopes that were a Japanese-era recreation forest. Xiaoyoukeng and Qingtiangang grassland are among the most visited highland areas linked by park buses from Shilin.</p>
+                </div>
+            </div>
+
+            <!-- 37. Linjiang Night Market -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_37.jpg" alt="Linjiang Night Market" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Linjiang Night Market</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Linjiang Night Market, also called Tonghua Market, is a compact evening food street in Taipei&#x27;s Daan district near Taipei 101. Vendors grill pepper buns, steam dumplings, and seafood along narrow lanes that draw office workers and visitors seeking classic Taiwanese night-market snacks in the Xinyi neighbourhood.</p>
+                </div>
+            </div>
+
+            <!-- 38. Shenkeng Old Street -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_38.jpg" alt="Shenkeng Old Street" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Shenkeng Old Street</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Shenkeng Old Street follows the historic market lane of Shenkeng district in southeastern New Taipei, famous for tofu restaurants and soybean dishes. Qing-era shopfronts and weekend food stalls line the sloping street above the confluence of local creeks, drawing diners from Taipei for braised tofu and miso specialities.</p>
+                </div>
+            </div>
+
+            <!-- 39. POPOP Taipei -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_39.jpg" alt="POPOP Taipei" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">POPOP Taipei</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">POPOP Taipei is a creative-industry office and exhibition cluster in Taipei&#x27;s Nangang district, housing animation studios, design firms, and event halls. The campus supports Taiwan&#x27;s digital content sector with public showcases and workshops in a former industrial zone now linked by MRT to the eastern exhibition corridor.</p>
+                </div>
+            </div>
+
+            <!-- 40. Xiangshan -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/taipei_40.jpg" alt="Xiangshan" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Xiangshan</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Xiangshan Park at the foot of Elephant Mountain provides rest pavilions and trailheads for the steep climb toward Taipei 101 viewpoints. Locals exercise on the landscaped slopes each morning before commuters fill the Xinyi office district below the timber stairways.</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
+        <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+    </footer>    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const map = L.map('map').setView([25.050952, 121.534571], 14);
+            L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                attribution: '&copy; Google Maps',
+                maxZoom: 20
+            }).addTo(map);
+            const locations = [{"name": "Taipei 101 Shopping center", "lat": 25.034122, "lng": 121.564021}, {"name": "Taipei 101 Observatory", "lat": 25.033675, "lng": 121.564883}, {"name": "Chiang Kai-shek Memorial Hall", "lat": 25.035502, "lng": 121.520183}, {"name": "National Concert Hall", "lat": 25.037049, "lng": 121.519236}, {"name": "Liberty Square", "lat": 25.03671, "lng": 121.517387}, {"name": "National Theater", "lat": 25.035305, "lng": 121.51816}, {"name": "Taipei Guest House", "lat": 25.040155, "lng": 121.51675}, {"name": "Taipei Zoo", "lat": 24.998564, "lng": 121.580986}, {"name": "Bitan Tourist Attraction", "lat": 24.955985, "lng": 121.536504}, {"name": "Taipei Arena", "lat": 25.050685, "lng": 121.55012}, {"name": "National Palace Museum", "lat": 25.102355, "lng": 121.548493}, {"name": "Chiang Kai-Shek Shilin Residence", "lat": 25.093034, "lng": 121.532396}, {"name": "Shilin Night Market", "lat": 25.088497, "lng": 121.52435}, {"name": "National Revolutionary Martyrs' Shrine", "lat": 25.079412, "lng": 121.532956}, {"name": "Miramar Ferris Wheel", "lat": 25.082932, "lng": 121.557748}, {"name": "Taipei Children's Amusement Park", "lat": 25.097235, "lng": 121.514951}, {"name": "Taipei North Gate (ChengEn Gate)", "lat": 25.047725, "lng": 121.51123}, {"name": "Raohe Night Market", "lat": 25.050885, "lng": 121.577489}, {"name": "Dharma Drum Mountain Nung Chan Monastery", "lat": 25.122547, "lng": 121.49538}, {"name": "National Dr. Sun Yat-Sen Memorial Hall", "lat": 25.040031, "lng": 121.560245}, {"name": "Songshan Cultural and Creative Park", "lat": 25.043837, "lng": 121.560638}, {"name": "Eslite Spectrum Songyan", "lat": 25.044545, "lng": 121.561457}, {"name": "Kishu An Forest of Literature", "lat": 25.021545, "lng": 121.520672}, {"name": "Dadaocheng", "lat": 25.056765, "lng": 121.507837}, {"name": "Ningxia Night Market", "lat": 25.056681, "lng": 121.515364}, {"name": "Bopiliao Historical Block", "lat": 25.036838, "lng": 121.502165}, {"name": "Xinfu Market", "lat": 25.035768, "lng": 121.501922}, {"name": "Jieyun Temple", "lat": 25.008889, "lng": 121.454444}, {"name": "Crescent Bridge", "lat": 25.029897, "lng": 121.45134}, {"name": "The Red House", "lat": 25.042014, "lng": 121.506859}, {"name": "Ximending Shopping District", "lat": 25.042834, "lng": 121.507745}, {"name": "Nishi Honganji Square", "lat": 25.04027, "lng": 121.506658}, {"name": "Huashan 1914 Creative Park", "lat": 25.04407, "lng": 121.529358}, {"name": "Jianguo Holiday Flower Market", "lat": 25.037772, "lng": 121.53791}, {"name": "Qingtiangang Grassland", "lat": 25.165756, "lng": 121.575351}, {"name": "Yangmingshan Zhongshan Hall", "lat": 25.155619, "lng": 121.552655}, {"name": "Linjiang Night Market", "lat": 25.030141, "lng": 121.554267}, {"name": "Shenkeng Old Street", "lat": 25.001646, "lng": 121.61475}, {"name": "POPOP Taipei", "lat": 25.053637, "lng": 121.604766}, {"name": "Xiangshan", "lat": 25.027149, "lng": 121.573195}];
+            const customIcon = L.icon({
+                iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32],
+            });
+            const destinationCenter = [25.050952, 121.534571];
+            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": true, "compactRegion": false, "denseUrban": false, "maxCenterLat": 0.114804, "maxCenterLng": 0.083231};
+            const markers = [];
+            locations.forEach(loc => {
+                markers.push(
+                    L.marker([loc.lat, loc.lng], {icon: customIcon}).addTo(map)
+                        .bindPopup(`<strong class="font-sans text-base text-gray-900">${loc.name}</strong>`)
+                );
+            });
+            const group = new L.featureGroup(markers);
+            let bounds = group.getBounds();
+            const ne = bounds.getNorthEast();
+            const sw = bounds.getSouthWest();
+            const latSpan = ne.lat - sw.lat;
+            const lngSpan = ne.lng - sw.lng;
+            const maxSpan = Math.max(latSpan, lngSpan);
+            const isDegenerate = latSpan < 1e-9 && lngSpan < 1e-9;
+            const markerCenterLat = (ne.lat + sw.lat) / 2;
+            const markerCenterLng = (ne.lng + sw.lng) / 2;
+            if (isDegenerate) {
+                const frameSpan = mapContext.compactRegion ? 0.026 : 0.045;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - frameSpan / 2, destinationCenter[1] - frameSpan / 2],
+                    [destinationCenter[0] + frameSpan / 2, destinationCenter[1] + frameSpan / 2]
+                );
+            } else if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                const expand = maxSpan < 0.12 ? 1.15 : 1.1;
+                const halfLat = latSpan / 2 * expand;
+                const halfLng = lngSpan / 2 * expand;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                const latReach = Math.max(mapContext.maxCenterLat, latSpan / 2) * 1.45;
+                const lngReach = Math.max(mapContext.maxCenterLng, lngSpan / 2) * 1.45;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - latReach, destinationCenter[1] - lngReach],
+                    [destinationCenter[0] + latReach, destinationCenter[1] + lngReach]
+                );
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                const halfLat = latSpan / 2 * 1.1;
+                const halfLng = lngSpan / 2 * 1.1;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                const frameSpan = Math.max(maxSpan * 4, 0.006);
+                bounds = L.latLngBounds(
+                    [markerCenterLat - frameSpan / 2, markerCenterLng - frameSpan / 2],
+                    [markerCenterLat + frameSpan / 2, markerCenterLng + frameSpan / 2]
+                );
+            }
+            const fitOptions = {};
+            if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                fitOptions.padding = maxSpan < 0.12
+                    ? [24, 24]
+                    : (maxSpan < 0.5 ? [24, 24] : [28, 28]);
+                fitOptions.maxZoom = maxSpan < 0.12
+                    ? 14
+                    : (maxSpan < 0.5 ? 10 : 9);
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                fitOptions.padding = [40, 40];
+                fitOptions.maxZoom = 8;
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                fitOptions.padding = [24, 24];
+            } else if (mapContext.denseUrban) {
+                fitOptions.padding = [18, 18];
+            } else if (mapContext.spreadUrban) {
+                fitOptions.padding = [20, 20];
+            } else if (locations.length >= 3 && maxSpan >= 0.02) {
+                fitOptions.padding = maxSpan >= 0.08 ? [20, 20] : [30, 30];
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                fitOptions.padding = [12, 12];
+                fitOptions.maxZoom = 16;
+            } else if (isDegenerate || locations.length === 1) {
+                fitOptions.padding = mapContext.compactRegion ? [16, 16] : [36, 36];
+                if (isDegenerate || maxSpan < 0.015) {
+                    fitOptions.maxZoom = mapContext.compactRegion ? 15 : 14;
+                }
+            } else {
+                fitOptions.padding = [50, 50];
+            }
+            map.fitBounds(bounds, fitOptions);
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                } else {
+                    scrollTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                }
+            });
+            scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        });
+    </script>
+
+    <button id="scrollTopBtn" class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-12 h-12 bg-neon-cyan text-deepblue-950 rounded-full shadow-[0_0_20px_rgba(0,240,255,0.4)] opacity-0 pointer-events-none transition-all duration-300 translate-y-4 hover:bg-white hover:scale-110" aria-label="Scroll to top">
+        <i class="ph ph-arrow-up text-xl font-bold"></i>
+    </button>
+</body>
+</html>
