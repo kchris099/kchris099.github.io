@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lima Guide | Global Explorer Guides</title>
+    <link rel="stylesheet" href="../../assets/tailwind.css">
+    <link rel="stylesheet" href="../../assets/outfit.css">
+    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
+    <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
+    <link rel="stylesheet" href="../../assets/homepage-activation.css">
+    <link rel="stylesheet" href="../../assets/destination-activation.css">
+    <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
+    <script src="../../assets/leaflet/leaflet.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #060B19; }
+        ::-webkit-scrollbar-thumb { background: #1E336B; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0070FF; }
+        .leaflet-popup-content-wrapper { background-color: #fff; color: #333; border-radius: 8px; box-shadow: 0 3px 14px rgba(0,0,0,0.4); }
+        .leaflet-popup-tip { background-color: #fff; }
+    </style>
+</head>
+<body class="bg-deepblue-950 text-slate-200 font-sans min-h-screen relative overflow-x-hidden">
+    <div class="absolute top-0 left-0 w-full h-[450px] md:h-[500px] z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50" style="background-image: url('images/lima_hero.jpg')"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-deepblue-950/10 via-deepblue-950/60 to-deepblue-950"></div>
+    </div>
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon-purple/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neon-cyan/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <main class="container mx-auto px-4 py-8 md:py-16 relative z-20 max-w-5xl">
+        <nav class="mb-12 animate-fade-in-down flex flex-wrap items-center gap-4">
+            <a href="../../index.html" class="flex items-center justify-center w-11 h-11 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0" title="Back to Home">
+                <i class="ph ph-house text-xl group-hover:scale-110 transition-transform"></i>
+            </a>
+            <a href="peru.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0">
+                <i class="ph ph-arrow-left text-lg group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-medium text-sm">Back to Peru</span>
+            </a>
+            <div class="ml-auto flex items-center gap-3 bg-deepblue-900/40 border border-deepblue-700/50 rounded-full px-4 py-2 backdrop-blur-sm shadow-inner shrink-0">
+                <img src="../../assets/flags/w40/pe.png" alt="Peru flag" class="w-6 h-auto rounded-[2px] shadow-sm">
+                <div class="flex items-center gap-2 text-sm font-medium tracking-wide">
+                    <span class="text-slate-200 uppercase text-xs tracking-wider font-bold">Peru</span>
+                    <span class="text-deepblue-500 text-xs">&rsaquo;</span>
+                    <span class="text-neon-cyan text-xs">Lima</span>
+                </div>
+            </div>
+        </nav>
+
+        <header class="mb-16 animate-fade-in-down animation-delay-100 text-center">
+            <button
+                type="button"
+                id="destination-active-toggle"
+                class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
+                data-iso2="PE"
+                data-slug="lima"
+                data-active="false"
+                data-interactive="true"
+                aria-label="Toggle Lima visibility on Peru guide"
+                aria-pressed="false"
+            >
+                <i class="ph ph-map-pin text-4xl text-slate-500 pointer-events-none" aria-hidden="true"></i>
+            </button>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple pb-4">
+                Explore Lima
+            </h1>
+            <div class="bg-deepblue-900/40 border border-deepblue-800 rounded-3xl p-8 md:p-10 text-left backdrop-blur-sm mt-10">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                    <i class="ph ph-scroll text-neon-cyan"></i> A Brief History
+                </h2>
+                <p class="text-lg text-slate-400 font-light leading-relaxed">Lima was founded by Francisco Pizarro in 1535 on the Rimac Valley coast as capital of Spanish Peru. Colonial churches, balconied mansions, and the Plaza Mayor anchored viceregal power before independence in 1821. Earthquakes and republican growth reshaped the centre while suburbs spread along the Pacific. Museums, convents, and coastal archaeological sites trace Lima&#x27;s role as Peru&#x27;s administrative and cultural capital for nearly five centuries.</p>
+            </div>
+        </header>
+
+        <section class="mb-16 animate-fade-in-down" style="animation-delay: 0.2s;">
+            <h2 class="text-3xl font-bold text-white mb-6">Attractions Map</h2>
+            <div id="map" class="h-[400px] w-full rounded-3xl border border-deepblue-700 shadow-2xl z-10 relative"></div>
+        </section>
+
+        <section class="flex flex-col gap-6 pb-20 animate-fade-in-down" style="animation-delay: 0.3s;">
+            <h2 class="text-3xl font-bold text-white mb-2">Top Sights & Activities</h2>
+            
+            <!-- 1. Lima Main Square -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/lima_1.jpg" alt="Lima Main Square" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Lima Main Square</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Lima Main Square, also known as Plaza de Armas, is the historic heart of Lima and a must-visit for anyone exploring this vibrant city. Established in 1535, it serves as the birthplace of Lima and is surrounded by architectural landmarks like the Government Palace, Lima Cathedral, and Archbishop&#x27;s Palace.</p>
+                </div>
+            </div>
+
+            <!-- 2. Palacio Municipal de Lima -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/lima_2.jpg" alt="Palacio Municipal de Lima" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Palacio Municipal de Lima</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Municipal Palace of Lima, also known as the City Hall, is a neoclassical building that serves as the headquarters of the Metropolitan Municipality of Lima. It houses important government officials and is a place where significant decisions are made. The palace features various rooms, including the Atahualpa Room, which holds historical paintings and artifacts. Situated in Lima&#x27;s Plaza de Armas, it stands as a historical and architectural monument.</p>
+                </div>
+            </div>
+
+            <!-- 3. Government Palace of Peru -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/lima_3.jpg" alt="Government Palace of Peru" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Government Palace of Peru</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Government Palace of Peru, also known as the House of Pizarro, is a historic building located on the northern side of the Plaza de Armas. Originally the residence of Francisco Pizarro, it has served as the headquarters for various Peruvian governors, Viceroys, and Presidents. The palace features well-preserved rooms and hosts daily Changing of the Guard ceremonies in its courtyard at 11:45 am.</p>
+                </div>
+            </div>
+
+            <!-- 4. Casa de Aliaga -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/lima_4.jpg" alt="Casa de Aliaga" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> PEN 40
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Casa de Aliaga</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Casa de Aliaga is a historic mansion in Lima, Peru, dating back to 1535 and considered the oldest dwelling in the Americas. It has been continuously inhabited by the same noble family since its founding, showcasing a mix of architectural styles from the 16th to the 19th century. The house reflects the maximalist sensibilities of Peruvian aristocracy and features Baroque, Moorish revival, Art Nouveau, Neo-Baroque, and Beaux-Arts elements.</p>
+                </div>
+            </div>
+
+            <!-- 5. Alameda Chabuca Granda -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/lima_5.jpg" alt="Alameda Chabuca Granda" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Alameda Chabuca Granda</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Alameda Chabuca Granda is a bustling park in Lima&#x27;s historic center, named after the renowned Peruvian singer and songwriter Chabuca Granda. Visitors can stroll along the Rimac River boardwalk and enjoy various fairs, festivals, and performances including dance, comedy, and concerts. The park offers a unique viewpoint with a red sculpture at its center, providing an overview of the city.</p>
+                </div>
+            </div>
+
+            <!-- 6. Basilica and Convent of Santo Domingo, Lima -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/lima_6.jpg" alt="Basilica and Convent of Santo Domingo, Lima" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> PEN 15
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Basilica and Convent of Santo Domingo, Lima</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Basilica and Convent of Santo Domingo in Lima is a 16th-century religious site that showcases the rich history and architectural beauty of colonial Peru. Nestled just a block from the Plaza de Armas, this convent has been home to notable figures like Santa Rosa de Lima and Fray Martin de Porres. Visitors can wander through its verdant inner courtyards adorned with Spanish tiles, admire exquisite religious art, and delve into its impressive library filled with rare manuscripts.</p>
+                </div>
+            </div>
+
+            <!-- 7. Museo del Convento de San Francisco y Catacumbas -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/lima_7.jpg" alt="Museo del Convento de San Francisco y Catacumbas" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> PEN 20
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Museo del Convento de San Francisco y Catacumbas</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Catacombs of the Convento de San Francisco are a for anyone interested in history. The labyrinthine tunnels date back to the 16th century and contain some of the most surprising and fascinating art collections in all of Spain. The Catacombs of San Francisco convent are a maze-like series of tunnels that date back to the 16th century. It is interesting museums in all Spain because it contains some very unique art collections.</p>
+                </div>
+            </div>
+
+            <!-- 8. Archdiocesan Shrine of the Heart of Jesus - San Pedro -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/lima_8.jpg" alt="Archdiocesan Shrine of the Heart of Jesus - San Pedro" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Archdiocesan Shrine of the Heart of Jesus - San Pedro</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Archdiocesan Shrine of the Heart of Jesus - San Pedro is a 17th-century church located in the heart of Lima. Its baroque-style interior features intricate altars and gilded details, making it a picturesque spot for visitors exploring downtown. Built by the Jesuits and painted in a charming pale yellow and white, this colonial church is flanked by two tall bell towers.</p>
+                </div>
+            </div>
+
+            <!-- 9. San Martin Square -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/lima_9.jpg" alt="San Martin Square" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">San Martin Square</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">St Martin Square, located in Lima&#x27;s UNESCO-listed Historic Centre, is a significant urban gathering space featuring a central monument of José de San Martín on horseback. Known as the Protector of Peru for his role in South America&#x27;s fight for independence from Spain, the square holds historical significance. Illuminated in the evenings, it offers a beautiful ambiance. The square was built early in the 20th century and is considered Cultural Heritage of Humanity.</p>
+                </div>
+            </div>
+
+            <!-- 10. Iglesia Las Nazarenas -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/lima_10.jpg" alt="Iglesia Las Nazarenas" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Iglesia Las Nazarenas</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Iglesia Las Nazarenas, or the Church of the Nazarene, is a remarkable historical site nestled in Lima, Peru. Established in 1771 under Viceroy Amat&#x27;s guidance, this church stands on land once inhabited by freed Angolan slaves. A captivating mural of Christ painted by one of these former slaves remains a focal point within its walls, having survived a devastating earthquake in 1655.</p>
+                </div>
+            </div>
+
+            <!-- 11. Quinta Heeren -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/lima_11.jpg" alt="Quinta Heeren" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Quinta Heeren</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Parque del Amor Propio, located in a central area near the Malecon, is a beautiful and meaningful space perfect for a solo date or with someone special. The park features a sculpture that conveys the message of self-love. It&#x27;s surrounded by charming cafes and provides easy access to the oceanfront, making it an ideal spot to appreciate sunsets in shades of yellow, orange, red, and purple.</p>
+                </div>
+            </div>
+
+            <!-- 12. Bridge of Sighs -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/lima_12.jpg" alt="Bridge of Sighs" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Bridge of Sighs</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Bridge of Sighs, or Puente de los Suspiros, is a wooden structure built in 1876 that has become a beloved landmark in Lima&#x27;s Barranco district. This picturesque bridge offers not only views of the city but also serves as a perfect spot for people-watching and capturing memorable photos.</p>
+                </div>
+            </div>
+
+            <!-- 13. Barranco Municipal Park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/lima_13.jpg" alt="Barranco Municipal Park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Barranco Municipal Park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Municipal de Barranco Park, located in the upscale Barranco district of Lima, Peru, is a charming tree-lined park that offers a variety of attractions. The park features elegant statuary, paved paths for leisurely strolls, and a colonnaded stage where weekend events take place.</p>
+                </div>
+            </div>
+
+            <!-- 14. Larcomar -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/lima_14.jpg" alt="Larcomar" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Larcomar</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled atop the cliffs of Miraflores, Larcomar is a vibrant outdoor shopping mall that seamlessly blends luxury with views of the Pacific Ocean. This upscale destination boasts an array of eateries, from casual dining to fine restaurants, alongside chic boutiques and gift shops. Families can enjoy a playground area for kids while movie enthusiasts can catch the latest films in its impressive cinema complex.</p>
+                </div>
+            </div>
+
+            <!-- 15. Love Park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/lima_15.jpg" alt="Love Park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Love Park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Love&#x27;s Park, also known as Parque del Amor, is a popular destination in Miraflores, offering views of the ocean. The park features a large kissing sculpture called &#x27;The Kiss&#x27; by Victor Delfin and mosaic walls adorned with colorful benches inscribed with love-themed phrases by Peruvian authors. It&#x27;s a romantic spot to watch the sunset and enjoy the company of your loved one. The park has become an symbol for couples seeking an ideal setting by the sea.</p>
+                </div>
+            </div>
+
+            <!-- 16. Navy Lighthouse -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/lima_16.jpg" alt="Navy Lighthouse" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Navy Lighthouse</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Marine Lighthouse is a cliffside beacon featuring a 72-ft. iron tower that emits light visible for 18 nautical miles. Situated in Miraflores, it offers ocean and cliff views, surrounded by a well-maintained park perfect for leisurely strolls or cycling. The area also boasts cultural events and nearby dining options ranging from casual to upscale, making it an ideal spot for a family outing or a romantic walk.</p>
+                </div>
+            </div>
+
+            <!-- 17. Maria Reiche Park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/lima_17.jpg" alt="Maria Reiche Park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Maria Reiche Park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled along the Malecon de la Marina in Miraflores, Maria Reiche Park is a serene oasis that pays homage to the renowned German archaeologist who devoted her life to studying the Nazca Lines. This expansive park features vibrant floral totemic figures reminiscent of those ancient geoglyphs and offers views of the Pacific Ocean.</p>
+                </div>
+            </div>
+
+            <!-- 18. Park of the Legends Zoo -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/lima_18.jpg" alt="Park of the Legends Zoo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> PEN 12
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Park of the Legends Zoo</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Park of the Legends Zoo, located in Pueblo Libre, Peru, is a unique attraction that combines archaeology and biodiversity. The zoo features animals from around the world and is built on the ruins of an ancient city complex. Divided into three sections representing different landscapes of Peru, it showcases over 215 species including mammals, birds, reptiles, amphibians, fish and insects. Visitors can explore a botanical garden and a museum while also admiring ancient ruins within the park.</p>
+                </div>
+            </div>
+
+            <!-- 19. Magic Water Circuit of the Reserve Park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/lima_19.jpg" alt="Magic Water Circuit of the Reserve Park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> PEN 5
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Magic Water Circuit of the Reserve Park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Magic Water Circuit of the Reserve Park, situated in Lima&#x27;s Parque de la Reserva, is a captivating attraction featuring 13 fountains that come alive with colorful lights and laser beams at night. This mesmerizing display of water, light, and music offers an enchanting experience for families, art enthusiasts, and anyone seeking visually entertainment. Visitors can enjoy nightly performances showcasing choreographed light displays amidst the dancing waters.</p>
+                </div>
+            </div>
+
+            <!-- 20. Park of the Exposition -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/lima_20.jpg" alt="Park of the Exposition" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Park of the Exposition</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Parque de la Exposicion or Gran Parque de Lima is a tranquil oasis of peace and tranquility in Lima, amidst the city&#x27;s noisy and hectic hustle and bustle. The park features gardens, lakes, an amphitheater, as well as buildings such as an art museum. It is adjacent to downtown Lima. Rooms at Miraflores Park Hotel offer either panoramic ocean or city views.</p>
+                </div>
+            </div>
+
+            <!-- 21. Gran Teatro Nacional del Perú -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/lima_21.jpg" alt="Gran Teatro Nacional del Perú" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> PEN 60
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Gran Teatro Nacional del Perú</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Gran Teatro Nacional del Perú, inaugurated in 2011, is the largest theater in Peru and a testament to the country&#x27;s dedication to the arts. It serves as an international platform for showcasing Peruvian talent and hosting productions. The venue has hosted remarkable performances by renowned artists such as Placido Domingo and Erin Wall.</p>
+                </div>
+            </div>
+
+            <!-- 22. Callao Monumental turismo histórico -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/lima_22.jpg" alt="Callao Monumental turismo histórico" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> PEN 35
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Callao Monumental turismo histórico</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Callao Monumental turismo histórico is a vibrant and creative zone in the district of Callao, offering a mix of contemporary art galleries, studios, and restaurants. This area has transformed into a popular tourist spot filled with art, music, and color. One of its main attractions is Casa Fugaz, featuring independent restaurants, artisanal fabric boutiques, galleries, and studio spaces for resident artists.</p>
+                </div>
+            </div>
+
+            <!-- 23. Fortress of the real felipe -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/lima_23.jpg" alt="Fortress of the real felipe" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> PEN 20
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Fortress of the real felipe</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Real Felipe Fortress, a storied 18th-century fort, stands as a testament to Peru&#x27;s rich history. Built over 250 years ago to safeguard the Callao harbor and South American gold shipments to Spain, it is the largest fortress constructed by the Spanish Crown outside of Spain. This historical site played a crucial role in protecting the capital from pirate attacks and privateers during colonial times.</p>
+                </div>
+            </div>
+
+            <!-- 24. Condor Xtreme - Paragliding Miraflores -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/lima_24.jpg" alt="Condor Xtreme - Paragliding Miraflores" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> PEN 350
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Condor Xtreme - Paragliding Miraflores</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Condor Xtreme - Paragliding Miraflores offers an exhilarating paragliding experience over Lima, suitable for anyone without special skills. The flight is supervised by certified instructors and provides an adrenaline rush while also offering a calming sensation as you soar above the ocean and take in the city landscape and mountains. The setup process is efficient, with equipment provided, including noise-canceling headphones and a GoPro camera to capture the entire experience.</p>
+                </div>
+            </div>
+
+            <!-- 25. Pucllana Site Museum -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/lima_25.jpg" alt="Pucllana Site Museum" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> PEN 15
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Pucllana Site Museum</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Huaca Pucllana Site Museum is an ancient pre-Inca archaeological site situated in Miraflores, offering a captivating journey into Lima&#x27;s pre-Columbian history. The clay and adobe pyramid complex provides valuable insights into the indigenous cultures that once thrived in the region. Guided tours are available to enhance the understanding of the site&#x27;s historical significance, making it an educational destination for history enthusiasts, archaeology buffs, and families with older children.</p>
+                </div>
+            </div>
+
+            <!-- 26. Friendship Park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/lima_26.jpg" alt="Friendship Park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Friendship Park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled in the heart of Lima, Friendship Park, or Parque de la Amistad, is a delightful oasis that promises moments for families and friends alike. This picturesque park boasts a Moorish-inspired arch adorned with vibrant tile mosaics, serving as its centerpiece. Spanning nearly thirty thousand square meters, it features winding walking paths that meander through lush greenery and tranquil ponds.</p>
+                </div>
+            </div>
+
+            <!-- 27. John F. Kennedy park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/lima_27.jpg" alt="John F. Kennedy park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">John F. Kennedy park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Kennedy Park, located in the heart of Miraflores, is a delightful city park honoring President John F. Kennedy. It is renowned as parks in Lima and offers views, pleasant green spaces, and leafy trees for visitors to enjoy while strolling through its winding paths. The park is also home to over 100 stray cats protected by the Municipality of Miraflores and has its own organization dedicated to their well-being.</p>
+                </div>
+            </div>
+
+            <!-- 28. 7th of June Park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/lima_28.jpg" alt="7th of June Park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">7th of June Park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">7th of June Park, also known as Kennedy Park, is a charming triangular urban oasis in Lima. It pays tribute to President John F. Kennedy and his involvement in the Alliance for Progress movement. The park boasts lush greenery, walking paths, an amphitheater, and a playground. What sets this park apart is its reputation for being home to numerous friendly cats that roam the grounds and provide company to visitors.</p>
+                </div>
+            </div>
+
+            <!-- 29. Mercado 1 de Surquillo -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/lima_29.jpg" alt="Mercado 1 de Surquillo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Mercado 1 de Surquillo</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Mercado No 1 de Surquillo is a traditional neighbourhood market in Lima&#x27;s Surquillo district, supplying households and restaurants with Peruvian produce. Stalls display Andean potatoes, tropical fruit, fresh seafood, and butcher cuts at local prices. The covered aisles offer an everyday glimpse of Lima&#x27;s food culture away from tourist-focused historic markets.</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
+        <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+    </footer>    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const map = L.map('map').setView([-12.083470, -77.039956], 14);
+            L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                attribution: '&copy; Google Maps',
+                maxZoom: 20
+            }).addTo(map);
+            const locations = [{"name": "Lima Main Square", "lat": -12.045969, "lng": -77.030578}, {"name": "Palacio Municipal de Lima", "lat": -12.04534, "lng": -77.030952}, {"name": "Government Palace of Peru", "lat": -12.044849, "lng": -77.029803}, {"name": "Casa de Aliaga", "lat": -12.04417, "lng": -77.030383}, {"name": "Alameda Chabuca Granda", "lat": -12.043106, "lng": -77.03146}, {"name": "Basilica and Convent of Santo Domingo, Lima", "lat": -12.044076, "lng": -77.031935}, {"name": "Museo del Convento de San Francisco y Catacumbas", "lat": -12.045298, "lng": -77.027444}, {"name": "Archdiocesan Shrine of the Heart of Jesus - San Pedro", "lat": -12.049205, "lng": -77.028997}, {"name": "San Martin Square", "lat": -12.051694, "lng": -77.034588}, {"name": "Iglesia Las Nazarenas", "lat": -12.045568, "lng": -77.037422}, {"name": "Quinta Heeren", "lat": -12.04925, "lng": -77.018303}, {"name": "Bridge of Sighs", "lat": -12.14918, "lng": -77.0226}, {"name": "Barranco Municipal Park", "lat": -12.149527, "lng": -77.021187}, {"name": "Larcomar", "lat": -12.131958, "lng": -77.030492}, {"name": "Love Park", "lat": -12.126944, "lng": -77.036616}, {"name": "Navy Lighthouse", "lat": -12.123651, "lng": -77.040159}, {"name": "Maria Reiche Park", "lat": -12.115809, "lng": -77.048596}, {"name": "Park of the Legends Zoo", "lat": -12.067963, "lng": -77.087022}, {"name": "Magic Water Circuit of the Reserve Park", "lat": -12.070443, "lng": -77.032968}, {"name": "Park of the Exposition", "lat": -12.062258, "lng": -77.036625}, {"name": "Gran Teatro Nacional del Perú", "lat": -12.086736, "lng": -77.003096}, {"name": "Callao Monumental turismo histórico", "lat": -12.06007, "lng": -77.147379}, {"name": "Fortress of the real felipe", "lat": -12.062509, "lng": -77.148792}, {"name": "Condor Xtreme - Paragliding Miraflores", "lat": -12.101345, "lng": -77.070687}, {"name": "Pucllana Site Museum", "lat": -12.111208, "lng": -77.033607}, {"name": "Friendship Park", "lat": -12.131822, "lng": -76.981594}, {"name": "John F. Kennedy park", "lat": -12.121731, "lng": -77.030364}, {"name": "7th of June Park", "lat": -12.120654, "lng": -77.02944}, {"name": "Mercado 1 de Surquillo", "lat": -12.118311, "lng": -77.025649}];
+            const customIcon = L.icon({
+                iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32],
+            });
+            const destinationCenter = [-12.083470, -77.039956];
+            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.066057, "maxCenterLng": 0.108836};
+            const markers = [];
+            locations.forEach(loc => {
+                markers.push(
+                    L.marker([loc.lat, loc.lng], {icon: customIcon}).addTo(map)
+                        .bindPopup(`<strong class="font-sans text-base text-gray-900">${loc.name}</strong>`)
+                );
+            });
+            const group = new L.featureGroup(markers);
+            let bounds = group.getBounds();
+            const ne = bounds.getNorthEast();
+            const sw = bounds.getSouthWest();
+            const latSpan = ne.lat - sw.lat;
+            const lngSpan = ne.lng - sw.lng;
+            const maxSpan = Math.max(latSpan, lngSpan);
+            const isDegenerate = latSpan < 1e-9 && lngSpan < 1e-9;
+            const markerCenterLat = (ne.lat + sw.lat) / 2;
+            const markerCenterLng = (ne.lng + sw.lng) / 2;
+            if (isDegenerate) {
+                const frameSpan = mapContext.compactRegion ? 0.026 : 0.045;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - frameSpan / 2, destinationCenter[1] - frameSpan / 2],
+                    [destinationCenter[0] + frameSpan / 2, destinationCenter[1] + frameSpan / 2]
+                );
+            } else if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                const expand = maxSpan < 0.12 ? 1.15 : 1.1;
+                const halfLat = latSpan / 2 * expand;
+                const halfLng = lngSpan / 2 * expand;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                const latReach = Math.max(mapContext.maxCenterLat, latSpan / 2) * 1.45;
+                const lngReach = Math.max(mapContext.maxCenterLng, lngSpan / 2) * 1.45;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - latReach, destinationCenter[1] - lngReach],
+                    [destinationCenter[0] + latReach, destinationCenter[1] + lngReach]
+                );
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                const halfLat = latSpan / 2 * 1.1;
+                const halfLng = lngSpan / 2 * 1.1;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                const frameSpan = Math.max(maxSpan * 4, 0.006);
+                bounds = L.latLngBounds(
+                    [markerCenterLat - frameSpan / 2, markerCenterLng - frameSpan / 2],
+                    [markerCenterLat + frameSpan / 2, markerCenterLng + frameSpan / 2]
+                );
+            }
+            const fitOptions = {};
+            if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                fitOptions.padding = maxSpan < 0.12
+                    ? [24, 24]
+                    : (maxSpan < 0.5 ? [24, 24] : [28, 28]);
+                fitOptions.maxZoom = maxSpan < 0.12
+                    ? 14
+                    : (maxSpan < 0.5 ? 10 : 9);
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                fitOptions.padding = [40, 40];
+                fitOptions.maxZoom = 8;
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                fitOptions.padding = [24, 24];
+            } else if (mapContext.denseUrban) {
+                fitOptions.padding = [18, 18];
+            } else if (mapContext.spreadUrban) {
+                fitOptions.padding = [20, 20];
+            } else if (locations.length >= 3 && maxSpan >= 0.02) {
+                fitOptions.padding = maxSpan >= 0.08 ? [20, 20] : [30, 30];
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                fitOptions.padding = [12, 12];
+                fitOptions.maxZoom = 16;
+            } else if (isDegenerate || locations.length === 1) {
+                fitOptions.padding = mapContext.compactRegion ? [16, 16] : [36, 36];
+                if (isDegenerate || maxSpan < 0.015) {
+                    fitOptions.maxZoom = mapContext.compactRegion ? 15 : 14;
+                }
+            } else {
+                fitOptions.padding = [50, 50];
+            }
+            map.fitBounds(bounds, fitOptions);
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                } else {
+                    scrollTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                }
+            });
+            scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        });
+    </script>
+
+    <button id="scrollTopBtn" class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-12 h-12 bg-neon-cyan text-deepblue-950 rounded-full shadow-[0_0_20px_rgba(0,240,255,0.4)] opacity-0 pointer-events-none transition-all duration-300 translate-y-4 hover:bg-white hover:scale-110" aria-label="Scroll to top">
+        <i class="ph ph-arrow-up text-xl font-bold"></i>
+    </button>
+</body>
+</html>

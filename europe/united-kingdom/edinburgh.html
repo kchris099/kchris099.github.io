@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edinburgh Guide | Global Explorer Guides</title>
+    <link rel="stylesheet" href="../../assets/tailwind.css">
+    <link rel="stylesheet" href="../../assets/outfit.css">
+    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
+    <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
+    <link rel="stylesheet" href="../../assets/homepage-activation.css">
+    <link rel="stylesheet" href="../../assets/destination-activation.css">
+    <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
+    <script src="../../assets/leaflet/leaflet.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #060B19; }
+        ::-webkit-scrollbar-thumb { background: #1E336B; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0070FF; }
+        .leaflet-popup-content-wrapper { background-color: #fff; color: #333; border-radius: 8px; box-shadow: 0 3px 14px rgba(0,0,0,0.4); }
+        .leaflet-popup-tip { background-color: #fff; }
+    </style>
+</head>
+<body class="bg-deepblue-950 text-slate-200 font-sans min-h-screen relative overflow-x-hidden">
+    <div class="absolute top-0 left-0 w-full h-[450px] md:h-[500px] z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50" style="background-image: url('images/edinburgh_hero.jpg')"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-deepblue-950/10 via-deepblue-950/60 to-deepblue-950"></div>
+    </div>
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon-purple/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neon-cyan/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <main class="container mx-auto px-4 py-8 md:py-16 relative z-20 max-w-5xl">
+        <nav class="mb-12 animate-fade-in-down flex flex-wrap items-center gap-4">
+            <a href="../../index.html" class="flex items-center justify-center w-11 h-11 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0" title="Back to Home">
+                <i class="ph ph-house text-xl group-hover:scale-110 transition-transform"></i>
+            </a>
+            <a href="united-kingdom.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0">
+                <i class="ph ph-arrow-left text-lg group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-medium text-sm">Back to United Kingdom</span>
+            </a>
+            <div class="ml-auto flex items-center gap-3 bg-deepblue-900/40 border border-deepblue-700/50 rounded-full px-4 py-2 backdrop-blur-sm shadow-inner shrink-0">
+                <img src="../../assets/flags/w40/gb.png" alt="United Kingdom flag" class="w-6 h-auto rounded-[2px] shadow-sm">
+                <div class="flex items-center gap-2 text-sm font-medium tracking-wide">
+                    <span class="text-slate-200 uppercase text-xs tracking-wider font-bold">United Kingdom</span>
+                    <span class="text-deepblue-500 text-xs">&rsaquo;</span>
+                    <span class="text-neon-cyan text-xs">Edinburgh</span>
+                </div>
+            </div>
+        </nav>
+
+        <header class="mb-16 animate-fade-in-down animation-delay-100 text-center">
+            <button
+                type="button"
+                id="destination-active-toggle"
+                class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
+                data-iso2="GB"
+                data-slug="edinburgh"
+                data-active="false"
+                data-interactive="true"
+                aria-label="Toggle Edinburgh visibility on United Kingdom guide"
+                aria-pressed="false"
+            >
+                <i class="ph ph-map-pin text-4xl text-slate-500 pointer-events-none" aria-hidden="true"></i>
+            </button>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple pb-4">
+                Explore Edinburgh
+            </h1>
+            <div class="bg-deepblue-900/40 border border-deepblue-800 rounded-3xl p-8 md:p-10 text-left backdrop-blur-sm mt-10">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                    <i class="ph ph-scroll text-neon-cyan"></i> A Brief History
+                </h2>
+                <p class="text-lg text-slate-400 font-light leading-relaxed">Edinburgh grew from a hill fort on Castle Rock into Scotland&#x27;s royal capital after David I founded Holyrood Abbey and burgh privileges along the Royal Mile in the twelfth century. Medieval parliaments, the Reformation, and the 1707 Union with England reshaped the Old Town closes while Enlightenment planners laid out the Georgian New Town from the 1760s. Courts, university buildings, and printers earned the city its nickname as the Athens of the North, and festivals now fill kirks and squares above the drained Nor Loch valley.</p>
+            </div>
+        </header>
+
+        <section class="mb-16 animate-fade-in-down" style="animation-delay: 0.2s;">
+            <h2 class="text-3xl font-bold text-white mb-6">Attractions Map</h2>
+            <div id="map" class="h-[400px] w-full rounded-3xl border border-deepblue-700 shadow-2xl z-10 relative"></div>
+        </section>
+
+        <section class="flex flex-col gap-6 pb-20 animate-fade-in-down" style="animation-delay: 0.3s;">
+            <h2 class="text-3xl font-bold text-white mb-2">Top Sights & Activities</h2>
+            
+            <!-- 1. The Real Mary King&#x27;s Close -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/edinburgh_1.jpg" alt="The Real Mary King&#x27;s Close" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> £27
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">The Real Mary King&#x27;s Close</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Real Mary King&#x27;s Close is a fascinating underground museum located on the Royal Mile in Edinburgh, just a short distance from the Edinburgh Castle. This historical landmark offers immersive walking tours through hidden streets that provide insight into the lives of 17th-century residents. The close was once a bustling community but was mysteriously covered up, possibly to contain the spread of the plague.</p>
+                </div>
+            </div>
+
+            <!-- 2. St Giles&#x27; Cathedral -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/edinburgh_2.jpg" alt="St Giles&#x27; Cathedral" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">St Giles&#x27; Cathedral</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">St Giles&#x27; Cathedral, also known as the High Kirk of Edinburgh, is a grand Gothic medieval building and a Presbyterian place of worship. It was originally established in 854 but the present structure dates back to 1485. The cathedral is named after the city&#x27;s patron saint and features a wide facade with Gothic windows, finials, and an unusual ventilated crown spire formed by eight flying buttresses.</p>
+                </div>
+            </div>
+
+            <!-- 3. Royal Mile -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/edinburgh_3.jpg" alt="Royal Mile" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Royal Mile</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Royal Mile is a bustling street that connects Edinburgh Castle with Holyrood Palace, offering a mix of charming eateries, shops, and historic landmarks. This thoroughfare in the UNESCO-listed Old Town provides a sensory journey through Edinburgh&#x27;s rich history and modern-day allure. Visitors can explore hidden alleyways, traditional pubs, and intriguing museums while enjoying street performances and storytelling sessions.</p>
+                </div>
+            </div>
+
+            <!-- 4. Greyfriars Bobby&#x27;s Bar -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/edinburgh_4.jpg" alt="Greyfriars Bobby&#x27;s Bar" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Greyfriars Bobby&#x27;s Bar</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled in the vibrant heart of Edinburgh on Candlemaker Row, Greyfriars Bobby&#x27;s Bar is a charming establishment steeped in history. This traditional pub, housed within a Georgian building since 1893, offers an inviting atmosphere where visitors can enjoy cask ales and delicious pub fare. The bar pays homage to the legendary Skye Terrier, Bobby, who famously kept vigil at his owner&#x27;s grave for 14 years until his own passing in 1872.</p>
+                </div>
+            </div>
+
+            <!-- 5. Holyrood Park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/edinburgh_5.jpg" alt="Holyrood Park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Holyrood Park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Holyrood Park is a parkland surrounding the slopes and crags of Arthur&#x27;s Seat, offering walking and cycling paths as well as a picturesque loch. Visitors can enjoy various activities such as climbing Arthur&#x27;s Seat for panoramic views, exploring Iron Age forts and Bronze Age agricultural terraces, visiting St. Anthony&#x27;s Chapel ruins, greeting geese at Duddingston Loch, and fishing at Dunsapie Loch with a permit.</p>
+                </div>
+            </div>
+
+            <!-- 6. Arthur&#x27;s Seat -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/edinburgh_6.jpg" alt="Arthur&#x27;s Seat" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Arthur&#x27;s Seat</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Arthur&#x27;s Seat, an landmark nestled in the heart of Edinburgh, is a must-visit for outdoor enthusiasts and nature lovers alike. This extinct volcano rises to 251 meters (823 feet) and offers a variety of hiking trails that cater to different skill levels, from moderate strolls to more challenging climbs. The ascent typically takes between 30 to 60 minutes, depending on your pace and stamina.</p>
+                </div>
+            </div>
+
+            <!-- 7. Usher Hall -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/edinburgh_7.jpg" alt="Usher Hall" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> £25
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Usher Hall</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Usher Hall, located on Lothian Road in Edinburgh, is a renowned concert hall with a rich history. Built in 1914 by architects Stockdale Harrison and Howard H Thomson, it stands out with its beaux-arts-style architecture amidst the Victorian Gothic buildings of the city. The hall was funded by Andrew Usher, a prominent whisky distiller. Today, it is known as the home of the Royal Scottish National Orchestra and hosts various concerts and recitals.</p>
+                </div>
+            </div>
+
+            <!-- 8. Craigmillar Castle -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/edinburgh_8.jpg" alt="Craigmillar Castle" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> £8
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Craigmillar Castle</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Craigmillar Castle is a well-preserved medieval fortress located in Edinburgh, Scotland. Often referred to as &quot;Edinburgh&#x27;s Other Castle,&quot; it holds significant historical importance and is a popular attraction for travelers. Built in the 14th century, the castle has served as a safe haven for Mary Queen of Scots before her imprisonment and as a place of recuperation after an illness following the birth of her son, James VI.</p>
+                </div>
+            </div>
+
+            <!-- 9. Royal Botanic Garden Edinburgh -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/edinburgh_9.jpg" alt="Royal Botanic Garden Edinburgh" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Royal Botanic Garden Edinburgh</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Royal Botanic Garden Edinburgh, established in 1670 and relocated to its current site in 1820, offers a serene escape from the city&#x27;s hustle and bustle. The 70-acre garden features a palm house, temporary exhibitions, kids&#x27; events, tours, and dining options such as the Terrace Cafe with views of Edinburgh Castle. Inverleith House hosts a contemporary art gallery while the Rock Garden, Alpine Houses, and Woodland Garden are among its highlights.</p>
+                </div>
+            </div>
+
+            <!-- 10. Stockbridge Market -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/edinburgh_10.jpg" alt="Stockbridge Market" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Stockbridge Market</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled along the picturesque banks of the Water of Leith, Stockbridge Market is a vibrant Sunday destination that celebrates local artisans and global flavors. This bustling market showcases an array of stalls offering everything from freshly baked bread and delectable pastries to mouthwatering street food.</p>
+                </div>
+            </div>
+
+            <!-- 11. Dean Village -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/edinburgh_11.jpg" alt="Dean Village" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Dean Village</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled along a serene stream, Dean Village is a picturesque gem just northeast of Edinburgh&#x27;s New Town. This charming enclave boasts lush gardens and 19th-century architecture, making it one of Scotland&#x27;s most beautiful spots. A leisurely stroll along the Water of Leith Walkway reveals remnants of its milling history and leads you past the elegant St Bernard’s Well.</p>
+                </div>
+            </div>
+
+            <!-- 12. National Monument of Scotland -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/edinburgh_12.jpg" alt="National Monument of Scotland" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">National Monument of Scotland</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The National Monument of Scotland, situated atop Calton Hill in Edinburgh, is a neoclassical memorial dedicated to the soldiers and sailors from Scotland who lost their lives during the Napoleonic Wars. Designed by renowned architects William Playfair and Charles Robert Cockerell, this 19th-century landmark bears a striking resemblance to the Parthenon in Athens.</p>
+                </div>
+            </div>
+
+            <!-- 13. Nelson Monument -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/edinburgh_13.jpg" alt="Nelson Monument" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> £8
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Nelson Monument</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Nelson Monument, located in Edinburgh, Scotland, is a towering tribute to Vice-Admiral Horatio Nelson&#x27;s victory at Trafalgar. Designed by architect Robert Burn and completed in 1807, this commemorative tower stands at the highest point of Calton Hill. Its cylindrical shape resembles an upside-down telescope and offers a viewing platform at the top reached by climbing 143 steps.</p>
+                </div>
+            </div>
+
+            <!-- 14. Calton Hill -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/edinburgh_14.jpg" alt="Calton Hill" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Calton Hill</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Calton Hill is a must-visit destination in Edinburgh, renowned for its neoclassical monuments and panoramic views of the city skyline, including the Edinburgh Castle. Originally named Caltoun or Caldoun Hill, it was granted to the citizens of Edinburgh by James II in 1456.</p>
+                </div>
+            </div>
+
+            <!-- 15. Dugald Stewart Monument -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/edinburgh_15.jpg" alt="Dugald Stewart Monument" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Dugald Stewart Monument</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Perched atop Calton Hill in Edinburgh, the Dugald Stewart Monument is a striking tribute to the renowned Scottish philosopher, Dugald Stewart. Completed in 1831 and designed by William Henry Playfair, this monument resembles the Tower of the Winds in Athens. Stewart&#x27;s contributions to Edinburgh University are commemorated through this structure, which offers panoramic views of the city and has become a popular subject for postcards and tourist brochures.</p>
+                </div>
+            </div>
+
+            <!-- 16. Scott Monument -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/edinburgh_16.jpg" alt="Scott Monument" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> £12
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Scott Monument</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Scott Monument, a Gothic structure in Edinburgh&#x27;s East Princes Street Gardens, pays tribute to the illustrious Scottish author Sir Walter Scott. As the largest monument dedicated to a writer globally, it features an impressive design by architect George Meikle Kemp. Visitors can ascend 287 steps to reach a viewing platform that offers panoramic views of the city and its architectural wonders.</p>
+                </div>
+            </div>
+
+            <!-- 17. Princes St. -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/edinburgh_17.jpg" alt="Princes St." class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Princes St.</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Princes St is a renowned shopping destination in Edinburgh, Scotland, featuring a variety of fashion brands, technology shops, hotels, and historic landmarks. The street is home to an array of dining options such as Amber Restaurant, Harvey Nichols Forth Floor Restaurant, and The Salisbury Arms. Visitors can also explore the Cathedral Church of St. Mary the Virgin designed by George Gilbert Scott on the western side of the city center.</p>
+                </div>
+            </div>
+
+            <!-- 18. Princes Street Gardens -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/edinburgh_18.jpg" alt="Princes Street Gardens" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Princes Street Gardens</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Princes Street Gardens is a renowned park in Edinburgh, situated along the main thoroughfare that separates the Old Town from the New Town. It holds historical significance as it was once part of the Nor Loch and features various public monuments and memorials. The gardens are a popular spot for picnics during summer, offering views of famous landmarks like the Scott Monument, a Gothic spire dedicated to Sir Walter Scott.</p>
+                </div>
+            </div>
+
+            <!-- 19. Ross Fountain -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/edinburgh_19.jpg" alt="Ross Fountain" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Ross Fountain</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Ross Fountain, located in the heart of Edinburgh&#x27;s Princes Street Gardens, is a cast-iron fountain dating back to 1872. This neoclassical masterpiece represents science, arts, poetry, and industry. The fountain offers a picturesque backdrop with the impressive Edinburgh Castle towering over it. It is a popular spot for photographers and tourists seeking an ideal viewpoint of the city.</p>
+                </div>
+            </div>
+
+            <!-- 20. Palace of Holyroodhouse -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/edinburgh_20.jpg" alt="Palace of Holyroodhouse" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> £22
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Palace of Holyroodhouse</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Palace of Holyroodhouse, a 16th-century residence of the Stuart monarchs, is not just an architectural marvel but also a treasure trove of history. As the official home of the British monarch in Scotland, it invites visitors to step into its royal apartments and admire exquisite antiques and relics. The throne room and great gallery are particularly captivating, while the ruins of Holyrood Abbey add an air of mystery steeped in political drama.</p>
+                </div>
+            </div>
+
+            <!-- 21. Holyrood Abbey -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/edinburgh_21.jpg" alt="Holyrood Abbey" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> £22
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Holyrood Abbey</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Holyrood Abbey is a 12th-century abbey located at the end of the Royal Mile in Edinburgh. The abbey offers free tours led by guides dressed in ancient hunting Stewart tartan, providing visitors with an immersive experience. Adjacent to Holyrood Abbey is Holyrood Palace, which has been a principal residence for Scottish royalty since the 16th century and currently serves as the official residence of Queen Elizabeth II in Scotland.</p>
+                </div>
+            </div>
+
+            <!-- 22. Scottish Parliament Building -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/edinburgh_22.jpg" alt="Scottish Parliament Building" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Scottish Parliament Building</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Scottish Parliament Building, located at the bottom of the Royal Mile, is a striking modern structure with a unique design. The interior features oak and granite elements and offers guided tours when available. The exterior showcases a blend of Scottish history and culture, with features like the Canongate Wall adorned with quotes from local writers.</p>
+                </div>
+            </div>
+
+            <!-- 23. The Vennel Viewpoint Edinburgh Castle -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/edinburgh_23.jpg" alt="The Vennel Viewpoint Edinburgh Castle" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">The Vennel Viewpoint Edinburgh Castle</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Vennel Viewpoint in Edinburgh is a picturesque spot nestled between historic tenement buildings, offering a view of the Edinburgh Castle. This narrow alleyway near the Grassmarket leads to the Cowgate and is steeped in medieval history. The vantage point provides an Instagram-worthy perspective of the castle, making it a must-visit for photography enthusiasts.</p>
+                </div>
+            </div>
+
+            <!-- 24. Lauriston Castle -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/edinburgh_24.jpg" alt="Lauriston Castle" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> £10
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Lauriston Castle</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Lauriston Castle and Gardens is a hidden gem in Edinburgh, offering a glimpse into the past with its 16th-century tower house adorned with Georgian and Edwardian additions. Once home to Mr. and Mrs. W.R. Reid, this beautifully preserved castle showcases the opulent Edwardian interior design that the family bestowed upon it during their residency until 1926 when it became a museum.</p>
+                </div>
+            </div>
+
+            <!-- 25. Edinburgh Zoo -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/edinburgh_25.jpg" alt="Edinburgh Zoo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> £29
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Edinburgh Zoo</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Edinburgh Zoo is a large parkland zoo that offers a variety of experiences for visitors. It has keeper talks, hands-on animal encounters, and free hilltop safari rides. The zoo is praised for its diverse selection of animals and pleasant scenery, although it can get busy during peak times. Visitors can see happy animals such as sloths and koalas, and may even catch feeding time for the sloths up close.</p>
+                </div>
+            </div>
+
+            <!-- 26. Surgeons&#x27; Hall Museum -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/edinburgh_26.jpg" alt="Surgeons&#x27; Hall Museum" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> £12
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Surgeons&#x27; Hall Museum</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Surgeons&#x27; Hall Museums, located in a classical 1832 building in the Old Town, offer a fascinating exploration of the history of medicine and the University of Edinburgh&#x27;s significant contributions. The museum houses three distinct sections: Wohl Pathology Museum, History of Surgery Museum, and Dental Collection. Visitors can delve into the city&#x27;s role in medical innovations like anaesthetics and antiseptics while learning about notable figures such as the inspiration for Sherlock Holmes.</p>
+                </div>
+            </div>
+
+            <!-- 27. Festival Theatre -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/edinburgh_27.jpg" alt="Festival Theatre" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> £25
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Festival Theatre</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Festival Theatre in Edinburgh is a vibrant cultural hub that showcases a diverse range of performances, including national opera and ballet shows, touring productions, and comedy acts. The venue has gained acclaim as Scotland&#x27;s largest stage since its establishment in 1994. With a seating capacity of 1,915 and a glass-adorned foyer, the theatre offers an immersive experience for art enthusiasts.</p>
+                </div>
+            </div>
+
+            <!-- 28. Forth Bridge -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/edinburgh_28.jpg" alt="Forth Bridge" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Forth Bridge</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Forth Bridge, an 1.5-mile-long railway marvel that opened its doors in 1890, gracefully spans the Forth estuary and serves as a backdrop for exploration. Surrounding this engineering wonder are 40 captivating short walks that invite adventurers to traverse the Kingdom of Fife.</p>
+                </div>
+            </div>
+
+            <!-- 29. The Hawes Inn -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/edinburgh_29.jpg" alt="The Hawes Inn" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">The Hawes Inn</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Hawes Inn is a charming waterfront establishment located in South Queensferry, offering traditional guestrooms with rustic details and a classic pub featuring a cozy fireplace. Nestled against the picturesque backdrop of the Three Bridges and Firth of Forth, this inn provides a delightful setting for visitors to relax and enjoy their stay. The nearby area boasts various dining options, including an informal restaurant with a contemporary take on traditional pub fare.</p>
+                </div>
+            </div>
+
+            <!-- 30. The Meadows -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/edinburgh_30.jpg" alt="The Meadows" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">The Meadows</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Meadows is a popular public park located in the southern edge of Edinburgh&#x27;s Old Town, known for its flat expanse that attracts joggers, sports teams, and sunbathers. The park features various facilities such as children&#x27;s playgrounds, sports pitches, tennis courts, a putting green, and a pavilion cafe. It is also home to the annual summer fair and hosts events like the Edinburgh Festival in August.</p>
+                </div>
+            </div>
+
+            <!-- 31. Portobello Beach -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/edinburgh_31.jpg" alt="Portobello Beach" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Portobello Beach</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Portobello Beach, located near Edinburgh along the Firth of Forth, offers a classic seaside experience with its sandy stretches and elegant promenade featuring Georgian and Victorian architecture. The area is home to the historic Portobello Swim Centre, which boasts a Victorian swimming pool complete with an original Aerotone (jacuzzi) and Turkish baths. Visitors can also explore the charming old Victorian buildings along the 2-mile long beachfront promenade.</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
+        <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+    </footer>    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const map = L.map('map').setView([55.953586, -3.203191], 14);
+            L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                attribution: '&copy; Google Maps',
+                maxZoom: 20
+            }).addTo(map);
+            const locations = [{"name": "The Real Mary King's Close", "lat": 55.949921, "lng": -3.190506}, {"name": "St Giles' Cathedral", "lat": 55.949484, "lng": -3.190892}, {"name": "Royal Mile", "lat": 55.950109, "lng": -3.188021}, {"name": "Greyfriars Bobby's Bar", "lat": 55.946838, "lng": -3.191487}, {"name": "Holyrood Park", "lat": 55.946015, "lng": -3.159635}, {"name": "Arthur's Seat", "lat": 55.944083, "lng": -3.161832}, {"name": "Usher Hall", "lat": 55.947277, "lng": -3.205025}, {"name": "Craigmillar Castle", "lat": 55.925677, "lng": -3.140828}, {"name": "Royal Botanic Garden Edinburgh", "lat": 55.965013, "lng": -3.209102}, {"name": "Stockbridge Market", "lat": 55.957563, "lng": -3.208207}, {"name": "Dean Village", "lat": 55.952279, "lng": -3.218199}, {"name": "National Monument of Scotland", "lat": 55.954765, "lng": -3.181906}, {"name": "Nelson Monument", "lat": 55.954443, "lng": -3.182648}, {"name": "Calton Hill", "lat": 55.955046, "lng": -3.182741}, {"name": "Dugald Stewart Monument", "lat": 55.954494, "lng": -3.184451}, {"name": "Scott Monument", "lat": 55.952381, "lng": -3.193274}, {"name": "Princes St.", "lat": 55.951727, "lng": -3.197967}, {"name": "Princes Street Gardens", "lat": 55.950985, "lng": -3.198549}, {"name": "Ross Fountain", "lat": 55.950075, "lng": -3.203062}, {"name": "Palace of Holyroodhouse", "lat": 55.952714, "lng": -3.172272}, {"name": "Holyrood Abbey", "lat": 55.9531, "lng": -3.171563}, {"name": "Scottish Parliament Building", "lat": 55.952282, "lng": -3.174866}, {"name": "The Vennel Viewpoint Edinburgh Castle", "lat": 55.946443, "lng": -3.197256}, {"name": "Lauriston Castle", "lat": 55.971135, "lng": -3.278266}, {"name": "Edinburgh Zoo", "lat": 55.945895, "lng": -3.269038}, {"name": "Surgeons' Hall Museum", "lat": 55.946655, "lng": -3.185278}, {"name": "Festival Theatre", "lat": 55.946768, "lng": -3.185952}, {"name": "Forth Bridge", "lat": 56.001141, "lng": -3.388793}, {"name": "The Hawes Inn", "lat": 55.990464, "lng": -3.384734}, {"name": "The Meadows", "lat": 55.941304, "lng": -3.191872}, {"name": "Portobello Beach", "lat": 55.955081, "lng": -3.110691}];
+            const customIcon = L.icon({
+                iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32],
+            });
+            const destinationCenter = [55.953586, -3.203191];
+            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": true, "compactRegion": false, "denseUrban": false, "maxCenterLat": 0.047555, "maxCenterLng": 0.185602};
+            const markers = [];
+            locations.forEach(loc => {
+                markers.push(
+                    L.marker([loc.lat, loc.lng], {icon: customIcon}).addTo(map)
+                        .bindPopup(`<strong class="font-sans text-base text-gray-900">${loc.name}</strong>`)
+                );
+            });
+            const group = new L.featureGroup(markers);
+            let bounds = group.getBounds();
+            const ne = bounds.getNorthEast();
+            const sw = bounds.getSouthWest();
+            const latSpan = ne.lat - sw.lat;
+            const lngSpan = ne.lng - sw.lng;
+            const maxSpan = Math.max(latSpan, lngSpan);
+            const isDegenerate = latSpan < 1e-9 && lngSpan < 1e-9;
+            const markerCenterLat = (ne.lat + sw.lat) / 2;
+            const markerCenterLng = (ne.lng + sw.lng) / 2;
+            if (isDegenerate) {
+                const frameSpan = mapContext.compactRegion ? 0.026 : 0.045;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - frameSpan / 2, destinationCenter[1] - frameSpan / 2],
+                    [destinationCenter[0] + frameSpan / 2, destinationCenter[1] + frameSpan / 2]
+                );
+            } else if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                const expand = maxSpan < 0.12 ? 1.15 : 1.1;
+                const halfLat = latSpan / 2 * expand;
+                const halfLng = lngSpan / 2 * expand;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                const latReach = Math.max(mapContext.maxCenterLat, latSpan / 2) * 1.45;
+                const lngReach = Math.max(mapContext.maxCenterLng, lngSpan / 2) * 1.45;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - latReach, destinationCenter[1] - lngReach],
+                    [destinationCenter[0] + latReach, destinationCenter[1] + lngReach]
+                );
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                const halfLat = latSpan / 2 * 1.1;
+                const halfLng = lngSpan / 2 * 1.1;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                const frameSpan = Math.max(maxSpan * 4, 0.006);
+                bounds = L.latLngBounds(
+                    [markerCenterLat - frameSpan / 2, markerCenterLng - frameSpan / 2],
+                    [markerCenterLat + frameSpan / 2, markerCenterLng + frameSpan / 2]
+                );
+            }
+            const fitOptions = {};
+            if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                fitOptions.padding = maxSpan < 0.12
+                    ? [24, 24]
+                    : (maxSpan < 0.5 ? [24, 24] : [28, 28]);
+                fitOptions.maxZoom = maxSpan < 0.12
+                    ? 14
+                    : (maxSpan < 0.5 ? 10 : 9);
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                fitOptions.padding = [40, 40];
+                fitOptions.maxZoom = 8;
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                fitOptions.padding = [24, 24];
+            } else if (mapContext.denseUrban) {
+                fitOptions.padding = [18, 18];
+            } else if (mapContext.spreadUrban) {
+                fitOptions.padding = [20, 20];
+            } else if (locations.length >= 3 && maxSpan >= 0.02) {
+                fitOptions.padding = maxSpan >= 0.08 ? [20, 20] : [30, 30];
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                fitOptions.padding = [12, 12];
+                fitOptions.maxZoom = 16;
+            } else if (isDegenerate || locations.length === 1) {
+                fitOptions.padding = mapContext.compactRegion ? [16, 16] : [36, 36];
+                if (isDegenerate || maxSpan < 0.015) {
+                    fitOptions.maxZoom = mapContext.compactRegion ? 15 : 14;
+                }
+            } else {
+                fitOptions.padding = [50, 50];
+            }
+            map.fitBounds(bounds, fitOptions);
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                } else {
+                    scrollTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                }
+            });
+            scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        });
+    </script>
+
+    <button id="scrollTopBtn" class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-12 h-12 bg-neon-cyan text-deepblue-950 rounded-full shadow-[0_0_20px_rgba(0,240,255,0.4)] opacity-0 pointer-events-none transition-all duration-300 translate-y-4 hover:bg-white hover:scale-110" aria-label="Scroll to top">
+        <i class="ph ph-arrow-up text-xl font-bold"></i>
+    </button>
+</body>
+</html>

@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mexico City Guide | Global Explorer Guides</title>
+    <link rel="stylesheet" href="../../assets/tailwind.css">
+    <link rel="stylesheet" href="../../assets/outfit.css">
+    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
+    <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
+    <link rel="stylesheet" href="../../assets/homepage-activation.css">
+    <link rel="stylesheet" href="../../assets/destination-activation.css">
+    <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
+    <script src="../../assets/leaflet/leaflet.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #060B19; }
+        ::-webkit-scrollbar-thumb { background: #1E336B; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0070FF; }
+        .leaflet-popup-content-wrapper { background-color: #fff; color: #333; border-radius: 8px; box-shadow: 0 3px 14px rgba(0,0,0,0.4); }
+        .leaflet-popup-tip { background-color: #fff; }
+    </style>
+</head>
+<body class="bg-deepblue-950 text-slate-200 font-sans min-h-screen relative overflow-x-hidden">
+    <div class="absolute top-0 left-0 w-full h-[450px] md:h-[500px] z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50" style="background-image: url('images/mexico-city_hero.jpg')"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-deepblue-950/10 via-deepblue-950/60 to-deepblue-950"></div>
+    </div>
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon-purple/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neon-cyan/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <main class="container mx-auto px-4 py-8 md:py-16 relative z-20 max-w-5xl">
+        <nav class="mb-12 animate-fade-in-down flex flex-wrap items-center gap-4">
+            <a href="../../index.html" class="flex items-center justify-center w-11 h-11 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0" title="Back to Home">
+                <i class="ph ph-house text-xl group-hover:scale-110 transition-transform"></i>
+            </a>
+            <a href="mexico.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0">
+                <i class="ph ph-arrow-left text-lg group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-medium text-sm">Back to Mexico</span>
+            </a>
+            <div class="ml-auto flex items-center gap-3 bg-deepblue-900/40 border border-deepblue-700/50 rounded-full px-4 py-2 backdrop-blur-sm shadow-inner shrink-0">
+                <img src="../../assets/flags/w40/mx.png" alt="Mexico flag" class="w-6 h-auto rounded-[2px] shadow-sm">
+                <div class="flex items-center gap-2 text-sm font-medium tracking-wide">
+                    <span class="text-slate-200 uppercase text-xs tracking-wider font-bold">Mexico</span>
+                    <span class="text-deepblue-500 text-xs">&rsaquo;</span>
+                    <span class="text-neon-cyan text-xs">Mexico City</span>
+                </div>
+            </div>
+        </nav>
+
+        <header class="mb-16 animate-fade-in-down animation-delay-100 text-center">
+            <button
+                type="button"
+                id="destination-active-toggle"
+                class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
+                data-iso2="MX"
+                data-slug="mexico-city"
+                data-active="false"
+                data-interactive="true"
+                aria-label="Toggle Mexico City visibility on Mexico guide"
+                aria-pressed="false"
+            >
+                <i class="ph ph-map-pin text-4xl text-slate-500 pointer-events-none" aria-hidden="true"></i>
+            </button>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple pb-4">
+                Explore Mexico City
+            </h1>
+            <div class="bg-deepblue-900/40 border border-deepblue-800 rounded-3xl p-8 md:p-10 text-left backdrop-blur-sm mt-10">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                    <i class="ph ph-scroll text-neon-cyan"></i> A Brief History
+                </h2>
+                <p class="text-lg text-slate-400 font-light leading-relaxed">Mexico City stands on the site of Tenochtitlan, the Aztec capital conquered in 1521 and rebuilt by Spanish planners around the Zócalo. As capital of New Spain and later independent Mexico, it absorbed baroque churches, 19th-century reforms, and rapid 20th-century growth across the Valley of Mexico. Chapultepec, the historic centre, and surrounding boroughs record layered indigenous, colonial, and modern civic life.</p>
+            </div>
+        </header>
+
+        <section class="mb-16 animate-fade-in-down" style="animation-delay: 0.2s;">
+            <h2 class="text-3xl font-bold text-white mb-6">Attractions Map</h2>
+            <div id="map" class="h-[400px] w-full rounded-3xl border border-deepblue-700 shadow-2xl z-10 relative"></div>
+        </section>
+
+        <section class="flex flex-col gap-6 pb-20 animate-fade-in-down" style="animation-delay: 0.3s;">
+            <h2 class="text-3xl font-bold text-white mb-2">Top Sights & Activities</h2>
+            
+            <!-- 1. Monument to the Revolution -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mexico-city_1.jpg" alt="Monument to the Revolution" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> MX$60
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Monument to the Revolution</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Perched atop the Monumento a la Revolución Mexicana, this symbol of Mexican history and architecture offers a unique experience for visitors. Despite its moderate height, the observation deck provides views of Mexico City. Accessible via a glass elevator that ascends 57 meters above ground, it&#x27;s an opportunity to marvel at some of the vistas in the city. Additionally, occasional outdoor events are held at this remarkable site.</p>
+                </div>
+            </div>
+
+            <!-- 2. Palacio de los Deportes -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mexico-city_2.jpg" alt="Palacio de los Deportes" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Palacio de los Deportes</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled within the vibrant Autodromo Hermanos Rodriguez, the Palacio de los Deportes is a remarkable indoor arena that has been captivating audiences since its inception for the 1968 Olympics. With a seating capacity of around 20,000, it serves as an exceptional venue for a variety of events ranging from thrilling sports competitions to electrifying concerts featuring both local and international artists.</p>
+                </div>
+            </div>
+
+            <!-- 3. Alameda Central -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mexico-city_3.jpg" alt="Alameda Central" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Alameda Central</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Alameda Central is the oldest public park in Mexico City, established by Viceroy Luís Velasco. It has undergone a significant makeover in recent years, but still retains its historic charm. The park features beautiful trees, fountains, and sculptures and is surrounded by hotels, bars, and restaurants. Visitors can enjoy delicious street food from vendors around the park and experience a lively atmosphere with street performers and art installations at night.</p>
+                </div>
+            </div>
+
+            <!-- 4. Palacio de Bellas Artes -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mexico-city_4.jpg" alt="Palacio de Bellas Artes" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> MX$85
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Palacio de Bellas Artes</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Palacio de Bellas Artes is a grand marble performance hall and museum in Mexico City, known for its orange dome and elaborate belle epoque facade. Built in 1904 by Italian architect Adamo Boari, the structure features pre-Hispanic motifs and a mix of Art Nouveau and Art Deco styles. Inside, visitors can admire murals by Diego Rivera and other renowned artists.</p>
+                </div>
+            </div>
+
+            <!-- 5. Casa de los Azulejos -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mexico-city_5.jpg" alt="Casa de los Azulejos" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Casa de los Azulejos</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The House of Tiles, also known as Casa de los Azulejos, is an 18th-century palace in Mexico City with a blue-and-white tile facade. This historic building now houses a popular restaurant and has become a spot for Instagrammers. The facade, adorned with exquisite blue and white tiles from Puebla, was added by the Conde del Valle de Orizaba 150 years after its original construction in 1596.</p>
+                </div>
+            </div>
+
+            <!-- 6. Templo Expiatorio Nacional de San Felipe de Jesús -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mexico-city_6.jpg" alt="Templo Expiatorio Nacional de San Felipe de Jesús" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Templo Expiatorio Nacional de San Felipe de Jesús</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled just a stone&#x27;s throw from the bustling central square of Mexico City, the Templo Expiatorio Nacional de San Felipe de Jesús stands as a testament to 19th-century architecture. This Catholic church, with its striking Neo-Romanesque façade and intricate Neo-Byzantine mosaics, invites visitors into a serene oasis amidst the city&#x27;s vibrant chaos.</p>
+                </div>
+            </div>
+
+            <!-- 7. Palacio de Iturbide -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mexico-city_7.jpg" alt="Palacio de Iturbide" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Palacio de Iturbide</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Citibanamex Culture Palace, also known as Palacio de Iturbide, is a piece of Mexican Baroque architecture located at Madero Street #17 in Mexico City&#x27;s Historic Center. Designed by Francisco Guerrero y Torres and completed in the 1780s, this massive mansion boasts intricate sandstone carvings around its windows and door frames.</p>
+                </div>
+            </div>
+
+            <!-- 8. Teatro de la Ciudad -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mexico-city_8.jpg" alt="Teatro de la Ciudad" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> MX$150
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Teatro de la Ciudad</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Teatro de la Ciudad de Mexico, located in the lively neighborhood of Ciudadela, is not just a theater but also a hub for cultural exchange. It hosts a diverse range of performances, from opera to contemporary dance, making it a true public cultural forum. With its rich history and connections to notable figures like opera singer Esperanza Iris, the theater exudes an elegant charm that captivates visitors.</p>
+                </div>
+            </div>
+
+            <!-- 9. Plaza Garibaldi -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mexico-city_9.jpg" alt="Plaza Garibaldi" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Plaza Garibaldi</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Plaza Garibaldi is an square in Mexico City known for its vibrant music scene and cultural offerings. The plaza is famous for its mariachis, who perform in traditional attire and are available to be hired for events or impromptu serenades. In addition to the lively music, visitors can explore a museum, browse through shops, and enjoy the hub of predominantly Jalisco cuisine and culture.</p>
+                </div>
+            </div>
+
+            <!-- 10. Mexico City Metropolitan Cathedral -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mexico-city_10.jpg" alt="Mexico City Metropolitan Cathedral" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Mexico City Metropolitan Cathedral</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Mexico City Metropolitan Cathedral, located right off the Zocalo, is a grand Roman Catholic cathedral and Latin America&#x27;s oldest and largest. Built over the remains of an old Aztecan temple, it incorporates stones from the Templo Mayor. The cathedral showcases a mix of gothic baroque, churrigueresque, and neoclassical architecture. Nearby attractions include the Basilica of Lady of Guadalupe and Bosque de Chapultepec Park.</p>
+                </div>
+            </div>
+
+            <!-- 11. Mercado de Artesanías La Ciudadela -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mexico-city_11.jpg" alt="Mercado de Artesanías La Ciudadela" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Mercado de Artesanías La Ciudadela</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled in the heart of Mexico City, Mercado de Artesanías La Ciudadela is a vibrant artisan market that has become a beloved destination for both locals and travelers. This bustling marketplace showcases an impressive array of traditional handicrafts and folk art from across the country.</p>
+                </div>
+            </div>
+
+            <!-- 12. Mercado de San Juan Pugibet -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mexico-city_12.jpg" alt="Mercado de San Juan Pugibet" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Mercado de San Juan Pugibet</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled in the heart of Mexico City, Mercado de San Juan Pugibet is a culinary treasure trove that has been delighting food lovers since 1955. This vibrant market is renowned for its gourmet and exotic offerings, making it a must-visit for anyone eager to explore the rich flavors of Mexican cuisine.</p>
+                </div>
+            </div>
+
+            <!-- 13. Jardín Centenario -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mexico-city_13.jpg" alt="Jardín Centenario" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Jardín Centenario</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Jardín Centenario, in the heart of Coyoacán, is a public garden inaugurated in 1910 to mark the centenary of Mexican independence. Shaded benches, fountains, and weekend street vendors draw neighbours and visitors beside the borough&#x27;s colonial churches. Its lively plaza atmosphere makes it a natural meeting point before exploring Frida Kahlo&#x27;s nearby Blue House.</p>
+                </div>
+            </div>
+
+            <!-- 14. Cineteca Nacional de México -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mexico-city_14.jpg" alt="Cineteca Nacional de México" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> MX$50
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Cineteca Nacional de México</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The National Film Archives of México, established in 1974, is a remarkable institution dedicated to celebrating the art of cinema. It features several theaters offering art films at affordable prices and a cineteca where visitors can request and view movies in private cabinets for two. The tranquil and pleasant atmosphere makes it an ideal destination for film enthusiasts.</p>
+                </div>
+            </div>
+
+            <!-- 15. UNAM Central Library -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mexico-city_15.jpg" alt="UNAM Central Library" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">UNAM Central Library</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The UNAM Central Library is a prominent feature of the National Autonomous University of Mexico campus, known for its landmark building adorned with striking murals by renowned Mexican painters David Alfaro Siqueiros and Juan O&#x27;Gorman. Situated in Mexico City, the university campus showcases modernist architecture from the 1950s and has been designated as a UNESCO World Heritage site.</p>
+                </div>
+            </div>
+
+            <!-- 16. Parque Hundido -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mexico-city_16.jpg" alt="Parque Hundido" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Parque Hundido</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Parque Hundido, located in the Del Valle neighborhood of Mexico City, is a serene city park set below street level. It offers walking paths and an off-leash dog area, making it perfect for families and visitors of all ages. The park&#x27;s most recognizable feature is its flower clock, designed by watchmaker Relojes Centenario.</p>
+                </div>
+            </div>
+
+            <!-- 17. The Angel of Independence -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mexico-city_17.jpg" alt="The Angel of Independence" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">The Angel of Independence</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Angel of Independence, also known as El Angel, is a significant monument in Mexico City that commemorates the country&#x27;s independence. It features a towering Corinthian column topped with a statue of the goddess of victory, Nike, holding a laurel wreath above the figure of independence hero Miguel Hidalgo. The monument stands at the center of a large roundabout near Paseo de la Reforma and symbolizes Mexico&#x27;s triumph over Spain.</p>
+                </div>
+            </div>
+
+            <!-- 18. Fuente de Cibeles -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mexico-city_18.jpg" alt="Fuente de Cibeles" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Fuente de Cibeles</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Fuente de Cibeles is a large fountain featuring a statue of a Roman goddess and is a replica of the historic fountain in Madrid. Located in the Condesa/Roma district of Mexico City, it&#x27;s surrounded by excellent dining options and offers a pleasant atmosphere for relaxation. Additionally, visitors can take part in tours with Turibus that explore various parts of the city for about 7 hours.</p>
+                </div>
+            </div>
+
+            <!-- 19. Mercado Roma -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mexico-city_19.jpg" alt="Mercado Roma" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Mercado Roma</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Mercado Roma is a trendy and sophisticated multi-level food hall that offers a wide variety of international cuisine and features a rooftop beer garden. It&#x27;s a key player in the city&#x27;s growing food scene, paying tribute to Mexico&#x27;s traditional open markets while bringing together an eclectic mix of vendors offering high-quality food, beverages, and other goods all under one roof.</p>
+                </div>
+            </div>
+
+            <!-- 20. Parque México -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mexico-city_20.jpg" alt="Parque México" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Parque México</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Parque México, also known as Parque General San Martin, is a 22-acre urban park located in the trendy La Condesa neighborhood of Mexico City. The park is famous for its art deco architecture and offers a variety of attractions such as walking paths, playgrounds, and a dog run. It has been the heart of the district for many years and has been recently refurbished to include an open-air forum for community events.</p>
+                </div>
+            </div>
+
+            <!-- 21. Parque España -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mexico-city_21.jpg" alt="Parque España" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Parque España</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Parque España is a neighbourhood park in Mexico City&#x27;s Condesa district, laid out with tree-lined paths, a playground, and sculptures that honour Spanish-American ties. Art Deco apartment blocks and cafés surround the green space, making it a favoured dog-walking and reading spot. Its benches and open lawns anchor one of the capital&#x27;s most walkable residential quarters.</p>
+                </div>
+            </div>
+
+            <!-- 22. Alameda de Santa María -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mexico-city_22.jpg" alt="Alameda de Santa María" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Alameda de Santa María</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Alameda de Santa María, located in Mexico City, is home to the Kiosco Morisco. This Moorish-style iron kiosk was built for the 1884 World&#x27;s Fair and has become a popular gathering place in the neighborhood. The park also features &quot;Grasshopper Hill,&quot; offering picturesque views that are perfect for Instagram. The kiosk itself is made entirely of steel and boasts Islamic-inspired geometric architecture, making it a hidden gem for photo opportunities.</p>
+                </div>
+            </div>
+
+            <!-- 23. Biblioteca Vasconcelos -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mexico-city_23.jpg" alt="Biblioteca Vasconcelos" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Biblioteca Vasconcelos</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Biblioteca Vasconcelos is a vast public library located near the Buenavista metro station, offering a diverse selection of titles in multiple languages within its modern interior. The architecture of the library is a sight to behold, with floating floors lined with shelves and a whale skeleton sculpture adding to its unique atmosphere. Surrounding the library are well-kept gardens, including a greenhouse with native Mexican plants and flowers, providing visitors with a tranquil retreat.</p>
+                </div>
+            </div>
+
+            <!-- 24. Tianguis Cultural del Chopo -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mexico-city_24.jpg" alt="Tianguis Cultural del Chopo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Tianguis Cultural del Chopo</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Tianguis Cultural del Chopo is a peculiar outdoor market in Mexico City that is known for selling clothing, souvenirs, and gear related to the punk, hard rock, and metal scenes. The market features live performances by up-and-coming bands on its stage, making it places in town to find gear for your favorite music genre.</p>
+                </div>
+            </div>
+
+            <!-- 25. Bosque de Chapultepec -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mexico-city_25.jpg" alt="Bosque de Chapultepec" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Bosque de Chapultepec</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Bosque de Chapultepec, the largest park in Mexico City, spans 686 hectares and offers a variety of attractions. Visitors can explore the exceptional zoological gardens, featuring spacious enclosures for a wide range of animals. The park also boasts playing fields, jogging trails, and a large boating lake surrounded by mature trees and lush greenery.</p>
+                </div>
+            </div>
+
+            <!-- 26. Chapultepec Zoo -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mexico-city_26.jpg" alt="Chapultepec Zoo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> MX$50
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Chapultepec Zoo</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Chapultepec Zoo, situated in the heart of Chapultepec Park, is a must-visit attraction for families and animal lovers. Home to nearly 2,000 animals from various parts of the world, including endangered species like giant pandas, this zoo offers an exciting opportunity to observe wildlife up close. Established in 1924, it is one of Mexico&#x27;s largest zoos and is easily accessible from Auditorio Metro Station.</p>
+                </div>
+            </div>
+
+            <!-- 27. Av. P.º de la Reforma -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mexico-city_27.jpg" alt="Av. P.º de la Reforma" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Av. P.º de la Reforma</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Av. P.o de la Reforma is a must-visit destination in Mexico City, renowned for its blend of history and modernity. This 19th-century boulevard, originally commissioned by Emperor Maximilian, showcases an impressive array of monuments and towering skyscrapers that tell the story of the city’s evolution. As you stroll along this vibrant thoroughfare, encounter cultural institutions and contemporary art installations that add to its dynamic atmosphere.</p>
+                </div>
+            </div>
+
+            <!-- 28. Parque Lincoln -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mexico-city_28.jpg" alt="Parque Lincoln" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Parque Lincoln</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Polancos most popular spot is a well-designed park with plenty of trees and seating areas, perfect for a relaxing day out. The park also has a pond and bike path, making it great for all kinds of activities. One of the attractions at Polancos Park Lincoln is the striking white clock tower.</p>
+                </div>
+            </div>
+
+            <!-- 29. Chapultepec Castle -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mexico-city_29.jpg" alt="Chapultepec Castle" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> MX$210
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Chapultepec Castle</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Perched on a hill in Chapultepec Park, Mexico City, Chapultepec Castle is a historic site that offers views of the city. This neoclassical and colonial architectural gem now serves as the National Museum of History. Since 1939, it has housed an impressive collection of relics including Aztec sculptures, casta paintings, and even President Santa Anna&#x27;s fake leg.</p>
+                </div>
+            </div>
+
+            <!-- 30. Zoológico Los Coyotes -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mexico-city_30.jpg" alt="Zoológico Los Coyotes" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> MX$30
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Zoológico Los Coyotes</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Zoológico Los Coyotes is a small zoo located in Coyoacan, Mexico. It&#x27;s home to various species including the coyote, Mexican wolf, raccoon, and axolotl - a fishlike salamander. The zoo is part of a recreational spot that offers free entry and features amenities such as a gym, playgrounds, jogging and biking trails. The well-maintained grounds are adorned with diverse plants and flowers where squirrels can be seen up close.</p>
+                </div>
+            </div>
+
+            <!-- 31. Parque La Mexicana -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mexico-city_31.jpg" alt="Parque La Mexicana" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Parque La Mexicana</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The La Mexicana Park is a great green space with paved trails, play equipment, and water features as well as sculptures. It&#x27;s located in Mexico City just 10 km from Six Flags Mexico. The staff are friendly and the facilities are great including a shared lounge and free WiFi. There is also a 24-hour front desk and a shared kitchen.</p>
+                </div>
+            </div>
+
+            <!-- 32. Cuicuilco Pyramid -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mexico-city_32.jpg" alt="Cuicuilco Pyramid" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> MX$75
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Cuicuilco Pyramid</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Cuicuilco Pyramid, located in Mexico City, is a fascinating archaeological site that often goes unnoticed by tourists. Dating back to 100 years BC, it holds the distinction of being the oldest pyramid in central Mexico, even older than the renowned Teotihuacan Pyramids. What sets this site apart is its unique conical structure and its juxtaposition with modern buildings, showcasing the seamless blend of ancient history and contemporary urban life in Mexico City.</p>
+                </div>
+            </div>
+
+            <!-- 33. Parque Nacional Bosque de Tlalpan -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mexico-city_33.jpg" alt="Parque Nacional Bosque de Tlalpan" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> MX$15
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Parque Nacional Bosque de Tlalpan</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Entrada a Bosque de Tlalpan is a 252-hectare protected natural area located at the south end of Mexico City. It features numerous hiking, running, and biking trails, as well as playgrounds and picnic areas. The park is home to approximately 206 species of flora and 134 species of fauna. Visitors can enjoy Wi-Fi access and a market on weekends offering organic produce, arts, and baked goods.</p>
+                </div>
+            </div>
+
+            <!-- 34. Jardín del Arte Sullivan -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mexico-city_34.jpg" alt="Jardín del Arte Sullivan" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Jardín del Arte Sullivan</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Jardín del Arte Sullivan is a charming tree-lined garden located in the Colonia San Rafael neighborhood of Mexico City. Every Sunday, local artists gather to showcase their works, creating an open-air art market that has been a tradition since the 1950s. The park offers various activities and spaces for different audiences, including a skate park, playground for children, and areas designated for large and small dog breeds.</p>
+                </div>
+            </div>
+
+            <!-- 35. Arena México -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mexico-city_35.jpg" alt="Arena México" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> MX$350
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Arena México</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Arena México, located in the Colonia Doctores neighborhood, is a renowned indoor arena that has witnessed legendary battles from the days of El Santo and Blue Demon to boxing matches during the 1968 Olympic Games. It is considered a cathedral of competition and hosts lucha libre shows promoted by Consejo Mundial de Lucha Libre. The venue attracts both locals and tourists who line up on Tuesdays, Fridays, and Sundays to witness the magic of professional wrestling.</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
+        <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+    </footer>    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const map = L.map('map').setView([19.408284, -99.162577], 14);
+            L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                attribution: '&copy; Google Maps',
+                maxZoom: 20
+            }).addTo(map);
+            const locations = [{"name": "Monument to the Revolution", "lat": 19.436133, "lng": -99.154658}, {"name": "Palacio de los Deportes", "lat": 19.405336, "lng": -99.099865}, {"name": "Alameda Central", "lat": 19.435937, "lng": -99.143928}, {"name": "Palacio de Bellas Artes", "lat": 19.4352, "lng": -99.1412}, {"name": "Casa de los Azulejos", "lat": 19.434221, "lng": -99.140181}, {"name": "Templo Expiatorio Nacional de San Felipe de Jesús", "lat": 19.433816, "lng": -99.139886}, {"name": "Palacio de Iturbide", "lat": 19.433782, "lng": -99.139051}, {"name": "Teatro de la Ciudad", "lat": 19.436694, "lng": -99.137249}, {"name": "Plaza Garibaldi", "lat": 19.440674, "lng": -99.139109}, {"name": "Mexico City Metropolitan Cathedral", "lat": 19.434394, "lng": -99.133082}, {"name": "Mercado de Artesanías La Ciudadela", "lat": 19.430812, "lng": -99.149369}, {"name": "Mercado de San Juan Pugibet", "lat": 19.429971, "lng": -99.144631}, {"name": "Jardín Centenario", "lat": 19.349268, "lng": -99.163685}, {"name": "Cineteca Nacional de México", "lat": 19.360612, "lng": -99.164513}, {"name": "UNAM Central Library", "lat": 19.333405, "lng": -99.187361}, {"name": "Parque Hundido", "lat": 19.378292, "lng": -99.178747}, {"name": "The Angel of Independence", "lat": 19.426996, "lng": -99.167662}, {"name": "Fuente de Cibeles", "lat": 19.42001, "lng": -99.166311}, {"name": "Mercado Roma", "lat": 19.414186, "lng": -99.164555}, {"name": "Parque México", "lat": 19.411581, "lng": -99.169568}, {"name": "Parque España", "lat": 19.415336, "lng": -99.17115}, {"name": "Alameda de Santa María", "lat": 19.449935, "lng": -99.156839}, {"name": "Biblioteca Vasconcelos", "lat": 19.446456, "lng": -99.150965}, {"name": "Tianguis Cultural del Chopo", "lat": 19.448989, "lng": -99.149809}, {"name": "Bosque de Chapultepec", "lat": 19.419482, "lng": -99.189456}, {"name": "Chapultepec Zoo", "lat": 19.423208, "lng": -99.189526}, {"name": "Av. P.º de la Reforma", "lat": 19.42597, "lng": -99.193699}, {"name": "Parque Lincoln", "lat": 19.429479, "lng": -99.19734}, {"name": "Chapultepec Castle", "lat": 19.42044, "lng": -99.181935}, {"name": "Zoológico Los Coyotes", "lat": 19.319044, "lng": -99.121222}, {"name": "Parque La Mexicana", "lat": 19.357074, "lng": -99.269591}, {"name": "Cuicuilco Pyramid", "lat": 19.301616, "lng": -99.181588}, {"name": "Parque Nacional Bosque de Tlalpan", "lat": 19.293797, "lng": -99.19857}, {"name": "Jardín del Arte Sullivan", "lat": 19.433089, "lng": -99.162196}, {"name": "Arena México", "lat": 19.424705, "lng": -99.151688}];
+            const customIcon = L.icon({
+                iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32],
+            });
+            const destinationCenter = [19.408284, -99.162577];
+            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.114487, "maxCenterLng": 0.107014};
+            const markers = [];
+            locations.forEach(loc => {
+                markers.push(
+                    L.marker([loc.lat, loc.lng], {icon: customIcon}).addTo(map)
+                        .bindPopup(`<strong class="font-sans text-base text-gray-900">${loc.name}</strong>`)
+                );
+            });
+            const group = new L.featureGroup(markers);
+            let bounds = group.getBounds();
+            const ne = bounds.getNorthEast();
+            const sw = bounds.getSouthWest();
+            const latSpan = ne.lat - sw.lat;
+            const lngSpan = ne.lng - sw.lng;
+            const maxSpan = Math.max(latSpan, lngSpan);
+            const isDegenerate = latSpan < 1e-9 && lngSpan < 1e-9;
+            const markerCenterLat = (ne.lat + sw.lat) / 2;
+            const markerCenterLng = (ne.lng + sw.lng) / 2;
+            if (isDegenerate) {
+                const frameSpan = mapContext.compactRegion ? 0.026 : 0.045;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - frameSpan / 2, destinationCenter[1] - frameSpan / 2],
+                    [destinationCenter[0] + frameSpan / 2, destinationCenter[1] + frameSpan / 2]
+                );
+            } else if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                const expand = maxSpan < 0.12 ? 1.15 : 1.1;
+                const halfLat = latSpan / 2 * expand;
+                const halfLng = lngSpan / 2 * expand;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                const latReach = Math.max(mapContext.maxCenterLat, latSpan / 2) * 1.45;
+                const lngReach = Math.max(mapContext.maxCenterLng, lngSpan / 2) * 1.45;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - latReach, destinationCenter[1] - lngReach],
+                    [destinationCenter[0] + latReach, destinationCenter[1] + lngReach]
+                );
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                const halfLat = latSpan / 2 * 1.1;
+                const halfLng = lngSpan / 2 * 1.1;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                const frameSpan = Math.max(maxSpan * 4, 0.006);
+                bounds = L.latLngBounds(
+                    [markerCenterLat - frameSpan / 2, markerCenterLng - frameSpan / 2],
+                    [markerCenterLat + frameSpan / 2, markerCenterLng + frameSpan / 2]
+                );
+            }
+            const fitOptions = {};
+            if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                fitOptions.padding = maxSpan < 0.12
+                    ? [24, 24]
+                    : (maxSpan < 0.5 ? [24, 24] : [28, 28]);
+                fitOptions.maxZoom = maxSpan < 0.12
+                    ? 14
+                    : (maxSpan < 0.5 ? 10 : 9);
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                fitOptions.padding = [40, 40];
+                fitOptions.maxZoom = 8;
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                fitOptions.padding = [24, 24];
+            } else if (mapContext.denseUrban) {
+                fitOptions.padding = [18, 18];
+            } else if (mapContext.spreadUrban) {
+                fitOptions.padding = [20, 20];
+            } else if (locations.length >= 3 && maxSpan >= 0.02) {
+                fitOptions.padding = maxSpan >= 0.08 ? [20, 20] : [30, 30];
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                fitOptions.padding = [12, 12];
+                fitOptions.maxZoom = 16;
+            } else if (isDegenerate || locations.length === 1) {
+                fitOptions.padding = mapContext.compactRegion ? [16, 16] : [36, 36];
+                if (isDegenerate || maxSpan < 0.015) {
+                    fitOptions.maxZoom = mapContext.compactRegion ? 15 : 14;
+                }
+            } else {
+                fitOptions.padding = [50, 50];
+            }
+            map.fitBounds(bounds, fitOptions);
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                } else {
+                    scrollTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                }
+            });
+            scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        });
+    </script>
+
+    <button id="scrollTopBtn" class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-12 h-12 bg-neon-cyan text-deepblue-950 rounded-full shadow-[0_0_20px_rgba(0,240,255,0.4)] opacity-0 pointer-events-none transition-all duration-300 translate-y-4 hover:bg-white hover:scale-110" aria-label="Scroll to top">
+        <i class="ph ph-arrow-up text-xl font-bold"></i>
+    </button>
+</body>
+</html>

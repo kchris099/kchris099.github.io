@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Montevideo Guide | Global Explorer Guides</title>
+    <link rel="stylesheet" href="../../assets/tailwind.css">
+    <link rel="stylesheet" href="../../assets/outfit.css">
+    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
+    <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
+    <link rel="stylesheet" href="../../assets/homepage-activation.css">
+    <link rel="stylesheet" href="../../assets/destination-activation.css">
+    <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
+    <script src="../../assets/leaflet/leaflet.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #060B19; }
+        ::-webkit-scrollbar-thumb { background: #1E336B; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0070FF; }
+        .leaflet-popup-content-wrapper { background-color: #fff; color: #333; border-radius: 8px; box-shadow: 0 3px 14px rgba(0,0,0,0.4); }
+        .leaflet-popup-tip { background-color: #fff; }
+    </style>
+</head>
+<body class="bg-deepblue-950 text-slate-200 font-sans min-h-screen relative overflow-x-hidden">
+    <div class="absolute top-0 left-0 w-full h-[450px] md:h-[500px] z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50" style="background-image: url('images/montevideo_hero.jpg')"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-deepblue-950/10 via-deepblue-950/60 to-deepblue-950"></div>
+    </div>
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon-purple/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neon-cyan/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <main class="container mx-auto px-4 py-8 md:py-16 relative z-20 max-w-5xl">
+        <nav class="mb-12 animate-fade-in-down flex flex-wrap items-center gap-4">
+            <a href="../../index.html" class="flex items-center justify-center w-11 h-11 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0" title="Back to Home">
+                <i class="ph ph-house text-xl group-hover:scale-110 transition-transform"></i>
+            </a>
+            <a href="uruguay.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0">
+                <i class="ph ph-arrow-left text-lg group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-medium text-sm">Back to Uruguay</span>
+            </a>
+            <div class="ml-auto flex items-center gap-3 bg-deepblue-900/40 border border-deepblue-700/50 rounded-full px-4 py-2 backdrop-blur-sm shadow-inner shrink-0">
+                <img src="../../assets/flags/w40/uy.png" alt="Uruguay flag" class="w-6 h-auto rounded-[2px] shadow-sm">
+                <div class="flex items-center gap-2 text-sm font-medium tracking-wide">
+                    <span class="text-slate-200 uppercase text-xs tracking-wider font-bold">Uruguay</span>
+                    <span class="text-deepblue-500 text-xs">&rsaquo;</span>
+                    <span class="text-neon-cyan text-xs">Montevideo</span>
+                </div>
+            </div>
+        </nav>
+
+        <header class="mb-16 animate-fade-in-down animation-delay-100 text-center">
+            <button
+                type="button"
+                id="destination-active-toggle"
+                class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
+                data-iso2="UY"
+                data-slug="montevideo"
+                data-active="false"
+                data-interactive="true"
+                aria-label="Toggle Montevideo visibility on Uruguay guide"
+                aria-pressed="false"
+            >
+                <i class="ph ph-map-pin text-4xl text-slate-500 pointer-events-none" aria-hidden="true"></i>
+            </button>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple pb-4">
+                Explore Montevideo
+            </h1>
+            <div class="bg-deepblue-900/40 border border-deepblue-800 rounded-3xl p-8 md:p-10 text-left backdrop-blur-sm mt-10">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                    <i class="ph ph-scroll text-neon-cyan"></i> A Brief History
+                </h2>
+                <p class="text-lg text-slate-400 font-light leading-relaxed">Montevideo grew from a Spanish citadel founded in 1726 around a natural harbour on the Río de la Plata. As capital of independent Uruguay from 1830, it developed as a commercial and administrative centre between Argentina and Brazil. Ciudad Vieja churches, Art Deco towers along Avenida 18 de Julio, and the Mercado del Puerto reflect port wealth, European immigration, and 20th-century civic expansion on the eastern riverbank.</p>
+            </div>
+        </header>
+
+        <section class="mb-16 animate-fade-in-down" style="animation-delay: 0.2s;">
+            <h2 class="text-3xl font-bold text-white mb-6">Attractions Map</h2>
+            <div id="map" class="h-[400px] w-full rounded-3xl border border-deepblue-700 shadow-2xl z-10 relative"></div>
+        </section>
+
+        <section class="flex flex-col gap-6 pb-20 animate-fade-in-down" style="animation-delay: 0.3s;">
+            <h2 class="text-3xl font-bold text-white mb-2">Top Sights & Activities</h2>
+            
+            <!-- 1. Mercado Agrícola de Montevideo -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/montevideo_1.jpg" alt="Mercado Agrícola de Montevideo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Mercado Agrícola de Montevideo</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Mercado Agrícola de Montevideo, also known as MAM, is a vibrant gastronomic destination that offers a wide array of experiences. Visitors can explore and purchase fresh local produce, farm products, and artisanal organic or gourmet delights. The market also features gift shops, specialty stores, and a food court where families can enjoy a leisurely lunch. On weekends, the culinary experience is enhanced with live music and orchestras adding cultural value to the dining atmosphere.</p>
+                </div>
+            </div>
+
+            <!-- 2. Palacio Legislativo -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/montevideo_2.jpg" alt="Palacio Legislativo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Palacio Legislativo</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Palacio Legislativo, a neoclassical building that serves as the home of the Uruguayan parliament, is a symbol of national pride and democratic values. Declared a National Historic Monument in 1975, this monumental structure was inaugurated in 1925 to commemorate Uruguay&#x27;s independence. The palace features luxurious offices and houses numerous masterpieces by renowned artists such as Pedro Blanes and Jose Luis Zorrilla.</p>
+                </div>
+            </div>
+
+            <!-- 3. Juan Pedro Fabini Square -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/montevideo_3.jpg" alt="Juan Pedro Fabini Square" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Juan Pedro Fabini Square</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Plaza Fabini, also known as Plaza del Entrevero, lies in central Montevideo between Avenida 18 de Julio and the Legislative Palace. Jose Belloni&#x27;s 1934 bronze monument Entrevero depicts gaucho fighters from Uruguay&#x27;s independence era. Shaded benches and tree-lined walks mark a civic space that connects downtown shopping streets with the parliament district.</p>
+                </div>
+            </div>
+
+            <!-- 4. Cagancha Square -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/montevideo_4.jpg" alt="Cagancha Square" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Cagancha Square</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Plaza De Cagancha in Centro is a popular destination for people in Montevideo who want to take a break from their day or just enjoy the company of others. The square features beautiful lights that cascade down from the roof of a circus, and there&#x27;s also a stop at La Cigale ice cream store where find delicious Pismonte&#x27;s Cream flavor. It&#x27;s great place to relax and catch up with friends.</p>
+                </div>
+            </div>
+
+            <!-- 5. Constitution Plaza -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/montevideo_5.jpg" alt="Constitution Plaza" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Constitution Plaza</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Plaza Matriz is a beautiful park located in the heart of colonial Montevideo. It features a fountain that commemorates the first water system of the city, as well as historic buildings. The square is popular with locals and tourists alike, and is a great place to sit and relax during your visit to Montevideo.</p>
+                </div>
+            </div>
+
+            <!-- 6. Montevideo Metropolitan Cathedral -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/montevideo_6.jpg" alt="Montevideo Metropolitan Cathedral" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Montevideo Metropolitan Cathedral</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled in the heart of Ciudad Vieja, the Montevideo Metropolitan Cathedral stands as a testament to neoclassical architecture and rich history. Established in 1790 on the site of an earlier parish church, this magnificent Roman Catholic cathedral serves as the spiritual hub for Montevideo&#x27;s Catholic community. With its striking twin bell towers and grand central dome, it captures the essence of colonial elegance.</p>
+                </div>
+            </div>
+
+            <!-- 7. Montevideo Letters -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/montevideo_7.jpg" alt="Montevideo Letters" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Montevideo Letters</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Large sculptural letters spelling Montevideo stand on the Rambla Republica de Chile near Punta Carretas, installed as a photography landmark overlooking the Rio de la Plata. The installation forms part of the waterfront promenade linking Ciudad Vieja to Carrasco and appears widely in city tourism signage.</p>
+                </div>
+            </div>
+
+            <!-- 8. Kibón Avanza -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/montevideo_8.jpg" alt="Kibón Avanza" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Kibón Avanza</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Kibon Avanza is a historic ice-cream parlour on the Rambla near the Montevideo sign, operating from an early 20th-century kiosk associated with the Kibon brand. The waterfront location places it on the same coastal walk as Punta Carretas lighthouse and records Montevideo rambla leisure culture.</p>
+                </div>
+            </div>
+
+            <!-- 9. Salvo Palace -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/montevideo_9.jpg" alt="Salvo Palace" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> $U 400
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Salvo Palace</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Palacio Salvo is one of the tallest landmarks in the country and houses the Tango Museum, offices, and residences. It&#x27;s located near Mercado del Puerto, a lively area filled with local cuisine and live music. Other recommended stops in the city include Palacio Legislativo, Teatro Solis, and Fortaleza for views of the city. The gothic-style building was constructed by an Italian immigrant and opened in 1928.</p>
+                </div>
+            </div>
+
+            <!-- 10. Universo Pittamiglio - Castillo del Alquimista -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/montevideo_10.jpg" alt="Universo Pittamiglio - Castillo del Alquimista" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> $U 300
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Universo Pittamiglio - Castillo del Alquimista</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Castillo Pittamiglio is an eclectic seaside mansion built between 1910 and 1935 by architect Humberto Pittamiglio in Punta Carretas. Masonic symbols, spiral staircases, and maritime motifs fill rooms that now operate as a small museum and performance venue above the Rambla.</p>
+                </div>
+            </div>
+
+            <!-- 11. Plaza Tomás Gomensoro -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/montevideo_11.jpg" alt="Plaza Tomás Gomensoro" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Plaza Tomás Gomensoro</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Plaza Tomas Gomensoro is a square in Montevideo, Uruguay that offers views of the sea. The upper level of the plaza is designed to be relaxing and comfortable, while the lower level provides a space for people to sit and relax. There are several top class restaurants and cafes around the plaza as well as luxury hotels. Be careful at night in this park as it can be dangerous.</p>
+                </div>
+            </div>
+
+            <!-- 12. Mirador panorámico de la Intendencia de Montevideo -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/montevideo_12.jpg" alt="Mirador panorámico de la Intendencia de Montevideo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Mirador panorámico de la Intendencia de Montevideo</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Mirador Panorámico de la Intendencia de Montevideo offers a 360-degree view of the city and the La Plata River from nearly 80 meters above ground. Located on the 22nd floor of the Edificio Sede de la Intendencia, visitors can enjoy vistas of Montevideo&#x27;s skyline, including prominent landmarks like Torre ANTEL and the World Trade Center towers.</p>
+                </div>
+            </div>
+
+            <!-- 13. Port Market -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/montevideo_13.jpg" alt="Port Market" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Port Market</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Port Market, housed in a grand 19th-century building that was once the city&#x27;s train station, is a bustling hub of activity in Montevideo. Despite rising prices due to an increase in cruise ship passengers, the market remains a vibrant and atmospheric area filled with local crafts, food stalls, and restaurants. Visitors can enjoy huge racks of barbecued meat at the Parilla restaurants while watching musicians and performers entertain the crowds.</p>
+                </div>
+            </div>
+
+            <!-- 14. Zabala Square -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/montevideo_14.jpg" alt="Zabala Square" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Zabala Square</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Zabala Square, located in downtown Montevideo, is a charming and historically rich area. The square is adorned with a bronze monument honoring the city&#x27;s founder and boasts an elegant Parisian-inspired design. Surrounded by beautifully restored buildings that now house boutique hotels, the square offers comfortable benches for relaxation and is conveniently close to the Port and Sarandi Boulevard.</p>
+                </div>
+            </div>
+
+            <!-- 15. Solis Theater -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/montevideo_15.jpg" alt="Solis Theater" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> $U 400
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Solis Theater</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Solis Theater, a monumental venue built in 1856 by the Italian architect Carlo Zucchi, is a significant landmark in Montevideo&#x27;s Old Town. With a capacity of 1,100 spectators, it offers a diverse performing arts program including theater, ballet, opera and concerts. After undergoing refurbishment and reopening in 2004, this elegant theater with superb acoustics has become Montevideo&#x27;s premier performance space.</p>
+                </div>
+            </div>
+
+            <!-- 16. Cinemateca Uruguaya -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/montevideo_16.jpg" alt="Cinemateca Uruguaya" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> $U 180
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Cinemateca Uruguaya</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Cinemateca Uruguaya is a discerning art cinema located in Ciudad Vieja, Uruguay. It is a lavishly restored landmark that offers a wide range of movie screenings, catering to the tastes of hipsters and indie film enthusiasts. The cinema also features an in-house bookshop and cafe, making it an ideal place for cultural exploration and relaxation.</p>
+                </div>
+            </div>
+
+            <!-- 17. Feria de Tristan Narvaja -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/montevideo_17.jpg" alt="Feria de Tristan Narvaja" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Feria de Tristan Narvaja</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Feria de Tristan Narvaja is a vibrant open-air flea market that takes place every Sunday along the street of the same name. Visitors can explore a wide variety of items, including antique silverware, second-hand books, and pre-loved fashion. While there are limited food options available, the market offers an abundance of fresh fruits and vegetables. Additionally, unique finds such as artisanal beers and traditional wooden crafts can be discovered while strolling through the bustling stalls.</p>
+                </div>
+            </div>
+
+            <!-- 18. Plaza de los Treinta y Tres Orientales -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/montevideo_18.jpg" alt="Plaza de los Treinta y Tres Orientales" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Plaza de los Treinta y Tres Orientales</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled along the coastline of Montevideo, Plaza Virgilio is a serene waterfront park that beckons visitors with its views and inviting atmosphere. This picturesque spot features a poignant bronze memorial honoring fallen soldiers, alongside comfortable benches perfect for soaking in the scenery. As you wander through this tranquil oasis, be captivated by the vibrant local wildlife, including colorful parrots and their impressive nests.</p>
+                </div>
+            </div>
+
+            <!-- 19. Plaza Virgilio -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/montevideo_19.jpg" alt="Plaza Virgilio" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Plaza Virgilio</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled along the coastline of Montevideo, Plaza Virgilio is a serene waterfront park that beckons visitors with its views and inviting atmosphere. This picturesque spot features a poignant bronze memorial honoring fallen soldiers, alongside comfortable benches perfect for soaking in the scenery. As you wander through this tranquil oasis, be captivated by the vibrant local wildlife, including colorful parrots and their impressive nests.</p>
+                </div>
+            </div>
+
+            <!-- 20. Punta Carretas Lighthouse -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/montevideo_20.jpg" alt="Punta Carretas Lighthouse" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Punta Carretas Lighthouse</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Punta Carretas Lighthouse, a historic brick structure with an attached keeper&#x27;s house, is a must-visit attraction in Montevideo, Uruguay. Built in the late 19th century and standing at 59 meters tall, it offers visitors a chance to delve into Uruguay&#x27;s maritime history while enjoying panoramic views of the city and coastline.</p>
+                </div>
+            </div>
+
+            <!-- 21. Montevideo Botanical Garden -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/montevideo_21.jpg" alt="Montevideo Botanical Garden" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> $U 60
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Montevideo Botanical Garden</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled just 7 km northwest of Montevideo&#x27;s bustling city center, the Montevideo Botanical Garden is a serene oasis that beautifully showcases both native and international plant species. This educational garden invites visitors to wander along nearly 2 km of scenic trails, immersing themselves in diverse ecosystems while learning about the vital role of biodiversity. The lush grounds are perfect for leisurely strolls or invigorating runs, especially when the crowds are light.</p>
+                </div>
+            </div>
+
+            <!-- 22. El Rosedal -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/montevideo_22.jpg" alt="El Rosedal" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">El Rosedal</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">El Rosedal, also known as the rose garden of Prado, is a charming and romantic park in the city. It boasts around 300 varieties of roses imported from France, creating a display of colors and scents. The park features paths adorned with flowers weaving through arches and around a fountain, providing a mystical atmosphere that feels like something out of a fairytale. Visitors can enjoy the tranquility of the park while listening to the songs of various birds that inhabit the area.</p>
+                </div>
+            </div>
+
+            <!-- 23. Prado Park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/montevideo_23.jpg" alt="Prado Park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Prado Park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Prado Park, situated in the town of the same name, is Montevideo&#x27;s largest urban park, covering over 100 hectares. The park offers a variety of attractions including boating, amusement park rides, rose gardens, and an agricultural market with local foods and handicrafts. Visitors can also explore landmarks such as the Obelisk and Covered Wagon monument while taking in the picturesque surroundings of tree-lined streets and historic homes from the early 1900s.</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
+        <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+    </footer>    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const map = L.map('map').setView([-34.901022, -56.180760], 14);
+            L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                attribution: '&copy; Google Maps',
+                maxZoom: 20
+            }).addTo(map);
+            const locations = [{"name": "Mercado Agrícola de Montevideo", "lat": -34.886947, "lng": -56.183423}, {"name": "Palacio Legislativo", "lat": -34.891237, "lng": -56.187263}, {"name": "Juan Pedro Fabini Square", "lat": -34.905695, "lng": -56.193937}, {"name": "Cagancha Square", "lat": -34.905798, "lng": -56.191323}, {"name": "Constitution Plaza", "lat": -34.906685, "lng": -56.203452}, {"name": "Montevideo Metropolitan Cathedral", "lat": -34.907103, "lng": -56.204536}, {"name": "Montevideo Letters", "lat": -34.910418, "lng": -56.13863}, {"name": "Kibón Avanza", "lat": -34.911254, "lng": -56.138395}, {"name": "Salvo Palace", "lat": -34.906479, "lng": -56.198509}, {"name": "Universo Pittamiglio - Castillo del Alquimista", "lat": -34.920998, "lng": -56.149856}, {"name": "Plaza Tomás Gomensoro", "lat": -34.917051, "lng": -56.149941}, {"name": "Mirador panorámico de la Intendencia de Montevideo", "lat": -34.906942, "lng": -56.186031}, {"name": "Port Market", "lat": -34.905685, "lng": -56.211752}, {"name": "Zabala Square", "lat": -34.907595, "lng": -56.208162}, {"name": "Solis Theater", "lat": -34.907634, "lng": -56.201123}, {"name": "Cinemateca Uruguaya", "lat": -34.908481, "lng": -56.200854}, {"name": "Feria de Tristan Narvaja", "lat": -34.902169, "lng": -56.1774}, {"name": "Plaza de los Treinta y Tres Orientales", "lat": -34.903036, "lng": -56.18034}, {"name": "Plaza Virgilio", "lat": -34.898999, "lng": -56.081234}, {"name": "Punta Carretas Lighthouse", "lat": -34.93523, "lng": -56.160558}, {"name": "Montevideo Botanical Garden", "lat": -34.8613, "lng": -56.198538}, {"name": "El Rosedal", "lat": -34.859767, "lng": -56.205765}, {"name": "Prado Park", "lat": -34.857014, "lng": -56.206455}];
+            const customIcon = L.icon({
+                iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32],
+            });
+            const destinationCenter = [-34.901022, -56.180760];
+            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.044008, "maxCenterLng": 0.099526};
+            const markers = [];
+            locations.forEach(loc => {
+                markers.push(
+                    L.marker([loc.lat, loc.lng], {icon: customIcon}).addTo(map)
+                        .bindPopup(`<strong class="font-sans text-base text-gray-900">${loc.name}</strong>`)
+                );
+            });
+            const group = new L.featureGroup(markers);
+            let bounds = group.getBounds();
+            const ne = bounds.getNorthEast();
+            const sw = bounds.getSouthWest();
+            const latSpan = ne.lat - sw.lat;
+            const lngSpan = ne.lng - sw.lng;
+            const maxSpan = Math.max(latSpan, lngSpan);
+            const isDegenerate = latSpan < 1e-9 && lngSpan < 1e-9;
+            const markerCenterLat = (ne.lat + sw.lat) / 2;
+            const markerCenterLng = (ne.lng + sw.lng) / 2;
+            if (isDegenerate) {
+                const frameSpan = mapContext.compactRegion ? 0.026 : 0.045;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - frameSpan / 2, destinationCenter[1] - frameSpan / 2],
+                    [destinationCenter[0] + frameSpan / 2, destinationCenter[1] + frameSpan / 2]
+                );
+            } else if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                const expand = maxSpan < 0.12 ? 1.15 : 1.1;
+                const halfLat = latSpan / 2 * expand;
+                const halfLng = lngSpan / 2 * expand;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                const latReach = Math.max(mapContext.maxCenterLat, latSpan / 2) * 1.45;
+                const lngReach = Math.max(mapContext.maxCenterLng, lngSpan / 2) * 1.45;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - latReach, destinationCenter[1] - lngReach],
+                    [destinationCenter[0] + latReach, destinationCenter[1] + lngReach]
+                );
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                const halfLat = latSpan / 2 * 1.1;
+                const halfLng = lngSpan / 2 * 1.1;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                const frameSpan = Math.max(maxSpan * 4, 0.006);
+                bounds = L.latLngBounds(
+                    [markerCenterLat - frameSpan / 2, markerCenterLng - frameSpan / 2],
+                    [markerCenterLat + frameSpan / 2, markerCenterLng + frameSpan / 2]
+                );
+            }
+            const fitOptions = {};
+            if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                fitOptions.padding = maxSpan < 0.12
+                    ? [24, 24]
+                    : (maxSpan < 0.5 ? [24, 24] : [28, 28]);
+                fitOptions.maxZoom = maxSpan < 0.12
+                    ? 14
+                    : (maxSpan < 0.5 ? 10 : 9);
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                fitOptions.padding = [40, 40];
+                fitOptions.maxZoom = 8;
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                fitOptions.padding = [24, 24];
+            } else if (mapContext.denseUrban) {
+                fitOptions.padding = [18, 18];
+            } else if (mapContext.spreadUrban) {
+                fitOptions.padding = [20, 20];
+            } else if (locations.length >= 3 && maxSpan >= 0.02) {
+                fitOptions.padding = maxSpan >= 0.08 ? [20, 20] : [30, 30];
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                fitOptions.padding = [12, 12];
+                fitOptions.maxZoom = 16;
+            } else if (isDegenerate || locations.length === 1) {
+                fitOptions.padding = mapContext.compactRegion ? [16, 16] : [36, 36];
+                if (isDegenerate || maxSpan < 0.015) {
+                    fitOptions.maxZoom = mapContext.compactRegion ? 15 : 14;
+                }
+            } else {
+                fitOptions.padding = [50, 50];
+            }
+            map.fitBounds(bounds, fitOptions);
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                } else {
+                    scrollTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                }
+            });
+            scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        });
+    </script>
+
+    <button id="scrollTopBtn" class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-12 h-12 bg-neon-cyan text-deepblue-950 rounded-full shadow-[0_0_20px_rgba(0,240,255,0.4)] opacity-0 pointer-events-none transition-all duration-300 translate-y-4 hover:bg-white hover:scale-110" aria-label="Scroll to top">
+        <i class="ph ph-arrow-up text-xl font-bold"></i>
+    </button>
+</body>
+</html>

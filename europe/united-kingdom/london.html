@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>London Guide | Global Explorer Guides</title>
+    <link rel="stylesheet" href="../../assets/tailwind.css">
+    <link rel="stylesheet" href="../../assets/outfit.css">
+    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
+    <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
+    <link rel="stylesheet" href="../../assets/homepage-activation.css">
+    <link rel="stylesheet" href="../../assets/destination-activation.css">
+    <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
+    <script src="../../assets/leaflet/leaflet.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #060B19; }
+        ::-webkit-scrollbar-thumb { background: #1E336B; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0070FF; }
+        .leaflet-popup-content-wrapper { background-color: #fff; color: #333; border-radius: 8px; box-shadow: 0 3px 14px rgba(0,0,0,0.4); }
+        .leaflet-popup-tip { background-color: #fff; }
+    </style>
+</head>
+<body class="bg-deepblue-950 text-slate-200 font-sans min-h-screen relative overflow-x-hidden">
+    <div class="absolute top-0 left-0 w-full h-[450px] md:h-[500px] z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50" style="background-image: url('images/london_hero.jpg')"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-deepblue-950/10 via-deepblue-950/60 to-deepblue-950"></div>
+    </div>
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon-purple/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neon-cyan/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <main class="container mx-auto px-4 py-8 md:py-16 relative z-20 max-w-5xl">
+        <nav class="mb-12 animate-fade-in-down flex flex-wrap items-center gap-4">
+            <a href="../../index.html" class="flex items-center justify-center w-11 h-11 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0" title="Back to Home">
+                <i class="ph ph-house text-xl group-hover:scale-110 transition-transform"></i>
+            </a>
+            <a href="united-kingdom.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0">
+                <i class="ph ph-arrow-left text-lg group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-medium text-sm">Back to United Kingdom</span>
+            </a>
+            <div class="ml-auto flex items-center gap-3 bg-deepblue-900/40 border border-deepblue-700/50 rounded-full px-4 py-2 backdrop-blur-sm shadow-inner shrink-0">
+                <img src="../../assets/flags/w40/gb.png" alt="United Kingdom flag" class="w-6 h-auto rounded-[2px] shadow-sm">
+                <div class="flex items-center gap-2 text-sm font-medium tracking-wide">
+                    <span class="text-slate-200 uppercase text-xs tracking-wider font-bold">United Kingdom</span>
+                    <span class="text-deepblue-500 text-xs">&rsaquo;</span>
+                    <span class="text-neon-cyan text-xs">London</span>
+                </div>
+            </div>
+        </nav>
+
+        <header class="mb-16 animate-fade-in-down animation-delay-100 text-center">
+            <button
+                type="button"
+                id="destination-active-toggle"
+                class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
+                data-iso2="GB"
+                data-slug="london"
+                data-active="false"
+                data-interactive="true"
+                aria-label="Toggle London visibility on United Kingdom guide"
+                aria-pressed="false"
+            >
+                <i class="ph ph-map-pin text-4xl text-slate-500 pointer-events-none" aria-hidden="true"></i>
+            </button>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple pb-4">
+                Explore London
+            </h1>
+            <div class="bg-deepblue-900/40 border border-deepblue-800 rounded-3xl p-8 md:p-10 text-left backdrop-blur-sm mt-10">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                    <i class="ph ph-scroll text-neon-cyan"></i> A Brief History
+                </h2>
+                <p class="text-lg text-slate-400 font-light leading-relaxed">London grew from a Roman Londinium on the Thames into the capital of the Kingdom of England and later the United Kingdom. Medieval Westminster, Tudor commerce, and Georgian expansion gave way to Victorian industry and 20th-century reconstruction after wartime bombing. The Tower, St Paul&#x27;s Cathedral, royal parks, and parliamentary institutions show how the city became a global financial and cultural centre.</p>
+            </div>
+        </header>
+
+        <section class="mb-16 animate-fade-in-down" style="animation-delay: 0.2s;">
+            <h2 class="text-3xl font-bold text-white mb-6">Attractions Map</h2>
+            <div id="map" class="h-[400px] w-full rounded-3xl border border-deepblue-700 shadow-2xl z-10 relative"></div>
+        </section>
+
+        <section class="flex flex-col gap-6 pb-20 animate-fade-in-down" style="animation-delay: 0.3s;">
+            <h2 class="text-3xl font-bold text-white mb-2">Top Sights & Activities</h2>
+            
+            <!-- 1. Tower of London -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_1.jpg" alt="Tower of London" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> £37
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Tower of London</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Tower of London is a captivating medieval castle steeped in centuries of tumultuous history. Once a formidable fortress commissioned by William the Conqueror, it has served various roles throughout the ages, including that of a royal residence, prison, and even a zoo housing exotic animals like polar bears and lions. Today, it stands as the proud guardian of the Crown Jewels and is watched over by the Beefeaters.</p>
+                </div>
+            </div>
+
+            <!-- 2. Tower Bridge -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_2.jpg" alt="Tower Bridge" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> £12
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Tower Bridge</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Tower Bridge is a must-visit landmark that offers an experience for anyone exploring London. With its high-level walkways, visitors can enjoy panoramic views of the city and the River Thames, making it a perfect spot for photography enthusiasts. The self-guided tour provides fascinating insights into the bridge&#x27;s history and engineering marvels, including interactive exhibits that explain its unique physics in an engaging way.</p>
+                </div>
+            </div>
+
+            <!-- 3. Battersea Power Station -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_3.jpg" alt="Battersea Power Station" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Battersea Power Station</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Battersea Power Station, a repurposed Victorian power station located by the riverside in London, has been transformed into a luxury shopping and entertainment destination. The mall offers high-end retail experiences with stylish shops and fine fashion stores such as Tag Hauer, Uniqlo, Tommy Hilfiger, Jo Malone, and Abercrombie and Fitch.</p>
+                </div>
+            </div>
+
+            <!-- 4. Buckingham Palace -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_4.jpg" alt="Buckingham Palace" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> £37
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Buckingham Palace</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Buckingham Palace, the official residence of the British monarch since its construction in 1703, is a landmark in London. While you may not be able to explore all 775 rooms inside, visitors can marvel at its grandeur from behind secure fencing. A highlight of any visit is witnessing the Changing of the Guards—a vibrant ceremony filled with music and precision marching that showcases a long-standing royal tradition.</p>
+                </div>
+            </div>
+
+            <!-- 5. Westminster Cathedral -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_5.jpg" alt="Westminster Cathedral" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Westminster Cathedral</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Westminster Cathedral is a Victorian structure with red and white stripes, featuring a Byzantine style interior adorned with gold, mosaics, and marble. It serves as the Roman Catholic Church&#x27;s headquarters in England and is led by the Archbishop of Westminster. This neo-Byzantine architectural marvel was consecrated in 1910 and ranks as the 50th largest church globally.</p>
+                </div>
+            </div>
+
+            <!-- 6. Royal Albert Hall -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_6.jpg" alt="Royal Albert Hall" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> £20
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Royal Albert Hall</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Royal Albert Hall is a renowned performance venue and a cherished British landmark. Built as a tribute to Prince Albert by Queen Victoria, the red-and-gold domed auditorium has hosted significant cultural events and welcomed both rock stars and royalty over its almost 150-year history. It is also known for hosting grand tea parties, including one attended by Queen Elizabeth II to celebrate the WI&#x27;s 100th anniversary.</p>
+                </div>
+            </div>
+
+            <!-- 7. Harrods -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_7.jpg" alt="Harrods" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Harrods</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Harrods, a historic London department store established in 1849, is a popular destination for tourists and shoppers alike. The store&#x27;s 19th-century exterior is a sight to behold, especially during the festive season when it is adorned with rows of string lights. In recent years, Harrods has undergone significant changes by introducing renowned brands like Dior, Louis Vuitton, and Burberry for exclusive takeovers.</p>
+                </div>
+            </div>
+
+            <!-- 8. Trafalgar Square -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_8.jpg" alt="Trafalgar Square" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Trafalgar Square</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Trafalgar Square, an landmark in London, is home to Nelson&#x27;s Column, surrounded by LED-lit fountains, lion statues, and various artworks. This historic square has been a significant part of London for centuries and continues to hold a special place in the hearts of its residents. It pays tribute to the city&#x27;s rich history with monuments dedicated to courageous figures like Admiral Lord Nelson.</p>
+                </div>
+            </div>
+
+            <!-- 9. Royal Ballet and Opera -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_9.jpg" alt="Royal Ballet and Opera" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> £50
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Royal Ballet and Opera</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Royal Opera House in Covent Garden, London, is a historic venue known for its opera and ballet performances. With a rich history dating back to the 18th century, this theater offers opulent auditoriums and captivating productions that showcase lavish sets and virtuosic performances. Visitors can immerse themselves in the realm of theatrical splendor while enjoying traditional opera music, orchestras, or ballet.</p>
+                </div>
+            </div>
+
+            <!-- 10. Wembley Stadium -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_10.jpg" alt="Wembley Stadium" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> £27
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Wembley Stadium</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Wembley Stadium stands as a monumental landmark in London, renowned for hosting significant football events such as the FA Cup Final and various international matches. Designed by the esteemed architect Norman Foster, this state-of-the-art venue can accommodate up to 40,000 spectators at once. Its impressive structure features a retractable roof and an 133-meter high arch that not only enhances its aesthetic appeal but also supports much of the main roof.</p>
+                </div>
+            </div>
+
+            <!-- 11. Shakespeare&#x27;s Globe -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_11.jpg" alt="Shakespeare&#x27;s Globe" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> £19
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Shakespeare&#x27;s Globe</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Shakespeare&#x27;s Globe is a reconstructed Elizabethan theater made of oak and thatch, where Shakespeare&#x27;s plays are performed in the open air. It is located in London, near several famous landmarks such as Tower of London, Tower Bridge, and Buckingham Palace. Visiting this theater can provide a unique opportunity to experience the stories behind Shakespeare&#x27;s works and gain a new perspective on his writing style.</p>
+                </div>
+            </div>
+
+            <!-- 12. Millennium Bridge -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_12.jpg" alt="Millennium Bridge" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Millennium Bridge</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Millennium Bridge is an elegant steel suspension footbridge that spans the Thames River, connecting the Tate Modern to St Paul&#x27;s Cathedral. It holds several distinctions, being the newest crossing on the Thames and exclusively for pedestrians. Despite its short-lived initial opening, it has become a symbol of the 21st century since its conceptualization in 1996. The bridge offers easy access to nearby attractions such as Shakespeare&#x27;s Globe Theatre and the Tate museum.</p>
+                </div>
+            </div>
+
+            <!-- 13. St. Paul&#x27;s Cathedral -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_13.jpg" alt="St. Paul&#x27;s Cathedral" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> £27
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">St. Paul&#x27;s Cathedral</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">St. Paul&#x27;s Cathedral, a 17th-century church with a towering 365ft-high dome, is an landmark in London. Despite being rebuilt five times, it remains a structure and one of the city&#x27;s most famous churches. Visitors can explore its peaceful interior adorned with artwork and find tranquility in the churchyard and gardens outside. As a working cathedral, visitors should plan their visit around opening times or attend a service for a more immersive experience. St.</p>
+                </div>
+            </div>
+
+            <!-- 14. Royal Observatory Greenwich -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_14.jpg" alt="Royal Observatory Greenwich" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> £20
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Royal Observatory Greenwich</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Royal Observatory Greenwich, located in Greenwich, is a historic 18th-century astronomical observatory that now serves as a museum and planetarium. Visitors can enjoy views of the city and participate in regular stargazing events and astronomy evenings. The observatory offers exhibits on time and a small astronomy center, with free access to some areas including the opportunity to watch the Time Ball drop daily at 1pm.</p>
+                </div>
+            </div>
+
+            <!-- 15. Old Royal Naval College -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_15.jpg" alt="Old Royal Naval College" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> £16
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Old Royal Naval College</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Old Royal Naval College, located in Greenwich, is an elegant riverside complex designed by Sir Christopher Wren. It houses a maritime museum and is known for the Painted Hall, often referred to as the Sistine Chapel of England. The hall features intricate Baroque designs covering 40,000 square feet of walls and ceilings depicting figures from history and mythology.</p>
+                </div>
+            </div>
+
+            <!-- 16. The O2 -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_16.jpg" alt="The O2" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">The O2</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Located in London, The O2 is a renowned arena that can accommodate up to 20,000 fans and hosts top concerts and elite sporting events. Situated at the Greenwich Peninsula in North Greenwich, it also features an expansive shopping outlet mall with over 60 shops offering significant discounts on a wide range of brands.</p>
+                </div>
+            </div>
+
+            <!-- 17. Eltham Palace -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_17.jpg" alt="Eltham Palace" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> £18
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Eltham Palace</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Eltham Palace is a unique blend of medieval grandeur and 1930s art deco style, located in the Royal Borough of Greenwich. Once a favorite retreat for Henry VIII, it has undergone two major transformations throughout its history. The palace features a medieval great hall alongside an extravagant mansion annexed by the Courtauld family. Visitors can explore the Map Room where round-the-world adventures were planned and a lavish 1930s walk-in wardrobe with genuine dresses from that era.</p>
+                </div>
+            </div>
+
+            <!-- 18. Kenwood House -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_18.jpg" alt="Kenwood House" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Kenwood House</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Kenwood House is a 17th-century country house located within the picturesque Hampstead Heath. The neoclassical residence boasts restored interiors and houses an impressive collection of famous paintings by renowned artists such as Rembrandt, Turner, Reynolds, Gainsborough, and Vermeer. The house was remodeled between 1764 and 1779 and features elegant Georgian period rooms along with an extensive library.</p>
+                </div>
+            </div>
+
+            <!-- 19. The Shard -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_19.jpg" alt="The Shard" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> £32
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">The Shard</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Shard is an 87-floor glass skyscraper with a distinctive jagged peak, standing at 306 meters tall, making it the tallest building in the European Union. Located in London Bridge Quarter Development, it houses offices, restaurants, a hotel and an indoor/outdoor observation deck on the 72nd floor offering panoramic views of London.</p>
+                </div>
+            </div>
+
+            <!-- 20. Southwark Cathedral -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_20.jpg" alt="Southwark Cathedral" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Southwark Cathedral</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled near London Bridge and the River Thames, Southwark Cathedral stands as a serene testament to Gothic architecture and rich history. Known officially as The Cathedral and Collegiate Church of St Saviour and St Mary Overie, this remarkable structure is one of London&#x27;s oldest churches, with roots tracing back to the time of William the Conqueror. Visitors can enjoy daily services for free while soaking in its elegant ambiance.</p>
+                </div>
+            </div>
+
+            <!-- 21. Borough Market -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_21.jpg" alt="Borough Market" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Borough Market</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Borough Market is a historic and bustling food market located under the railway lines near London Bridge. It has been a part of London&#x27;s culinary scene since the 12th century and has experienced a recent revival, making it one of Europe&#x27;s top foodie destinations. With its Victorian architecture and over 100 stalls, the market offers a wide variety of goods, including British-reared meat, artisanal baked goods, dairy products, fresh produce, charcuterie, cheeses, chocolates, and more.</p>
+                </div>
+            </div>
+
+            <!-- 22. Big Ben -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_22.jpg" alt="Big Ben" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Big Ben</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Big Ben, also known as the Elizabeth Tower, is a 16-storey Gothic clocktower located at the Eastern end of the Houses of Parliament in London. It is a global icon of neo-Gothic design and has been a symbol of British governance since its controversial renovation in 1835. Designed by Charles Barry and Augustus Pugin, Big Ben&#x27;s completion in 1860 marked an addition to the London skyline.</p>
+                </div>
+            </div>
+
+            <!-- 23. Palace of Westminster -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_23.jpg" alt="Palace of Westminster" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Palace of Westminster</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Palace of Westminster, also known as the Houses of Parliament, is a Neo-Gothic architectural marvel and serves as the seat of the UK government. It has a rich history dating back to the middle ages when it was built by Edward the Confessor and later became home to William the Conqueror and his court.</p>
+                </div>
+            </div>
+
+            <!-- 24. Westminster Abbey -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_24.jpg" alt="Westminster Abbey" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> £31
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Westminster Abbey</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Westminster Abbey is a Gothic church steeped in history, with its current structure dating back nearly 800 years. This site has been the backdrop for every English and British coronation since 1066, as well as numerous royal weddings and state funerals. As you wander through its hallowed halls, encounter the final resting places of over 30 monarchs alongside luminaries like Isaac Newton, Charles Darwin, and Stephen Hawking.</p>
+                </div>
+            </div>
+
+            <!-- 25. Westminster Bridge -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_25.jpg" alt="Westminster Bridge" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Westminster Bridge</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Westminster Bridge, painted in a matching green to the House of Commons&#x27; leather seats, spans 252 meters and connects Lambeth to Westminster. The bridge, constructed in 1862, boasts Gothic design details and seven intricately carved arches. It features the Coat of Arms of Queen Victoria and Albert as well as Henry John Temple. Additionally, ornate lamps and trefoil cut-outs adorn the structure.</p>
+                </div>
+            </div>
+
+            <!-- 26. SEA LIFE London Aquarium -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_26.jpg" alt="SEA LIFE London Aquarium" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> £36
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">SEA LIFE London Aquarium</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">SEA LIFE London Aquarium is a family-friendly destination featuring a wide variety of sea creatures and offering play areas and group packages. With over 500 species from around the world, visitors can explore two million litres of water and learn about marine life conservation through educational programs at the learning centre. The aquarium&#x27;s glass tunnel provides an immersive experience as majestic ocean creatures swim just inches beneath your feet.</p>
+                </div>
+            </div>
+
+            <!-- 27. Sky Garden -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_27.jpg" alt="Sky Garden" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Sky Garden</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Sky Garden, also known as the Walkie Talkie due to its distinctive shape, is a must-visit destination in London. Located 43 floors above the city, this lush green space offers 360-degree views through floor-to-ceiling windows. The garden is filled with Mediterranean and South African plants, creating a unique botanical experience high above the bustling streets. Entry is free but requires advance booking due to limited spaces.</p>
+                </div>
+            </div>
+
+            <!-- 28. Leadenhall Market -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_28.jpg" alt="Leadenhall Market" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Leadenhall Market</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Leadenhall Market is a historical Victorian indoor marketplace located on Gracechurch Street. The market offers a unique blend of traditional and modern shops, restaurants, and bars within its grand architecture and cobblestone pavement dating back to 1881. It has been featured in popular movies such as Harry Potter and the Philosophers Stone. Visitors can explore authentic Victorian splendor while shopping for apparel, accessories, or enjoying events, concerts, talks, and installations.</p>
+                </div>
+            </div>
+
+            <!-- 29. 30 St Mary Axe (The Gherkin) -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_29.jpg" alt="30 St Mary Axe (The Gherkin)" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">30 St Mary Axe (The Gherkin)</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">30 St Mary Axe, also known as The Gherkin, is a distinctive bullet-shaped office tower in London. Designed by Norman Foster, it stands at 180m and features swirling light and dark glass. Initially mocked, the building quickly became an part of the city&#x27;s skyline. The site has historical significance, being named after a vanished church and having archaeological finds during its construction.</p>
+                </div>
+            </div>
+
+            <!-- 30. Monument to the Great Fire of London -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_30.jpg" alt="Monument to the Great Fire of London" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> £6
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Monument to the Great Fire of London</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Monument to the Great Fire of London commemorates the 1666 blaze that destroyed much of the medieval city. Sir Christopher Wren&#x27;s Doric column rises 202 feet near Pudding Lane, where the fire began. Visitors can climb 311 steps to a viewing platform for panoramic Thames and City skyline vistas, including St Paul&#x27;s Cathedral.</p>
+                </div>
+            </div>
+
+            <!-- 31. Camden Market -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_31.jpg" alt="Camden Market" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Camden Market</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Camden Market is a vibrant and diverse market in London that draws in over a quarter of a million visitors weekly. It encompasses several interconnected indoor and outdoor markets, offering an extensive range of products from fashion and homeware to food and alcohol. The market reflects the unconventional subcultures of Camden with stalls catering to alternative fashion styles like cybergoth, steampunk, and grunge.</p>
+                </div>
+            </div>
+
+            <!-- 32. London Zoo -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_32.jpg" alt="London Zoo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> £34
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">London Zoo</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">London Zoo, located in Regents Park, is a major city zoo and research center dedicated to conserving various species in naturalistic habitats. It offers a wide range of activities for visitors, including getting up close to giraffes, watching meerkats, visiting the sloth exhibit, and observing tigers. The zoo also hosts child-friendly activities on a daily basis and provides opportunities for kids to interact with their favorite animals through public feeding times and demonstrations.</p>
+                </div>
+            </div>
+
+            <!-- 33. Westfield London -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_33.jpg" alt="Westfield London" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Westfield London</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Westfield London, located near Hammersmith and Shepherds Bush in West London, is the largest shopping mall in the city and the UK. With over 400 stores, concessions, and restaurants, it offers a wide range of options for shoppers. From popular high street chains like Zara and H&amp;M to luxury brands such as Gucci and Armani, the mall caters to diverse tastes.</p>
+                </div>
+            </div>
+
+            <!-- 34. Portobello Road Market -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_34.jpg" alt="Portobello Road Market" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Portobello Road Market</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Portobello Road Market is a bustling weekly market in the charming neighborhood of Notting Hill, London. It offers a wide array of vintage goods, street eats, souvenirs, and more. The market gained popularity for its high-quality fresh breads, pastries, cheeses, meats, fish, and condiments. Visitors can explore rows of gems, vintage sunglasses, rare books and pre-loved wares along the street.</p>
+                </div>
+            </div>
+
+            <!-- 35. Oxo Tower -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_35.jpg" alt="Oxo Tower" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Oxo Tower</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Oxo Tower is a well-known landmark located on the south bank of the River Thames in London. It features a public viewing area that offers views of St Paul&#x27;s Cathedral and the bustling river traffic. The tower also houses shops, dining options, and an art gallery. Visitors can access the free public viewing platform without needing to book a ticket, making it a hidden gem for capturing photographs of London&#x27;s landmarks.</p>
+                </div>
+            </div>
+
+            <!-- 36. Chiswick House and Gardens -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_36.jpg" alt="Chiswick House and Gardens" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> £14
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Chiswick House and Gardens</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Chiswick House and Gardens is a mansion and garden complex in London, inspired by the Earl of Burlington&#x27;s travels in Italy. The estate features restored gardens, statuary, and architectural elements that make it a popular venue for events and weddings. After a significant renovation, the 65-acre property reopened to the public with fragrant rose gardens, woodlands, and diverse flora.</p>
+                </div>
+            </div>
+
+            <!-- 37. Kew Palace -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_37.jpg" alt="Kew Palace" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> £14
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Kew Palace</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled within the Royal Botanic Gardens at Kew, Kew Palace is a charming red brick stately home with well-preserved 200-year-old kitchens. Despite being the smallest of the British Royal Palaces, its picturesque setting amidst the lush greenery of Kew Gardens makes for a sight. Originally built in 1631 and later acquired by the Royal family, this quaint palace was once home to King George II and his three older daughters.</p>
+                </div>
+            </div>
+
+            <!-- 38. Royal Botanic Gardens, Kew -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_38.jpg" alt="Royal Botanic Gardens, Kew" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> £22
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Royal Botanic Gardens, Kew</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Royal Botanic Gardens, Kew in Richmond is a renowned destination featuring an extensive collection of trees and flowers from all over the world. Visitors can explore vast gardens, expansive greenhouses, and a treetop walkway. The gardens are home to rare and threatened plants housed in the largest Victorian glasshouse globally. Additionally, there are family-friendly exhibitions and events such as Kew the Music, a week-long music festival with acclaimed performers like Lewis Capaldi.</p>
+                </div>
+            </div>
+
+            <!-- 39. Syon Park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_39.jpg" alt="Syon Park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> £14
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Syon Park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Syon Park is a historic estate located near Kew Gardens, boasting vast landscaped grounds and a Grade I-listed building. It is the last surviving ducal residence in London, home to the Duke of Northumberland and encompassing 40 acres of beautiful gardens within 200 acres of parkland. The estate features the Great Conservatory and offers an idyllic venue for weddings, accommodating intimate or extravagant celebrations.</p>
+                </div>
+            </div>
+
+            <!-- 40. Oxford St -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/london_40.jpg" alt="Oxford St" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Oxford St</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Oxford Street is a bustling 1.5-mile stretch that boasts around 300 retailers, including major department stores and flagship stores of superbrands like Gap, River Island, Primark, and more. It&#x27;s the world&#x27;s biggest high street, offering a vibrant mix of fashion, entertainment, beauty, and technology. The street is serviced by three underground stations: Marble Arch, Bond Street, and Oxford Circus.</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
+        <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+    </footer>    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const map = L.map('map').setView([51.504948, -0.130583], 14);
+            L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                attribution: '&copy; Google Maps',
+                maxZoom: 20
+            }).addTo(map);
+            const locations = [{"name": "Tower of London", "lat": 51.508112, "lng": -0.075949}, {"name": "Tower Bridge", "lat": 51.505456, "lng": -0.075356}, {"name": "Battersea Power Station", "lat": 51.48202, "lng": -0.144491}, {"name": "Buckingham Palace", "lat": 51.501364, "lng": -0.14189}, {"name": "Westminster Cathedral", "lat": 51.495809, "lng": -0.13944}, {"name": "Royal Albert Hall", "lat": 51.500909, "lng": -0.177366}, {"name": "Harrods", "lat": 51.499405, "lng": -0.163234}, {"name": "Trafalgar Square", "lat": 51.508039, "lng": -0.128069}, {"name": "Royal Ballet and Opera", "lat": 51.512921, "lng": -0.122198}, {"name": "Wembley Stadium", "lat": 51.556025, "lng": -0.279618}, {"name": "Shakespeare's Globe", "lat": 51.508076, "lng": -0.097194}, {"name": "Millennium Bridge", "lat": 51.509529, "lng": -0.098542}, {"name": "St. Paul's Cathedral", "lat": 51.513845, "lng": -0.098351}, {"name": "Royal Observatory Greenwich", "lat": 51.476853, "lng": -0.0005}, {"name": "Old Royal Naval College", "lat": 51.482714, "lng": -0.006696}, {"name": "The O2", "lat": 51.503038, "lng": 0.003154}, {"name": "Eltham Palace", "lat": 51.44701, "lng": 0.048512}, {"name": "Kenwood House", "lat": 51.571388, "lng": -0.167454}, {"name": "The Shard", "lat": 51.5045, "lng": -0.0865}, {"name": "Southwark Cathedral", "lat": 51.506101, "lng": -0.089596}, {"name": "Borough Market", "lat": 51.505583, "lng": -0.090481}, {"name": "Big Ben", "lat": 51.500729, "lng": -0.124625}, {"name": "Palace of Westminster", "lat": 51.499479, "lng": -0.124809}, {"name": "Westminster Abbey", "lat": 51.49937, "lng": -0.127299}, {"name": "Westminster Bridge", "lat": 51.500864, "lng": -0.121964}, {"name": "SEA LIFE London Aquarium", "lat": 51.501558, "lng": -0.119506}, {"name": "Sky Garden", "lat": 51.511242, "lng": -0.083549}, {"name": "Leadenhall Market", "lat": 51.512766, "lng": -0.083529}, {"name": "30 St Mary Axe (The Gherkin)", "lat": 51.514492, "lng": -0.080306}, {"name": "Monument to the Great Fire of London", "lat": 51.510143, "lng": -0.085942}, {"name": "Camden Market", "lat": 51.541403, "lng": -0.146508}, {"name": "London Zoo", "lat": 51.535287, "lng": -0.15343}, {"name": "Westfield London", "lat": 51.507572, "lng": -0.221205}, {"name": "Portobello Road Market", "lat": 51.517, "lng": -0.205847}, {"name": "Oxo Tower", "lat": 51.508468, "lng": -0.108272}, {"name": "Chiswick House and Gardens", "lat": 51.483803, "lng": -0.258696}, {"name": "Kew Palace", "lat": 51.483818, "lng": -0.29498}, {"name": "Royal Botanic Gardens, Kew", "lat": 51.478744, "lng": -0.295573}, {"name": "Syon Park", "lat": 51.477231, "lng": -0.314009}, {"name": "Oxford St", "lat": 51.515255, "lng": -0.142019}];
+            const customIcon = L.icon({
+                iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32],
+            });
+            const destinationCenter = [51.504948, -0.130583];
+            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": false, "maxCenterLat": 0.06644, "maxCenterLng": 0.183426};
+            const markers = [];
+            locations.forEach(loc => {
+                markers.push(
+                    L.marker([loc.lat, loc.lng], {icon: customIcon}).addTo(map)
+                        .bindPopup(`<strong class="font-sans text-base text-gray-900">${loc.name}</strong>`)
+                );
+            });
+            const group = new L.featureGroup(markers);
+            let bounds = group.getBounds();
+            const ne = bounds.getNorthEast();
+            const sw = bounds.getSouthWest();
+            const latSpan = ne.lat - sw.lat;
+            const lngSpan = ne.lng - sw.lng;
+            const maxSpan = Math.max(latSpan, lngSpan);
+            const isDegenerate = latSpan < 1e-9 && lngSpan < 1e-9;
+            const markerCenterLat = (ne.lat + sw.lat) / 2;
+            const markerCenterLng = (ne.lng + sw.lng) / 2;
+            if (isDegenerate) {
+                const frameSpan = mapContext.compactRegion ? 0.026 : 0.045;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - frameSpan / 2, destinationCenter[1] - frameSpan / 2],
+                    [destinationCenter[0] + frameSpan / 2, destinationCenter[1] + frameSpan / 2]
+                );
+            } else if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                const expand = maxSpan < 0.12 ? 1.15 : 1.1;
+                const halfLat = latSpan / 2 * expand;
+                const halfLng = lngSpan / 2 * expand;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                const latReach = Math.max(mapContext.maxCenterLat, latSpan / 2) * 1.45;
+                const lngReach = Math.max(mapContext.maxCenterLng, lngSpan / 2) * 1.45;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - latReach, destinationCenter[1] - lngReach],
+                    [destinationCenter[0] + latReach, destinationCenter[1] + lngReach]
+                );
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                const halfLat = latSpan / 2 * 1.1;
+                const halfLng = lngSpan / 2 * 1.1;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                const frameSpan = Math.max(maxSpan * 4, 0.006);
+                bounds = L.latLngBounds(
+                    [markerCenterLat - frameSpan / 2, markerCenterLng - frameSpan / 2],
+                    [markerCenterLat + frameSpan / 2, markerCenterLng + frameSpan / 2]
+                );
+            }
+            const fitOptions = {};
+            if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                fitOptions.padding = maxSpan < 0.12
+                    ? [24, 24]
+                    : (maxSpan < 0.5 ? [24, 24] : [28, 28]);
+                fitOptions.maxZoom = maxSpan < 0.12
+                    ? 14
+                    : (maxSpan < 0.5 ? 10 : 9);
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                fitOptions.padding = [40, 40];
+                fitOptions.maxZoom = 8;
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                fitOptions.padding = [24, 24];
+            } else if (mapContext.denseUrban) {
+                fitOptions.padding = [18, 18];
+            } else if (mapContext.spreadUrban) {
+                fitOptions.padding = [20, 20];
+            } else if (locations.length >= 3 && maxSpan >= 0.02) {
+                fitOptions.padding = maxSpan >= 0.08 ? [20, 20] : [30, 30];
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                fitOptions.padding = [12, 12];
+                fitOptions.maxZoom = 16;
+            } else if (isDegenerate || locations.length === 1) {
+                fitOptions.padding = mapContext.compactRegion ? [16, 16] : [36, 36];
+                if (isDegenerate || maxSpan < 0.015) {
+                    fitOptions.maxZoom = mapContext.compactRegion ? 15 : 14;
+                }
+            } else {
+                fitOptions.padding = [50, 50];
+            }
+            map.fitBounds(bounds, fitOptions);
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                } else {
+                    scrollTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                }
+            });
+            scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        });
+    </script>
+
+    <button id="scrollTopBtn" class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-12 h-12 bg-neon-cyan text-deepblue-950 rounded-full shadow-[0_0_20px_rgba(0,240,255,0.4)] opacity-0 pointer-events-none transition-all duration-300 translate-y-4 hover:bg-white hover:scale-110" aria-label="Scroll to top">
+        <i class="ph ph-arrow-up text-xl font-bold"></i>
+    </button>
+</body>
+</html>

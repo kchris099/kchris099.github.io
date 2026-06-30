@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Almaty Guide | Global Explorer Guides</title>
+    <link rel="stylesheet" href="../../assets/tailwind.css">
+    <link rel="stylesheet" href="../../assets/outfit.css">
+    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
+    <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
+    <link rel="stylesheet" href="../../assets/homepage-activation.css">
+    <link rel="stylesheet" href="../../assets/destination-activation.css">
+    <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
+    <script src="../../assets/leaflet/leaflet.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #060B19; }
+        ::-webkit-scrollbar-thumb { background: #1E336B; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0070FF; }
+        .leaflet-popup-content-wrapper { background-color: #fff; color: #333; border-radius: 8px; box-shadow: 0 3px 14px rgba(0,0,0,0.4); }
+        .leaflet-popup-tip { background-color: #fff; }
+    </style>
+</head>
+<body class="bg-deepblue-950 text-slate-200 font-sans min-h-screen relative overflow-x-hidden">
+    <div class="absolute top-0 left-0 w-full h-[450px] md:h-[500px] z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50" style="background-image: url('images/almaty_hero.jpg')"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-deepblue-950/10 via-deepblue-950/60 to-deepblue-950"></div>
+    </div>
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon-purple/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neon-cyan/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <main class="container mx-auto px-4 py-8 md:py-16 relative z-20 max-w-5xl">
+        <nav class="mb-12 animate-fade-in-down flex flex-wrap items-center gap-4">
+            <a href="../../index.html" class="flex items-center justify-center w-11 h-11 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0" title="Back to Home">
+                <i class="ph ph-house text-xl group-hover:scale-110 transition-transform"></i>
+            </a>
+            <a href="kazakhstan.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0">
+                <i class="ph ph-arrow-left text-lg group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-medium text-sm">Back to Kazakhstan</span>
+            </a>
+            <div class="ml-auto flex items-center gap-3 bg-deepblue-900/40 border border-deepblue-700/50 rounded-full px-4 py-2 backdrop-blur-sm shadow-inner shrink-0">
+                <img src="../../assets/flags/w40/kz.png" alt="Kazakhstan flag" class="w-6 h-auto rounded-[2px] shadow-sm">
+                <div class="flex items-center gap-2 text-sm font-medium tracking-wide">
+                    <span class="text-slate-200 uppercase text-xs tracking-wider font-bold">Kazakhstan</span>
+                    <span class="text-deepblue-500 text-xs">&rsaquo;</span>
+                    <span class="text-neon-cyan text-xs">Almaty</span>
+                </div>
+            </div>
+        </nav>
+
+        <header class="mb-16 animate-fade-in-down animation-delay-100 text-center">
+            <button
+                type="button"
+                id="destination-active-toggle"
+                class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
+                data-iso2="KZ"
+                data-slug="almaty"
+                data-active="false"
+                data-interactive="true"
+                aria-label="Toggle Almaty visibility on Kazakhstan guide"
+                aria-pressed="false"
+            >
+                <i class="ph ph-map-pin text-4xl text-slate-500 pointer-events-none" aria-hidden="true"></i>
+            </button>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple pb-4">
+                Explore Almaty
+            </h1>
+            <div class="bg-deepblue-900/40 border border-deepblue-800 rounded-3xl p-8 md:p-10 text-left backdrop-blur-sm mt-10">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                    <i class="ph ph-scroll text-neon-cyan"></i> A Brief History
+                </h2>
+                <p class="text-lg text-slate-400 font-light leading-relaxed">Almaty served as capital of Soviet and independent Kazakhstan until 1997 and remains the country&#x27;s largest city at the foot of the Trans-Ili Alatau. Tsarist-era wooden villas, Stalinist blocks, and post-Soviet towers line wide streets laid out after earthquakes in the 19th century. Panfilov Park, the Zenkov Cathedral, and mountain resorts record its role as a cultural, financial, and gateway city to the Tian Shan.</p>
+            </div>
+        </header>
+
+        <section class="mb-16 animate-fade-in-down" style="animation-delay: 0.2s;">
+            <h2 class="text-3xl font-bold text-white mb-6">Attractions Map</h2>
+            <div id="map" class="h-[400px] w-full rounded-3xl border border-deepblue-700 shadow-2xl z-10 relative"></div>
+        </section>
+
+        <section class="flex flex-col gap-6 pb-20 animate-fade-in-down" style="animation-delay: 0.3s;">
+            <h2 class="text-3xl font-bold text-white mb-2">Top Sights & Activities</h2>
+            
+            <!-- 1. Almaty Central Mosque -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/almaty_1.jpg" alt="Almaty Central Mosque" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Almaty Central Mosque</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Almaty Central Mosque is a example of Islamic architecture, featuring white marble walls, gilded golden domes, and intricate ceramic calligraphy. The mosque&#x27;s towering minaret offers a commanding presence in the city skyline. It took six years to build and has since been recognized as an architectural monument. The rectangular shape of the mosque follows Timurid architectural traditions and can accommodate around 7,000 people.</p>
+                </div>
+            </div>
+
+            <!-- 2. Green Bazaar -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/almaty_2.jpg" alt="Green Bazaar" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Green Bazaar</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Green Bazaar in Almaty is a bustling indoor market filled with stalls offering a wide variety of goods. Visitors can explore an abundance of fruits, berries, exotic delicacies, sweets, cheeses, meat products, and rare spices. The friendly sellers are eager to offer samples of national delicacies for visitors to try before making a purchase. Additionally, the market features small dining places serving traditional dishes like lagman and plov.</p>
+                </div>
+            </div>
+
+            <!-- 3. Dostyk Plaza -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/almaty_3.jpg" alt="Dostyk Plaza" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Dostyk Plaza</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Dostyk Plaza is a top-tier shopping and entertainment complex located in the heart of Almaty. It offers a modern and spacious environment with an array of upscale boutiques, international fashion brands, and designer stores, making it a haven for fashion enthusiasts. The mall also features a cinema, food court, and various high-end retail options.</p>
+                </div>
+            </div>
+
+            <!-- 4. Almaty Zoo -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/almaty_4.jpg" alt="Almaty Zoo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> KZT 1427
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Almaty Zoo</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Almaty Zoo, located in the eastern part of Almaty city at the foot of the Alatau Mountains, is and oldest zoological parks in Kazakhstan. Established in 1937, it covers an area of approximately 21 hectares and features a diverse range of mammals, birds, and reptiles showcased in their natural habitats. The zoo has undergone significant expansion over its nearly 100-year history and is home to a multitude of animal species.</p>
+                </div>
+            </div>
+
+            <!-- 5. Central Park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/almaty_5.jpg" alt="Central Park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Central Park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Central Park, also known as Gorky Park, is a historic and expansive urban hub located in the bustling city of Almaty. Spanning 42 hectares, it seamlessly blends nature with urban life, offering a variety of attractions and activities for visitors of all ages. The park features lush greenery, aesthetic pathways, vibrant flowers, and artificial water reservoirs. Visitors can enjoy an amusement park, sports facilities, cafes, boat rentals and cultural venues within its boundaries.</p>
+                </div>
+            </div>
+
+            <!-- 6. Kok-Tobe Hill -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/almaty_6.jpg" alt="Kok-Tobe Hill" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> KZT 10000
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Kok-Tobe Hill</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Perched atop Kok Tobe Hill at 1100 meters above sea level, Kok Tobe Park is a must-visit destination in Almaty, Kazakhstan. This popular park attracts both local and international tourists with its array of attractions. From a children&#x27;s playground and climbing wall to the thrilling Fast Coaster ride, there&#x27;s something for everyone. Visitors can also explore an art gallery, relax at a tea house, or take in panoramic views of the city and mountains.</p>
+                </div>
+            </div>
+
+            <!-- 7. Ascension Cathedral -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/almaty_7.jpg" alt="Ascension Cathedral" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Ascension Cathedral</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Ascension Cathedral, also known as the Zenkov Cathedral, is a wooden Ukrainian-baroque Russian Orthodox cathedral consecrated in 1907. This majestic landmark in Almaty showcases striking golden domes and intricate architectural details that reflect Byzantine and Russian styles. Inside, visitors are greeted by candlelight and prayers, making it a cherished place for the local community.</p>
+                </div>
+            </div>
+
+            <!-- 8. 28 Panfilov Guardsmen Park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/almaty_8.jpg" alt="28 Panfilov Guardsmen Park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">28 Panfilov Guardsmen Park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Park of 28 Panfilov Guardsmen, situated in the heart of Almaty, is a 44-acre urban park that pays tribute to the heroic Panfilov soldiers who fought during WWII. The park features striking war memorials and an &#x27;eternal flame&#x27; honoring their sacrifice. Adjacent to the park stands the visually captivating Ascension Cathedral, a Tsarist-era wooden structure claimed to be one of the tallest in the world.</p>
+                </div>
+            </div>
+
+            <!-- 9. Arbat Almaty -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/almaty_9.jpg" alt="Arbat Almaty" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Arbat Almaty</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Arbat G. Almaty, also known as Zhibek Zholy pedestrian street, is a must-visit destination in the heart of Almaty, Kazakhstan. This vibrant thoroughfare is alive with energy and creativity, showcasing an array of street artists and musicians that bring the area to life. As you stroll along Arbat, encounter a delightful mix of souvenir shops and cozy cafes where savor local delicacies.</p>
+                </div>
+            </div>
+
+            <!-- 10. Arbat -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/almaty_10.jpg" alt="Arbat" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Arbat</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Arbat is a popular treelined pedestrian shopping street in Almaty, known for its nice atmosphere with cafes, street musicians, and artists selling their paintings. The historical promenade lane has been extended by the local municipality up to the opera house, creating a well-lit and nicely decorated area that is pedestrian-friendly. It also offers areas for fitness activities for both adults and children, as well as a growing selection of cafes and restaurants.</p>
+                </div>
+            </div>
+
+            <!-- 11. Baiken -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/almaty_11.jpg" alt="Baiken" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Baiken</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">In the city of Almaty, visitors can find the Baiken Mosque, a remarkable architectural gem inaugurated in 2014 at the behest of Kazakhstan&#x27;s President Nursultan Nazarbayev. The mosque&#x27;s design seamlessly blends traditional Islamic elements with modern touches, creating a truly captivating sight. Stepping inside reveals a spacious and serene environment that fosters tranquility and reflection. Maintained with great care, the mosque offers a pristine setting for prayer and contemplation.</p>
+                </div>
+            </div>
+
+            <!-- 12. Ile-Alatau National Park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/almaty_12.jpg" alt="Ile-Alatau National Park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> KZT 865
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Ile-Alatau National Park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled in the heart of Kazakhstan, Ile-Alatau National Park is a expanse that was established in 1996 and spans an impressive 200,000 hectares. This natural wonder showcases a array of landscapes, from lush alpine meadows to majestic glaciers and serene lakes. One of its crown jewels is the Big Almaty Lake, perched at over 2,500 meters above sea level and surrounded by the striking peaks of the Tien Shan Mountains.</p>
+                </div>
+            </div>
+
+            <!-- 13. Abilkhan Kasteev State Art Museum -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/almaty_13.jpg" alt="Abilkhan Kasteev State Art Museum" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> KZT 5000
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Abilkhan Kasteev State Art Museum</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Abilkhan Kasteev State Art Museum, established in 1976, is a significant cultural center in Asia. It features an extensive collection of over 23,000 artworks spanning from the 16th century to contemporary pieces. The museum showcases a diverse range of artistic treasures representing the heritage of Kazakhstan, Russia, and Western Europe.</p>
+                </div>
+            </div>
+
+            <!-- 14. Independence Monument (Golden Warrior Monument) -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/almaty_14.jpg" alt="Independence Monument (Golden Warrior Monument)" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Independence Monument (Golden Warrior Monument)</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Independence Monument in Kazakhstan is a striking obelisk that pays tribute to the country&#x27;s independence. At its pinnacle stands a majestic golden warrior mounted on a winged leopard. To reach this landmark, take the metro from Zhibek Zholy to Abay and then explore the area. There are numerous dining options nearby, including Coffee Inn which offers a variety of traditional Kazakh and Western dishes.</p>
+                </div>
+            </div>
+
+            <!-- 15. M. Lermontov State Academic Russian Drama Theather -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/almaty_15.jpg" alt="M. Lermontov State Academic Russian Drama Theather" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> KZT 500
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">M. Lermontov State Academic Russian Drama Theather</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The M. Lermontov State Academic Russian Drama Theater offers a cozy and warm atmosphere with comfortable seating and excellent acoustics. The theater provides a picturesque setting with illuminated fountains at night, creating a charming ambiance. Despite the outdated theater chairs, the performances are generally pleasing, allowing visitors to immerse themselves in the theatrical experience and forget about the outside world.</p>
+                </div>
+            </div>
+
+            <!-- 16. Abay Kazakh State Academic Opera and Ballet Theater -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/almaty_16.jpg" alt="Abay Kazakh State Academic Opera and Ballet Theater" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> KZT 1500
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Abay Kazakh State Academic Opera and Ballet Theater</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Abay Kazakh State Academic Opera and Ballet Theater, located in the former capital of Almaty, is celebrating its 90th season. The grand opera house boasts interior and exterior designs. It offers a diverse repertoire featuring international classics like Swan Lake, The Nutcracker, Aida, Madam Butterfly, and Carmen alongside works by Kazakh composers. This architectural gem showcases a blend of Stalinist Empire style with Italian classicism and Kazakh elements.</p>
+                </div>
+            </div>
+
+            <!-- 17. Memorial of Aliya Moldagulova and Manshuk Mametova -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/almaty_17.jpg" alt="Memorial of Aliya Moldagulova and Manshuk Mametova" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Memorial of Aliya Moldagulova and Manshuk Mametova</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Memorial of Aliya Moldagulova and Manshuk Mametova, located on Astana Square, is a historical attraction that honors two brave Kazakh women who were heroes during World War II. The park surrounding the monument offers a relaxing atmosphere and features beautiful tulips, making it an excellent place for family outings and leisure activities. These two women are celebrated as heroes from WW2, with one of them being recognized as the sniper of the Soviet Union during that time.</p>
+                </div>
+            </div>
+
+            <!-- 18. St Nicholas Cathedral -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/almaty_18.jpg" alt="St Nicholas Cathedral" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">St Nicholas Cathedral</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">St Nicholas Cathedral is a famous attraction in downtown Almaty, known for its otherworldly painted walls, ceiling, and icons. Visitors are recommended to take a peek inside the orthodox edifice and admire its historical value. The cathedral is located in a majestic park and offers a beautiful setting for exploration.</p>
+                </div>
+            </div>
+
+            <!-- 19. Almaty Botanical Gardens -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/almaty_19.jpg" alt="Almaty Botanical Gardens" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> KZT 1800
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Almaty Botanical Gardens</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Almaty Botanical Garden, established in 1932, spans over a hundred hectares and features diverse thematic areas such as Japanese-style Zen Garden, wooded areas, rose gardens, and wide flower beds. Visitors can stroll along tree-lined pathways and encounter exotic plants from around the world including those from Russia, East Asia, the Caucasus and North America. The park also houses a Solarium for trees and cactuses that require warm conditions.</p>
+                </div>
+            </div>
+
+            <!-- 20. First President park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/almaty_20.jpg" alt="First President park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">First President park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">First President Park is a urban oasis in Almaty, dedicated to the legacy of Kazakhstan&#x27;s first president, Nursultan Nazarbayev. Opened to the public in November 2011, this expansive park spans 73 hectares and is nestled at the intersection of Navoi Street and Al-Farabi Avenue in the Bostandyk district. With its mountain backdrop, it has quickly become a beloved spot for both locals and visitors alike.</p>
+                </div>
+            </div>
+
+            <!-- 21. Kok Tobe -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/almaty_21.jpg" alt="Kok Tobe" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> KZT 10000
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Kok Tobe</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Kok Tobe is a famous mountain in Almaty, offering city views and a variety of attractions. Visitors can take a cable car from the station on Dostyk Avenue to reach the park at an elevation of 1,620 meters. The ride provides panoramic views of the city&#x27;s skyline and natural landscapes. At the top, visitors can enjoy an amusement park with various rides and activities.</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
+        <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+    </footer>    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const map = L.map('map').setView([43.236343, 76.944806], 14);
+            L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                attribution: '&copy; Google Maps',
+                maxZoom: 20
+            }).addTo(map);
+            const locations = [{"name": "Almaty Central Mosque", "lat": 43.26813, "lng": 76.953033}, {"name": "Green Bazaar", "lat": 43.26423, "lng": 76.954751}, {"name": "Dostyk Plaza", "lat": 43.233393, "lng": 76.95682}, {"name": "Almaty Zoo", "lat": 43.263707, "lng": 76.97624}, {"name": "Central Park", "lat": 43.261289, "lng": 76.965165}, {"name": "Kok-Tobe Hill", "lat": 43.234054, "lng": 76.975841}, {"name": "Ascension Cathedral", "lat": 43.258736, "lng": 76.952867}, {"name": "28 Panfilov Guardsmen Park", "lat": 43.258833, "lng": 76.954132}, {"name": "Arbat Almaty", "lat": 43.26182, "lng": 76.94292}, {"name": "Arbat", "lat": 43.261963, "lng": 76.937504}, {"name": "Baiken", "lat": 43.227482, "lng": 76.891666}, {"name": "Ile-Alatau National Park", "lat": 43.15763, "lng": 77.048765}, {"name": "Abilkhan Kasteev State Art Museum", "lat": 43.235846, "lng": 76.919483}, {"name": "Independence Monument (Golden Warrior Monument)", "lat": 43.238492, "lng": 76.945451}, {"name": "M. Lermontov State Academic Russian Drama Theather", "lat": 43.243181, "lng": 76.943885}, {"name": "Abay Kazakh State Academic Opera and Ballet Theater", "lat": 43.248872, "lng": 76.94571}, {"name": "Memorial of Aliya Moldagulova and Manshuk Mametova", "lat": 43.253888, "lng": 76.94335}, {"name": "St Nicholas Cathedral", "lat": 43.248524, "lng": 76.928139}, {"name": "Almaty Botanical Gardens", "lat": 43.21967, "lng": 76.91334}, {"name": "First President park", "lat": 43.193653, "lng": 76.886802}, {"name": "Kok Tobe", "lat": 43.129806, "lng": 76.905056}];
+            const customIcon = L.icon({
+                iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32],
+            });
+            const destinationCenter = [43.236343, 76.944806];
+            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.106537, "maxCenterLng": 0.103959};
+            const markers = [];
+            locations.forEach(loc => {
+                markers.push(
+                    L.marker([loc.lat, loc.lng], {icon: customIcon}).addTo(map)
+                        .bindPopup(`<strong class="font-sans text-base text-gray-900">${loc.name}</strong>`)
+                );
+            });
+            const group = new L.featureGroup(markers);
+            let bounds = group.getBounds();
+            const ne = bounds.getNorthEast();
+            const sw = bounds.getSouthWest();
+            const latSpan = ne.lat - sw.lat;
+            const lngSpan = ne.lng - sw.lng;
+            const maxSpan = Math.max(latSpan, lngSpan);
+            const isDegenerate = latSpan < 1e-9 && lngSpan < 1e-9;
+            const markerCenterLat = (ne.lat + sw.lat) / 2;
+            const markerCenterLng = (ne.lng + sw.lng) / 2;
+            if (isDegenerate) {
+                const frameSpan = mapContext.compactRegion ? 0.026 : 0.045;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - frameSpan / 2, destinationCenter[1] - frameSpan / 2],
+                    [destinationCenter[0] + frameSpan / 2, destinationCenter[1] + frameSpan / 2]
+                );
+            } else if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                const expand = maxSpan < 0.12 ? 1.15 : 1.1;
+                const halfLat = latSpan / 2 * expand;
+                const halfLng = lngSpan / 2 * expand;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                const latReach = Math.max(mapContext.maxCenterLat, latSpan / 2) * 1.45;
+                const lngReach = Math.max(mapContext.maxCenterLng, lngSpan / 2) * 1.45;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - latReach, destinationCenter[1] - lngReach],
+                    [destinationCenter[0] + latReach, destinationCenter[1] + lngReach]
+                );
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                const halfLat = latSpan / 2 * 1.1;
+                const halfLng = lngSpan / 2 * 1.1;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                const frameSpan = Math.max(maxSpan * 4, 0.006);
+                bounds = L.latLngBounds(
+                    [markerCenterLat - frameSpan / 2, markerCenterLng - frameSpan / 2],
+                    [markerCenterLat + frameSpan / 2, markerCenterLng + frameSpan / 2]
+                );
+            }
+            const fitOptions = {};
+            if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                fitOptions.padding = maxSpan < 0.12
+                    ? [24, 24]
+                    : (maxSpan < 0.5 ? [24, 24] : [28, 28]);
+                fitOptions.maxZoom = maxSpan < 0.12
+                    ? 14
+                    : (maxSpan < 0.5 ? 10 : 9);
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                fitOptions.padding = [40, 40];
+                fitOptions.maxZoom = 8;
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                fitOptions.padding = [24, 24];
+            } else if (mapContext.denseUrban) {
+                fitOptions.padding = [18, 18];
+            } else if (mapContext.spreadUrban) {
+                fitOptions.padding = [20, 20];
+            } else if (locations.length >= 3 && maxSpan >= 0.02) {
+                fitOptions.padding = maxSpan >= 0.08 ? [20, 20] : [30, 30];
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                fitOptions.padding = [12, 12];
+                fitOptions.maxZoom = 16;
+            } else if (isDegenerate || locations.length === 1) {
+                fitOptions.padding = mapContext.compactRegion ? [16, 16] : [36, 36];
+                if (isDegenerate || maxSpan < 0.015) {
+                    fitOptions.maxZoom = mapContext.compactRegion ? 15 : 14;
+                }
+            } else {
+                fitOptions.padding = [50, 50];
+            }
+            map.fitBounds(bounds, fitOptions);
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                } else {
+                    scrollTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                }
+            });
+            scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        });
+    </script>
+
+    <button id="scrollTopBtn" class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-12 h-12 bg-neon-cyan text-deepblue-950 rounded-full shadow-[0_0_20px_rgba(0,240,255,0.4)] opacity-0 pointer-events-none transition-all duration-300 translate-y-4 hover:bg-white hover:scale-110" aria-label="Scroll to top">
+        <i class="ph ph-arrow-up text-xl font-bold"></i>
+    </button>
+</body>
+</html>
