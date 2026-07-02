@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quito Guide | Global Explorer Guides</title>
+    <link rel="stylesheet" href="../../assets/tailwind.css">
+    <link rel="stylesheet" href="../../assets/outfit.css">
+    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
+    <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
+    <link rel="stylesheet" href="../../assets/homepage-activation.css">
+    <link rel="stylesheet" href="../../assets/destination-activation.css">
+    <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
+    <script src="../../assets/leaflet/leaflet.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #060B19; }
+        ::-webkit-scrollbar-thumb { background: #1E336B; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0070FF; }
+        .leaflet-popup-content-wrapper { background-color: #fff; color: #333; border-radius: 8px; box-shadow: 0 3px 14px rgba(0,0,0,0.4); }
+        .leaflet-popup-tip { background-color: #fff; }
+    </style>
+</head>
+<body class="bg-deepblue-950 text-slate-200 font-sans min-h-screen relative overflow-x-hidden">
+    <div class="absolute top-0 left-0 w-full h-[450px] md:h-[500px] z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50" style="background-image: url('images/quito_hero.jpg')"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-deepblue-950/10 via-deepblue-950/60 to-deepblue-950"></div>
+    </div>
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon-purple/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neon-cyan/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <main class="container mx-auto px-4 py-8 md:py-16 relative z-20 max-w-5xl">
+        <nav class="mb-12 animate-fade-in-down flex flex-wrap items-center gap-4">
+            <a href="../../index.html" class="flex items-center justify-center w-11 h-11 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0" title="Back to Home">
+                <i class="ph ph-house text-xl group-hover:scale-110 transition-transform"></i>
+            </a>
+            <a href="ecuador.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0">
+                <i class="ph ph-arrow-left text-lg group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-medium text-sm">Back to Ecuador</span>
+            </a>
+            <div class="ml-auto flex items-center gap-3 bg-deepblue-900/40 border border-deepblue-700/50 rounded-full px-4 py-2 backdrop-blur-sm shadow-inner shrink-0">
+                <img src="../../assets/flags/w40/ec.png" alt="Ecuador flag" class="w-6 h-auto rounded-[2px] shadow-sm">
+                <div class="flex items-center gap-2 text-sm font-medium tracking-wide">
+                    <span class="text-slate-200 uppercase text-xs tracking-wider font-bold">Ecuador</span>
+                    <span class="text-deepblue-500 text-xs">&rsaquo;</span>
+                    <span class="text-neon-cyan text-xs">Quito</span>
+                </div>
+            </div>
+        </nav>
+
+        <header class="mb-16 animate-fade-in-down animation-delay-100 text-center">
+            <button
+                type="button"
+                id="destination-active-toggle"
+                class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
+                data-iso2="EC"
+                data-slug="quito"
+                data-active="false"
+                data-interactive="true"
+                aria-label="Toggle Quito visibility on Ecuador guide"
+                aria-pressed="false"
+            >
+                <i class="ph ph-map-pin text-4xl text-slate-500 pointer-events-none" aria-hidden="true"></i>
+            </button>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple pb-4">
+                Explore Quito
+            </h1>
+            <div class="bg-deepblue-900/40 border border-deepblue-800 rounded-3xl p-8 md:p-10 text-left backdrop-blur-sm mt-10">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                    <i class="ph ph-scroll text-neon-cyan"></i> A Brief History
+                </h2>
+                <p class="text-lg text-slate-400 font-light leading-relaxed">Quito stands high in the Andes on the site of a pre-Inca centre incorporated into the Inca empire and refounded by Sebastián de Benalcázar in 1534. Baroque churches, monasteries, and plazas in the historic centre are among the -preserved in the Americas and were inscribed by UNESCO in 1978. The city remains Ecuador&#x27;s political capital while facing volcanic valleys to the east.</p>
+            </div>
+        </header>
+
+        <section class="mb-16 animate-fade-in-down" style="animation-delay: 0.2s;">
+            <h2 class="text-3xl font-bold text-white mb-6">Attractions Map</h2>
+            <div id="map" class="h-[400px] w-full rounded-3xl border border-deepblue-700 shadow-2xl z-10 relative"></div>
+        </section>
+
+        <section class="flex flex-col gap-6 pb-20 animate-fade-in-down" style="animation-delay: 0.3s;">
+            <h2 class="text-3xl font-bold text-white mb-2">Top Sights & Activities</h2>
+            
+            <!-- 1. Basílica del Voto Nacional -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quito_1.jpg" alt="Basílica del Voto Nacional" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Basílica del Voto Nacional</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Basílica del Voto Nacional is a 19th-century church in Quito&#x27;s historic center, known for its ornate neo-Gothic architecture. The church features intricate gargoyles and spires, offering visitors the chance to climb to the top for city views. It appeals to architecture enthusiasts, religious history buffs, and those seeking unparalleled panoramic vistas. Climbing the steep and narrow staircases to the towers is a must for an experience.</p>
+                </div>
+            </div>
+
+            <!-- 2. Independence Square -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quito_2.jpg" alt="Independence Square" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Independence Square</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Independence Square, also known as Plaza de la Independencia or Plaza Grande, is a grand plaza and park situated in the heart of old Quito. It serves as the focal point of Quito&#x27;s historic district and features a monument commemorating those who first advocated for independence from the Royal Audience of Quito in 1809. The square is surrounded by monumental government and church buildings such as the Cathedral, Government Palace, Archbishop&#x27;s Palace, and City Hall.</p>
+                </div>
+            </div>
+
+            <!-- 3. Quito Metropolitan Cathedral -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quito_3.jpg" alt="Quito Metropolitan Cathedral" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Quito Metropolitan Cathedral</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Catedral Metropolitana de Quito is a 16th-century domed church with neoclassical architecture and four colorful, dramatic chapels. It is one of the oldest churches in South America and a must-visit in the historic center of Quito. The site forms part of Quito Metropolitan Cathedral&#x27;s documented civic and cultural landscape within Quito, with archives and visitor information available from municipal or regional heritage authorities.</p>
+                </div>
+            </div>
+
+            <!-- 4. Church of the Society of Jesus -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quito_4.jpg" alt="Church of the Society of Jesus" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Church of the Society of Jesus</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Church of the Society of Jesus, also known as La Compania de Jesus, is a remarkable baroque church in Quito, Ecuador. Its construction began in 1605 and was completed in 1765. The interior is adorned with elaborate carvings and gilded with gold leaf, creating a sight that has earned it the reputation of being beautiful churches in Ecuador.</p>
+                </div>
+            </div>
+
+            <!-- 5. Basilica and Convent of San Francisco -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quito_5.jpg" alt="Basilica and Convent of San Francisco" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Basilica and Convent of San Francisco</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The San Francisco Catholic Church in Quito is a grand baroque church known for its ornate interior featuring intricate paintings and sculptures. It is part of the historic center of Quito, which also includes other notable attractions such as the Compania de Jesus church, Basilica del Voto Nacional church, Catedral Primada de Quito, and Santo Domingo church. The area also boasts landmarks like La Plaza Grande and Carondelet Palace.</p>
+                </div>
+            </div>
+
+            <!-- 6. Historic Center of Quito -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quito_6.jpg" alt="Historic Center of Quito" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Historic Center of Quito</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Quito Historic Center is a captivating area that showcases the rich cultural and architectural heritage of Ecuador&#x27;s capital. As a UNESCO World Heritage Site, it boasts over 100 well-preserved Spanish colonial and neoclassical buildings, making it examples of colonial districts in Latin America.</p>
+                </div>
+            </div>
+
+            <!-- 7. Virgin of the Panecillo -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quito_7.jpg" alt="Virgin of the Panecillo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Virgin of the Panecillo</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Virgin of the Panecillo is a 30-meter-tall aluminum statue of the winged Virgin Mary, located on a hill overlooking Quito&#x27;s Old Town. According to local legend, the statue faces north to bless that part of the city while her back is turned to the south, symbolizing wealth disparity. The road leading to the statue winds around El Panecillo hill, offering panoramic views of Quito.</p>
+                </div>
+            </div>
+
+            <!-- 8. El Panecillo -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quito_8.jpg" alt="El Panecillo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">El Panecillo</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">El Panecillo is a rounded hill in Quito, Ecuador, featuring a 41m aluminum statue of the Virgin of Quito at its summit. It overlooks the city and offers panoramic views, making it a popular spot for photography enthusiasts and cultural explorers. Visitors can enjoy peaceful sunrise or golden hour experiences here. To reach El Panecillo, it&#x27;s recommended to take a taxi or use guided tour services due to its popularity and potential crowding.</p>
+                </div>
+            </div>
+
+            <!-- 9. La Mariscal Artisan Market -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quito_9.jpg" alt="La Mariscal Artisan Market" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">La Mariscal Artisan Market</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">La Mariscal Artisan Market, located in Quitos Mariscal district near Plaza Foch, is a vibrant and lively covered market offering a wide array of traditional Ecuadorian crafts. From alpaca blankets to handmade jewelry and colorful textiles, the market is a treasure trove for souvenir hunters. The nearby La Floresta Artisan Market also showcases unique local artworks and crafts reflecting the rich Ecuadorian culture.</p>
+                </div>
+            </div>
+
+            <!-- 10. TelefériQo Cable Car -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quito_10.jpg" alt="TelefériQo Cable Car" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">TelefériQo Cable Car</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">One of the highest aerial lifts in the world, offering views of Quito and the surrounding Andes mountains. A must-visit for scenery. The site forms part of TelefériQo Cable Car&#x27;s documented civic and cultural landscape within Quito, with archives and visitor information available from municipal or regional heritage authorities.</p>
+                </div>
+            </div>
+
+            <!-- 11. Capilla del Hombre -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quito_11.jpg" alt="Capilla del Hombre" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Capilla del Hombre</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Capilla del Hombre is a museum in Quito, Ecuador, dedicated to the celebrated artist Oswaldo Guayasamín. The museum showcases his impressive paintings and sculptures, as well as collections of pre-Columbian and colonial artifacts. Visitors can explore five cultural spaces managed by the Guayasamin Foundation, including the Guayasamin House-Museum and the Maruja Monteverde Hall of Temporary Exhibitions.</p>
+                </div>
+            </div>
+
+            <!-- 12. El Mirador De Guapulo -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quito_12.jpg" alt="El Mirador De Guapulo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">El Mirador De Guapulo</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">El Mirador De Guapulo is a hidden gem nestled in the picturesque neighborhood of Guapulo, offering views of the Cumbayá Valley and the surrounding Andes mountains. This serene viewpoint provides an escape from Quito&#x27;s hustle and bustle, making it ideal for those seeking tranquility. The vistas are particularly enchanting during early mornings or late afternoons when the light enhances the landscape’s beauty, perfect for photography lovers.</p>
+                </div>
+            </div>
+
+            <!-- 13. Iglesia de Santo Domingo -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quito_13.jpg" alt="Iglesia de Santo Domingo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Iglesia de Santo Domingo</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Iglesia de Santo Domingo, located in the historic center of Quito, is a significant place of worship with a rich history dating back to 1540. The church features a neo-Gothic altarpiece and houses an array of 16th and 17th-century paintings and sculptures. The interior is adorned with intricate cedar carvings covered in gold leaf, along with valuable religious artwork.</p>
+                </div>
+            </div>
+
+            <!-- 14. Plaza de Santo Domingo -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quito_14.jpg" alt="Plaza de Santo Domingo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Plaza de Santo Domingo</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Plaza Santo Domingo is a captivating gem nestled in the heart of Quito, Ecuador&#x27;s colonial town, which is recognized as a UNESCO World Heritage Site. This historic square is home to the Santo Domingo Church, an architectural marvel that draws both locals and tourists alike. The plaza offers a serene atmosphere where visitors can relax on benches and engage in friendly conversations with neighbors.</p>
+                </div>
+            </div>
+
+            <!-- 15. Calle La Ronda -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quito_15.jpg" alt="Calle La Ronda" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Calle La Ronda</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">A charming, cobblestoned street in the historic center, filled with artisan shops, cafes, and traditional Ecuadorian cuisine. Perfect for an evening stroll. The site forms part of Calle La Ronda&#x27;s documented civic and cultural landscape within Quito, with archives and visitor information available from municipal or regional heritage authorities.</p>
+                </div>
+            </div>
+
+            <!-- 16. Quito Botanical Gardens -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quito_16.jpg" alt="Quito Botanical Gardens" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Quito Botanical Gardens</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Quito Botanical Gardens, nestled within La Carolina Park, offers a delightful escape into nature. The garden showcases the diverse ecosystems of Ecuador, featuring replicas of coastal, Andean, and Amazon environments. Visitors can explore two impressive greenhouses housing exquisite orchids and intriguing carnivorous plants. Additionally, the garden boasts a bonsai collection and a serene boating lagoon with charming fountains.</p>
+                </div>
+            </div>
+
+            <!-- 17. Parque La Carolina -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quito_17.jpg" alt="Parque La Carolina" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Parque La Carolina</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Parque La Carolina is a vast 67-hectare park located in the northern part of the city, offering a wide range of activities and attractions. Visitors can enjoy biking, soccer, basketball, and even rent paddle boats to explore the park&#x27;s pond. The park also features football fields, running tracks, playgrounds, and a large skatepark. Additionally, it houses the Quito Exhibition Center and Botanical Gardens.</p>
+                </div>
+            </div>
+
+            <!-- 18. Teatro Sucre -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quito_18.jpg" alt="Teatro Sucre" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Teatro Sucre</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Teatro Sucre, Quito&#x27;s most prestigious theater, opened its doors in 1886 and stands as one of South America&#x27;s oldest opera houses. Designed by the German architect Francisco Schmidt, this neoclassical gem mirrors the grandeur of European opera venues. It is not only celebrated for its architecture but also for hosting a variety of cultural events, including international jazz and classical music festivals.</p>
+                </div>
+            </div>
+
+            <!-- 19. Mercado Central -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quito_19.jpg" alt="Mercado Central" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Mercado Central</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Mercado Central in Quito, Ecuador is a historic and vibrant market dating back to 1950. It&#x27;s located on Pichincha Avenue and is known for its gastronomy and the friendly vendors. The market offers a colorful array of tropical fruits like papayas, mangoes, and pineapples. Additionally, it features traditional healers called curanderas who perform rituals for good fortune.</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
+        <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+    </footer>    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const map = L.map('map').setView([-0.213057, -78.505290], 14);
+            L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                attribution: '&copy; Google Maps',
+                maxZoom: 20
+            }).addTo(map);
+            const locations = [{"name": "Basílica del Voto Nacional", "lat": -0.214987, "lng": -78.507652}, {"name": "Independence Square", "lat": -0.220124, "lng": -78.512081}, {"name": "Quito Metropolitan Cathedral", "lat": -0.220442, "lng": -78.512494}, {"name": "Church of the Society of Jesus", "lat": -0.220949, "lng": -78.513655}, {"name": "Basilica and Convent of San Francisco", "lat": -0.220497, "lng": -78.515235}, {"name": "Historic Center of Quito", "lat": -0.218896, "lng": -78.512341}, {"name": "Virgin of the Panecillo", "lat": -0.228833, "lng": -78.51859}, {"name": "El Panecillo", "lat": -0.230318, "lng": -78.51923}, {"name": "La Mariscal Artisan Market", "lat": -0.20706, "lng": -78.495255}, {"name": "TelefériQo Cable Car", "lat": -0.1921742, "lng": -78.5195184}, {"name": "Capilla del Hombre", "lat": -0.190756, "lng": -78.469467}, {"name": "El Mirador De Guapulo", "lat": -0.201523, "lng": -78.479233}, {"name": "Iglesia de Santo Domingo", "lat": -0.22416, "lng": -78.512525}, {"name": "Plaza de Santo Domingo", "lat": -0.22367, "lng": -78.512848}, {"name": "Calle La Ronda", "lat": -0.2241292, "lng": -78.5142918}, {"name": "Quito Botanical Gardens", "lat": -0.186365, "lng": -78.485529}, {"name": "Parque La Carolina", "lat": -0.184123, "lng": -78.484638}, {"name": "Teatro Sucre", "lat": -0.219175, "lng": -78.508865}, {"name": "Mercado Central", "lat": -0.219907, "lng": -78.507068}];
+            const customIcon = L.icon({
+                iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32],
+            });
+            const destinationCenter = [-0.213057, -78.505290];
+            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.028934, "maxCenterLng": 0.035823};
+            const markers = [];
+            locations.forEach(loc => {
+                markers.push(
+                    L.marker([loc.lat, loc.lng], {icon: customIcon}).addTo(map)
+                        .bindPopup(`<strong class="font-sans text-base text-gray-900">${loc.name}</strong>`)
+                );
+            });
+            const group = new L.featureGroup(markers);
+            let bounds = group.getBounds();
+            const ne = bounds.getNorthEast();
+            const sw = bounds.getSouthWest();
+            const latSpan = ne.lat - sw.lat;
+            const lngSpan = ne.lng - sw.lng;
+            const maxSpan = Math.max(latSpan, lngSpan);
+            const isDegenerate = latSpan < 1e-9 && lngSpan < 1e-9;
+            const markerCenterLat = (ne.lat + sw.lat) / 2;
+            const markerCenterLng = (ne.lng + sw.lng) / 2;
+            if (isDegenerate) {
+                const frameSpan = mapContext.compactRegion ? 0.026 : 0.045;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - frameSpan / 2, destinationCenter[1] - frameSpan / 2],
+                    [destinationCenter[0] + frameSpan / 2, destinationCenter[1] + frameSpan / 2]
+                );
+            } else if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                const expand = maxSpan < 0.12 ? 1.15 : 1.1;
+                const halfLat = latSpan / 2 * expand;
+                const halfLng = lngSpan / 2 * expand;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                const latReach = Math.max(mapContext.maxCenterLat, latSpan / 2) * 1.45;
+                const lngReach = Math.max(mapContext.maxCenterLng, lngSpan / 2) * 1.45;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - latReach, destinationCenter[1] - lngReach],
+                    [destinationCenter[0] + latReach, destinationCenter[1] + lngReach]
+                );
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                const halfLat = latSpan / 2 * 1.1;
+                const halfLng = lngSpan / 2 * 1.1;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                const frameSpan = Math.max(maxSpan * 4, 0.006);
+                bounds = L.latLngBounds(
+                    [markerCenterLat - frameSpan / 2, markerCenterLng - frameSpan / 2],
+                    [markerCenterLat + frameSpan / 2, markerCenterLng + frameSpan / 2]
+                );
+            }
+            const fitOptions = {};
+            if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                fitOptions.padding = maxSpan < 0.12
+                    ? [24, 24]
+                    : (maxSpan < 0.5 ? [24, 24] : [28, 28]);
+                fitOptions.maxZoom = maxSpan < 0.12
+                    ? 14
+                    : (maxSpan < 0.5 ? 10 : 9);
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                fitOptions.padding = [40, 40];
+                fitOptions.maxZoom = 8;
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                fitOptions.padding = [24, 24];
+            } else if (mapContext.denseUrban) {
+                fitOptions.padding = [18, 18];
+            } else if (mapContext.spreadUrban) {
+                fitOptions.padding = [20, 20];
+            } else if (locations.length >= 3 && maxSpan >= 0.02) {
+                fitOptions.padding = maxSpan >= 0.08 ? [20, 20] : [30, 30];
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                fitOptions.padding = [12, 12];
+                fitOptions.maxZoom = 16;
+            } else if (isDegenerate || locations.length === 1) {
+                fitOptions.padding = mapContext.compactRegion ? [16, 16] : [36, 36];
+                if (isDegenerate || maxSpan < 0.015) {
+                    fitOptions.maxZoom = mapContext.compactRegion ? 15 : 14;
+                }
+            } else {
+                fitOptions.padding = [50, 50];
+            }
+            map.fitBounds(bounds, fitOptions);
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                } else {
+                    scrollTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                }
+            });
+            scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        });
+    </script>
+
+    <button id="scrollTopBtn" class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-12 h-12 bg-neon-cyan text-deepblue-950 rounded-full shadow-[0_0_20px_rgba(0,240,255,0.4)] opacity-0 pointer-events-none transition-all duration-300 translate-y-4 hover:bg-white hover:scale-110" aria-label="Scroll to top">
+        <i class="ph ph-arrow-up text-xl font-bold"></i>
+    </button>
+</body>
+</html>

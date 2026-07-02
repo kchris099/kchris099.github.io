@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liverpool Guide | Global Explorer Guides</title>
+    <link rel="stylesheet" href="../../assets/tailwind.css">
+    <link rel="stylesheet" href="../../assets/outfit.css">
+    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
+    <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
+    <link rel="stylesheet" href="../../assets/homepage-activation.css">
+    <link rel="stylesheet" href="../../assets/destination-activation.css">
+    <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
+    <script src="../../assets/leaflet/leaflet.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #060B19; }
+        ::-webkit-scrollbar-thumb { background: #1E336B; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0070FF; }
+        .leaflet-popup-content-wrapper { background-color: #fff; color: #333; border-radius: 8px; box-shadow: 0 3px 14px rgba(0,0,0,0.4); }
+        .leaflet-popup-tip { background-color: #fff; }
+    </style>
+</head>
+<body class="bg-deepblue-950 text-slate-200 font-sans min-h-screen relative overflow-x-hidden">
+    <div class="absolute top-0 left-0 w-full h-[450px] md:h-[500px] z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50" style="background-image: url('images/liverpool_hero.jpg')"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-deepblue-950/10 via-deepblue-950/60 to-deepblue-950"></div>
+    </div>
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon-purple/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neon-cyan/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <main class="container mx-auto px-4 py-8 md:py-16 relative z-20 max-w-5xl">
+        <nav class="mb-12 animate-fade-in-down flex flex-wrap items-center gap-4">
+            <a href="../../index.html" class="flex items-center justify-center w-11 h-11 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0" title="Back to Home">
+                <i class="ph ph-house text-xl group-hover:scale-110 transition-transform"></i>
+            </a>
+            <a href="united-kingdom.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0">
+                <i class="ph ph-arrow-left text-lg group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-medium text-sm">Back to United Kingdom</span>
+            </a>
+            <div class="ml-auto flex items-center gap-3 bg-deepblue-900/40 border border-deepblue-700/50 rounded-full px-4 py-2 backdrop-blur-sm shadow-inner shrink-0">
+                <img src="../../assets/flags/w40/gb.png" alt="United Kingdom flag" class="w-6 h-auto rounded-[2px] shadow-sm">
+                <div class="flex items-center gap-2 text-sm font-medium tracking-wide">
+                    <span class="text-slate-200 uppercase text-xs tracking-wider font-bold">United Kingdom</span>
+                    <span class="text-deepblue-500 text-xs">&rsaquo;</span>
+                    <span class="text-neon-cyan text-xs">Liverpool</span>
+                </div>
+            </div>
+        </nav>
+
+        <header class="mb-16 animate-fade-in-down animation-delay-100 text-center">
+            <button
+                type="button"
+                id="destination-active-toggle"
+                class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
+                data-iso2="GB"
+                data-slug="liverpool"
+                data-active="false"
+                data-interactive="true"
+                aria-label="Toggle Liverpool visibility on United Kingdom guide"
+                aria-pressed="false"
+            >
+                <i class="ph ph-map-pin text-4xl text-slate-500 pointer-events-none" aria-hidden="true"></i>
+            </button>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple pb-4">
+                Explore Liverpool
+            </h1>
+            <div class="bg-deepblue-900/40 border border-deepblue-800 rounded-3xl p-8 md:p-10 text-left backdrop-blur-sm mt-10">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                    <i class="ph ph-scroll text-neon-cyan"></i> A Brief History
+                </h2>
+                <p class="text-lg text-slate-400 font-light leading-relaxed">Liverpool rose as Britain&#x27;s major Atlantic port in the 18th and 19th centuries, shipping cotton, slaves, and emigrants before becoming a centre of transatlantic liners. Albert Dock warehouses, two cathedrals, and football clubs record mercantile wealth, Irish immigration, and post-industrial culture recognised by UNESCO on the waterfront. Municipal archives, parish records, and surviving architecture help explain how the city connected to wider regional trade routes, court patronage, and modern civic rebuilding after industrial and wartime change.</p>
+            </div>
+        </header>
+
+        <section class="mb-16 animate-fade-in-down" style="animation-delay: 0.2s;">
+            <h2 class="text-3xl font-bold text-white mb-6">Attractions Map</h2>
+            <div id="map" class="h-[400px] w-full rounded-3xl border border-deepblue-700 shadow-2xl z-10 relative"></div>
+        </section>
+
+        <section class="flex flex-col gap-6 pb-20 animate-fade-in-down" style="animation-delay: 0.3s;">
+            <h2 class="text-3xl font-bold text-white mb-2">Top Sights & Activities</h2>
+            
+            <!-- 1. Royal Albert Dock Liverpool -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/liverpool_1.jpg" alt="Royal Albert Dock Liverpool" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Royal Albert Dock Liverpool</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Royal Albert Dock Liverpool is a vibrant waterfront area that has undergone a renovation, shedding its industrial past to become one of Liverpool&#x27;s most popular tourist attractions. It features a mix of museums, art galleries, family-friendly restaurants, and shops. The dock boasts the largest collection of Grade-listed buildings in the UK and offers picturesque waterfront views.</p>
+                </div>
+            </div>
+
+            <!-- 2. Wheel of Liverpool -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/liverpool_2.jpg" alt="Wheel of Liverpool" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Wheel of Liverpool</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Wheel of Liverpool is a popular waterfront Ferris wheel that stands at an impressive 60 meters high. It features 42 glass capsules, including a luxurious VIP option with a glass floor, leather interior, and even a DVD player. Visitors can enjoy panoramic views of the city and the World Heritage Site waterfront during the approximately 10 to 12-minute ride, which includes three revolutions.</p>
+                </div>
+            </div>
+
+            <!-- 3. Anfield -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/liverpool_3.jpg" alt="Anfield" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Anfield</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Anfield is a renowned football stadium and the home of Liverpool FC, one of England&#x27;s most successful football clubs. Since its establishment in 1892, Anfield has been witness to numerous historic moments in the club&#x27;s history. The stadium, with over 50,000 seats, is easily accessible and offers a variety of food kiosks for visitors. It also houses the Liverpool FC museum, showcasing monuments dedicated to the team and the sport.</p>
+                </div>
+            </div>
+
+            <!-- 4. Goodison Park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/liverpool_4.jpg" alt="Goodison Park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Goodison Park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Goodison Park, located in Liverpool, is the historic home stadium of Everton Football Club. Constructed in 1892, it has a rich football history and can accommodate over 40,000 fans. The stadium&#x27;s Bullens Road Stand and Gwladys Street End contribute to its electrifying atmosphere. Despite being an old stadium, its close proximity to the pitch provides an intimate experience for spectators. The stadium tour is recommended for those interested in exploring its heritage.</p>
+                </div>
+            </div>
+
+            <!-- 5. Liverpool Cathedral -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/liverpool_5.jpg" alt="Liverpool Cathedral" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Liverpool Cathedral</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Liverpool Cathedral, also known as the Anglican Liverpool Cathedral, is a grand 20th-century place of worship that boasts the world&#x27;s highest Gothic arches and a towering viewing tower. Despite its ancient appearance, it was actually completed in 1978 after 74 years of construction. Designed by Sir Giles Gilbert Scott, this masterpiece of Gothic Revival is Britain&#x27;s largest cathedral and features contemporary visual art installations that add to its unique atmosphere.</p>
+                </div>
+            </div>
+
+            <!-- 6. Saint James&#x27; Gardens -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/liverpool_6.jpg" alt="Saint James&#x27; Gardens" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Saint James&#x27; Gardens</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">St James Mount And The Gardens in Liverpool is a former cemetery with historical architecture and a tranquil atmosphere. It&#x27;s often mistaken as the source of sandstone for the UK&#x27;s largest cathedral, but that honor goes to another quarry. The park, listed as Grade I, offers a serene escape from the city with its lined stone paths and arches. Visitors can explore the system of broad ramps lined with catacombs for an adventurous experience.</p>
+                </div>
+            </div>
+
+            <!-- 7. Liverpool ONE -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/liverpool_7.jpg" alt="Liverpool ONE" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Liverpool ONE</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Liverpool ONE is a vibrant and popular open-air complex located in the heart of Liverpool City Centre. It has quickly become one of Europe&#x27;s top retail destinations, offering a wide range of global retailers, restaurants, bars, and entertainment options such as mini golf and a cinema. Families are drawn to its family-friendly atmosphere with activities for children at Chavasse Park and plenty of dining options. The 1.</p>
+                </div>
+            </div>
+
+            <!-- 8. St Johns Beacon -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/liverpool_8.jpg" alt="St Johns Beacon" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">St Johns Beacon</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Ascend to the top of St Johns Beacon, also known as the Radio City Tower, and treat yourself to panoramic views of Liverpool and its surroundings. Standing at 138 meters tall, this landmark offers a 360-degree viewing gallery that showcases the beauty of Merseyside, Wirral, North Wales, and even Lancashire on clear days. From this vantage point, marvel at famous landmarks and cityscapes while gaining a new perspective on the region&#x27;s geography.</p>
+                </div>
+            </div>
+
+            <!-- 9. Royal Court Theatre -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/liverpool_9.jpg" alt="Royal Court Theatre" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Royal Court Theatre</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Royal Court Theatre, a 1930s venue located on Roe Street, offers a unique and friendly theatre experience in Liverpool. The historic art deco building has been modernized while maintaining its traditional charm. The theatre presents a diverse program of musicals, drama, and comedy with a strong local presence including cast and crew members from Liverpool. Nautical themes throughout the venue pay homage to the city&#x27;s maritime heritage.</p>
+                </div>
+            </div>
+
+            <!-- 10. St George&#x27;s Hall -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/liverpool_10.jpg" alt="St George&#x27;s Hall" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">St George&#x27;s Hall</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">St George&#x27;s Hall is a grand and civic venue located in the heart of Liverpool. This neoclassical building houses a heritage center, an on-site cafe, and various event spaces. It stands as a testament to the city&#x27;s wealth and civic aspirations in the 19th century. The hall hosts a range of events and concerts, with its decorated Great Hall being particularly noteworthy.</p>
+                </div>
+            </div>
+
+            <!-- 11. Liverpool Empire -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/liverpool_11.jpg" alt="Liverpool Empire" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Liverpool Empire</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Liverpool Empire Theatre is a modernized venue hosting touring acts such as musicals, ballets, and pantomimes. With its classical architecture, it is a center for talented theater individuals in the city. One trending performance is the famous Rocky Horror Show directed by Christopher Luscombe and featuring Strictly Come Dancing winner Ore Oduba. The show tells the story of two college kids who stumble upon a creepy mansion and meet Dr FranknFurter.</p>
+                </div>
+            </div>
+
+            <!-- 12. The Beatles Statues -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/liverpool_12.jpg" alt="The Beatles Statues" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">The Beatles Statues</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Beatles Statue, unveiled in 2015, is a popular bronze sculpture of the legendary rock group located in central Liverpool. This statue created by sculptor Andy Edwards is a must-visit for fans and tourists alike. It&#x27;s a common spot for snapping selfies and experiencing a unique piece of memorabilia related to The Beatles&#x27; rich musical heritage in their hometown.</p>
+                </div>
+            </div>
+
+            <!-- 13. Liverpool Waterfront -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/liverpool_13.jpg" alt="Liverpool Waterfront" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Liverpool Waterfront</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Liverpool Waterfront is a vibrant urban area along the river, offering a variety of dining options, bars, cafes, and cultural attractions. The waterfront trail showcases landmarks such as the Liver Building, Cunard Building, and Port of Liverpool. Visitors can explore famous attractions like Albert Dock and Tate Liverpool while enjoying scenic views of the River Mersey. Additionally, the area is home to green spaces like Otterspool Park and Sefton Park with its renowned Palm House.</p>
+                </div>
+            </div>
+
+            <!-- 14. Royal Liver Building -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/liverpool_14.jpg" alt="Royal Liver Building" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Royal Liver Building</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Royal Liver Building, constructed in 1911 and once the tallest building in Europe, is a Grade listed structure and part of Liverpool&#x27;s waterfront Three Graces. Adorned with domes and a clock tower featuring the city&#x27;s symbol, the liver bird, it has become a major tourist attraction. Visitors can enjoy the RLB 360 experience offering historical tours, panoramic views from the tenth and fifteenth floors, as well as a captivating digital light show inside the clock tower.</p>
+                </div>
+            </div>
+
+            <!-- 15. Knowsley Safari -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/liverpool_15.jpg" alt="Knowsley Safari" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Knowsley Safari</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Knowsley Safari is a wildlife park located near Liverpool, England. Visitors can view roaming animals from the safety of their cars or tour buses, and also explore a walk-around zoo and enjoy fair rides. The park has been open for over 40 years and is home to over 700 animals including lions, sea lions, rhinoceros, giraffes, zebras, meerkats, birds of prey and many more. One of its newest additions is the Amur Tiger.</p>
+                </div>
+            </div>
+
+            <!-- 16. Designer Outlet Cheshire Oaks -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/liverpool_16.jpg" alt="Designer Outlet Cheshire Oaks" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Designer Outlet Cheshire Oaks</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Cheshire Oaks Designer Outlet is a sprawling village-style site offering discounts on designer and high-street fashion brands. With over 140 boutiques, restaurants, and cafes spread across a quarter-million square feet of retail space, it&#x27;s the largest outlet of its kind in the UK. From athletic labels like Nike and Adidas to fashion brands such as Burberry and Hugo Boss, there&#x27;s something for every taste.</p>
+                </div>
+            </div>
+
+            <!-- 17. Blue Planet Aquarium -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/liverpool_17.jpg" alt="Blue Planet Aquarium" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Blue Planet Aquarium</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Blue Planet Aquarium is a must-visit for aquarium and fish tank enthusiasts, offering over 100 living displays, including one of Europe&#x27;s largest shark collections. Visitors can explore the Flooded Forest to see exotic freshwater fish from South America and stroll through the 71m long Underwater Shark Tunnel where sharks and fish swim overhead.</p>
+                </div>
+            </div>
+
+            <!-- 18. Croxteth Hall And Country Park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/liverpool_18.jpg" alt="Croxteth Hall And Country Park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Croxteth Hall And Country Park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Croxteth Hall And Country Park, located on the northwest outskirts of the city, is a historic estate featuring an opulent hall, Victorian walled garden, and a working farm. Visitors can explore the diverse landscape of woodlands, ponds, streams, and farmlands as well as enjoy activities such as Jungle Parc Liverpool&#x27;s treetop courses.</p>
+                </div>
+            </div>
+
+            <!-- 19. Sefton Park Palm House -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/liverpool_19.jpg" alt="Sefton Park Palm House" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Sefton Park Palm House</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Sefton Park Palm House is a Victorian glasshouse located in Sefton Park, offering free admission to visitors every day. The Grade II* listed building features an elegant design that shines in the summer sun. Inside, the multi-million pound restored exotic palm house showcases vibrant vegetation in themed botanical displays, creating a tranquil escape from the city. The venue hosts various events throughout the year, including music and dance performances like the Free Sunday Concert.</p>
+                </div>
+            </div>
+
+            <!-- 20. Liverpool Metropolitan Cathedral -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/liverpool_20.jpg" alt="Liverpool Metropolitan Cathedral" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Liverpool Metropolitan Cathedral</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Liverpool Metropolitan Cathedral is a circular Roman Catholic place of worship featuring contemporary art. It was built in the 1960s after previous attempts to construct a cathedral fell through. The modern gothic revival architecture makes it a attraction in Liverpool, especially for those interested in religious and historical landmarks.</p>
+                </div>
+            </div>
+
+            <!-- 21. Royal Liverpool Philharmonic -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/liverpool_21.jpg" alt="Royal Liverpool Philharmonic" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Royal Liverpool Philharmonic</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Royal Liverpool Philharmonic is a historic concert venue that has been showcasing live classical and modern music, comedy, and cinema since the 1930s. With a seating capacity of 1790, it stands as a symbol of the city&#x27;s rich arts, music, and culture scene. The original art deco style building holds Grade II listed status and offers visitors an elegant setting to enjoy performances.</p>
+                </div>
+            </div>
+
+            <!-- 22. Another Place by Antony Gormley -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/liverpool_22.jpg" alt="Another Place by Antony Gormley" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Another Place by Antony Gormley</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Another Place by Antony Gormley is a captivating art installation featuring 100 life-size male statues made of cast iron. These statues stretch for about 1.5 miles along the picturesque estuary at Crosby Beach. The sculptures, created by the renowned artist behind the Angel of the North, offer a unique and surreal experience as they are partially submerged in sand and sometimes surrounded by water.</p>
+                </div>
+            </div>
+
+            <!-- 23. Fort Perch Rock -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/liverpool_23.jpg" alt="Fort Perch Rock" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Fort Perch Rock</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Fort Perch Rock, a historic red sandstone fort constructed in the early 19th century as a coastal defense battery against potential French invasion, now serves as a museum and popular tourist attraction. The fort houses the Aviation and Archaeology Museum, featuring exhibits on Luftwaffe over Merseyside and the maritime history of ships like Titanic and Lusitania.</p>
+                </div>
+            </div>
+
+            <!-- 24. The Black Pearl -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/liverpool_24.jpg" alt="The Black Pearl" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">The Black Pearl</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Black Pearl is a unique treasure located at New Brighton beach in Wallasey, constructed by local artists using items found on the beach. This famed pirate ship features tall masts with pirate flags and a wooden hull, attracting visitors of all ages. The picturesque shoreline offers an ideal location for leisurely hours, adorned with unique artifacts made from recycled materials.</p>
+                </div>
+            </div>
+
+            <!-- 25. Tranmere Rovers Football Club -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/liverpool_25.jpg" alt="Tranmere Rovers Football Club" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Tranmere Rovers Football Club</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Tranmere Rovers Football Club, located between Liverpool and Manchester, offers a traditional football experience with its four-sided ground. The stadium features a recreation center, soccer schools, and a merchandise shop. Despite the challenge of finding nearby parking, the area has good transport links to both cities. The club provides engaging activities for people with learning disabilities and creates a vibrant atmosphere during matches.</p>
+                </div>
+            </div>
+
+            <!-- 26. Tam O&#x27;Shanter Urban Farm -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/liverpool_26.jpg" alt="Tam O&#x27;Shanter Urban Farm" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Tam O&#x27;Shanter Urban Farm</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled on the scenic Bidston Hill, Tam O&#x27;Shanter Urban Farm is a delightful free attraction that welcomes visitors every day of the year, except Christmas. This charming farm features an array of friendly animals such as goats, pigs, ponies, and rabbits that are sure to enchant younger guests. For just a pound, children can purchase animal feed to hand-feed these adorable creatures. The farm also boasts a picnic area and a café for refreshments after exploring.</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
+        <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+    </footer>    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const map = L.map('map').setView([53.401268, -2.974106], 14);
+            L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                attribution: '&copy; Google Maps',
+                maxZoom: 20
+            }).addTo(map);
+            const locations = [{"name": "Royal Albert Dock Liverpool", "lat": 53.399434, "lng": -2.991979}, {"name": "Wheel of Liverpool", "lat": 53.398263, "lng": -2.990885}, {"name": "Anfield", "lat": 53.430843, "lng": -2.960817}, {"name": "Goodison Park", "lat": 53.438844, "lng": -2.966282}, {"name": "Liverpool Cathedral", "lat": 53.397464, "lng": -2.973302}, {"name": "Saint James' Gardens", "lat": 53.3972, "lng": -2.971934}, {"name": "Liverpool ONE", "lat": 53.403554, "lng": -2.986773}, {"name": "St Johns Beacon", "lat": 53.406455, "lng": -2.981992}, {"name": "Royal Court Theatre", "lat": 53.407501, "lng": -2.981342}, {"name": "St George's Hall", "lat": 53.40849, "lng": -2.980258}, {"name": "Liverpool Empire", "lat": 53.408873, "lng": -2.978285}, {"name": "The Beatles Statues", "lat": 53.404508, "lng": -2.996413}, {"name": "Liverpool Waterfront", "lat": 53.404495, "lng": -2.997182}, {"name": "Royal Liver Building", "lat": 53.405995, "lng": -2.996211}, {"name": "Knowsley Safari", "lat": 53.435408, "lng": -2.81292}, {"name": "Designer Outlet Cheshire Oaks", "lat": 53.265252, "lng": -2.881236}, {"name": "Blue Planet Aquarium", "lat": 53.262046, "lng": -2.887028}, {"name": "Croxteth Hall And Country Park", "lat": 53.440105, "lng": -2.895352}, {"name": "Sefton Park Palm House", "lat": 53.3813, "lng": -2.935255}, {"name": "Liverpool Metropolitan Cathedral", "lat": 53.404924, "lng": -2.968637}, {"name": "Royal Liverpool Philharmonic", "lat": 53.401334, "lng": -2.970268}, {"name": "Another Place by Antony Gormley", "lat": 53.480987, "lng": -3.046887}, {"name": "Fort Perch Rock", "lat": 53.442901, "lng": -3.040503}, {"name": "The Black Pearl", "lat": 53.436608, "lng": -3.034532}, {"name": "Tranmere Rovers Football Club", "lat": 53.373573, "lng": -3.03344}, {"name": "Tam O'Shanter Urban Farm", "lat": 53.396622, "lng": -3.067046}];
+            const customIcon = L.icon({
+                iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32],
+            });
+            const destinationCenter = [53.401268, -2.974106];
+            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": true, "compactRegion": false, "denseUrban": false, "maxCenterLat": 0.139222, "maxCenterLng": 0.161186};
+            const markers = [];
+            locations.forEach(loc => {
+                markers.push(
+                    L.marker([loc.lat, loc.lng], {icon: customIcon}).addTo(map)
+                        .bindPopup(`<strong class="font-sans text-base text-gray-900">${loc.name}</strong>`)
+                );
+            });
+            const group = new L.featureGroup(markers);
+            let bounds = group.getBounds();
+            const ne = bounds.getNorthEast();
+            const sw = bounds.getSouthWest();
+            const latSpan = ne.lat - sw.lat;
+            const lngSpan = ne.lng - sw.lng;
+            const maxSpan = Math.max(latSpan, lngSpan);
+            const isDegenerate = latSpan < 1e-9 && lngSpan < 1e-9;
+            const markerCenterLat = (ne.lat + sw.lat) / 2;
+            const markerCenterLng = (ne.lng + sw.lng) / 2;
+            if (isDegenerate) {
+                const frameSpan = mapContext.compactRegion ? 0.026 : 0.045;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - frameSpan / 2, destinationCenter[1] - frameSpan / 2],
+                    [destinationCenter[0] + frameSpan / 2, destinationCenter[1] + frameSpan / 2]
+                );
+            } else if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                const expand = maxSpan < 0.12 ? 1.15 : 1.1;
+                const halfLat = latSpan / 2 * expand;
+                const halfLng = lngSpan / 2 * expand;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                const latReach = Math.max(mapContext.maxCenterLat, latSpan / 2) * 1.45;
+                const lngReach = Math.max(mapContext.maxCenterLng, lngSpan / 2) * 1.45;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - latReach, destinationCenter[1] - lngReach],
+                    [destinationCenter[0] + latReach, destinationCenter[1] + lngReach]
+                );
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                const halfLat = latSpan / 2 * 1.1;
+                const halfLng = lngSpan / 2 * 1.1;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                const frameSpan = Math.max(maxSpan * 4, 0.006);
+                bounds = L.latLngBounds(
+                    [markerCenterLat - frameSpan / 2, markerCenterLng - frameSpan / 2],
+                    [markerCenterLat + frameSpan / 2, markerCenterLng + frameSpan / 2]
+                );
+            }
+            const fitOptions = {};
+            if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                fitOptions.padding = maxSpan < 0.12
+                    ? [24, 24]
+                    : (maxSpan < 0.5 ? [24, 24] : [28, 28]);
+                fitOptions.maxZoom = maxSpan < 0.12
+                    ? 14
+                    : (maxSpan < 0.5 ? 10 : 9);
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                fitOptions.padding = [40, 40];
+                fitOptions.maxZoom = 8;
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                fitOptions.padding = [24, 24];
+            } else if (mapContext.denseUrban) {
+                fitOptions.padding = [18, 18];
+            } else if (mapContext.spreadUrban) {
+                fitOptions.padding = [20, 20];
+            } else if (locations.length >= 3 && maxSpan >= 0.02) {
+                fitOptions.padding = maxSpan >= 0.08 ? [20, 20] : [30, 30];
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                fitOptions.padding = [12, 12];
+                fitOptions.maxZoom = 16;
+            } else if (isDegenerate || locations.length === 1) {
+                fitOptions.padding = mapContext.compactRegion ? [16, 16] : [36, 36];
+                if (isDegenerate || maxSpan < 0.015) {
+                    fitOptions.maxZoom = mapContext.compactRegion ? 15 : 14;
+                }
+            } else {
+                fitOptions.padding = [50, 50];
+            }
+            map.fitBounds(bounds, fitOptions);
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                } else {
+                    scrollTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                }
+            });
+            scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        });
+    </script>
+
+    <button id="scrollTopBtn" class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-12 h-12 bg-neon-cyan text-deepblue-950 rounded-full shadow-[0_0_20px_rgba(0,240,255,0.4)] opacity-0 pointer-events-none transition-all duration-300 translate-y-4 hover:bg-white hover:scale-110" aria-label="Scroll to top">
+        <i class="ph ph-arrow-up text-xl font-bold"></i>
+    </button>
+</body>
+</html>

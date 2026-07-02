@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zagreb Guide | Global Explorer Guides</title>
+    <link rel="stylesheet" href="../../assets/tailwind.css">
+    <link rel="stylesheet" href="../../assets/outfit.css">
+    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
+    <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
+    <link rel="stylesheet" href="../../assets/homepage-activation.css">
+    <link rel="stylesheet" href="../../assets/destination-activation.css">
+    <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
+    <script src="../../assets/leaflet/leaflet.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #060B19; }
+        ::-webkit-scrollbar-thumb { background: #1E336B; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0070FF; }
+        .leaflet-popup-content-wrapper { background-color: #fff; color: #333; border-radius: 8px; box-shadow: 0 3px 14px rgba(0,0,0,0.4); }
+        .leaflet-popup-tip { background-color: #fff; }
+    </style>
+</head>
+<body class="bg-deepblue-950 text-slate-200 font-sans min-h-screen relative overflow-x-hidden">
+    <div class="absolute top-0 left-0 w-full h-[450px] md:h-[500px] z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50" style="background-image: url('images/zagreb_hero.jpg')"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-deepblue-950/10 via-deepblue-950/60 to-deepblue-950"></div>
+    </div>
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon-purple/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neon-cyan/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <main class="container mx-auto px-4 py-8 md:py-16 relative z-20 max-w-5xl">
+        <nav class="mb-12 animate-fade-in-down flex flex-wrap items-center gap-4">
+            <a href="../../index.html" class="flex items-center justify-center w-11 h-11 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0" title="Back to Home">
+                <i class="ph ph-house text-xl group-hover:scale-110 transition-transform"></i>
+            </a>
+            <a href="croatia.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0">
+                <i class="ph ph-arrow-left text-lg group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-medium text-sm">Back to Croatia</span>
+            </a>
+            <div class="ml-auto flex items-center gap-3 bg-deepblue-900/40 border border-deepblue-700/50 rounded-full px-4 py-2 backdrop-blur-sm shadow-inner shrink-0">
+                <img src="../../assets/flags/w40/hr.png" alt="Croatia flag" class="w-6 h-auto rounded-[2px] shadow-sm">
+                <div class="flex items-center gap-2 text-sm font-medium tracking-wide">
+                    <span class="text-slate-200 uppercase text-xs tracking-wider font-bold">Croatia</span>
+                    <span class="text-deepblue-500 text-xs">&rsaquo;</span>
+                    <span class="text-neon-cyan text-xs">Zagreb</span>
+                </div>
+            </div>
+        </nav>
+
+        <header class="mb-16 animate-fade-in-down animation-delay-100 text-center">
+            <button
+                type="button"
+                id="destination-active-toggle"
+                class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
+                data-iso2="HR"
+                data-slug="zagreb"
+                data-active="false"
+                data-interactive="true"
+                aria-label="Toggle Zagreb visibility on Croatia guide"
+                aria-pressed="false"
+            >
+                <i class="ph ph-map-pin text-4xl text-slate-500 pointer-events-none" aria-hidden="true"></i>
+            </button>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple pb-4">
+                Explore Zagreb
+            </h1>
+            <div class="bg-deepblue-900/40 border border-deepblue-800 rounded-3xl p-8 md:p-10 text-left backdrop-blur-sm mt-10">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                    <i class="ph ph-scroll text-neon-cyan"></i> A Brief History
+                </h2>
+                <p class="text-lg text-slate-400 font-light leading-relaxed">Zagreb grew from twin medieval settlements on the Sava slopes into the capital of Croatia after union with the Habsburg monarchy and later Yugoslav federation. Baroque churches on Kaptol, the secular Gradec upper town, and 19th-century Lower Town blocks record Catholic institutions, Austro-Hungarian administration, and modern Croatian statehood. Municipal archives, parish records, and surviving architecture help explain how the city connected to wider regional trade routes, court patronage, and modern civic rebuilding after industrial and wartime change.</p>
+            </div>
+        </header>
+
+        <section class="mb-16 animate-fade-in-down" style="animation-delay: 0.2s;">
+            <h2 class="text-3xl font-bold text-white mb-6">Attractions Map</h2>
+            <div id="map" class="h-[400px] w-full rounded-3xl border border-deepblue-700 shadow-2xl z-10 relative"></div>
+        </section>
+
+        <section class="flex flex-col gap-6 pb-20 animate-fade-in-down" style="animation-delay: 0.3s;">
+            <h2 class="text-3xl font-bold text-white mb-2">Top Sights & Activities</h2>
+            
+            <!-- 1. Croatian National Theatre -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/zagreb_1.jpg" alt="Croatian National Theatre" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Croatian National Theatre</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Croatian National Theatre in Zagreb is housed in a grand neo-Baroque building dating back to 1895. Designed by the Viennese firm Hellmer and Fellner, it was opened by Emperor Franz Josef himself. The theater&#x27;s stately interior can be admired during its impressive opera, ballet, and drama performances. Outside the theater stands Ivan Strovic&#x27;s lifelike sculpture &#x27;Fountain of Life,&#x27; depicting four couples around a small pool of water.</p>
+                </div>
+            </div>
+
+            <!-- 2. Ban Josip Jelačić Statue -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/zagreb_2.jpg" alt="Ban Josip Jelačić Statue" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Ban Josip Jelačić Statue</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Ban Josip Jelačić Statue, located in the main square of Zagreb, is a popular meeting spot and a must-visit attraction. The pedestrian-friendly square and its surrounding streets are car-free, making it an inviting place to explore day or night. This lively hub offers a vibrant atmosphere with frequent concerts and events that capture the city&#x27;s essence. It serves as a transport hub with tram stops and is surrounded by shops, restaurants, and cafes.</p>
+                </div>
+            </div>
+
+            <!-- 3. Zagreb 360° observation deck -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/zagreb_3.jpg" alt="Zagreb 360° observation deck" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> €8
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Zagreb 360° observation deck</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Zagreb 360° observation deck is situated on the 16th floor of a prominent skyscraper, providing visitors with a bar and panoramic vistas of the city. The Neboder Skyscraper offers unparalleled views of Zagreb&#x27;s main square, Cathedral, Upper and Lower Town, as well as other significant cultural and historical landmarks. This building has been a fixture in Zagreb&#x27;s skyline since its establishment in 1959.</p>
+                </div>
+            </div>
+
+            <!-- 4. Trg Kralja Tomislava -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/zagreb_4.jpg" alt="Trg Kralja Tomislava" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Trg Kralja Tomislava</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">King Tomislav’s Square, also known as Tomislavac, is a vibrant public space in Zagreb featuring an art pavilion and a towering statue of King Tomislav. The square hosts special events such as the Zagreb Classic festival of classical music during the summer months, where visitors can enjoy performances by a symphony orchestra in the beautiful adjacent park. Additionally, the square is home to Ice Park during the winter season, offering ice skating and cultural events amidst festive stalls.</p>
+                </div>
+            </div>
+
+            <!-- 5. Stone Gate -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/zagreb_5.jpg" alt="Stone Gate" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Stone Gate</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Stone Gate is a historic city gate in Zagreb&#x27;s Old Town, dating back to the 13th century and serving as part of the city&#x27;s fortification. It now houses a small chapel dedicated to the Virgin Mary, drawing pilgrims who believe in its miraculous healing powers. The gate is adorned with candles from visitors offering silent prayers, creating a serene atmosphere.</p>
+                </div>
+            </div>
+
+            <!-- 6. St. Mark&#x27;s Church -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/zagreb_6.jpg" alt="St. Mark&#x27;s Church" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">St. Mark&#x27;s Church</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Saint Mark’s Church is a monumental Catholic church in Zagreb, constructed in the 13th century and located in St. Mark&#x27;s Square. The church features a medieval-style architecture with a Baroque bell tower added in the 17th century. Its most recognizable feature is the colorfully tiled roof depicting the city&#x27;s emblem and Croatian coat of arms, making it a popular spot for history enthusiasts and photographers alike.</p>
+                </div>
+            </div>
+
+            <!-- 7. Lotrščak Tower -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/zagreb_7.jpg" alt="Lotrščak Tower" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> €3
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Lotrščak Tower</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Lotrščak Tower, also known as Kula Lotrscak, is a 13th-century Romanesque tower located in Zagreb. Originally built to guard the southern gate of the Gradec town wall, it has become one of the city&#x27;s most landmarks. The tower features an observation area that provides panoramic views of Zagreb and its surroundings.</p>
+                </div>
+            </div>
+
+            <!-- 8. Arena Zagreb -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/zagreb_8.jpg" alt="Arena Zagreb" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Arena Zagreb</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Arena Zagreb is a renowned indoor multipurpose arena in Zagreb, known for its striking design featuring 86 large curved concrete columns and semi-translucent polycarbonate envelopes. With a capacity of 15,000 seats, it was built for the 2009 World Handball Championships and has since hosted various sports events and international pop concerts. The venue&#x27;s flexibility in spatial organization makes it a must-visit for architecture enthusiasts.</p>
+                </div>
+            </div>
+
+            <!-- 9. Cathedral of Zagreb -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/zagreb_9.jpg" alt="Cathedral of Zagreb" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Cathedral of Zagreb</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Cathedral of Zagreb is a grand Roman Catholic edifice that underwent restoration in the 1990s. It hosts concerts like The Organs of the Zagreb Cathedral and Evenings on Gric cycle. The cathedral is a significant part of Zagreb&#x27;s buildings, along with other landmarks such as Croatian National Theatre and St. Mark&#x27;s Church.</p>
+                </div>
+            </div>
+
+            <!-- 10. Monument of the Assumption of the Blessed Virgin Mary -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/zagreb_10.jpg" alt="Monument of the Assumption of the Blessed Virgin Mary" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Monument of the Assumption of the Blessed Virgin Mary</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Monument of the Assumption of the Blessed Virgin Mary, located in front of Zagreb Cathedral, is a landmark. This Neo-Gothic style monument features a beautiful fountain with four impressive golden statues. The area can be crowded, but the architecture and design make it worth a visit. Although the cathedral is currently under renovation, the monument&#x27;s graceful presence and picturesque surroundings are still captivating for visitors and photographers alike.</p>
+                </div>
+            </div>
+
+            <!-- 11. Medvedgrad -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/zagreb_11.jpg" alt="Medvedgrad" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> €7
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Medvedgrad</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Medvedgrad, a medieval fortress located in Zagreb, offers visitors the chance to explore its intriguing history and surroundings. The castle provides a holistic experience for those who enjoy hiking through the forest to reach its top, where the Queen well serves refreshing mountain water. Visitors can also immerse themselves in the legend of the Black Queen by watching motion pictures projected on the walls.</p>
+                </div>
+            </div>
+
+            <!-- 12. Zoo Zagreb -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/zagreb_12.jpg" alt="Zoo Zagreb" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> €7
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Zoo Zagreb</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Zoo Zagreb, located within Maksimir Park, is a sprawling zoo that houses a diverse array of animals from around the world. Visitors can observe lions, lemurs, red pandas, capybaras, tapirs, wolves, wallabies, as well as an extensive variety of birds, fish, reptiles and insects. The zoo also features educational talks and feedings for an immersive experience. Additionally, there&#x27;s a small petting zoo where children can interact with goats and sheep.</p>
+                </div>
+            </div>
+
+            <!-- 13. Park Maksimir -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/zagreb_13.jpg" alt="Park Maksimir" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Park Maksimir</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Park Maksimir is a family-friendly destination located in Zagreb, Croatia. It is the city&#x27;s largest and oldest public park, spanning 44 acres of vine-covered forests, artificial lakes, creeks, and meadows. The park offers shaded trails for peaceful strolls and is home to diverse wildlife. Visitors can explore the expansive natural surroundings and even venture into the forest.</p>
+                </div>
+            </div>
+
+            <!-- 14. Bundek City Park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/zagreb_14.jpg" alt="Bundek City Park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Bundek City Park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Bundek City Park, situated in the southwestern part of Zagreb, is a popular destination for both locals and tourists. Spanning approximately 45 hectares, this urban oasis centers around the picturesque Bundek Lake. During the summer months, it attracts visitors seeking relaxation and recreation. The park offers various activities such as picnicking by the lake, fishing, feeding swans, and enjoying playgrounds and rides for children.</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
+        <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+    </footer>    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const map = L.map('map').setView([45.813628, 15.978022], 14);
+            L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                attribution: '&copy; Google Maps',
+                maxZoom: 20
+            }).addTo(map);
+            const locations = [{"name": "Croatian National Theatre", "lat": 45.809398, "lng": 15.970041}, {"name": "Ban Josip Jelačić Statue", "lat": 45.813189, "lng": 15.977301}, {"name": "Zagreb 360° observation deck", "lat": 45.812864, "lng": 15.975764}, {"name": "Trg Kralja Tomislava", "lat": 45.806548, "lng": 15.97867}, {"name": "Stone Gate", "lat": 45.815822, "lng": 15.975287}, {"name": "St. Mark's Church", "lat": 45.816398, "lng": 15.973634}, {"name": "Lotrščak Tower", "lat": 45.814623, "lng": 15.973324}, {"name": "Arena Zagreb", "lat": 45.771235, "lng": 15.943633}, {"name": "Cathedral of Zagreb", "lat": 45.814622, "lng": 15.979438}, {"name": "Monument of the Assumption of the Blessed Virgin Mary", "lat": 45.814656, "lng": 15.978622}, {"name": "Medvedgrad", "lat": 45.869397, "lng": 15.940722}, {"name": "Zoo Zagreb", "lat": 45.821691, "lng": 16.023773}, {"name": "Park Maksimir", "lat": 45.82436, "lng": 16.017626}, {"name": "Bundek City Park", "lat": 45.785989, "lng": 15.984468}];
+            const customIcon = L.icon({
+                iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32],
+            });
+            const destinationCenter = [45.813628, 15.978022];
+            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.055769, "maxCenterLng": 0.045751};
+            const markers = [];
+            locations.forEach(loc => {
+                markers.push(
+                    L.marker([loc.lat, loc.lng], {icon: customIcon}).addTo(map)
+                        .bindPopup(`<strong class="font-sans text-base text-gray-900">${loc.name}</strong>`)
+                );
+            });
+            const group = new L.featureGroup(markers);
+            let bounds = group.getBounds();
+            const ne = bounds.getNorthEast();
+            const sw = bounds.getSouthWest();
+            const latSpan = ne.lat - sw.lat;
+            const lngSpan = ne.lng - sw.lng;
+            const maxSpan = Math.max(latSpan, lngSpan);
+            const isDegenerate = latSpan < 1e-9 && lngSpan < 1e-9;
+            const markerCenterLat = (ne.lat + sw.lat) / 2;
+            const markerCenterLng = (ne.lng + sw.lng) / 2;
+            if (isDegenerate) {
+                const frameSpan = mapContext.compactRegion ? 0.026 : 0.045;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - frameSpan / 2, destinationCenter[1] - frameSpan / 2],
+                    [destinationCenter[0] + frameSpan / 2, destinationCenter[1] + frameSpan / 2]
+                );
+            } else if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                const expand = maxSpan < 0.12 ? 1.15 : 1.1;
+                const halfLat = latSpan / 2 * expand;
+                const halfLng = lngSpan / 2 * expand;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                const latReach = Math.max(mapContext.maxCenterLat, latSpan / 2) * 1.45;
+                const lngReach = Math.max(mapContext.maxCenterLng, lngSpan / 2) * 1.45;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - latReach, destinationCenter[1] - lngReach],
+                    [destinationCenter[0] + latReach, destinationCenter[1] + lngReach]
+                );
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                const halfLat = latSpan / 2 * 1.1;
+                const halfLng = lngSpan / 2 * 1.1;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                const frameSpan = Math.max(maxSpan * 4, 0.006);
+                bounds = L.latLngBounds(
+                    [markerCenterLat - frameSpan / 2, markerCenterLng - frameSpan / 2],
+                    [markerCenterLat + frameSpan / 2, markerCenterLng + frameSpan / 2]
+                );
+            }
+            const fitOptions = {};
+            if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                fitOptions.padding = maxSpan < 0.12
+                    ? [24, 24]
+                    : (maxSpan < 0.5 ? [24, 24] : [28, 28]);
+                fitOptions.maxZoom = maxSpan < 0.12
+                    ? 14
+                    : (maxSpan < 0.5 ? 10 : 9);
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                fitOptions.padding = [40, 40];
+                fitOptions.maxZoom = 8;
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                fitOptions.padding = [24, 24];
+            } else if (mapContext.denseUrban) {
+                fitOptions.padding = [18, 18];
+            } else if (mapContext.spreadUrban) {
+                fitOptions.padding = [20, 20];
+            } else if (locations.length >= 3 && maxSpan >= 0.02) {
+                fitOptions.padding = maxSpan >= 0.08 ? [20, 20] : [30, 30];
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                fitOptions.padding = [12, 12];
+                fitOptions.maxZoom = 16;
+            } else if (isDegenerate || locations.length === 1) {
+                fitOptions.padding = mapContext.compactRegion ? [16, 16] : [36, 36];
+                if (isDegenerate || maxSpan < 0.015) {
+                    fitOptions.maxZoom = mapContext.compactRegion ? 15 : 14;
+                }
+            } else {
+                fitOptions.padding = [50, 50];
+            }
+            map.fitBounds(bounds, fitOptions);
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                } else {
+                    scrollTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                }
+            });
+            scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        });
+    </script>
+
+    <button id="scrollTopBtn" class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-12 h-12 bg-neon-cyan text-deepblue-950 rounded-full shadow-[0_0_20px_rgba(0,240,255,0.4)] opacity-0 pointer-events-none transition-all duration-300 translate-y-4 hover:bg-white hover:scale-110" aria-label="Scroll to top">
+        <i class="ph ph-arrow-up text-xl font-bold"></i>
+    </button>
+</body>
+</html>

@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thessaloniki Guide | Global Explorer Guides</title>
+    <link rel="stylesheet" href="../../assets/tailwind.css">
+    <link rel="stylesheet" href="../../assets/outfit.css">
+    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
+    <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
+    <link rel="stylesheet" href="../../assets/homepage-activation.css">
+    <link rel="stylesheet" href="../../assets/destination-activation.css">
+    <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
+    <script src="../../assets/leaflet/leaflet.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #060B19; }
+        ::-webkit-scrollbar-thumb { background: #1E336B; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0070FF; }
+        .leaflet-popup-content-wrapper { background-color: #fff; color: #333; border-radius: 8px; box-shadow: 0 3px 14px rgba(0,0,0,0.4); }
+        .leaflet-popup-tip { background-color: #fff; }
+    </style>
+</head>
+<body class="bg-deepblue-950 text-slate-200 font-sans min-h-screen relative overflow-x-hidden">
+    <div class="absolute top-0 left-0 w-full h-[450px] md:h-[500px] z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50" style="background-image: url('images/thessaloniki_hero.jpg')"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-deepblue-950/10 via-deepblue-950/60 to-deepblue-950"></div>
+    </div>
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon-purple/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neon-cyan/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <main class="container mx-auto px-4 py-8 md:py-16 relative z-20 max-w-5xl">
+        <nav class="mb-12 animate-fade-in-down flex flex-wrap items-center gap-4">
+            <a href="../../index.html" class="flex items-center justify-center w-11 h-11 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0" title="Back to Home">
+                <i class="ph ph-house text-xl group-hover:scale-110 transition-transform"></i>
+            </a>
+            <a href="greece.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0">
+                <i class="ph ph-arrow-left text-lg group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-medium text-sm">Back to Greece</span>
+            </a>
+            <div class="ml-auto flex items-center gap-3 bg-deepblue-900/40 border border-deepblue-700/50 rounded-full px-4 py-2 backdrop-blur-sm shadow-inner shrink-0">
+                <img src="../../assets/flags/w40/gr.png" alt="Greece flag" class="w-6 h-auto rounded-[2px] shadow-sm">
+                <div class="flex items-center gap-2 text-sm font-medium tracking-wide">
+                    <span class="text-slate-200 uppercase text-xs tracking-wider font-bold">Greece</span>
+                    <span class="text-deepblue-500 text-xs">&rsaquo;</span>
+                    <span class="text-neon-cyan text-xs">Thessaloniki</span>
+                </div>
+            </div>
+        </nav>
+
+        <header class="mb-16 animate-fade-in-down animation-delay-100 text-center">
+            <button
+                type="button"
+                id="destination-active-toggle"
+                class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
+                data-iso2="GR"
+                data-slug="thessaloniki"
+                data-active="false"
+                data-interactive="true"
+                aria-label="Toggle Thessaloniki visibility on Greece guide"
+                aria-pressed="false"
+            >
+                <i class="ph ph-map-pin text-4xl text-slate-500 pointer-events-none" aria-hidden="true"></i>
+            </button>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple pb-4">
+                Explore Thessaloniki
+            </h1>
+            <div class="bg-deepblue-900/40 border border-deepblue-800 rounded-3xl p-8 md:p-10 text-left backdrop-blur-sm mt-10">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                    <i class="ph ph-scroll text-neon-cyan"></i> A Brief History
+                </h2>
+                <p class="text-lg text-slate-400 font-light leading-relaxed">Thessaloniki was founded in 315 BCE and became a major Byzantine second capital after Constantinople. Roman forums, Ottoman markets, and waterfront warehouses record Macedonian, Balkan, and Mediterranean trade. A devastating fire in 1917 reshaped the centre before 20th-century reconstruction and the 1997 European Capital of Culture programme. Municipal archives, parish records, and surviving architecture help explain how the city connected to wider regional trade routes, court patronage, and modern civic rebuilding after industrial and wartime change.</p>
+            </div>
+        </header>
+
+        <section class="mb-16 animate-fade-in-down" style="animation-delay: 0.2s;">
+            <h2 class="text-3xl font-bold text-white mb-6">Attractions Map</h2>
+            <div id="map" class="h-[400px] w-full rounded-3xl border border-deepblue-700 shadow-2xl z-10 relative"></div>
+        </section>
+
+        <section class="flex flex-col gap-6 pb-20 animate-fade-in-down" style="animation-delay: 0.3s;">
+            <h2 class="text-3xl font-bold text-white mb-2">Top Sights & Activities</h2>
+            
+            <!-- 1. Arch of Galerius -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/thessaloniki_1.jpg" alt="Arch of Galerius" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Arch of Galerius</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Arch of Galerius, also known as &quot;Kamara,&quot; is a significant Roman monument in Thessaloniki. Built in 303 CE, it commemorates Emperor Galerius&#x27; triumph over the Persians and features intricate marble reliefs depicting various scenes and individuals. This structure is a popular gathering spot for both locals and tourists, offering a glimpse into the city&#x27;s ancient past.</p>
+                </div>
+            </div>
+
+            <!-- 2. Rotonda -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/thessaloniki_2.jpg" alt="Rotonda" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> €10
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Rotonda</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Rotunda is a circular building with a rich history dating back to the early 300s. Initially believed to be part of the palace of Roman Emperor Galerius, recent studies suggest it was actually built by Constantine the Great as his third mausoleum. The building&#x27;s mosaics, once thought to depict saints and martyrs, are now understood to showcase the emperor and his courtiers alongside Christian symbols.</p>
+                </div>
+            </div>
+
+            <!-- 3. Holy Church of Saint Demetrius -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/thessaloniki_3.jpg" alt="Holy Church of Saint Demetrius" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Holy Church of Saint Demetrius</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Holy Church of Saint Demetrius, Patron Saint of Thessalonica, is a significant ancient Christian church with a rich history. Built on the site of an ancient Roman bath house, it houses the body of Saint Demetrius, a Roman soldier martyred in AD 306. The church features an underground crypt where the martyrdom took place and relics of Saint Demetrius in a silver reliquary.</p>
+                </div>
+            </div>
+
+            <!-- 4. Heptapyrgion of Thessaloniki -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/thessaloniki_4.jpg" alt="Heptapyrgion of Thessaloniki" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> €10
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Heptapyrgion of Thessaloniki</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Heptapyrgion of Thessaloniki, also known as the Seven Towers, is a Byzantine-era fortress located on the northern slopes of the city. It forms part of the Acropolis of Thessaloniki and offers panoramic views of the city, sea, and surrounding landscapes. This well-preserved fortress with multiple towers is a popular spot for visitors seeking Instagram-worthy shots, especially during sunrise and sunset when the pink sky creates a backdrop.</p>
+                </div>
+            </div>
+
+            <!-- 5. Thessaloniki Acropolis -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/thessaloniki_5.jpg" alt="Thessaloniki Acropolis" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> €10
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Thessaloniki Acropolis</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Acropolis of Thessaloniki is a must-visit for history enthusiasts exploring this vibrant city. Perched at the highest point, it offers views and a glimpse into the past, having been established by King Cassander. This historic site, also known as Ano Poli or Upper City, features ancient walls and significant landmarks like the Church of Osios David and Eptapyrgio Castle.</p>
+                </div>
+            </div>
+
+            <!-- 6. The Umbrellas by Zongolopoulos -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/thessaloniki_6.jpg" alt="The Umbrellas by Zongolopoulos" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">The Umbrellas by Zongolopoulos</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Umbrellas Sculpture by Zogolopoulos is a renowned landmark located on the waterfront of Thessaloniki. This installation features umbrellas mounted on tall steel poles, creating a striking visual against the backdrop of the sea. Visitors often gather at this popular meeting point to witness sunsets and capture photos.</p>
+                </div>
+            </div>
+
+            <!-- 7. Alexander the Great Statue -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/thessaloniki_7.jpg" alt="Alexander the Great Statue" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Alexander the Great Statue</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Alexander the Great Statue in Thessaloniki is a grand monument inaugurated in 1974, representing the strong bond between the city and the legendary Greek figure. The statue portrays Alexander on his loyal horse, Bucephalas, standing at an impressive 11 meters tall. Located at Nea Paralia, it offers views of Thessaloniki&#x27;s famous landmarks like The White Tower and the Umbrellas sculpture by George Zongolopoulos.</p>
+                </div>
+            </div>
+
+            <!-- 8. Alexander the Great Garden -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/thessaloniki_8.jpg" alt="Alexander the Great Garden" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Alexander the Great Garden</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Alexander the Great Garden, located in Thessaloniki, Greece, is a serene oasis that pays tribute to the legendary historical figure. This attraction offers a tranquil environment where visitors can admire beautiful monuments and relax on benches while enjoying picturesque views of the Greek sea. The garden is a for tourists seeking to immerse themselves in Thessaloniki&#x27;s rich history and natural beauty.</p>
+                </div>
+            </div>
+
+            <!-- 9. Aristotelous Square -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/thessaloniki_9.jpg" alt="Aristotelous Square" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Aristotelous Square</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Aristotelous Square is a vast, waterfront public square in Thessaloniki, designed by Ernest Hebrard and surrounded by mansions and cafes. The square offers a cosmopolitan atmosphere with a blend of Byzantine and Western architecture, reflecting the city&#x27;s heritage. It is lined with architecturally diverse buildings that follow Hebrard&#x27;s original city plan.</p>
+                </div>
+            </div>
+
+            <!-- 10. Holy Metropolitan Church of Saint Gregory Palamas -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/thessaloniki_10.jpg" alt="Holy Metropolitan Church of Saint Gregory Palamas" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Holy Metropolitan Church of Saint Gregory Palamas</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Saint Gregory Palamas Holy Metropolitan Church, located in Agias Sofias square in Thessaloniki, is a Byzantine-style church dedicated to Saint Gregory Palamas, an important figure in the Orthodox Church. The church features a red round dome and is adorned with lovely icons and wall paintings. It holds the relics of Saint Gregory Palamas and celebrates his feast day on November 14th as well as on the second Sunday of Lent.</p>
+                </div>
+            </div>
+
+            <!-- 11. Holy Cathedral Church of Hagia Sophia -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/thessaloniki_11.jpg" alt="Holy Cathedral Church of Hagia Sophia" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Holy Cathedral Church of Hagia Sophia</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Holy Church of Hagia Sophia, also known as the Temple of the Wisdom of God, is a historic and orthodox church located in Thessaloniki. It is renowned for its elaborate statuary, paintings, and mosaics under massive arches. The site forms part of Holy Cathedral Church of Hagia Sophia&#x27;s documented civic and cultural landscape within Thessaloniki, with archives and visitor information available from municipal or regional heritage authorities.</p>
+                </div>
+            </div>
+
+            <!-- 12. Church of the Acheiropoietos -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/thessaloniki_12.jpg" alt="Church of the Acheiropoietos" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Church of the Acheiropoietos</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Holy Church of the Virgin Mary Acheiropoietos, located in Thessaloniki, Greece, is a significant early Christian and Byzantine monument. Dating back to the 5th century AD, this large building has undergone modifications over the years to reflect a more Byzantine style. Inside, visitors can admire its plain yet treasured ornamentation and portable icons.</p>
+                </div>
+            </div>
+
+            <!-- 13. Vlatadon Monastery -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/thessaloniki_13.jpg" alt="Vlatadon Monastery" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Vlatadon Monastery</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Perched on a hill in the Ano Poli (Upper Town) of Thessaloniki, the Vlatadon Monastery offers views of the city and beyond to Mount Olympus. This Byzantine temple, often referred to as the &#x27;Bride of Thermaikos,&#x27; is adorned with centuries-old frescoes, icons, and religious treasures.</p>
+                </div>
+            </div>
+
+            <!-- 14. Latomos Monastery - Holy Church of Hosios David -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/thessaloniki_14.jpg" alt="Latomos Monastery - Holy Church of Hosios David" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Latomos Monastery - Holy Church of Hosios David</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Latomos Monastery - Holy Church of Hosios David is a centuries-old monastery church located in Thessaloniki, Greece. The church is renowned for its medieval frescoes and an early-Christian mosaic of Jesus in its apse. The site forms part of Latomos Monastery - Holy Church of Hosios David&#x27;s documented civic and cultural landscape within Thessaloniki, with archives and visitor information available from municipal or regional heritage authorities.</p>
+                </div>
+            </div>
+
+            <!-- 15. Trigonion Tower -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/thessaloniki_15.jpg" alt="Trigonion Tower" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Trigonion Tower</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Triangle Tower, part of the Ottoman fortifications surrounding the medieval city, offers a fascinating glimpse into Thessaloniki&#x27;s rich history. Divided into sections, the interior of the tower is an intriguing exploration of historical narratives. Visitors can enjoy a magnificent view of the city from the top. The fortress wall and tower present an impressive and well-preserved structure from ancient times, providing panoramic views of Thessaloniki and its bay.</p>
+                </div>
+            </div>
+
+            <!-- 16. Pasha&#x27;s Gardens -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/thessaloniki_16.jpg" alt="Pasha&#x27;s Gardens" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Pasha&#x27;s Gardens</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Pasha’s Gardens is a unique park in Thessaloniki with intriguing half-ruined stone structures from the early 20th century. It offers a peaceful escape with charming fountains and scenic views, making it a popular spot for leisurely strolls and relaxation. The park is adjacent to Sheikh Sou forest, providing additional paths for exploration. Visitors can also discover nearby attractions such as Trigonio Tower, The Portara Gate, and the Eptapirgion Fortress.</p>
+                </div>
+            </div>
+
+            <!-- 17. Holy Church of Saint Nicholas Orphanos -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/thessaloniki_17.jpg" alt="Holy Church of Saint Nicholas Orphanos" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Holy Church of Saint Nicholas Orphanos</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled in the charming Upper Town of Thessaloniki, the Holy Church of Saint Nicholas Orphanos is a gem that showcases Byzantine architecture and artistry. This compact stone church, dating back to the early 14th century, is adorned with vibrant frescoes that beautifully illustrate scenes from Christ&#x27;s life and various saints.</p>
+                </div>
+            </div>
+
+            <!-- 18. Casa Bianca -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/thessaloniki_18.jpg" alt="Casa Bianca" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Casa Bianca</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled in the vibrant district of Epoches, Casa Bianca stands as a remarkable exhibition space for the Municipal Gallery of Thessaloniki. This early 20th-century architectural gem not only showcases contemporary artworks but also carries a rich history, including a poignant love story between a Jewish girl and a Greek man.</p>
+                </div>
+            </div>
+
+            <!-- 19. Thessaloniki Concert Hall -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/thessaloniki_19.jpg" alt="Thessaloniki Concert Hall" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Thessaloniki Concert Hall</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Thessaloniki Concert Hall is a remarkable and expansive complex that offers music, theater, and conference facilities with sea views from its rooftop bar. Established in 2000, it has become an integral part of the city&#x27;s cultural scene, hosting a variety of major events including ballet performances, symphonic concerts, plays, and operas.</p>
+                </div>
+            </div>
+
+            <!-- 20. Navarino Square -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/thessaloniki_20.jpg" alt="Navarino Square" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Navarino Square</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Navarinou Square, also known as Plateia Navarinou, is a vibrant hub in Thessaloniki, popular among students due to its proximity to the university. The square is surrounded by hip coffee shops and unique tavernas, offering great opportunities for people-watching and sightseeing. It&#x27;s a place where modern meets ancient, with the ruins of the Roman Palace of Galerius dominating one side and modern buildings, cafes, restaurants, and stores on the other.</p>
+                </div>
+            </div>
+
+            <!-- 21. Palace of Galerius -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/thessaloniki_21.jpg" alt="Palace of Galerius" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Palace of Galerius</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Palace of Galerius, located in Thessaloniki, is a significant monument that reflects the transition from the Roman to Byzantine era. Built in the late 3rd to early 4th century AD by Emperor Galerius, it served as the seat of the eastern part of the Roman Empire. The complex includes ruins such as massive walls, courtyards, corridors, and rooms with intricate mosaic floors.</p>
+                </div>
+            </div>
+
+            <!-- 22. Ancient Agora Archeological Site -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/thessaloniki_22.jpg" alt="Ancient Agora Archeological Site" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> €10
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Ancient Agora Archeological Site</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Ancient Agora Square in Thessaloniki is a significant historical site that served as a bustling marketplace and the center of commercial, political, and social activities during the Hellenistic and Roman periods. Constructed in the 2nd century BC, it was where merchants, artisans, and citizens gathered to trade goods and engage in civic life. The agora was an essential part of ancient Greek cities, including Thessaloniki.</p>
+                </div>
+            </div>
+
+            <!-- 23. Roman Forum of Thessaloniki -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/thessaloniki_23.jpg" alt="Roman Forum of Thessaloniki" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> €10
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Roman Forum of Thessaloniki</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled in the vibrant heart of Thessaloniki, the Roman Forum, also referred to as the Ancient Agora, is a captivating archaeological site that transports visitors back to the 2nd century AD. Once a bustling hub for political and public life, this expansive complex spans approximately 100 meters wide and 150 meters long. It features impressive remnants such as restored amphitheaters and intricate corridors known as cryptoporticus—subterranean passageways likely used for storage.</p>
+                </div>
+            </div>
+
+            <!-- 24. Kapani Market -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/thessaloniki_24.jpg" alt="Kapani Market" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Kapani Market</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Kapani Market is a bustling covered market in Thessaloniki, offering a wide array of goods including fruits, vegetables, meat, seafood, clothing and souvenirs. The market is steeped in history and culture, with its origins dating back to the Ottoman occupation. Visitors can immerse themselves in the vibrant atmosphere of Kapani Market by interacting with friendly vendors and selecting the freshest local produce.</p>
+                </div>
+            </div>
+
+            <!-- 25. Agora Modiano -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/thessaloniki_25.jpg" alt="Agora Modiano" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Agora Modiano</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Immerse yourself in the vibrant local culture of Thessaloniki by visiting Agora Modiano, one of the city&#x27;s most popular markets. Here explore a variety of food stalls offering traditional Greek delicacies such as Koulouri and Bougatsa. Indulge in the rich flavors of artisanal confectioneries and sample the famous ouzo, an anise-flavored aperitif.</p>
+                </div>
+            </div>
+
+            <!-- 26. Bedesten of Thessaloniki -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/thessaloniki_26.jpg" alt="Bedesten of Thessaloniki" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Bedesten of Thessaloniki</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Bedesten of Thessaloniki, a 15th-century Ottoman-style structure, is an architectural gem that showcases six magnificent domes. Originally serving as a marketplace for luxurious textiles like silk, its name derives from the Persian term &quot;Bezzazistan,&quot; meaning clothing materials market. Today, this historic site has transformed into a vibrant hub filled with shops offering everything from clothing and jewelry to flowers.</p>
+                </div>
+            </div>
+
+            <!-- 27. Bey Hamam (Paradise Baths) -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/thessaloniki_27.jpg" alt="Bey Hamam (Paradise Baths)" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Bey Hamam (Paradise Baths)</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled in the heart of Thessaloniki, Bey Hamam, also known as the Baths of Paradise, is a captivating historical gem that dates back to 1444. Constructed by Sultan Murad II, this beautifully restored stone bathhouse showcases original marble seating and intricate domes that reflect its rich Ottoman heritage.</p>
+                </div>
+            </div>
+
+            <!-- 28. Thessaloniki Waterfront -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/thessaloniki_28.jpg" alt="Thessaloniki Waterfront" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Thessaloniki Waterfront</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">A scenic promenade along the Thermaic Gulf, perfect for walking, cycling, and enjoying the sea views. The site forms part of Thessaloniki Waterfront&#x27;s documented civic and cultural landscape within Thessaloniki, with archives and visitor information available from municipal or regional heritage authorities.</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
+        <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+    </footer>    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const map = L.map('map').setView([40.631508, 22.950273], 14);
+            L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                attribution: '&copy; Google Maps',
+                maxZoom: 20
+            }).addTo(map);
+            const locations = [{"name": "Arch of Galerius", "lat": 40.632224, "lng": 22.951751}, {"name": "Rotonda", "lat": 40.633346, "lng": 22.952855}, {"name": "Holy Church of Saint Demetrius", "lat": 40.638889, "lng": 22.947611}, {"name": "Heptapyrgion of Thessaloniki", "lat": 40.644005, "lng": 22.961775}, {"name": "Thessaloniki Acropolis", "lat": 40.643568, "lng": 22.962698}, {"name": "The Umbrellas by Zongolopoulos", "lat": 40.621844, "lng": 22.951446}, {"name": "Alexander the Great Statue", "lat": 40.624033, "lng": 22.949967}, {"name": "Alexander the Great Garden", "lat": 40.624499, "lng": 22.950598}, {"name": "Aristotelous Square", "lat": 40.632346, "lng": 22.940837}, {"name": "Holy Metropolitan Church of Saint Gregory Palamas", "lat": 40.630941, "lng": 22.944071}, {"name": "Holy Cathedral Church of Hagia Sophia", "lat": 40.632809, "lng": 22.946954}, {"name": "Church of the Acheiropoietos", "lat": 40.634989, "lng": 22.947904}, {"name": "Vlatadon Monastery", "lat": 40.641801, "lng": 22.954493}, {"name": "Latomos Monastery - Holy Church of Hosios David", "lat": 40.6417, "lng": 22.952216}, {"name": "Trigonion Tower", "lat": 40.640687, "lng": 22.959996}, {"name": "Pasha's Gardens", "lat": 40.638271, "lng": 22.95977}, {"name": "Holy Church of Saint Nicholas Orphanos", "lat": 40.637667, "lng": 22.95618}, {"name": "Casa Bianca", "lat": 40.596491, "lng": 22.955732}, {"name": "Thessaloniki Concert Hall", "lat": 40.598264, "lng": 22.948524}, {"name": "Navarino Square", "lat": 40.630799, "lng": 22.948662}, {"name": "Palace of Galerius", "lat": 40.630423, "lng": 22.94941}, {"name": "Ancient Agora Archeological Site", "lat": 40.63719, "lng": 22.946397}, {"name": "Roman Forum of Thessaloniki", "lat": 40.637858, "lng": 22.945678}, {"name": "Kapani Market", "lat": 40.635835, "lng": 22.942872}, {"name": "Agora Modiano", "lat": 40.635201, "lng": 22.942065}, {"name": "Bedesten of Thessaloniki", "lat": 40.6366, "lng": 22.94118}, {"name": "Bey Hamam (Paradise Baths)", "lat": 40.635807, "lng": 22.94501}, {"name": "Thessaloniki Waterfront", "lat": 40.6141374, "lng": 22.951005}];
+            const customIcon = L.icon({
+                iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32],
+            });
+            const destinationCenter = [40.631508, 22.950273];
+            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.035017, "maxCenterLng": 0.012425};
+            const markers = [];
+            locations.forEach(loc => {
+                markers.push(
+                    L.marker([loc.lat, loc.lng], {icon: customIcon}).addTo(map)
+                        .bindPopup(`<strong class="font-sans text-base text-gray-900">${loc.name}</strong>`)
+                );
+            });
+            const group = new L.featureGroup(markers);
+            let bounds = group.getBounds();
+            const ne = bounds.getNorthEast();
+            const sw = bounds.getSouthWest();
+            const latSpan = ne.lat - sw.lat;
+            const lngSpan = ne.lng - sw.lng;
+            const maxSpan = Math.max(latSpan, lngSpan);
+            const isDegenerate = latSpan < 1e-9 && lngSpan < 1e-9;
+            const markerCenterLat = (ne.lat + sw.lat) / 2;
+            const markerCenterLng = (ne.lng + sw.lng) / 2;
+            if (isDegenerate) {
+                const frameSpan = mapContext.compactRegion ? 0.026 : 0.045;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - frameSpan / 2, destinationCenter[1] - frameSpan / 2],
+                    [destinationCenter[0] + frameSpan / 2, destinationCenter[1] + frameSpan / 2]
+                );
+            } else if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                const expand = maxSpan < 0.12 ? 1.15 : 1.1;
+                const halfLat = latSpan / 2 * expand;
+                const halfLng = lngSpan / 2 * expand;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                const latReach = Math.max(mapContext.maxCenterLat, latSpan / 2) * 1.45;
+                const lngReach = Math.max(mapContext.maxCenterLng, lngSpan / 2) * 1.45;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - latReach, destinationCenter[1] - lngReach],
+                    [destinationCenter[0] + latReach, destinationCenter[1] + lngReach]
+                );
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                const halfLat = latSpan / 2 * 1.1;
+                const halfLng = lngSpan / 2 * 1.1;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                const frameSpan = Math.max(maxSpan * 4, 0.006);
+                bounds = L.latLngBounds(
+                    [markerCenterLat - frameSpan / 2, markerCenterLng - frameSpan / 2],
+                    [markerCenterLat + frameSpan / 2, markerCenterLng + frameSpan / 2]
+                );
+            }
+            const fitOptions = {};
+            if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                fitOptions.padding = maxSpan < 0.12
+                    ? [24, 24]
+                    : (maxSpan < 0.5 ? [24, 24] : [28, 28]);
+                fitOptions.maxZoom = maxSpan < 0.12
+                    ? 14
+                    : (maxSpan < 0.5 ? 10 : 9);
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                fitOptions.padding = [40, 40];
+                fitOptions.maxZoom = 8;
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                fitOptions.padding = [24, 24];
+            } else if (mapContext.denseUrban) {
+                fitOptions.padding = [18, 18];
+            } else if (mapContext.spreadUrban) {
+                fitOptions.padding = [20, 20];
+            } else if (locations.length >= 3 && maxSpan >= 0.02) {
+                fitOptions.padding = maxSpan >= 0.08 ? [20, 20] : [30, 30];
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                fitOptions.padding = [12, 12];
+                fitOptions.maxZoom = 16;
+            } else if (isDegenerate || locations.length === 1) {
+                fitOptions.padding = mapContext.compactRegion ? [16, 16] : [36, 36];
+                if (isDegenerate || maxSpan < 0.015) {
+                    fitOptions.maxZoom = mapContext.compactRegion ? 15 : 14;
+                }
+            } else {
+                fitOptions.padding = [50, 50];
+            }
+            map.fitBounds(bounds, fitOptions);
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                } else {
+                    scrollTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                }
+            });
+            scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        });
+    </script>
+
+    <button id="scrollTopBtn" class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-12 h-12 bg-neon-cyan text-deepblue-950 rounded-full shadow-[0_0_20px_rgba(0,240,255,0.4)] opacity-0 pointer-events-none transition-all duration-300 translate-y-4 hover:bg-white hover:scale-110" aria-label="Scroll to top">
+        <i class="ph ph-arrow-up text-xl font-bold"></i>
+    </button>
+</body>
+</html>

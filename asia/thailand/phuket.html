@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phuket Guide | Global Explorer Guides</title>
+    <link rel="stylesheet" href="../../assets/tailwind.css">
+    <link rel="stylesheet" href="../../assets/outfit.css">
+    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
+    <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
+    <link rel="stylesheet" href="../../assets/homepage-activation.css">
+    <link rel="stylesheet" href="../../assets/destination-activation.css">
+    <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
+    <script src="../../assets/leaflet/leaflet.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #060B19; }
+        ::-webkit-scrollbar-thumb { background: #1E336B; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0070FF; }
+        .leaflet-popup-content-wrapper { background-color: #fff; color: #333; border-radius: 8px; box-shadow: 0 3px 14px rgba(0,0,0,0.4); }
+        .leaflet-popup-tip { background-color: #fff; }
+    </style>
+</head>
+<body class="bg-deepblue-950 text-slate-200 font-sans min-h-screen relative overflow-x-hidden">
+    <div class="absolute top-0 left-0 w-full h-[450px] md:h-[500px] z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50" style="background-image: url('images/phuket_hero.jpg')"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-deepblue-950/10 via-deepblue-950/60 to-deepblue-950"></div>
+    </div>
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon-purple/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neon-cyan/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <main class="container mx-auto px-4 py-8 md:py-16 relative z-20 max-w-5xl">
+        <nav class="mb-12 animate-fade-in-down flex flex-wrap items-center gap-4">
+            <a href="../../index.html" class="flex items-center justify-center w-11 h-11 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0" title="Back to Home">
+                <i class="ph ph-house text-xl group-hover:scale-110 transition-transform"></i>
+            </a>
+            <a href="thailand.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0">
+                <i class="ph ph-arrow-left text-lg group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-medium text-sm">Back to Thailand</span>
+            </a>
+            <div class="ml-auto flex items-center gap-3 bg-deepblue-900/40 border border-deepblue-700/50 rounded-full px-4 py-2 backdrop-blur-sm shadow-inner shrink-0">
+                <img src="../../assets/flags/w40/th.png" alt="Thailand flag" class="w-6 h-auto rounded-[2px] shadow-sm">
+                <div class="flex items-center gap-2 text-sm font-medium tracking-wide">
+                    <span class="text-slate-200 uppercase text-xs tracking-wider font-bold">Thailand</span>
+                    <span class="text-deepblue-500 text-xs">&rsaquo;</span>
+                    <span class="text-neon-cyan text-xs">Phuket</span>
+                </div>
+            </div>
+        </nav>
+
+        <header class="mb-16 animate-fade-in-down animation-delay-100 text-center">
+            <button
+                type="button"
+                id="destination-active-toggle"
+                class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
+                data-iso2="TH"
+                data-slug="phuket"
+                data-active="false"
+                data-interactive="true"
+                aria-label="Toggle Phuket visibility on Thailand guide"
+                aria-pressed="false"
+            >
+                <i class="ph ph-map-pin text-4xl text-slate-500 pointer-events-none" aria-hidden="true"></i>
+            </button>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple pb-4">
+                Explore Phuket
+            </h1>
+            <div class="bg-deepblue-900/40 border border-deepblue-800 rounded-3xl p-8 md:p-10 text-left backdrop-blur-sm mt-10">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                    <i class="ph ph-scroll text-neon-cyan"></i> A Brief History
+                </h2>
+                <p class="text-lg text-slate-400 font-light leading-relaxed">Phuket developed as a tin-mining and trading island on the Andaman Sea, with Sino-Portuguese shophouses in Phuket Town and fishing villages along western beaches. Chinese and Malay communities shaped markets and temples before tourism expanded from the 1980s. Rubber plantations and coastal resorts now dominate the economy while Old Town lanes preserve 19th-century merchant architecture.</p>
+            </div>
+        </header>
+
+        <section class="mb-16 animate-fade-in-down" style="animation-delay: 0.2s;">
+            <h2 class="text-3xl font-bold text-white mb-6">Attractions Map</h2>
+            <div id="map" class="h-[400px] w-full rounded-3xl border border-deepblue-700 shadow-2xl z-10 relative"></div>
+        </section>
+
+        <section class="flex flex-col gap-6 pb-20 animate-fade-in-down" style="animation-delay: 0.3s;">
+            <h2 class="text-3xl font-bold text-white mb-2">Top Sights & Activities</h2>
+            
+            <!-- 1. Tourist Informatio Centre | Phuket Old Town -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/phuket_1.jpg" alt="Tourist Informatio Centre | Phuket Old Town" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Tourist Informatio Centre | Phuket Old Town</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">When exploring the vibrant streets of Phuket Old Town, a visit to the Tourist Information Centre is an must. Nestled in a charming two-story building that reflects the area&#x27;s rich architectural and cultural heritage, this center serves as both a helpful resource for travelers and a mini-museum showcasing local history. The friendly staff are eager to assist with trip planning, offering valuable advice and insights about the attractions nearby.</p>
+                </div>
+            </div>
+
+            <!-- 2. Phuket Old Town -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/phuket_2.jpg" alt="Phuket Old Town" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Phuket Old Town</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Phuket Old Town, the provincial capital of Phuket, is a historically rich area with an abundance of temples, shophouses, and small printing shops. The town was established during a period of prosperity driven by the valuable metal trade. Its scenic neighborhood showcases remnants of the island&#x27;s colonial past and reveals the influence of Sino-Portuguese, Chinese, and Malay immigrants who prospered from the tin mining industry.</p>
+                </div>
+            </div>
+
+            <!-- 3. Thao Thep Krasattri and Thao Si Sunthon Monument -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/phuket_3.jpg" alt="Thao Thep Krasattri and Thao Si Sunthon Monument" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Thao Thep Krasattri and Thao Si Sunthon Monument</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">A historical monument honoring two heroines who defended Phuket from Burmese invaders in the 18th century. The site forms part of Thao Thep Krasattri and Thao Si Sunthon Monument&#x27;s documented civic and cultural landscape within Phuket, with archives and visitor information available from municipal or regional heritage authorities.</p>
+                </div>
+            </div>
+
+            <!-- 4. Wat Chalong -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/phuket_4.jpg" alt="Wat Chalong" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Wat Chalong</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled in the heart of Phuket, Chaithararam Temple, also known as Wat Chalong, is a temple complex that dates back to the early 19th century. This sacred site is adorned with intricate Buddha paintings and shimmering golden statues, surrounded by beautifully landscaped gardens that invite tranquility.</p>
+                </div>
+            </div>
+
+            <!-- 5. Dolphins Bay Phuket -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/phuket_5.jpg" alt="Dolphins Bay Phuket" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Dolphins Bay Phuket</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Dolphins Bay Phuket is an aquatic theme park that offers high-energy marine-life shows and up-close dolphin encounters. The Phuket Dolphin Show provides an immersive cultural experience, featuring intelligent dolphins performing tricks and engaging with their trainers. This captivating display not only entertains children but also educates them about marine mammals in a fun environment.</p>
+                </div>
+            </div>
+
+            <!-- 6. Kaokard Viewpoint Tower -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/phuket_6.jpg" alt="Kaokard Viewpoint Tower" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Kaokard Viewpoint Tower</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Located on a hill, Kao Khad Views Tower offers panoramic views of the ocean and mountains. Accessible via a long staircase, it is the only viewpoint on the island that provides a complete 360-degree perspective. Visitors can also make a quick stop at an unnamed viewpoint along the way before reaching the tower. Despite being free to visit, this spot is relatively uncrowded, allowing for a peaceful experience and ample parking space.</p>
+                </div>
+            </div>
+
+            <!-- 7. Siam Niramit Phuket -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/phuket_7.jpg" alt="Siam Niramit Phuket" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Siam Niramit Phuket</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">A cultural show that showcases Thailand&#x27;s rich history and heritage through elaborate performances and visuals. The site forms part of Siam Niramit Phuket&#x27;s documented civic and cultural landscape within Phuket, with archives and visitor information available from municipal or regional heritage authorities.</p>
+                </div>
+            </div>
+
+            <!-- 8. Jungceylon -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/phuket_8.jpg" alt="Jungceylon" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Jungceylon</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled in the vibrant heart of Patong Beach, Jungceylon is a sprawling shopping paradise that promises an experience for every visitor. This expansive mall features a diverse array of specialty shops and casual dining options, making it the perfect spot to unwind after a day in the sun. From trendy clothing and stylish accessories to unique souvenirs and spa products, Jungceylon has something for everyone.</p>
+                </div>
+            </div>
+
+            <!-- 9. Banzaan Fresh Market -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/phuket_9.jpg" alt="Banzaan Fresh Market" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Banzaan Fresh Market</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">If you&#x27;re looking for a vibrant market experience in Phuket, Banzaan Fresh Market is the place to be. This indoor/outdoor market offers a wide variety of vendors selling everything from clothing to fresh fruits. explore beautiful displays of local fruits like Jack Fruit and Durian, as well as browse through the fresh seafood and meat department with its diverse selection of fish and seafood. The market also features a food court where sample delicious street food options.</p>
+                </div>
+            </div>
+
+            <!-- 10. OTOP Market -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/phuket_10.jpg" alt="OTOP Market" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">OTOP Market</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Patong Otop Shopping Paradise is a bustling local market in Phuket, Thailand, offering a wide array of souvenirs, clothing, traditional food and more. This night market provides an ideal opportunity to experience the essence of Phuket through discounted shopping and indulging in local cuisine under the starry sky. The concept of OTOP (One Tambon, One Product) showcases products from different villages including food, cloth, silk, handicrafts and more.</p>
+                </div>
+            </div>
+
+            <!-- 11. Malin Plaza -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/phuket_11.jpg" alt="Malin Plaza" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Malin Plaza</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Malin Plaza is a bustling night market located in lively Patong, offering a wide variety of goods and street food. It&#x27;s well-known for its beachwear, Thai spa products, and traditional handicrafts. The market provides a cooler shopping environment compared to other busy markets in the area. Visitors can explore tabletop stalls, re-purposed shipping containers, and more under a metal roof.</p>
+                </div>
+            </div>
+
+            <!-- 12. The Big Buddha, Phuket -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/phuket_12.jpg" alt="The Big Buddha, Phuket" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">The Big Buddha, Phuket</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Big Buddha, officially known as &quot;Phraphutthamingmongkhol-akenagakhiri Buddha,&quot; stands majestically at 45 meters tall atop Nakerd Mountain in Phuket. This white marble statue is not only a significant religious site but also offers panoramic views of the island, including Phuket Town and Chalong Bay. The journey to this landmark is made easy with well-paved roads, despite some winding curves.</p>
+                </div>
+            </div>
+
+            <!-- 13. Karon -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/phuket_13.jpg" alt="Karon" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Karon</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Karon, a resort town on the west coast of Phuket Island in Thailand, is famous for its long stretch of white sand known as Karon Beach. The town also boasts the Wat Suwan Khirikhet Buddhist temple, home to the Karon Temple Market offering sarongs, jewelry, and street food twice a week.</p>
+                </div>
+            </div>
+
+            <!-- 14. Kata Night Market -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/phuket_14.jpg" alt="Kata Night Market" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Kata Night Market</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Kata Night Market is an outdoor marketplace located in the southwestern corner of Phuket, near Karon. It offers a laidback vibe with trendy bars, cozy cafes, and beachfront resorts. The market features food stands, fruits, vegetables, seafood, and a bar serving cocktails. Unlike some other night markets in Phuket, Kata Night Market has tall ceilings and more space between vendors and visitors to combat the warm climate.</p>
+                </div>
+            </div>
+
+            <!-- 15. Kata Beach -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/phuket_15.jpg" alt="Kata Beach" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Kata Beach</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Kata Beach, a gem on Phuket&#x27;s southwest coast, is renowned for its picturesque 1.5 km stretch of soft white sand and crystal-clear turquoise waters. This idyllic location is perfect for swimming, snorkeling, and soaking up the sun. The beach is flanked by vibrant restaurants and resorts that cater to every need. Just a stone&#x27;s throw away lies a community park designed for families seeking fun and relaxation away from the beach hustle.</p>
+                </div>
+            </div>
+
+            <!-- 16. Karon Beach Roundabout -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/phuket_16.jpg" alt="Karon Beach Roundabout" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Karon Beach Roundabout</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Karon Beach Roundabout, situated at the northern edge of Karon Beach, serves as a picturesque landmark and a helpful guide for visitors. The area offers a quieter atmosphere compared to nearby Patong, with affordable dining options and various markets to explore. It&#x27;s conveniently located near the beach and is a central point for transportation. The roundabout is adorned with romantic decorations during special occasions, creating a charming ambiance.</p>
+                </div>
+            </div>
+
+            <!-- 17. Wat Karon -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/phuket_17.jpg" alt="Wat Karon" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Wat Karon</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Karon Temple Market is a must-visit spot in Phuket for shopping enthusiasts. Located near Wat Karon, this market offers a wide range of local products, including street snacks, spices, handicrafts, t-shirts, bags, watches and jewelry. Visitors can immerse themselves in the local culture while honing their bargaining skills. The market is open only on Tuesdays and Fridays and provides an excellent opportunity to combine shopping with exploring the nearby temple.</p>
+                </div>
+            </div>
+
+            <!-- 18. Chillva Market -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/phuket_18.jpg" alt="Chillva Market" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Chillva Market</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Chillva Market in Phuket is a trendy and vibrant night market that stands out among the others on the island. It attracts a younger crowd with its creative use of old shipping containers, creating a hip and modern atmosphere. The market offers an array of local food stalls, including meat, seafood, fruits, and sweets. In addition to the culinary delights, visitors can also find fashion items, authentic souvenirs, locally produced clothing and jewelry, athletic shoes, accessories, and gadgets.</p>
+                </div>
+            </div>
+
+            <!-- 19. Naka Weekend Market -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/phuket_19.jpg" alt="Naka Weekend Market" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Naka Weekend Market</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Naka Weekend Market, also known as Phuket Weekend Night Market or Chaofa Variety Weekend Market, is a bustling night bazaar located near Central Festival in Phuket Town. It&#x27;s a popular spot for both locals and tourists, offering a wide range of products including batik sarongs, logoed T-shirts, quirky trinkets, pirated items, and secondhand goods.</p>
+                </div>
+            </div>
+
+            <!-- 20. Hanuman World -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/phuket_20.jpg" alt="Hanuman World" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Hanuman World</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Hanuman World is a thrilling rainforest adventure park in Phuket, Thailand, offering treetop walkways and exhilarating zip lines. The 800-meter zipline ride provides an adrenaline-pumping experience as it twists through the dense canopy at high speeds. Visitors can embark on a ziplining journey across 32 platforms in the treetops, enjoying the support of friendly staff.</p>
+                </div>
+            </div>
+
+            <!-- 21. Khao Rang Viewpoint -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/phuket_21.jpg" alt="Khao Rang Viewpoint" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Khao Rang Viewpoint</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled atop a hill, the Khao Rang Viewpoint is a must-visit destination for anyone seeking views and a serene atmosphere. This picturesque spot offers sweeping panoramas of Phuket Town, its coastline, and the enchanting offshore islands. Surrounded by lush greenery and the soothing sounds of nature, it’s an ideal place to unwind with loved ones while watching the sunset paint the sky in vibrant hues.</p>
+                </div>
+            </div>
+
+            <!-- 22. Wat Khao Rang Samakkhitham -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/phuket_22.jpg" alt="Wat Khao Rang Samakkhitham" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Wat Khao Rang Samakkhitham</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled atop Khao Rang hill, Wat Khao Rang Samakkhitham is a vibrant temple that captivates visitors with its architecture and serene surroundings. Adorned with intricately carved naga snakes, this hillside sanctuary features a magnificent golden seated Buddha that once held the title of the largest on the island. The temple&#x27;s tranquil atmosphere makes it an ideal spot for those looking to experience authentic Thai Buddhist practices without the throngs of tourists found at other sites.</p>
+                </div>
+            </div>
+
+            <!-- 23. Phuket FantaSea -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/phuket_23.jpg" alt="Phuket FantaSea" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ฿1800
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Phuket FantaSea</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Phuket FantaSea is a cultural theme park in Phuket, Thailand. This award-winning attraction offers a unique combination of magic, acrobatics, ballet, and special effects including pyrotechnics. The park boasts a 3,000-seat theater showcasing Thai cultural performances and an elephant show.</p>
+                </div>
+            </div>
+
+            <!-- 24. Saphan Hin Park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/phuket_24.jpg" alt="Saphan Hin Park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Saphan Hin Park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Saphan Hin Park, located in the southern part of Phuket Town, offers a serene waterside setting for various activities such as walking, jogging, and cycling. The park features spacious open areas, sports facilities, and mangroves that are often used for local festivals and events. Once a bustling port during the tin mining era, it has been transformed into a popular relaxation spot for locals to enjoy picnics or leisurely walks by the sea.</p>
+                </div>
+            </div>
+
+            <!-- 25. Flying Hanuman -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/phuket_25.jpg" alt="Flying Hanuman" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Flying Hanuman</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">An eco-adventure park offering exhilarating zipline experiences through the lush jungle, suitable for thrill-seekers of all ages. The site forms part of Flying Hanuman&#x27;s documented civic and cultural landscape within Phuket, with archives and visitor information available from municipal or regional heritage authorities.</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
+        <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+    </footer>    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const map = L.map('map').setView([7.878364, 98.337804], 14);
+            L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                attribution: '&copy; Google Maps',
+                maxZoom: 20
+            }).addTo(map);
+            const locations = [{"name": "Tourist Informatio Centre | Phuket Old Town", "lat": 7.884869, "lng": 98.388943}, {"name": "Phuket Old Town", "lat": 7.884836, "lng": 98.387514}, {"name": "Thao Thep Krasattri and Thao Si Sunthon Monument", "lat": 7.980988600000001, "lng": 98.3639414}, {"name": "Wat Chalong", "lat": 7.846838, "lng": 98.336905}, {"name": "Dolphins Bay Phuket", "lat": 7.842289, "lng": 98.356849}, {"name": "Kaokard Viewpoint Tower", "lat": 7.834706, "lng": 98.383613}, {"name": "Siam Niramit Phuket", "lat": 7.932229899999999, "lng": 98.3757033}, {"name": "Jungceylon", "lat": 7.892474, "lng": 98.298615}, {"name": "Banzaan Fresh Market", "lat": 7.891131, "lng": 98.301886}, {"name": "OTOP Market", "lat": 7.887354, "lng": 98.29494}, {"name": "Malin Plaza", "lat": 7.882641, "lng": 98.293181}, {"name": "The Big Buddha, Phuket", "lat": 7.827576, "lng": 98.312842}, {"name": "Karon", "lat": 7.828774, "lng": 98.301286}, {"name": "Kata Night Market", "lat": 7.827597, "lng": 98.299564}, {"name": "Kata Beach", "lat": 7.820694, "lng": 98.297647}, {"name": "Karon Beach Roundabout", "lat": 7.849022, "lng": 98.293248}, {"name": "Wat Karon", "lat": 7.847989, "lng": 98.297919}, {"name": "Chillva Market", "lat": 7.907042, "lng": 98.373287}, {"name": "Naka Weekend Market", "lat": 7.880705, "lng": 98.365729}, {"name": "Hanuman World", "lat": 7.876422, "lng": 98.351137}, {"name": "Khao Rang Viewpoint", "lat": 7.892425, "lng": 98.380218}, {"name": "Wat Khao Rang Samakkhitham", "lat": 7.894022, "lng": 98.381707}, {"name": "Phuket FantaSea", "lat": 7.956521, "lng": 98.287426}, {"name": "Saphan Hin Park", "lat": 7.865419, "lng": 98.398133}, {"name": "Flying Hanuman", "lat": 7.9245376, "lng": 98.3228736}];
+            const customIcon = L.icon({
+                iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32],
+            });
+            const destinationCenter = [7.878364, 98.337804];
+            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.102625, "maxCenterLng": 0.060329};
+            const markers = [];
+            locations.forEach(loc => {
+                markers.push(
+                    L.marker([loc.lat, loc.lng], {icon: customIcon}).addTo(map)
+                        .bindPopup(`<strong class="font-sans text-base text-gray-900">${loc.name}</strong>`)
+                );
+            });
+            const group = new L.featureGroup(markers);
+            let bounds = group.getBounds();
+            const ne = bounds.getNorthEast();
+            const sw = bounds.getSouthWest();
+            const latSpan = ne.lat - sw.lat;
+            const lngSpan = ne.lng - sw.lng;
+            const maxSpan = Math.max(latSpan, lngSpan);
+            const isDegenerate = latSpan < 1e-9 && lngSpan < 1e-9;
+            const markerCenterLat = (ne.lat + sw.lat) / 2;
+            const markerCenterLng = (ne.lng + sw.lng) / 2;
+            if (isDegenerate) {
+                const frameSpan = mapContext.compactRegion ? 0.026 : 0.045;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - frameSpan / 2, destinationCenter[1] - frameSpan / 2],
+                    [destinationCenter[0] + frameSpan / 2, destinationCenter[1] + frameSpan / 2]
+                );
+            } else if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                const expand = maxSpan < 0.12 ? 1.15 : 1.1;
+                const halfLat = latSpan / 2 * expand;
+                const halfLng = lngSpan / 2 * expand;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                const latReach = Math.max(mapContext.maxCenterLat, latSpan / 2) * 1.45;
+                const lngReach = Math.max(mapContext.maxCenterLng, lngSpan / 2) * 1.45;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - latReach, destinationCenter[1] - lngReach],
+                    [destinationCenter[0] + latReach, destinationCenter[1] + lngReach]
+                );
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                const halfLat = latSpan / 2 * 1.1;
+                const halfLng = lngSpan / 2 * 1.1;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                const frameSpan = Math.max(maxSpan * 4, 0.006);
+                bounds = L.latLngBounds(
+                    [markerCenterLat - frameSpan / 2, markerCenterLng - frameSpan / 2],
+                    [markerCenterLat + frameSpan / 2, markerCenterLng + frameSpan / 2]
+                );
+            }
+            const fitOptions = {};
+            if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                fitOptions.padding = maxSpan < 0.12
+                    ? [24, 24]
+                    : (maxSpan < 0.5 ? [24, 24] : [28, 28]);
+                fitOptions.maxZoom = maxSpan < 0.12
+                    ? 14
+                    : (maxSpan < 0.5 ? 10 : 9);
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                fitOptions.padding = [40, 40];
+                fitOptions.maxZoom = 8;
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                fitOptions.padding = [24, 24];
+            } else if (mapContext.denseUrban) {
+                fitOptions.padding = [18, 18];
+            } else if (mapContext.spreadUrban) {
+                fitOptions.padding = [20, 20];
+            } else if (locations.length >= 3 && maxSpan >= 0.02) {
+                fitOptions.padding = maxSpan >= 0.08 ? [20, 20] : [30, 30];
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                fitOptions.padding = [12, 12];
+                fitOptions.maxZoom = 16;
+            } else if (isDegenerate || locations.length === 1) {
+                fitOptions.padding = mapContext.compactRegion ? [16, 16] : [36, 36];
+                if (isDegenerate || maxSpan < 0.015) {
+                    fitOptions.maxZoom = mapContext.compactRegion ? 15 : 14;
+                }
+            } else {
+                fitOptions.padding = [50, 50];
+            }
+            map.fitBounds(bounds, fitOptions);
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                } else {
+                    scrollTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                }
+            });
+            scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        });
+    </script>
+
+    <button id="scrollTopBtn" class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-12 h-12 bg-neon-cyan text-deepblue-950 rounded-full shadow-[0_0_20px_rgba(0,240,255,0.4)] opacity-0 pointer-events-none transition-all duration-300 translate-y-4 hover:bg-white hover:scale-110" aria-label="Scroll to top">
+        <i class="ph ph-arrow-up text-xl font-bold"></i>
+    </button>
+</body>
+</html>

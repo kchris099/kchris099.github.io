@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valencia Guide | Global Explorer Guides</title>
+    <link rel="stylesheet" href="../../assets/tailwind.css">
+    <link rel="stylesheet" href="../../assets/outfit.css">
+    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
+    <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
+    <link rel="stylesheet" href="../../assets/homepage-activation.css">
+    <link rel="stylesheet" href="../../assets/destination-activation.css">
+    <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
+    <script src="../../assets/leaflet/leaflet.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #060B19; }
+        ::-webkit-scrollbar-thumb { background: #1E336B; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0070FF; }
+        .leaflet-popup-content-wrapper { background-color: #fff; color: #333; border-radius: 8px; box-shadow: 0 3px 14px rgba(0,0,0,0.4); }
+        .leaflet-popup-tip { background-color: #fff; }
+    </style>
+</head>
+<body class="bg-deepblue-950 text-slate-200 font-sans min-h-screen relative overflow-x-hidden">
+    <div class="absolute top-0 left-0 w-full h-[450px] md:h-[500px] z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50" style="background-image: url('images/valencia_hero.jpg')"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-deepblue-950/10 via-deepblue-950/60 to-deepblue-950"></div>
+    </div>
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon-purple/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neon-cyan/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <main class="container mx-auto px-4 py-8 md:py-16 relative z-20 max-w-5xl">
+        <nav class="mb-12 animate-fade-in-down flex flex-wrap items-center gap-4">
+            <a href="../../index.html" class="flex items-center justify-center w-11 h-11 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0" title="Back to Home">
+                <i class="ph ph-house text-xl group-hover:scale-110 transition-transform"></i>
+            </a>
+            <a href="spain.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0">
+                <i class="ph ph-arrow-left text-lg group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-medium text-sm">Back to Spain</span>
+            </a>
+            <div class="ml-auto flex items-center gap-3 bg-deepblue-900/40 border border-deepblue-700/50 rounded-full px-4 py-2 backdrop-blur-sm shadow-inner shrink-0">
+                <img src="../../assets/flags/w40/es.png" alt="Spain flag" class="w-6 h-auto rounded-[2px] shadow-sm">
+                <div class="flex items-center gap-2 text-sm font-medium tracking-wide">
+                    <span class="text-slate-200 uppercase text-xs tracking-wider font-bold">Spain</span>
+                    <span class="text-deepblue-500 text-xs">&rsaquo;</span>
+                    <span class="text-neon-cyan text-xs">Eastern Spain</span>
+                </div>
+            </div>
+        </nav>
+
+        <header class="mb-16 animate-fade-in-down animation-delay-100 text-center">
+            <button
+                type="button"
+                id="destination-active-toggle"
+                class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
+                data-iso2="ES"
+                data-slug="valencia"
+                data-active="false"
+                data-interactive="true"
+                aria-label="Toggle Valencia visibility on Spain guide"
+                aria-pressed="false"
+            >
+                <i class="ph ph-map-pin text-4xl text-slate-500 pointer-events-none" aria-hidden="true"></i>
+            </button>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple pb-4">
+                Explore Valencia
+            </h1>
+            <div class="bg-deepblue-900/40 border border-deepblue-800 rounded-3xl p-8 md:p-10 text-left backdrop-blur-sm mt-10">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                    <i class="ph ph-scroll text-neon-cyan"></i> A Brief History
+                </h2>
+                <p class="text-lg text-slate-400 font-light leading-relaxed">Valencia was founded as a Roman colony and later flourished under Islamic and Christian kingdoms on the Mediterranean coast. Gothic silk exchange halls, Baroque churches, and the Turia gardens converted from a diverted river record agricultural wealth and 20th-century urban planning. Las Fallas festivals each March burn monumental satirical sculptures in the streets.</p>
+            </div>
+        </header>
+
+        <section class="mb-16 animate-fade-in-down" style="animation-delay: 0.2s;">
+            <h2 class="text-3xl font-bold text-white mb-6">Attractions Map</h2>
+            <div id="map" class="h-[400px] w-full rounded-3xl border border-deepblue-700 shadow-2xl z-10 relative"></div>
+        </section>
+
+        <section class="flex flex-col gap-6 pb-20 animate-fade-in-down" style="animation-delay: 0.3s;">
+            <h2 class="text-3xl font-bold text-white mb-2">Top Sights & Activities</h2>
+            
+            <!-- 1. Torres de Serranos -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valencia_1.jpg" alt="Torres de Serranos" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> €2
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Torres de Serranos</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Serranos Towers, an imposing pair of Gothic-style towers, are remnants of Valencia&#x27;s ancient city walls. Originally built for defense, they now offer panoramic views of the city and the river. The surrounding area is perfect for exploring on foot, with attractions like Plaza de la Reina, the Cathedral and Miguelete tower offering beautiful vistas after climbing 207 steps.</p>
+                </div>
+            </div>
+
+            <!-- 2. Mestalla Stadium -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valencia_2.jpg" alt="Mestalla Stadium" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> €16
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Mestalla Stadium</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Mestalla Stadium, located in Valencia, Spain, has been the home of the Valencia Club de Futbol (VCF) since 1923. With a seating capacity of approximately 50,000 fans, it is known for its steep grandstands and intense atmosphere during matches. The stadium is considered one of Europe&#x27;s most legendary stadiums and is a significant part of local culture. It is also noted for being family-friendly.</p>
+                </div>
+            </div>
+
+            <!-- 3. Mercado de Colón -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valencia_3.jpg" alt="Mercado de Colón" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Mercado de Colón</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Mercat de Colón, a historic market housed in a modernist building dating back to 1916, has been transformed into a vibrant dining and shopping destination. Situated in the Eixample district of Valencia, it offers an array of fresh produce stalls as well as diverse restaurants and bars. Visitors can savor an authentic organic horchata breakfast at Casa Orxata while enjoying the market&#x27;s architectural splendor.</p>
+                </div>
+            </div>
+
+            <!-- 4. Puerta del Mar -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valencia_4.jpg" alt="Puerta del Mar" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Puerta del Mar</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled in the vibrant heart of Valencia, Puerta del Mar stands as a tribute to history and resilience. This ornate monument, constructed in 1946, commemorates those who lost their lives during the Spanish Civil War. While it may resemble an ancient city gate, it&#x27;s actually a modern replica that captures the essence of Valencia&#x27;s architectural heritage.</p>
+                </div>
+            </div>
+
+            <!-- 5. El Carmen -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valencia_5.jpg" alt="El Carmen" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">El Carmen</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">El Carmen is a vibrant old-town district in Valencia, known for its medieval gates and narrow streets lined with cafes, tapas bars, boutiques, and souvenir shops. The area comes alive at night with late-night bars and dance floors. Visitors can explore museums like the Institut Valencià d&#x27;Art Modern showcasing 20th-century international works. Cafe Madrid is a popular spot offering historic charm and signature cocktails like agua de Valencia.</p>
+                </div>
+            </div>
+
+            <!-- 6. Plaza de la Reina -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valencia_6.jpg" alt="Plaza de la Reina" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Plaza de la Reina</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled in the heart of Valencia, Plaza de la Reina is a vibrant hub that captures the city&#x27;s lively spirit. This bustling square is flanked by charming restaurants and the Cathedral, making it an ideal spot for both locals and tourists alike. As you wander through this picturesque area, find delightful tapas bars like Sagardi taperia on Calle San Vicente Martir, where indulge in a variety of colorful dishes paired with exquisite Spanish white wines.</p>
+                </div>
+            </div>
+
+            <!-- 7. Central Market of Valencia -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valencia_7.jpg" alt="Central Market of Valencia" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Central Market of Valencia</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Mercat Central de València is a vibrant and historic market housed in a Modernista building adorned with colorful tiles. It is one of the oldest food markets in Europe, offering an authentic glimpse into daily life in Valencia. The market boasts a diverse collection of stalls, each separated by type, where locals shop for regional produce such as live eels, various prawn varieties, and giant hams.</p>
+                </div>
+            </div>
+
+            <!-- 8. Real Parroquia de los Santos Juanes Valencia -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valencia_8.jpg" alt="Real Parroquia de los Santos Juanes Valencia" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Real Parroquia de los Santos Juanes Valencia</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Església de Sant Joan del Mercat in Valencia, Spain is a historic Catholic church that boasts a triangular bell tower adorned with saintly statues. Also known as the Real Parroquia de los Santos Juanes or San Juan del Mercado, the church is situated near the Central Market and Llotja de la Seda building. Sadly, despite its beauty and significance, the church has been defaced by graffiti vandals.</p>
+                </div>
+            </div>
+
+            <!-- 9. La Lonja de la Seda de Valencia -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valencia_9.jpg" alt="La Lonja de la Seda de Valencia" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> €2
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">La Lonja de la Seda de Valencia</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">La Lonja de la Seda de Valencia, also known as the Silk Exchange, is a grandiose building that showcases the city&#x27;s Medieval wealth through intricate stonework and carvings. It was once a symbol of Valencia&#x27;s power during its economic boom in the 14th to 16th centuries due to silk production. The Merchant&#x27;s Hall within the building is considered a magnificent jewel with its unique design featuring columns resembling palm trees and a ceiling meant to evoke a starry sky.</p>
+                </div>
+            </div>
+
+            <!-- 10. Valencia Cathedral -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valencia_10.jpg" alt="Valencia Cathedral" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Valencia Cathedral</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Valencia Cathedral is a example of Gothic architecture, renowned for its claim to house the Holy Grail. Nestled in the heart of Valencia, it stands proudly next to the Miguelete tower, which offers views after a climb up its 207 steps. The surrounding area is rich with history and beauty; nearby attractions include the picturesque Plaza de la Reina and the enchanting Patio de los Naranjos courtyard filled with fragrant orange trees.</p>
+                </div>
+            </div>
+
+            <!-- 11. Plaça de la Reina -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valencia_11.jpg" alt="Plaça de la Reina" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Plaça de la Reina</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">A bustling square featuring cafes, shops, and the entrance to the Valencia Cathedral and El Micalet tower. The site forms part of Plaça de la Reina&#x27;s documented civic and cultural landscape within Valencia, with archives and visitor information available from municipal or regional heritage authorities.</p>
+                </div>
+            </div>
+
+            <!-- 12. Bioparc Valencia -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valencia_12.jpg" alt="Bioparc Valencia" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> €30
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Bioparc Valencia</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Bioparc Valencia is a unique zoo that houses nearly a thousand animals from 150 different African species. The park features specially designed habitats to ensure the well-being and comfort of the animals, offering visitors an immersive experience in various natural habitats. From vast savannas to dense forests, visitors can observe antelopes, giraffes, rhinoceroses, hyenas, buffaloes, leopards, gorillas, and elephants in recreated wild environments.</p>
+                </div>
+            </div>
+
+            <!-- 13. Iglesia Parroquial de San Nicolás de Bari y San Pedro Mártir -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valencia_13.jpg" alt="Iglesia Parroquial de San Nicolás de Bari y San Pedro Mártir" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Iglesia Parroquial de San Nicolás de Bari y San Pedro Mártir</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">San Nicolás de Bari and San Pedro Mártir is a Gothic-style Catholic church known for its ornate baroque interior, gilding, and ceiling frescoes. The former Convento del Carmen has been transformed into the Centre del Carme Cultura Contemporania, while the prestigious Institut Valencia d&#x27;Art Modern (IVAM) and La Beneficencia offer modern museum experiences.</p>
+                </div>
+            </div>
+
+            <!-- 14. Portal de Valldigna -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valencia_14.jpg" alt="Portal de Valldigna" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Portal de Valldigna</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Portal de Valldigna is a venerable archway with unique architecture that dates back to 1440, serving as an entrance to the old Arab quarter of Valencia. The area surrounding it is home to several modern museums and exhibit centers, including the Centre del Carme Cultura Contemporania, Institut Valencia d&#x27;Art Modern (IVAM), and La Beneficencia. This historical Roman arch stands out amidst the colorful buildings of the old town and is surrounded by smaller alleyway streets.</p>
+                </div>
+            </div>
+
+            <!-- 15. Oceanogràfic València -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valencia_15.jpg" alt="Oceanogràfic València" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> €36
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Oceanogràfic València</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Oceanogràfic València is a mesmerizing destination that showcases the wonders of marine life, making it the largest aquarium in Europe. Nestled within the City of Arts and Sciences complex, this aquatic paradise features over 500 species from various ocean ecosystems. Visitors can embark on an journey through its immersive exhibits, including a thrilling shark tunnel and interactive touch pools where connect with sea creatures up close.</p>
+                </div>
+            </div>
+
+            <!-- 16. Ciudad de las Artes y las Ciencias -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valencia_16.jpg" alt="Ciudad de las Artes y las Ciencias" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> €38
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Ciudad de las Artes y las Ciencias</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Ciudad de las Artes y las Ciencias is a cutting-edge science complex located in a beautifully landscaped park. It features a large aquarium, an IMAX cinema, and various cultural and scientific institutions. The site forms part of Ciudad de las Artes y las Ciencias&#x27;s documented civic and cultural landscape within Valencia, with archives and visitor information available from municipal or regional heritage authorities.</p>
+                </div>
+            </div>
+
+            <!-- 17. Museu de les Ciències Príncipe Felipe -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valencia_17.jpg" alt="Museu de les Ciències Príncipe Felipe" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> €9
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Museu de les Ciències Príncipe Felipe</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">An interactive science museum within the Ciudad de las Artes y las Ciencias, perfect for families and curious minds. The site forms part of Museu de les Ciències Príncipe Felipe&#x27;s documented civic and cultural landscape within Valencia, with archives and visitor information available from municipal or regional heritage authorities.</p>
+                </div>
+            </div>
+
+            <!-- 18. Veles e Vents -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valencia_18.jpg" alt="Veles e Vents" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Veles e Vents</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Veles e Vents, also known as the America&#x27;s Cup Building, is a modern architectural marvel in Valencia. Designed by architects David Chipperfield and studio b720, this striking structure with white painted steel cladding and Brazilian timber decks has become a symbol of the city&#x27;s cultural and architectural prowess since its inauguration in 2006. Situated next to the marina, it offers views of the harbor and is now a multipurpose event space known for its gastronomy and culture.</p>
+                </div>
+            </div>
+
+            <!-- 19. La Marina de Valencia -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valencia_19.jpg" alt="La Marina de Valencia" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">La Marina de Valencia</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">La Marina de València has become an site in the city, featuring trendy restaurants and bars by the sea, offering activities throughout the day. It&#x27;s a recommended place for year-round strolls, with festivals and concerts adding to its vibrant atmosphere. The area boasts a beautiful and expansive promenade with a skating rink for all ages, children&#x27;s play areas, sailing excursions, and even spaces where people gather to dance to their own music.</p>
+                </div>
+            </div>
+
+            <!-- 20. Plaça de l&#x27;Ajuntament -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valencia_20.jpg" alt="Plaça de l&#x27;Ajuntament" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Plaça de l&#x27;Ajuntament</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The site forms part of Plaça de l&#x27;Ajuntament&#x27;s documented civic and cultural landscape within Valencia, with archives and visitor information available from municipal or regional heritage authorities. The site forms part of Plaça de l&#x27;Ajuntament&#x27;s documented civic and cultural landscape within Valencia, with archives and visitor information available from municipal or regional heritage authorities.</p>
+                </div>
+            </div>
+
+            <!-- 21. Parque Natural de la Albufera -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valencia_21.jpg" alt="Parque Natural de la Albufera" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Parque Natural de la Albufera</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Parc Natural de l&#x27;Albufera, located 8km south of the city, is a significant wetland in Spain. The surrounding rice fields create a golden backdrop in autumn. Despite the presence of factories, the park&#x27;s beauty shines through at dusk. Visitors recommend experiencing a sunset here with loved ones and enjoying affordable boat trips or even renting one for a dinner cruise.</p>
+                </div>
+            </div>
+
+            <!-- 22. Palacio de la Música -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valencia_22.jpg" alt="Palacio de la Música" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Palacio de la Música</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Palau de la Música de València is a renowned venue in Valencia, surrounded by a park and gardens, hosting orchestra performances, concerts, and various cultural events. It features an impressive program with orchestras, solo performances, jazz, poetry, flamenco, and more from both local and international artists. The venue has welcomed esteemed musicians like John Scofield, Ron Carter, Joe Lovano, Dave Douglas, Snarky Puppy and Silvia Perez Cruz for its Jazz Festival.</p>
+                </div>
+            </div>
+
+            <!-- 23. Gulliver park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valencia_23.jpg" alt="Gulliver park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Gulliver park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Gulliver Park is a whimsical playground nestled within the renowned Turia Park in Valencia, also known as El Rio. This unique park brings to life the character from Jonathan Swift&#x27;s classic tale, &quot;Gulliver&#x27;s Travels.&quot; Here, children can explore a massive play structure designed to resemble Gulliver himself, who appears immobilized on the ground with ropes. Kids can climb his torso, slide down his hair, and even hide in his pants—creating an imaginative adventure for visitors of all ages.</p>
+                </div>
+            </div>
+
+            <!-- 24. Mercado de Ruzafa -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valencia_24.jpg" alt="Mercado de Ruzafa" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Mercado de Ruzafa</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Mercat de Russafa, located in the vibrant Ruzafa neighborhood of Valencia, is a traditional market established in 1957. The modern building houses over 60 vendors offering a variety of local produce, meat, seafood, and other food products. The market&#x27;s colorful exterior makes it a standout in the area. Visitors can enjoy a culinary experience with lower prices compared to other markets in Valencia.</p>
+                </div>
+            </div>
+
+            <!-- 25. Jardín del Turia -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valencia_25.jpg" alt="Jardín del Turia" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Jardín del Turia</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Jardí del Túria - Tram VIII is a picturesque park in Valencia that follows the path of a former riverbed, offering a scenic route through the city center. The 9km green space is adorned with orange trees and palm trees, providing a delightful setting for various activities such as picnicking, mini-golf, and skateboarding. Families can hire family trikes to explore this vibrant area which also features Gulliver Park with its giant slides.</p>
+                </div>
+            </div>
+
+            <!-- 26. Jardines de Monforte -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valencia_26.jpg" alt="Jardines de Monforte" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Jardines de Monforte</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled in the heart of Valencia, the Jardines de Monforte is a charming oasis that invites visitors to step away from the city&#x27;s hustle and bustle. This elegant garden, designed in the mid-19th century, showcases a delightful blend of French neoclassical inspiration with Mediterranean elements. As you wander through its compact yet beautifully landscaped areas, encounter marble statues and ornamental fountains that evoke a sense of tranquility.</p>
+                </div>
+            </div>
+
+            <!-- 27. Church of Santa Catalina -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valencia_27.jpg" alt="Church of Santa Catalina" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Church of Santa Catalina</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Church of Santa Caterina, also known as Saint Katherine, is located in Placa de Santa Catalina near the cathedral. Its tower combines Valencian Gothic and Baroque styles, and according to local folklore, it is depicted as the spouse of El Miguelete. The church&#x27;s interior exudes a dark yet atmosphere that captivates visitors. Surrounding the area are charming shops, delightful restaurants, and several museums to explore.</p>
+                </div>
+            </div>
+
+            <!-- 28. Mercado Municipal Plaza Redonda -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valencia_28.jpg" alt="Mercado Municipal Plaza Redonda" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Mercado Municipal Plaza Redonda</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled in the heart of Valencia, Mercado Municipal Plaza Redonda is a delightful circular market that invites visitors to explore its vibrant atmosphere. This charming plaza, designed by Salvador Escrig Melchor in 1840, is surrounded by an array of traditional craft shops and tapas bars. As you wander through the stalls, discover a treasure trove of handmade products including lace, embroidery, ceramics, and unique souvenirs that capture the essence of Valencian culture.</p>
+                </div>
+            </div>
+
+            <!-- 29. Platja de la Malva-rosa -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valencia_29.jpg" alt="Platja de la Malva-rosa" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Platja de la Malva-rosa</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">A popular urban beach with golden sands, restaurants, and water sports, perfect for a day by the sea. The site forms part of Platja de la Malva-rosa&#x27;s documented civic and cultural landscape within Valencia, with archives and visitor information available from municipal or regional heritage authorities.</p>
+                </div>
+            </div>
+
+            <!-- 30. Malvarrosa beach (Valencia) -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valencia_30.jpg" alt="Malvarrosa beach (Valencia)" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Malvarrosa beach (Valencia)</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Malvarrosa beach in Valencia is a 1km-long city beach with soft sand and a bustling promenade lined with shops and restaurants. It&#x27;s a popular spot for sunbathing, strolling along the waterfront, and enjoying outdoor cafes, bars, and clubs during the summer months. Accessible by public transportation, it offers a more relaxed and local atmosphere compared to Las Arenas beach.</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
+        <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+    </footer>    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const map = L.map('map').setView([39.466816, -0.363711], 14);
+            L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                attribution: '&copy; Google Maps',
+                maxZoom: 20
+            }).addTo(map);
+            const locations = [{"name": "Torres de Serranos", "lat": 39.479333, "lng": -0.375965}, {"name": "Mestalla Stadium", "lat": 39.474656, "lng": -0.35859}, {"name": "Mercado de Colón", "lat": 39.468968, "lng": -0.368355}, {"name": "Puerta del Mar", "lat": 39.472096, "lng": -0.368487}, {"name": "El Carmen", "lat": 39.479351, "lng": -0.380721}, {"name": "Plaza de la Reina", "lat": 39.476458, "lng": -0.37513}, {"name": "Central Market of Valencia", "lat": 39.473463, "lng": -0.379034}, {"name": "Real Parroquia de los Santos Juanes Valencia", "lat": 39.474218, "lng": -0.379478}, {"name": "La Lonja de la Seda de Valencia", "lat": 39.474386, "lng": -0.37833}, {"name": "Valencia Cathedral", "lat": 39.475286, "lng": -0.375467}, {"name": "Plaça de la Reina", "lat": 39.4746533, "lng": -0.3754405}, {"name": "Bioparc Valencia", "lat": 39.478026, "lng": -0.407611}, {"name": "Iglesia Parroquial de San Nicolás de Bari y San Pedro Mártir", "lat": 39.476206, "lng": -0.379019}, {"name": "Portal de Valldigna", "lat": 39.477559, "lng": -0.378607}, {"name": "Oceanogràfic València", "lat": 39.45272, "lng": -0.348067}, {"name": "Ciudad de las Artes y las Ciencias", "lat": 39.454875, "lng": -0.35049}, {"name": "Museu de les Ciències Príncipe Felipe", "lat": 39.4561074, "lng": -0.3520842}, {"name": "Veles e Vents", "lat": 39.460885, "lng": -0.324063}, {"name": "La Marina de Valencia", "lat": 39.461461, "lng": -0.329891}, {"name": "Plaça de l'Ajuntament", "lat": 39.4698148, "lng": -0.3763622}, {"name": "Parque Natural de la Albufera", "lat": 39.348897, "lng": -0.324045}, {"name": "Palacio de la Música", "lat": 39.466272, "lng": -0.360128}, {"name": "Gulliver park", "lat": 39.462575, "lng": -0.359415}, {"name": "Mercado de Ruzafa", "lat": 39.461842, "lng": -0.371181}, {"name": "Jardín del Turia", "lat": 39.476865, "lng": -0.369652}, {"name": "Jardines de Monforte", "lat": 39.477272, "lng": -0.365557}, {"name": "Church of Santa Catalina", "lat": 39.474098, "lng": -0.37641}, {"name": "Mercado Municipal Plaza Redonda", "lat": 39.473787, "lng": -0.376789}, {"name": "Platja de la Malva-rosa", "lat": 39.47507510000001, "lng": -0.3235743}, {"name": "Malvarrosa beach (Valencia)", "lat": 39.47726, "lng": -0.323375}];
+            const customIcon = L.icon({
+                iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32],
+            });
+            const destinationCenter = [39.466816, -0.363711];
+            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.117919, "maxCenterLng": 0.0439};
+            const markers = [];
+            locations.forEach(loc => {
+                markers.push(
+                    L.marker([loc.lat, loc.lng], {icon: customIcon}).addTo(map)
+                        .bindPopup(`<strong class="font-sans text-base text-gray-900">${loc.name}</strong>`)
+                );
+            });
+            const group = new L.featureGroup(markers);
+            let bounds = group.getBounds();
+            const ne = bounds.getNorthEast();
+            const sw = bounds.getSouthWest();
+            const latSpan = ne.lat - sw.lat;
+            const lngSpan = ne.lng - sw.lng;
+            const maxSpan = Math.max(latSpan, lngSpan);
+            const isDegenerate = latSpan < 1e-9 && lngSpan < 1e-9;
+            const markerCenterLat = (ne.lat + sw.lat) / 2;
+            const markerCenterLng = (ne.lng + sw.lng) / 2;
+            if (isDegenerate) {
+                const frameSpan = mapContext.compactRegion ? 0.026 : 0.045;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - frameSpan / 2, destinationCenter[1] - frameSpan / 2],
+                    [destinationCenter[0] + frameSpan / 2, destinationCenter[1] + frameSpan / 2]
+                );
+            } else if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                const expand = maxSpan < 0.12 ? 1.15 : 1.1;
+                const halfLat = latSpan / 2 * expand;
+                const halfLng = lngSpan / 2 * expand;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                const latReach = Math.max(mapContext.maxCenterLat, latSpan / 2) * 1.45;
+                const lngReach = Math.max(mapContext.maxCenterLng, lngSpan / 2) * 1.45;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - latReach, destinationCenter[1] - lngReach],
+                    [destinationCenter[0] + latReach, destinationCenter[1] + lngReach]
+                );
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                const halfLat = latSpan / 2 * 1.1;
+                const halfLng = lngSpan / 2 * 1.1;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                const frameSpan = Math.max(maxSpan * 4, 0.006);
+                bounds = L.latLngBounds(
+                    [markerCenterLat - frameSpan / 2, markerCenterLng - frameSpan / 2],
+                    [markerCenterLat + frameSpan / 2, markerCenterLng + frameSpan / 2]
+                );
+            }
+            const fitOptions = {};
+            if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                fitOptions.padding = maxSpan < 0.12
+                    ? [24, 24]
+                    : (maxSpan < 0.5 ? [24, 24] : [28, 28]);
+                fitOptions.maxZoom = maxSpan < 0.12
+                    ? 14
+                    : (maxSpan < 0.5 ? 10 : 9);
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                fitOptions.padding = [40, 40];
+                fitOptions.maxZoom = 8;
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                fitOptions.padding = [24, 24];
+            } else if (mapContext.denseUrban) {
+                fitOptions.padding = [18, 18];
+            } else if (mapContext.spreadUrban) {
+                fitOptions.padding = [20, 20];
+            } else if (locations.length >= 3 && maxSpan >= 0.02) {
+                fitOptions.padding = maxSpan >= 0.08 ? [20, 20] : [30, 30];
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                fitOptions.padding = [12, 12];
+                fitOptions.maxZoom = 16;
+            } else if (isDegenerate || locations.length === 1) {
+                fitOptions.padding = mapContext.compactRegion ? [16, 16] : [36, 36];
+                if (isDegenerate || maxSpan < 0.015) {
+                    fitOptions.maxZoom = mapContext.compactRegion ? 15 : 14;
+                }
+            } else {
+                fitOptions.padding = [50, 50];
+            }
+            map.fitBounds(bounds, fitOptions);
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                } else {
+                    scrollTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                }
+            });
+            scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        });
+    </script>
+
+    <button id="scrollTopBtn" class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-12 h-12 bg-neon-cyan text-deepblue-950 rounded-full shadow-[0_0_20px_rgba(0,240,255,0.4)] opacity-0 pointer-events-none transition-all duration-300 translate-y-4 hover:bg-white hover:scale-110" aria-label="Scroll to top">
+        <i class="ph ph-arrow-up text-xl font-bold"></i>
+    </button>
+</body>
+</html>

@@ -5,4 +5,12 @@ const blacklistText = `
 Bordeaux
 
 Toulouse
+
+Rouen
+
+Montpellier
+
+Marseille
+
+Nice
 `;

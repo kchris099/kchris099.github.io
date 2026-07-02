@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toronto Guide | Global Explorer Guides</title>
+    <link rel="stylesheet" href="../../assets/tailwind.css">
+    <link rel="stylesheet" href="../../assets/outfit.css">
+    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
+    <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
+    <link rel="stylesheet" href="../../assets/homepage-activation.css">
+    <link rel="stylesheet" href="../../assets/destination-activation.css">
+    <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
+    <script src="../../assets/leaflet/leaflet.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #060B19; }
+        ::-webkit-scrollbar-thumb { background: #1E336B; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0070FF; }
+        .leaflet-popup-content-wrapper { background-color: #fff; color: #333; border-radius: 8px; box-shadow: 0 3px 14px rgba(0,0,0,0.4); }
+        .leaflet-popup-tip { background-color: #fff; }
+    </style>
+</head>
+<body class="bg-deepblue-950 text-slate-200 font-sans min-h-screen relative overflow-x-hidden">
+    <div class="absolute top-0 left-0 w-full h-[450px] md:h-[500px] z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50" style="background-image: url('images/toronto_hero.jpg')"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-deepblue-950/10 via-deepblue-950/60 to-deepblue-950"></div>
+    </div>
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon-purple/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neon-cyan/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <main class="container mx-auto px-4 py-8 md:py-16 relative z-20 max-w-5xl">
+        <nav class="mb-12 animate-fade-in-down flex flex-wrap items-center gap-4">
+            <a href="../../index.html" class="flex items-center justify-center w-11 h-11 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0" title="Back to Home">
+                <i class="ph ph-house text-xl group-hover:scale-110 transition-transform"></i>
+            </a>
+            <a href="canada.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0">
+                <i class="ph ph-arrow-left text-lg group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-medium text-sm">Back to Canada</span>
+            </a>
+            <div class="ml-auto flex items-center gap-3 bg-deepblue-900/40 border border-deepblue-700/50 rounded-full px-4 py-2 backdrop-blur-sm shadow-inner shrink-0">
+                <img src="../../assets/flags/w40/ca.png" alt="Canada flag" class="w-6 h-auto rounded-[2px] shadow-sm">
+                <div class="flex items-center gap-2 text-sm font-medium tracking-wide">
+                    <span class="text-slate-200 uppercase text-xs tracking-wider font-bold">Canada</span>
+                    <span class="text-deepblue-500 text-xs">&rsaquo;</span>
+                    <span class="text-neon-cyan text-xs">Toronto</span>
+                </div>
+            </div>
+        </nav>
+
+        <header class="mb-16 animate-fade-in-down animation-delay-100 text-center">
+            <button
+                type="button"
+                id="destination-active-toggle"
+                class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
+                data-iso2="CA"
+                data-slug="toronto"
+                data-active="false"
+                data-interactive="true"
+                aria-label="Toggle Toronto visibility on Canada guide"
+                aria-pressed="false"
+            >
+                <i class="ph ph-map-pin text-4xl text-slate-500 pointer-events-none" aria-hidden="true"></i>
+            </button>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple pb-4">
+                Explore Toronto
+            </h1>
+            <div class="bg-deepblue-900/40 border border-deepblue-800 rounded-3xl p-8 md:p-10 text-left backdrop-blur-sm mt-10">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                    <i class="ph ph-scroll text-neon-cyan"></i> A Brief History
+                </h2>
+                <p class="text-lg text-slate-400 font-light leading-relaxed">Toronto began as the British town of York on Lake Ontario and became the capital of Ontario after Confederation in 1867. Victorian brick districts, the CN Tower, and waterfront renewal record waves of British, Irish, Italian, Caribbean, and Asian immigration. The city is Canada&#x27;s largest metropolitan centre and financial capital. Municipal archives, parish records, and surviving architecture help explain how the city connected to wider regional trade routes, court patronage, and modern civic rebuilding after industrial and wartime change.</p>
+            </div>
+        </header>
+
+        <section class="mb-16 animate-fade-in-down" style="animation-delay: 0.2s;">
+            <h2 class="text-3xl font-bold text-white mb-6">Attractions Map</h2>
+            <div id="map" class="h-[400px] w-full rounded-3xl border border-deepblue-700 shadow-2xl z-10 relative"></div>
+        </section>
+
+        <section class="flex flex-col gap-6 pb-20 animate-fade-in-down" style="animation-delay: 0.3s;">
+            <h2 class="text-3xl font-bold text-white mb-2">Top Sights & Activities</h2>
+            
+            <!-- 1. The Distillery Historic District -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_1.jpg" alt="The Distillery Historic District" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">The Distillery Historic District</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Distillery Historic District in Toronto is a vibrant area that has transformed from a former distillery into a collection of boutiques, galleries, cafes, and restaurants. The pedestrian-only neighborhood boasts buildings dating back to the 1830s and was once home to the largest distillery in Canada, Gooderham &amp; Worts.</p>
+                </div>
+            </div>
+
+            <!-- 2. CN Tower -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_2.jpg" alt="CN Tower" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> $45
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">CN Tower</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The CN Tower is a landmark in Toronto, standing at over 553 meters tall. It&#x27;s known for its glass floor and revolving eatery offering panoramic views of the city. Visitors can also experience EdgeWalk, a thrilling hands-free walk around the outside ledge of the tower. As one of the Seven Wonders of the Modern World, it&#x27;s a Canadian icon and symbol of Toronto.</p>
+                </div>
+            </div>
+
+            <!-- 3. Ripley&#x27;s Aquarium of Canada -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_3.jpg" alt="Ripley&#x27;s Aquarium of Canada" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> $40
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Ripley&#x27;s Aquarium of Canada</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Ripley&#x27;s Aquarium of Canada, located in downtown Toronto near the Rogers Centre and CN Tower, is a modern and expansive indoor aquarium showcasing thousands of marine species. From barracudas to rays, jellyfish, octopi, moray eels, and giant sharks, the aquarium offers a diverse range of sea creatures. Visitors can enjoy educational behind-the-scenes tours, interactive displays, and even in-water experiences with Cownose and Southern Stingrays.</p>
+                </div>
+            </div>
+
+            <!-- 4. Rogers Centre -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_4.jpg" alt="Rogers Centre" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Rogers Centre</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Rogers Centre, formerly known as the SkyDome, is a versatile indoor stadium that has been a prominent feature of Toronto&#x27;s entertainment scene since its opening in 1989. It is most famous for being the home of the Toronto Blue Jays baseball team and for its innovative retractable roof. The stadium also hosts a wide range of events including concerts, auto shows, circuses, and more.</p>
+                </div>
+            </div>
+
+            <!-- 5. Evergreen Brick Works -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_5.jpg" alt="Evergreen Brick Works" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Evergreen Brick Works</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Evergreen Brick Works is a vibrant eco-oriented complex in Toronto, Canada. It was originally the Don Valley brickworks, which played a crucial role in building the city. After its closure in the 1980s, efforts began to transform the site into an ecological center and social enterprise. Today, it stands as the first large-scale community environmental center in Canada. The space features a weekend farmer&#x27;s market, gardening store, event space, and nature trails for visitors to explore.</p>
+                </div>
+            </div>
+
+            <!-- 6. Nathan Phillips Square -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_6.jpg" alt="Nathan Phillips Square" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Nathan Phillips Square</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nathan Phillips Square, situated in the heart of downtown Toronto, is a bustling public space known for hosting events year-round. In the winter, it transforms into a lively ice rink. The square features a reflecting pool and the TORONTO sign, making it a popular spot for photos. Surrounded by landmarks like City Hall and the Eaton Centre, it&#x27;s an ideal location to soak in the city&#x27;s vibrant atmosphere and explore nearby attractions.</p>
+                </div>
+            </div>
+
+            <!-- 7. Toronto City Hall -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_7.jpg" alt="Toronto City Hall" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Toronto City Hall</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Toronto City Hall, designed by Finnish architect Viljo Revell, is a modern and structure that serves as the mayor&#x27;s office. It has gained popularity as a filming location for various productions, including Star Trek: The New Generation and The Handmaid&#x27;s Tale. The building, which opened in 1965, is a favorite among locals and visitors alike. Its adjacent Nathan Philips Square hosts art fairs, special events, and a popular skating rink in winter.</p>
+                </div>
+            </div>
+
+            <!-- 8. Toronto Old City Hall -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_8.jpg" alt="Toronto Old City Hall" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Toronto Old City Hall</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Toronto Old City Hall, constructed in 1899, is a Richardsonian Romanesque civic building with a notable clock tower and intricate gargoyles. Designed by local architect Edward James Lennox, it boasts a beautiful Romanesque Revival style featuring arches, towers, and impressive carvings. Once the largest civic building in North America, it remains an emblematic construction in the city&#x27;s landscape.</p>
+                </div>
+            </div>
+
+            <!-- 9. Fort York National Historic Site -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_9.jpg" alt="Fort York National Historic Site" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Fort York National Historic Site</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Located in the heart of Toronto, Fort York National Historic Site is a 43-acre landmark that offers visitors a glimpse into Canada&#x27;s rich history. With original War of 1812 buildings and the 1813 battle site, this well-preserved fort provides an immersive experience. From dramatic reenactments to an extensive collection of artifacts, Fort York tells the story of its pivotal role during the war.</p>
+                </div>
+            </div>
+
+            <!-- 10. CF Toronto Eaton Centre -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_10.jpg" alt="CF Toronto Eaton Centre" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">CF Toronto Eaton Centre</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">CF Toronto Eaton Centre is a historic and bustling mall located in downtown Toronto, spanning two blocks and housing over 250 retail stores. Modeled after the Galleria Vittorio Emanuele II in Milan, it features glass ceilings, multi-level walkways, and impressive art installations. During the holiday season, the mall is adorned with festive decorations including a 108-foot-tall Christmas tree.</p>
+                </div>
+            </div>
+
+            <!-- 11. Massey Hall -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_11.jpg" alt="Massey Hall" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Massey Hall</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Massey Hall, a historic music venue in Toronto, has been hosting legendary shows for over a century. Originally gifted to the city by the Massey family in 1894, it continues to fulfill its mission of showcasing international arts and entertainment while supporting Canadian talent. With renowned acoustics and a capacity of 2753 seats, Massey Hall hosts not only concerts but also lectures, film premieres, comedy shows, and more.</p>
+                </div>
+            </div>
+
+            <!-- 12. St. Michael&#x27;s Cathedral Basilica -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_12.jpg" alt="St. Michael&#x27;s Cathedral Basilica" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">St. Michael&#x27;s Cathedral Basilica</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">St. Michael&#x27;s Cathedral Basilica, constructed in 1848, is a Catholic cathedral in the Gothic Revival style. It features impressive ceilings and a towering 79-meter spire. The idea for this magnificent building came from Father Michael Power, who recognized the need for an expanded place of worship to accommodate the growing Catholic community. Toronto architect William Thomas was responsible for designing St. Michael&#x27;s Cathedral, while John Harper led the construction project starting in 1845.</p>
+                </div>
+            </div>
+
+            <!-- 13. Sankofa Square -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_13.jpg" alt="Sankofa Square" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Sankofa Square</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Yonge-Dundas Square is a vibrant outdoor space that hosts various events, including concerts, movies, and community gatherings. It will feature an immersive art installation by photographer Ed Burtynsky as part of the Luminato festival. The square is located on Yonge Street, which spans different neighborhoods with unique atmospheres and vibes. Walking along Yonge Street offers a diverse cultural experience, reflecting Toronto&#x27;s multiculturalism.</p>
+                </div>
+            </div>
+
+            <!-- 14. Little Canada -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_14.jpg" alt="Little Canada" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Little Canada</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Little Canada is a world-renowned theme park that meticulously recreates the natural wonders and cities of Canada on a 1:87 scale. It&#x27;s not just for kids - the whole family can enjoy workshops, video rooms, and detailed models of Canadian landmarks like churches, stadiums, mountains, and skyscrapers. The attention to detail is astounding; from Little Ottawa&#x27;s parliament buildings to the miniature Bay of Fundy with its own tide schedule.</p>
+                </div>
+            </div>
+
+            <!-- 15. Riverdale Farm -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_15.jpg" alt="Riverdale Farm" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Riverdale Farm</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Riverdale Farm is a charming destination located in the heart of Toronto, offering a glimpse into early 20th century Ontario farm life. Spanning 7.5 acres, this replica farm provides an immersive experience for families, allowing kids to disconnect from modern technology and explore a world without cell phones and fast food. The farm features livestock, gardens, and craft programs set amidst picturesque ponds and picnic areas within the scenic Riverdale Park West.</p>
+                </div>
+            </div>
+
+            <!-- 16. St. Lawrence Market -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_16.jpg" alt="St. Lawrence Market" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">St. Lawrence Market</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">St. Lawrence Market is a renowned foodie destination located in Toronto&#x27;s historic Old Town district. It has over 100 vendors offering a wide variety of products, including produce, antiques, baked goods, and meats. The market dates back to 1803 and is considered the oldest in Toronto. Visitors can indulge in local favorites such as peameal bacon sandwiches at Carousel Bakery or explore European-style pastries at Future Bakery.</p>
+                </div>
+            </div>
+
+            <!-- 17. Gooderham Building -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_17.jpg" alt="Gooderham Building" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Gooderham Building</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Gooderham Building, also known as the flatiron building, is a historic redbrick structure located in Toronto&#x27;s St. Lawrence Market neighborhood. Built in 1892 by the Gooderham family for their distillery business, it was one of the first flatiron-style buildings in North America. Designed by David Roberts Jr., this five-story landmark features Romanesque and French Gothic revival architecture. Today, it houses some of Toronto&#x27;s most sought-after office spaces and a British-style pub.</p>
+                </div>
+            </div>
+
+            <!-- 18. The Cathedral Church of St. James -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_18.jpg" alt="The Cathedral Church of St. James" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">The Cathedral Church of St. James</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Cathedral Church of St. James is a Gothic Revival cathedral located in Toronto, Canada. It serves as both an Anglican parish and a cathedral, making it the spiritual center of the diocese and an important part of Toronto&#x27;s civic life. The current building was constructed in 1853 after a fire destroyed the previous church and much of Toronto&#x27;s Old Town. It features Canada&#x27;s tallest church tower and is designated as an Ontario Heritage Property.</p>
+                </div>
+            </div>
+
+            <!-- 19. Brookfield Place -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_19.jpg" alt="Brookfield Place" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Brookfield Place</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled in the heart of downtown Toronto, Brookfield Place is a office complex that seamlessly blends modern architecture with historical charm. Comprising two towering structures—the Bay Wellington Tower and the TD Canada Trust Tower—this vibrant hub is connected by the Allen Lambert Galleria.</p>
+                </div>
+            </div>
+
+            <!-- 20. Queen&#x27;s Park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_20.jpg" alt="Queen&#x27;s Park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Queen&#x27;s Park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Queen&#x27;s Park, established in 1860, is a historic oval-shaped downtown park in Toronto. It features several statues of eminent figures and memorials, including the Ontario Legislative Building. The park boasts majestic old trees and shady spots for relaxation on warm summer days. Additionally, it is home to the Legislative Assembly of Ontario and offers free guided tours of the century-old building, providing insight into political power and lavishness.</p>
+                </div>
+            </div>
+
+            <!-- 21. Legislative Assembly of Ontario -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_21.jpg" alt="Legislative Assembly of Ontario" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Legislative Assembly of Ontario</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Legislative Assembly of Ontario is situated in the Ontario Legislative Building, at the heart of Queen&#x27;s Park. This historic building, designed by Richard A. Waite in the Richardsonian Romanesque style, was opened in 1893 after six years of construction. It houses various government offices and serves as a venue for heated debates and discussions among provincial parliament members. The building itself is made of pink granite and sandstone, showcasing its impressive architecture.</p>
+                </div>
+            </div>
+
+            <!-- 22. Princess of Wales Theatre -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_22.jpg" alt="Princess of Wales Theatre" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Princess of Wales Theatre</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Princess of Wales Theatre, owned by Mirvish Productions, is a historic 1,000-seat playhouse in Canada&#x27;s oldest building. Originally a vaudeville house, it now hosts top musicals like &#x27;Miss Saigon&#x27; and &#x27;Les Misérables.&#x27; Located in Toronto&#x27;s Theatre district, the theatre combines modern style with old-world charm and features a state-of-the-art sound system and one of North America&#x27;s largest stages.</p>
+                </div>
+            </div>
+
+            <!-- 23. Roy Thomson Hall -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_23.jpg" alt="Roy Thomson Hall" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Roy Thomson Hall</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Roy Thomson Hall, a renowned concert venue in Toronto, is celebrated for its exceptional acoustics and intimate atmosphere. Since its opening in 1982, it has been home to the Toronto Symphony Orchestra and has hosted a variety of performances and special events. The hall&#x27;s distinctive curved design with a striking glass canopy creates a unique ambiance for patrons.</p>
+                </div>
+            </div>
+
+            <!-- 24. Casa Loma -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_24.jpg" alt="Casa Loma" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> $45
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Casa Loma</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Casa Loma, located about 10 minutes north of Toronto&#x27;s city center, is a magnificent castle spanning 64,700 square feet. Constructed in 1914 by Canadian financier Sir Henry Pallatt, the castle showcases his love for European art and Gothic revival architecture. Visitors can explore the lavishly adorned halls and rooms, stroll through the terrace and gardens, and admire the opulent bedrooms and libraries.</p>
+                </div>
+            </div>
+
+            <!-- 25. Humber Bay Arch Bridge -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_25.jpg" alt="Humber Bay Arch Bridge" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Humber Bay Arch Bridge</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Humber Bay Arch Bridge, a modern and structure in Toronto, is an essential part of the Martin Goodman Trail. Its distinctive bow-shaped arch makes it visually appealing and offers views of the Toronto skyline and Lake Ontario. This popular spot is frequented by cyclists, runners, and walkers who come to capture the sunset or enjoy the contemporary architecture that complements the cityscape.</p>
+                </div>
+            </div>
+
+            <!-- 26. High Park Zoo -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_26.jpg" alt="High Park Zoo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">High Park Zoo</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">High Park Zoo, situated within Toronto&#x27;s expansive High Park, is a charming free-admission zoo that provides an intimate wildlife experience. Visitors can encounter various animal species from around the world, including bison, llamas, capybaras, peacocks, reindeer, highland cattle, wallabies, emus and sheep. The zoo offers fenced-off grassy areas where kids can pet animals like llamas and rabbits.</p>
+                </div>
+            </div>
+
+            <!-- 27. High Park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_27.jpg" alt="High Park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">High Park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">High Park is a vast green space covering almost 400 acres, offering various outdoor activities such as hiking, swimming, and tennis. The park features nature trails, woodlands, and picnic areas for visitors to explore. It also houses a zoo and greenhouse. During the summer months, outdoor theater performances are held in the park.</p>
+                </div>
+            </div>
+
+            <!-- 28. Woodbine Beach -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_28.jpg" alt="Woodbine Beach" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Woodbine Beach</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Woodbine Beach, located in the Beach neighborhood, is a popular spot for beachgoers and fitness enthusiasts. The 15.2-hectare park features clean sand, grassy areas, and a wheelchair-accessible boardwalk leading to the water&#x27;s edge. Visitors can enjoy swimming, beach volleyball courts, outdoor fitness equipment, and access to the Ashbridges Bay and Martin Goodman trails.</p>
+                </div>
+            </div>
+
+            <!-- 29. Harbour Square Park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_29.jpg" alt="Harbour Square Park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Harbour Square Park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The site forms part of Harbour Square Park&#x27;s documented civic and cultural landscape within Toronto, with archives and visitor information available from municipal or regional heritage authorities. The site forms part of Harbour Square Park&#x27;s documented civic and cultural landscape within Toronto, with archives and visitor information available from municipal or regional heritage authorities.</p>
+                </div>
+            </div>
+
+            <!-- 30. Harbourfront Centre -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_30.jpg" alt="Harbourfront Centre" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Harbourfront Centre</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Harbourfront Centre is a vibrant cultural hub located along the Toronto waterfront. It hosts a variety of events and festivals throughout the year, including dance performances, art exhibitions, theater shows, and music concerts. The center also offers opportunities for water activities such as boating and sailing. Additionally, visitors can enjoy an outdoor skating rink with views of Lake Ontario, although it is currently closed for construction but will reopen in the future.</p>
+                </div>
+            </div>
+
+            <!-- 31. Four Seasons Centre for the Performing Arts -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_31.jpg" alt="Four Seasons Centre for the Performing Arts" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Four Seasons Centre for the Performing Arts</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Located in the heart of downtown, the Four Seasons Centre for the Performing Arts is a modern building with three stages that hosts exceptional opera and ballet performances. It serves as the permanent home of Canada&#x27;s national ballet and opera companies, offering brilliant lights, soaring acoustics, and a range of seating options for an show experience. Additionally, visitors can also enjoy symphonies and musical entertainment at the Roy Thomson Hall nearby.</p>
+                </div>
+            </div>
+
+            <!-- 32. Osgoode Hall -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_32.jpg" alt="Osgoode Hall" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Osgoode Hall</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Osgoode Hall is a heritage building in downtown Toronto that houses the Ontario Court of Appeal, the Superior Court of Justice, and the Law Society of Ontario. The hall is unique because it also has a Great Law Library with an enchanting antique design.</p>
+                </div>
+            </div>
+
+            <!-- 33. Edwards Gardens -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_33.jpg" alt="Edwards Gardens" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Edwards Gardens</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Edwards Gardens, a former estate garden, is now home to wildflowers, perennials, and fountains. It also houses the Toronto Botanical Garden and features rock gardens, floral displays, water features like fountains and a water wheel, as well as charming wooden arch bridges. The serene space offers numerous walking trails for visitors to enjoy the natural beauty.</p>
+                </div>
+            </div>
+
+            <!-- 34. Toronto Botanical Garden -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_34.jpg" alt="Toronto Botanical Garden" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Toronto Botanical Garden</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Toronto Botanical Garden is a serene and picturesque site located in the city&#x27;s north end, spanning 4 acres and featuring 17 themed gardens. It offers tranquil water features, vibrant blooms, and a green-certified building with impressive glass pavilions for events. The garden is committed to connecting people with nature and provides a unique wedding venue option in Toronto. Visitors can also enjoy nearby parks along the way, making it an ideal spot for nature walks and picnics.</p>
+                </div>
+            </div>
+
+            <!-- 35. Ireland Park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_35.jpg" alt="Ireland Park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Ireland Park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Ireland Park, located along the waterfront, is a small park that pays tribute to Irish immigration. It tells the story of 38,000 Irish immigrants who sought refuge in Canada during the Great Potato Famine. The park features five bronze sculptures and symbolic artworks amidst grassy lawns and large oak trees. A limestone wall imported from Ireland bears the names of those who perished during the ship crossings.</p>
+                </div>
+            </div>
+
+            <!-- 36. Toronto Music Garden -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_36.jpg" alt="Toronto Music Garden" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Toronto Music Garden</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Toronto Music Garden, located in the Harbourfront neighborhood of downtown Toronto, offers a serene escape with views of the CN Tower. Designed by cellist Yo-Yo Ma and landscape architect Julie Moir Messervy, this urban oasis is inspired by Johann Sebastian Bach&#x27;s Cello Suite No. 1 in G Major. The garden is divided into sections representing the suite&#x27;s six dance movements, creating a unique and harmonious green space.</p>
+                </div>
+            </div>
+
+            <!-- 37. Toronto Islands -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_37.jpg" alt="Toronto Islands" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Toronto Islands</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Toronto Islands, a cluster of 13 small islands in Lake Ontario, are easily accessible from downtown Toronto via a short ferry ride. The main islands for visitors are Centre Island, Wards Island, and Hanlan Point. Visitors can enjoy various recreational activities such as walking or biking along the bridges and pathways that connect the islands. There are also swimming beaches, boat rentals, and dining options available on the islands.</p>
+                </div>
+            </div>
+
+            <!-- 38. Allan Gardens -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/toronto_38.jpg" alt="Allan Gardens" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Allan Gardens</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Allan Gardens Conservatory is a oasis nestled in the heart of Toronto, where history, architecture, and nature beautifully intertwine. This remarkable park features an impressive collection of plants from around the globe housed within a magnificent cast-iron and glass structure that dates back to 1910.</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
+        <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+    </footer>    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const map = L.map('map').setView([43.654789, -79.385792], 14);
+            L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                attribution: '&copy; Google Maps',
+                maxZoom: 20
+            }).addTo(map);
+            const locations = [{"name": "The Distillery Historic District", "lat": 43.650246, "lng": -79.359133}, {"name": "CN Tower", "lat": 43.642566, "lng": -79.387057}, {"name": "Ripley's Aquarium of Canada", "lat": 43.642179, "lng": -79.386602}, {"name": "Rogers Centre", "lat": 43.641804, "lng": -79.389142}, {"name": "Evergreen Brick Works", "lat": 43.684331, "lng": -79.364713}, {"name": "Nathan Phillips Square", "lat": 43.652707, "lng": -79.383414}, {"name": "Toronto City Hall", "lat": 43.65344, "lng": -79.38409}, {"name": "Toronto Old City Hall", "lat": 43.65252, "lng": -79.381716}, {"name": "Fort York National Historic Site", "lat": 43.639242, "lng": -79.404145}, {"name": "CF Toronto Eaton Centre", "lat": 43.654438, "lng": -79.380699}, {"name": "Massey Hall", "lat": 43.654033, "lng": -79.378967}, {"name": "St. Michael's Cathedral Basilica", "lat": 43.654931, "lng": -79.377395}, {"name": "Sankofa Square", "lat": 43.656061, "lng": -79.380301}, {"name": "Little Canada", "lat": 43.656966, "lng": -79.380479}, {"name": "Riverdale Farm", "lat": 43.666973, "lng": -79.361731}, {"name": "St. Lawrence Market", "lat": 43.648688, "lng": -79.371545}, {"name": "Gooderham Building", "lat": 43.648382, "lng": -79.374301}, {"name": "The Cathedral Church of St. James", "lat": 43.650383, "lng": -79.373959}, {"name": "Brookfield Place", "lat": 43.646985, "lng": -79.378285}, {"name": "Queen's Park", "lat": 43.664328, "lng": -79.392314}, {"name": "Legislative Assembly of Ontario", "lat": 43.661638, "lng": -79.391986}, {"name": "Princess of Wales Theatre", "lat": 43.646978, "lng": -79.389226}, {"name": "Roy Thomson Hall", "lat": 43.646607, "lng": -79.386407}, {"name": "Casa Loma", "lat": 43.678037, "lng": -79.409444}, {"name": "Humber Bay Arch Bridge", "lat": 43.631902, "lng": -79.471234}, {"name": "High Park Zoo", "lat": 43.642766, "lng": -79.461433}, {"name": "High Park", "lat": 43.646548, "lng": -79.46369}, {"name": "Woodbine Beach", "lat": 43.661841, "lng": -79.307078}, {"name": "Harbour Square Park", "lat": 43.6401895, "lng": -79.3766496}, {"name": "Harbourfront Centre", "lat": 43.638834, "lng": -79.381878}, {"name": "Four Seasons Centre for the Performing Arts", "lat": 43.650573, "lng": -79.385683}, {"name": "Osgoode Hall", "lat": 43.652027, "lng": -79.385756}, {"name": "Edwards Gardens", "lat": 43.733804, "lng": -79.357924}, {"name": "Toronto Botanical Garden", "lat": 43.734143, "lng": -79.358196}, {"name": "Ireland Park", "lat": 43.634762, "lng": -79.395659}, {"name": "Toronto Music Garden", "lat": 43.636955, "lng": -79.394296}, {"name": "Toronto Islands", "lat": 43.621413, "lng": -79.378841}, {"name": "Allan Gardens", "lat": 43.661743, "lng": -79.374738}];
+            const customIcon = L.icon({
+                iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32],
+            });
+            const destinationCenter = [43.654789, -79.385792];
+            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.079354, "maxCenterLng": 0.085442};
+            const markers = [];
+            locations.forEach(loc => {
+                markers.push(
+                    L.marker([loc.lat, loc.lng], {icon: customIcon}).addTo(map)
+                        .bindPopup(`<strong class="font-sans text-base text-gray-900">${loc.name}</strong>`)
+                );
+            });
+            const group = new L.featureGroup(markers);
+            let bounds = group.getBounds();
+            const ne = bounds.getNorthEast();
+            const sw = bounds.getSouthWest();
+            const latSpan = ne.lat - sw.lat;
+            const lngSpan = ne.lng - sw.lng;
+            const maxSpan = Math.max(latSpan, lngSpan);
+            const isDegenerate = latSpan < 1e-9 && lngSpan < 1e-9;
+            const markerCenterLat = (ne.lat + sw.lat) / 2;
+            const markerCenterLng = (ne.lng + sw.lng) / 2;
+            if (isDegenerate) {
+                const frameSpan = mapContext.compactRegion ? 0.026 : 0.045;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - frameSpan / 2, destinationCenter[1] - frameSpan / 2],
+                    [destinationCenter[0] + frameSpan / 2, destinationCenter[1] + frameSpan / 2]
+                );
+            } else if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                const expand = maxSpan < 0.12 ? 1.15 : 1.1;
+                const halfLat = latSpan / 2 * expand;
+                const halfLng = lngSpan / 2 * expand;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                const latReach = Math.max(mapContext.maxCenterLat, latSpan / 2) * 1.45;
+                const lngReach = Math.max(mapContext.maxCenterLng, lngSpan / 2) * 1.45;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - latReach, destinationCenter[1] - lngReach],
+                    [destinationCenter[0] + latReach, destinationCenter[1] + lngReach]
+                );
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                const halfLat = latSpan / 2 * 1.1;
+                const halfLng = lngSpan / 2 * 1.1;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                const frameSpan = Math.max(maxSpan * 4, 0.006);
+                bounds = L.latLngBounds(
+                    [markerCenterLat - frameSpan / 2, markerCenterLng - frameSpan / 2],
+                    [markerCenterLat + frameSpan / 2, markerCenterLng + frameSpan / 2]
+                );
+            }
+            const fitOptions = {};
+            if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                fitOptions.padding = maxSpan < 0.12
+                    ? [24, 24]
+                    : (maxSpan < 0.5 ? [24, 24] : [28, 28]);
+                fitOptions.maxZoom = maxSpan < 0.12
+                    ? 14
+                    : (maxSpan < 0.5 ? 10 : 9);
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                fitOptions.padding = [40, 40];
+                fitOptions.maxZoom = 8;
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                fitOptions.padding = [24, 24];
+            } else if (mapContext.denseUrban) {
+                fitOptions.padding = [18, 18];
+            } else if (mapContext.spreadUrban) {
+                fitOptions.padding = [20, 20];
+            } else if (locations.length >= 3 && maxSpan >= 0.02) {
+                fitOptions.padding = maxSpan >= 0.08 ? [20, 20] : [30, 30];
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                fitOptions.padding = [12, 12];
+                fitOptions.maxZoom = 16;
+            } else if (isDegenerate || locations.length === 1) {
+                fitOptions.padding = mapContext.compactRegion ? [16, 16] : [36, 36];
+                if (isDegenerate || maxSpan < 0.015) {
+                    fitOptions.maxZoom = mapContext.compactRegion ? 15 : 14;
+                }
+            } else {
+                fitOptions.padding = [50, 50];
+            }
+            map.fitBounds(bounds, fitOptions);
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                } else {
+                    scrollTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                }
+            });
+            scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        });
+    </script>
+
+    <button id="scrollTopBtn" class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-12 h-12 bg-neon-cyan text-deepblue-950 rounded-full shadow-[0_0_20px_rgba(0,240,255,0.4)] opacity-0 pointer-events-none transition-all duration-300 translate-y-4 hover:bg-white hover:scale-110" aria-label="Scroll to top">
+        <i class="ph ph-arrow-up text-xl font-bold"></i>
+    </button>
+</body>
+</html>

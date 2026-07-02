@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gdansk Guide | Global Explorer Guides</title>
+    <link rel="stylesheet" href="../../assets/tailwind.css">
+    <link rel="stylesheet" href="../../assets/outfit.css">
+    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
+    <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
+    <link rel="stylesheet" href="../../assets/homepage-activation.css">
+    <link rel="stylesheet" href="../../assets/destination-activation.css">
+    <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
+    <script src="../../assets/leaflet/leaflet.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #060B19; }
+        ::-webkit-scrollbar-thumb { background: #1E336B; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0070FF; }
+        .leaflet-popup-content-wrapper { background-color: #fff; color: #333; border-radius: 8px; box-shadow: 0 3px 14px rgba(0,0,0,0.4); }
+        .leaflet-popup-tip { background-color: #fff; }
+    </style>
+</head>
+<body class="bg-deepblue-950 text-slate-200 font-sans min-h-screen relative overflow-x-hidden">
+    <div class="absolute top-0 left-0 w-full h-[450px] md:h-[500px] z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50" style="background-image: url('images/gdansk_hero.jpg')"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-deepblue-950/10 via-deepblue-950/60 to-deepblue-950"></div>
+    </div>
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon-purple/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neon-cyan/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <main class="container mx-auto px-4 py-8 md:py-16 relative z-20 max-w-5xl">
+        <nav class="mb-12 animate-fade-in-down flex flex-wrap items-center gap-4">
+            <a href="../../index.html" class="flex items-center justify-center w-11 h-11 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0" title="Back to Home">
+                <i class="ph ph-house text-xl group-hover:scale-110 transition-transform"></i>
+            </a>
+            <a href="poland.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0">
+                <i class="ph ph-arrow-left text-lg group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-medium text-sm">Back to Poland</span>
+            </a>
+            <div class="ml-auto flex items-center gap-3 bg-deepblue-900/40 border border-deepblue-700/50 rounded-full px-4 py-2 backdrop-blur-sm shadow-inner shrink-0">
+                <img src="../../assets/flags/w40/pl.png" alt="Poland flag" class="w-6 h-auto rounded-[2px] shadow-sm">
+                <div class="flex items-center gap-2 text-sm font-medium tracking-wide">
+                    <span class="text-slate-200 uppercase text-xs tracking-wider font-bold">Poland</span>
+                    <span class="text-deepblue-500 text-xs">&rsaquo;</span>
+                    <span class="text-neon-cyan text-xs">Gdansk</span>
+                </div>
+            </div>
+        </nav>
+
+        <header class="mb-16 animate-fade-in-down animation-delay-100 text-center">
+            <button
+                type="button"
+                id="destination-active-toggle"
+                class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
+                data-iso2="PL"
+                data-slug="gdansk"
+                data-active="false"
+                data-interactive="true"
+                aria-label="Toggle Gdansk visibility on Poland guide"
+                aria-pressed="false"
+            >
+                <i class="ph ph-map-pin text-4xl text-slate-500 pointer-events-none" aria-hidden="true"></i>
+            </button>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple pb-4">
+                Explore Gdansk
+            </h1>
+            <div class="bg-deepblue-900/40 border border-deepblue-800 rounded-3xl p-8 md:p-10 text-left backdrop-blur-sm mt-10">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                    <i class="ph ph-scroll text-neon-cyan"></i> A Brief History
+                </h2>
+                <p class="text-lg text-slate-400 font-light leading-relaxed">Gdańsk grew as a Hanseatic port on the Baltic whose shipyards and merchants linked Poland to Scandinavian and Dutch trade. The medieval crane, Royal Route, and rebuilt Main Town Hall record Teutonic, Polish, and Prussian rule before 1945 border changes. Solidarity strikes at the Lenin Shipyard in 1980 began the movement that weakened communist rule across Eastern Europe.</p>
+            </div>
+        </header>
+
+        <section class="mb-16 animate-fade-in-down" style="animation-delay: 0.2s;">
+            <h2 class="text-3xl font-bold text-white mb-6">Attractions Map</h2>
+            <div id="map" class="h-[400px] w-full rounded-3xl border border-deepblue-700 shadow-2xl z-10 relative"></div>
+        </section>
+
+        <section class="flex flex-col gap-6 pb-20 animate-fade-in-down" style="animation-delay: 0.3s;">
+            <h2 class="text-3xl font-bold text-white mb-2">Top Sights & Activities</h2>
+            
+            <!-- 1. Westerplatte -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/gdansk_1.jpg" alt="Westerplatte" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Westerplatte</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Westerplatte is a historic site in Poland that holds great significance as the location of the first World War II invasion. The area features a grand stone monument and ruins of barracks, including Guardhouse No. 1, which has been transformed into a museum. This peninsula at the mouth of the Port Canal was where Polish soldiers valiantly defended the Military Transit Depot against overwhelming German forces in September 1939.</p>
+                </div>
+            </div>
+
+            <!-- 2. Neptune&#x27;s Fountain -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/gdansk_2.jpg" alt="Neptune&#x27;s Fountain" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Neptune&#x27;s Fountain</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Neptune&#x27;s Fountain is a 17th-century bronze statue of the sea god located in the Main Town (Gowne Miasto) area. The surrounding historic houses and cafes create a strikingly beautiful and colorful main street, with attractions like the Golden Gate and Green Gate at either end. The area was largely rebuilt after World War II, but still retains its charm with bas-reliefs, colorful frescos, musicians, and street performers.</p>
+                </div>
+            </div>
+
+            <!-- 3. Długi Targ -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/gdansk_3.jpg" alt="Długi Targ" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Długi Targ</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Długi Targ, also known as the Long Market, is a historic public square in Gdansk that offers a charming blend of period architecture, restaurants, and souvenir shops. This 500-meter strip dates back to the 13th century and is lined with colorful traditional houses and notable landmarks such as St. Mary&#x27;s Church, the Neptune Fountain, main town hall, Artus Court, and the Golden Tenement House.</p>
+                </div>
+            </div>
+
+            <!-- 4. St. Mary&#x27;s Church -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/gdansk_4.jpg" alt="St. Mary&#x27;s Church" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">St. Mary&#x27;s Church</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">St. Mary&#x27;s Church, officially known as the Basilica of St. Mary of the Assumption of the Blessed Virgin Mary, is a Gothic Roman Catholic church located in Gdańsk&#x27;s historic Old Town. Completed in 1502, this architectural marvel is renowned for being the largest brick church globally and can accommodate up to 20,000 worshippers at once. Visitors are encouraged to climb its impressive tower—405 steps await those who seek panoramic views of Gdańsk and beyond.</p>
+                </div>
+            </div>
+
+            <!-- 5. Oliwski Park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/gdansk_5.jpg" alt="Oliwski Park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Oliwski Park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled in the charming Oliwa district of Gdansk, Poland, Oliwski Park is a 10-hectare oasis that beautifully marries history with nature. Originally established as a monastery garden by Cistercian monks in the 12th century, this park has evolved into a serene retreat featuring picturesque paths and exquisite French-style gardens.</p>
+                </div>
+            </div>
+
+            <!-- 6. Wieża widokowa na wzgórzu Pachołek -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/gdansk_6.jpg" alt="Wieża widokowa na wzgórzu Pachołek" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Wieża widokowa na wzgórzu Pachołek</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Pachołek Hill Observation Deck, located in Gdansk, offers a 360-degree panoramic view of the city and the bay. Situated on the topmost peak in the Oliwa district, this viewing tower stands at an elevation of 100 meters above sea level. The tower is surrounded by dense woods and can be reached after a 15-minute climb up the stairs.</p>
+                </div>
+            </div>
+
+            <!-- 7. ZOO GDAŃSK -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/gdansk_7.jpg" alt="ZOO GDAŃSK" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> zł30
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">ZOO GDAŃSK</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">ZOO GDAŃSK, located in Oliwa and established in 1954, offers a diverse range of animal species from around the world. The expansive 126-hectare area is home to 181 different animal species, including majestic big cats like lions, leopards, and tigers as well as gentle creatures such as red-necked kangaroos and various turtle species. Visitors can also encounter native animals like the European bison.</p>
+                </div>
+            </div>
+
+            <!-- 8. ERGO ARENA -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/gdansk_8.jpg" alt="ERGO ARENA" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">ERGO ARENA</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">ERGO ARENA is a cutting-edge indoor arena located on the border of Sopot and Gdansk, offering a capacity for 15,000 spectators. It serves as a venue for major sporting events and cultural performances. The modern design allows for hosting various sports competitions. Adjacent to the Tri-City Landscape Park, it provides easy access to bicycle paths and skating routes.</p>
+                </div>
+            </div>
+
+            <!-- 9. Monument to the Fallen Shipyard Workers of 1970 -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/gdansk_9.jpg" alt="Monument to the Fallen Shipyard Workers of 1970" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Monument to the Fallen Shipyard Workers of 1970</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Monument to the Fallen Shipyard Workers of 1970, located in Gdansk, is a significant sight commemorating the workers who died in the anti-communist riots. Erected in 1980, it stands as a Symbol of Freedom and houses a small museum with fascinating exhibits. This monument pays tribute to the workers killed during the December 1970 demonstrations at the Gdansk Shipyards, which played a pivotal role in history.</p>
+                </div>
+            </div>
+
+            <!-- 10. Góra Gradowa -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/gdansk_10.jpg" alt="Góra Gradowa" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Góra Gradowa</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Góra Gradowa, a 19th-century hilltop fort in Gdansk, offers city views and is easily accessible from the main bus and train station. Despite its modest height of 46 meters, the hill provides panoramic vistas of Gdansk. Visitors can explore the remains of the fortress and discover hidden bunkers with small exhibitions inside.</p>
+                </div>
+            </div>
+
+            <!-- 11. Highland Gate -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/gdansk_11.jpg" alt="Highland Gate" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Highland Gate</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">High Gate, also known as Wyzynna Gate, is a historic Renaissance city gate in Gdansk. It was the main entrance to the city and is adorned with symbols of Gdansk, Prussia, and Poland. This 16th-century structure forms part of Gdansk&#x27;s fortifications and now houses the Gdansk Tourist Information Office. The area surrounding High Gate exudes a unique historic vibe with its magnificent old-fashioned German-style buildings.</p>
+                </div>
+            </div>
+
+            <!-- 12. Golden Gate -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/gdansk_12.jpg" alt="Golden Gate" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Golden Gate</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Golden Gate in Gdansk, a prominent Dutch Mannerist-style gate completed in 1614, is a strikingly beautiful landmark at the western end of the Long Market. The gate was rebuilt after World War II and features bas-reliefs and colorful frescos on surrounding buildings. Musicians and street performers add to the lively atmosphere. Adorned with antiques and symbolic figures, the Latin inscription on the gate reflects its historical significance.</p>
+                </div>
+            </div>
+
+            <!-- 13. The Great Armoury -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/gdansk_13.jpg" alt="The Great Armoury" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">The Great Armoury</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Great Armoury in Gdansk, Poland is a example of Renaissance architecture, built in the early 1600s to store weapons and military gear. Designed by Flemish architect Anthonis van Obbergen, its ornate facade reflects the city&#x27;s wealth during its golden age. Today, it hosts rotating art exhibits from the Gdansk Academy of Fine Arts. The building&#x27;s intricate stonework and decorative gables make it a favorite among tourists exploring central Gdansk.</p>
+                </div>
+            </div>
+
+            <!-- 14. Długa -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/gdansk_14.jpg" alt="Długa" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Długa</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Długa, also known as Long Street and Long Market, is a historic thoroughfare in Gdansk Old Town, Europe. It has been a bustling commercial hub for centuries and is flanked by impressive historic buildings that once belonged to wealthy merchants. The street is adorned with the Neptune fountain and the town clock at the top of the town hall. Surrounding attractions include St. Marys Basilica, the Old Town Hall, Gothic town gates, and Zuraw Crane within the Historical Center.</p>
+                </div>
+            </div>
+
+            <!-- 15. Shakespeare Theatre -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/gdansk_15.jpg" alt="Shakespeare Theatre" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> zł15
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Shakespeare Theatre</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Gdańsk Shakespeare Theater is a must-visit destination in the city, drawing multilingual crowds of all ages to its historical and popular Main Town. The city itself is steeped in over 1000 years of tradition and history, known for being the birthplace of the Solidarity Movement. With its proximity to the Old Town and main train station, it offers a fantastic experience within a stylish and modern building.</p>
+                </div>
+            </div>
+
+            <!-- 16. Pier in Sopot -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/gdansk_16.jpg" alt="Pier in Sopot" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Pier in Sopot</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Molo w Sopocie, also known as Sopot Pier, is a renowned events venue featuring a long wooden pier extending into the Gulf of Gdansk. The area includes a public square with a concert shell, a historic lighthouse with panoramic views, and various food outlets. Situated near the Sopot Pier, visitors can enjoy vistas of the Baltic Sea and easy access to local attractions.</p>
+                </div>
+            </div>
+
+            <!-- 17. Skwer Kuracyjny -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/gdansk_17.jpg" alt="Skwer Kuracyjny" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Skwer Kuracyjny</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">A central square near the pier, bustling with cafes and shops, perfect for people-watching and enjoying local cuisine. The site forms part of Skwer Kuracyjny&#x27;s documented civic and cultural landscape within Gdansk, with archives and visitor information available from municipal or regional heritage authorities.</p>
+                </div>
+            </div>
+
+            <!-- 18. Sopot Lighthouse -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/gdansk_18.jpg" alt="Sopot Lighthouse" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Sopot Lighthouse</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled in the picturesque seaside town of Sopot, the Sopot Lighthouse is a historic gem that dates back to the early 1900s. This structure, originally designed as an observation tower for a balneological institute, stands tall at 30 meters and offers visitors panoramic views of the Baltic Sea. As you stroll along the charming wooden pier leading to this landmark, be captivated by its intricate stained glass and sculptures that add to its allure.</p>
+                </div>
+            </div>
+
+            <!-- 19. Forest Opera -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/gdansk_19.jpg" alt="Forest Opera" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> €20
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Forest Opera</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Forest Opera, also known as Opera Lesna, is an amphitheatre located in Sopot that offers a unique experience for opera and music lovers. The venue has excellent acoustics and hosts performances by both Polish and international artists. With a capacity of 4,500 spectators and a stage for 110 musicians, it serves as the main center for mass cultural events in the area.</p>
+                </div>
+            </div>
+
+            <!-- 20. Bastion Żubr -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/gdansk_20.jpg" alt="Bastion Żubr" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Bastion Żubr</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Żubr Bastion, also known as the Bison Bastion, is one of the 14 bastions located in the southern part of Gdansk&#x27;s old town. This grassy mound offers a nice view of the old moat and city defense system. While it may benefit from some cleaning and maintenance, visitors appreciate its open spaces for photography and its peaceful atmosphere away from the crowds.</p>
+                </div>
+            </div>
+
+            <!-- 21. AmberSky -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/gdansk_21.jpg" alt="AmberSky" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> zł42
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">AmberSky</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">AmberSky is a giant Ferris wheel in Gdansk, offering air-conditioned cabins with panoramic views of the Old Town and shipyard. The 90-minute tour includes visits to various landmarks and streets such as the Royal Chapel, Basilica of St. The site forms part of AmberSky&#x27;s documented civic and cultural landscape within Gdansk, with archives and visitor information available from municipal or regional heritage authorities.</p>
+                </div>
+            </div>
+
+            <!-- 22. Gdansk Inscription Neon -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/gdansk_22.jpg" alt="Gdansk Inscription Neon" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Gdansk Inscription Neon</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The site forms part of Gdansk Inscription Neon&#x27;s documented civic and cultural landscape within Gdansk, with archives and visitor information available from municipal or regional heritage authorities. The site forms part of Gdansk Inscription Neon&#x27;s documented civic and cultural landscape within Gdansk, with archives and visitor information available from municipal or regional heritage authorities.</p>
+                </div>
+            </div>
+
+            <!-- 23. Swan Tower -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/gdansk_23.jpg" alt="Swan Tower" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Swan Tower</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Small Mill, constructed in the 1400s above Raduni River, is now home to the Polish Fishing Association. This charming and picturesque granary captivates visitors with its remarkable beauty. The mill&#x27;s unique architecture and historical significance make it a popular tourist attraction. With its tranquil surroundings and serene atmosphere, it offers an exquisite experience for all who visit.</p>
+                </div>
+            </div>
+
+            <!-- 24. Straganiarska Gate -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/gdansk_24.jpg" alt="Straganiarska Gate" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Straganiarska Gate</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Straganiarska Gate is a Gothic water gate in Gdansk, Poland, built in the 15th century. It stands out with its well-preserved Gothic architecture and features two turrets and a stone-carved heraldic triad displaying the coat of arms of Prussia, Poland, and Gdansk. The gate also offers accommodation as a rare opportunity to spend a night in an ancient building due to the city&#x27;s serious preservation efforts.</p>
+                </div>
+            </div>
+
+            <!-- 25. St. Mary&#x27;s Gate -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/gdansk_25.jpg" alt="St. Mary&#x27;s Gate" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">St. Mary&#x27;s Gate</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">St. Mary&#x27;s Gate is a red-brick structure with origins dating back to the 15th century, reconstructed after World War II and adorned with the Gdańsk coat of arms. It serves as one of the main entrances to Gdansk and provides access to the picturesque cobbled Mariacka street. The gate is viewed from Granary Island across the river, where visitors can admire its Gothic style and restored polychrome featuring two lions holding the city&#x27;s coat of arms.</p>
+                </div>
+            </div>
+
+            <!-- 26. Mariacka -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/gdansk_26.jpg" alt="Mariacka" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Mariacka</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Mariacka is a charming cobblestone pedestrian promenade in Gdansk, lined with historic buildings featuring terraces and regal portals. This delightful street, often used as a backdrop for period movies, had to be reconstructed after suffering extensive damage during World War II. The entrances to the narrow merchant houses are on small terraces above the street level, where restaurants also offer seating with ornamental reliefs on low walls.</p>
+                </div>
+            </div>
+
+            <!-- 27. St. Catherine&#x27;s Church -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/gdansk_27.jpg" alt="St. Catherine&#x27;s Church" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">St. Catherine&#x27;s Church</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">St. Catherine&#x27;s Church in Gdansk is a historic landmark dating back to the 1300s, making it the oldest church in the city. The Gothic architecture, including chapels and vaults, reflects its rich history and cultural significance. Over time, the church has undergone several renovations and expansions. Visitors can climb its imposing bell tower for panoramic views of the city and beyond, offering a unique perspective of Gdansk&#x27;s Old Town and Raduni Canal.</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
+        <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+    </footer>    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const map = L.map('map').setView([54.376573, 18.625676], 14);
+            L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                attribution: '&copy; Google Maps',
+                maxZoom: 20
+            }).addTo(map);
+            const locations = [{"name": "Westerplatte", "lat": 54.406694, "lng": 18.666969}, {"name": "Neptune's Fountain", "lat": 54.348546, "lng": 18.653226}, {"name": "Długi Targ", "lat": 54.348327, "lng": 18.654042}, {"name": "St. Mary's Church", "lat": 54.349835, "lng": 18.653056}, {"name": "Oliwski Park", "lat": 54.411221, "lng": 18.562081}, {"name": "Wieża widokowa na wzgórzu Pachołek", "lat": 54.411683, "lng": 18.550759}, {"name": "ZOO GDAŃSK", "lat": 54.412956, "lng": 18.534556}, {"name": "ERGO ARENA", "lat": 54.4265, "lng": 18.580516}, {"name": "Monument to the Fallen Shipyard Workers of 1970", "lat": 54.360548, "lng": 18.649001}, {"name": "Góra Gradowa", "lat": 54.357797, "lng": 18.640232}, {"name": "Highland Gate", "lat": 54.349932, "lng": 18.646534}, {"name": "Golden Gate", "lat": 54.349677, "lng": 18.648047}, {"name": "The Great Armoury", "lat": 54.350626, "lng": 18.648909}, {"name": "Długa", "lat": 54.349214, "lng": 18.650268}, {"name": "Shakespeare Theatre", "lat": 54.348143, "lng": 18.647634}, {"name": "Pier in Sopot", "lat": 54.446506, "lng": 18.572047}, {"name": "Skwer Kuracyjny", "lat": 54.4459568, "lng": 18.5702066}, {"name": "Sopot Lighthouse", "lat": 54.445382, "lng": 18.570473}, {"name": "Forest Opera", "lat": 54.44458, "lng": 18.544449}, {"name": "Bastion Żubr", "lat": 54.339032, "lng": 18.649387}, {"name": "AmberSky", "lat": 54.352769, "lng": 18.661627}, {"name": "Gdansk Inscription Neon", "lat": 54.3529362, "lng": 18.6599284}, {"name": "Swan Tower", "lat": 54.35341, "lng": 18.658077}, {"name": "Straganiarska Gate", "lat": 54.352135, "lng": 18.657756}, {"name": "St. Mary's Gate", "lat": 54.349402, "lng": 18.656756}, {"name": "Mariacka", "lat": 54.349611, "lng": 18.655481}, {"name": "St. Catherine's Church", "lat": 54.354049, "lng": 18.651231}];
+            const customIcon = L.icon({
+                iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32],
+            });
+            const destinationCenter = [54.376573, 18.625676];
+            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.069933, "maxCenterLng": 0.09112};
+            const markers = [];
+            locations.forEach(loc => {
+                markers.push(
+                    L.marker([loc.lat, loc.lng], {icon: customIcon}).addTo(map)
+                        .bindPopup(`<strong class="font-sans text-base text-gray-900">${loc.name}</strong>`)
+                );
+            });
+            const group = new L.featureGroup(markers);
+            let bounds = group.getBounds();
+            const ne = bounds.getNorthEast();
+            const sw = bounds.getSouthWest();
+            const latSpan = ne.lat - sw.lat;
+            const lngSpan = ne.lng - sw.lng;
+            const maxSpan = Math.max(latSpan, lngSpan);
+            const isDegenerate = latSpan < 1e-9 && lngSpan < 1e-9;
+            const markerCenterLat = (ne.lat + sw.lat) / 2;
+            const markerCenterLng = (ne.lng + sw.lng) / 2;
+            if (isDegenerate) {
+                const frameSpan = mapContext.compactRegion ? 0.026 : 0.045;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - frameSpan / 2, destinationCenter[1] - frameSpan / 2],
+                    [destinationCenter[0] + frameSpan / 2, destinationCenter[1] + frameSpan / 2]
+                );
+            } else if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                const expand = maxSpan < 0.12 ? 1.15 : 1.1;
+                const halfLat = latSpan / 2 * expand;
+                const halfLng = lngSpan / 2 * expand;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                const latReach = Math.max(mapContext.maxCenterLat, latSpan / 2) * 1.45;
+                const lngReach = Math.max(mapContext.maxCenterLng, lngSpan / 2) * 1.45;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - latReach, destinationCenter[1] - lngReach],
+                    [destinationCenter[0] + latReach, destinationCenter[1] + lngReach]
+                );
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                const halfLat = latSpan / 2 * 1.1;
+                const halfLng = lngSpan / 2 * 1.1;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                const frameSpan = Math.max(maxSpan * 4, 0.006);
+                bounds = L.latLngBounds(
+                    [markerCenterLat - frameSpan / 2, markerCenterLng - frameSpan / 2],
+                    [markerCenterLat + frameSpan / 2, markerCenterLng + frameSpan / 2]
+                );
+            }
+            const fitOptions = {};
+            if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                fitOptions.padding = maxSpan < 0.12
+                    ? [24, 24]
+                    : (maxSpan < 0.5 ? [24, 24] : [28, 28]);
+                fitOptions.maxZoom = maxSpan < 0.12
+                    ? 14
+                    : (maxSpan < 0.5 ? 10 : 9);
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                fitOptions.padding = [40, 40];
+                fitOptions.maxZoom = 8;
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                fitOptions.padding = [24, 24];
+            } else if (mapContext.denseUrban) {
+                fitOptions.padding = [18, 18];
+            } else if (mapContext.spreadUrban) {
+                fitOptions.padding = [20, 20];
+            } else if (locations.length >= 3 && maxSpan >= 0.02) {
+                fitOptions.padding = maxSpan >= 0.08 ? [20, 20] : [30, 30];
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                fitOptions.padding = [12, 12];
+                fitOptions.maxZoom = 16;
+            } else if (isDegenerate || locations.length === 1) {
+                fitOptions.padding = mapContext.compactRegion ? [16, 16] : [36, 36];
+                if (isDegenerate || maxSpan < 0.015) {
+                    fitOptions.maxZoom = mapContext.compactRegion ? 15 : 14;
+                }
+            } else {
+                fitOptions.padding = [50, 50];
+            }
+            map.fitBounds(bounds, fitOptions);
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                } else {
+                    scrollTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                }
+            });
+            scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        });
+    </script>
+
+    <button id="scrollTopBtn" class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-12 h-12 bg-neon-cyan text-deepblue-950 rounded-full shadow-[0_0_20px_rgba(0,240,255,0.4)] opacity-0 pointer-events-none transition-all duration-300 translate-y-4 hover:bg-white hover:scale-110" aria-label="Scroll to top">
+        <i class="ph ph-arrow-up text-xl font-bold"></i>
+    </button>
+</body>
+</html>

@@ -221,6 +221,19 @@
             });
         },
 
+        sortRegionKeysForDisplay(regionKeys) {
+            return [...regionKeys].sort((a, b) => {
+                if (!config.hasRegions) {
+                    const rankA = this.getDestinationSortRank(a);
+                    const rankB = this.getDestinationSortRank(b);
+                    if (rankA !== rankB) {
+                        return rankA - rankB;
+                    }
+                }
+                return a.localeCompare(b);
+            });
+        },
+
         guideUrl(name) {
             return this.hasGuide(name) ? config.destinationUrl(name) : null;
         },
@@ -362,9 +375,7 @@
             container.innerHTML = "";
             this.rebuildAllDestinations();
 
-            Object.keys(config.countryData)
-                .sort()
-                .forEach((region, index) => {
+            this.sortRegionKeysForDisplay(Object.keys(config.countryData)).forEach((region, index) => {
                     const destinations = this.sortDestinationsForDisplay([
                         ...config.countryData[region],
                     ]);
@@ -495,7 +506,7 @@
             if (config.hasRegions && region) {
                 this.refreshRegionDropdown(region);
             } else if (!config.hasRegions) {
-                this.refreshDirectCard(name);
+                this.renderRegionsContainer();
             } else {
                 Object.keys(config.countryData).forEach((regionName) => {
                     if (config.countryData[regionName].includes(name)) {
