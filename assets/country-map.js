@@ -184,10 +184,12 @@
             this.defaultZoomState = { scale: 1, x: 0, y: 0 };
             this.zoomControls = null;
             this.panState = null;
+            this.activePointers = new Map();
+            this.pinchSnapshot = null;
             this.suppressClickUntil = 0;
-            this.boundPanDown = this.handlePanDown.bind(this);
-            this.boundPanMove = this.handlePanMove.bind(this);
-            this.boundPanUp = this.handlePanUp.bind(this);
+            this.boundPointerDown = this.handlePointerDown.bind(this);
+            this.boundPointerMove = this.handlePointerMove.bind(this);
+            this.boundPointerUp = this.handlePointerUp.bind(this);
             this.boundRegionOver = this.handleRegionOver.bind(this);
             this.boundRegionOut = this.handleRegionOut.bind(this);
             this.boundMarkerOver = this.handleMarkerOver.bind(this);
@@ -656,7 +658,7 @@
             this.root.appendChild(this.shell);
 
             this.setupZoom(mapRoot);
-            this.setupPan(mapRoot);
+            this.setupPointerInteractions(mapRoot);
 
             mapRoot.addEventListener("pointermove", (event) => {
                 this.lastPointer = { x: event.clientX, y: event.clientY };
@@ -871,13 +873,47 @@
             this.zoomState.y = Math.min(maxY, Math.max(minY, this.zoomState.y));
         }
 
-        handlePanDown(event) {
-            if (event.button !== 0 || !this.isZoomedIn()) {
+        beginPinchSnapshot() {
+            const points = [...this.activePointers.values()];
+            if (points.length < 2) {
                 return;
             }
+            const [a, b] = points;
+            const startDistance = Math.hypot(a.x - b.x, a.y - b.y);
+            if (startDistance < 12) {
+                return;
+            }
+            this.pinchSnapshot = {
+                startDistance,
+                startScale: this.zoomState.scale,
+                moved: false,
+            };
+        }
+
+        handlePointerDown(event) {
             if (event.target.closest(".country-map-zoom-btn")) {
                 return;
             }
+
+            this.activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+
+            if (this.activePointers.size === 2) {
+                const mapRoot = event.currentTarget;
+                if (
+                    this.panState?.pointerId &&
+                    mapRoot.hasPointerCapture(this.panState.pointerId)
+                ) {
+                    mapRoot.releasePointerCapture(this.panState.pointerId);
+                }
+                this.panState = null;
+                this.beginPinchSnapshot();
+                return;
+            }
+
+            if (event.button !== 0 || !this.isZoomedIn()) {
+                return;
+            }
+
             this.panState = {
                 pointerId: event.pointerId,
                 startClientX: event.clientX,
@@ -889,7 +925,29 @@
             event.currentTarget.setPointerCapture(event.pointerId);
         }
 
-        handlePanMove(event) {
+        handlePointerMove(event) {
+            if (this.activePointers.has(event.pointerId)) {
+                this.activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+            }
+
+            if (this.pinchSnapshot && this.activePointers.size >= 2) {
+                event.preventDefault();
+                const points = [...this.activePointers.values()];
+                const [a, b] = points;
+                const distance = Math.hypot(a.x - b.x, a.y - b.y);
+                if (this.pinchSnapshot.startDistance > 0 && distance > 0) {
+                    if (Math.abs(distance - this.pinchSnapshot.startDistance) > 8) {
+                        this.pinchSnapshot.moved = true;
+                    }
+                    const nextScale =
+                        this.pinchSnapshot.startScale * (distance / this.pinchSnapshot.startDistance);
+                    const midX = (a.x + b.x) / 2;
+                    const midY = (a.y + b.y) / 2;
+                    this.zoomAt(nextScale, midX, midY);
+                }
+                return;
+            }
+
             if (!this.panState || event.pointerId !== this.panState.pointerId) {
                 return;
             }
@@ -908,7 +966,16 @@
             this.applyZoomTransform();
         }
 
-        handlePanUp(event) {
+        handlePointerUp(event) {
+            const endingPinch = this.pinchSnapshot;
+            this.activePointers.delete(event.pointerId);
+            if (this.activePointers.size < 2) {
+                if (endingPinch?.moved) {
+                    this.suppressClickUntil = Date.now() + 250;
+                }
+                this.pinchSnapshot = null;
+            }
+
             if (!this.panState || event.pointerId !== this.panState.pointerId) {
                 return;
             }
@@ -921,11 +988,11 @@
             this.panState = null;
         }
 
-        setupPan(mapRoot) {
-            mapRoot.addEventListener("pointerdown", this.boundPanDown);
-            mapRoot.addEventListener("pointermove", this.boundPanMove);
-            mapRoot.addEventListener("pointerup", this.boundPanUp);
-            mapRoot.addEventListener("pointercancel", this.boundPanUp);
+        setupPointerInteractions(mapRoot) {
+            mapRoot.addEventListener("pointerdown", this.boundPointerDown);
+            mapRoot.addEventListener("pointermove", this.boundPointerMove, { passive: false });
+            mapRoot.addEventListener("pointerup", this.boundPointerUp);
+            mapRoot.addEventListener("pointercancel", this.boundPointerUp);
         }
 
         setupZoom(mapRoot) {
