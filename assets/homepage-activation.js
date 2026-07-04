@@ -87,6 +87,29 @@
         },
     };
 
+    // Must match TG/assets/world.js inset + Miller central meridian used at build time.
+    const WORLD_MAP_INSET = {
+        width: 900,
+        height: 440.70631074413296,
+        bbox: [
+            { x: -20004297.151525836, y: -12671671.123330014 },
+            { x: 20026572.39474939, y: 6930392.025135122 },
+        ],
+    };
+    const WORLD_MAP_CENTRAL_MERIDIAN = 11.5;
+    const MILLER_RADIUS = 6381372;
+
+    const latLngToMapCoords = (lat, lng) => {
+        const radians = Math.PI / 180;
+        const projectedX = MILLER_RADIUS * (lng - WORLD_MAP_CENTRAL_MERIDIAN) * radians;
+        const projectedY =
+            (-MILLER_RADIUS * Math.log(Math.tan((45 + 0.4 * lat) * radians))) / 0.8;
+        const [{ x: west, y: north }, { x: east, y: south }] = WORLD_MAP_INSET.bbox;
+        const mapX = ((projectedX - west) / (east - west)) * WORLD_MAP_INSET.width;
+        const mapY = ((projectedY - north) / (south - north)) * WORLD_MAP_INSET.height;
+        return [mapX, mapY];
+    };
+
     let mapMarkerEntries = [];
     let mapMarkerCount = 0;
 
@@ -95,6 +118,7 @@
             mapInstance = map;
             mapMarkerEntries = markerEntries || this.buildMapMarkerEntries();
             mapMarkerCount = mapMarkerEntries.length;
+            this.applyDefaultWorldMapView(map);
         },
 
         getMapMarkerEntry(index) {
@@ -130,13 +154,28 @@
         buildMapMarkerPayloads(entries) {
             return (entries || mapMarkerEntries).map(({ name, coords, active }) => ({
                 name,
-                coords,
+                coords: latLngToMapCoords(coords[0], coords[1]),
                 style: active ? MAP_MARKER_STYLE.active : MAP_MARKER_STYLE.inactive,
             }));
         },
 
         getMapMarkerDefaultStyle() {
             return MAP_MARKER_STYLE.active;
+        },
+
+        applyDefaultWorldMapView(map) {
+            if (!map?.regions?.RU?.element?.shape) {
+                return;
+            }
+
+            const bbox = map.regions.RU.element.shape.getBBox();
+            const easternEdge = bbox.x + bbox.width;
+            const zoomFactor = 1.14;
+            const nextScale = map.scale * zoomFactor;
+            const viewportWidth = map._width / nextScale;
+            map.scale = nextScale;
+            map.transX = viewportWidth - easternEdge;
+            map._applyTransform();
         },
 
         getIso2ForCountry(countryName, countryCodes) {

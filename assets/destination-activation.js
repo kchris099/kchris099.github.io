@@ -515,6 +515,9 @@
                 });
             }
             this.refreshOpenSearch();
+            if (window.TGCountryMap && typeof window.TGCountryMap.refresh === "function") {
+                window.TGCountryMap.refresh();
+            }
         },
 
         async toggleDestination(name) {

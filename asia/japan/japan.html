@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/homepage-activation.css">
     <link rel="stylesheet" href="../../assets/destination-activation.css">
+    <link rel="stylesheet" href="../../assets/country-map.css">
     <style>
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #060B19; }
@@ -58,17 +59,46 @@
             </div>
         </header>
 
-        <section id="regions-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-32"></section>
+        <section id="regions-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></section>
+
+        <section class="country-map-section animate-fade-in-down animation-delay-200" aria-labelledby="country-map-heading">
+            <div class="text-center mb-10">
+                <h2 id="country-map-heading" class="text-3xl md:text-4xl font-bold text-white mb-4">Explore Japan by Region</h2>
+                <p class="text-slate-400">Hover a region or destination to preview guides, then click a city to open its guide.</p>
+            </div>
+            <div class="country-map-panel">
+                <div id="country-map" style="width: 100%; height: 500px; z-index: 10;"></div>
+                <div class="absolute bottom-6 left-6 bg-deepblue-950/80 border border-deepblue-700/50 backdrop-blur-md rounded-xl p-4 shadow-xl z-20 flex flex-col gap-2 pointer-events-none">
+                    <div class="text-slate-300 text-sm flex items-center justify-between gap-6">
+                        <span class="inline-flex items-center gap-2">
+                            <span class="country-map-legend-dot country-map-legend-dot--active" aria-hidden="true"></span>
+                            <span>Active:</span>
+                        </span>
+                        <span id="country-map-legend-active" class="font-bold text-white">0</span>
+                    </div>
+                    <div class="text-slate-300 text-sm flex items-center justify-between gap-6">
+                        <span class="inline-flex items-center gap-2">
+                            <span class="country-map-legend-dot country-map-legend-dot--inactive" aria-hidden="true"></span>
+                            <span>Inactive:</span>
+                        </span>
+                        <span id="country-map-legend-inactive" class="font-bold text-white">0</span>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
         <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
     </footer>
     <script src="blacklist.js"></script>
+    <script src="../../assets/maps/japan-data.js"></script>
     <script src="../../assets/destination-activation.js"></script>
+    <script src="../../assets/country-guides.js"></script>
+    <script src="../../assets/country-map.js"></script>
     <script>
-        const japanData = {"Kyushu": ["Fukuoka", "Mount Aso"], "Kansai": ["Himeji", "Kobe", "Kyoto", "Nara", "Osaka", "Uji"], "Honshu": ["Hiroshima"], "Kanto": ["Mount Fuji", "Tokyo", "Yokohama"], "Okinawa": ["Naha"], "Sanyo": ["Okayama"]};
-        const regionIcons = {"Kyushu": "ph-mountains", "Kansai": "ph-flower-lotus", "Honshu": "ph-waves", "Kanto": "ph-city", "Okinawa": "ph-tree-palm", "Sanyo": "ph-train"};
+        const japanData = {"Kanto": ["Mount Fuji", "Tokyo", "Yokohama"], "Kansai": ["Himeji", "Kobe", "Kyoto", "Nara", "Osaka", "Uji"], "Chugoku": ["Hiroshima", "Okayama"], "Kyushu": ["Fukuoka", "Mount Aso"], "Okinawa": ["Naha"]};
+        const regionIcons = {"Kanto": "ph-city", "Kansai": "ph-flower-lotus", "Chugoku": "ph-waves", "Kyushu": "ph-mountains", "Okinawa": "ph-tree-palm"};
         const destinationPaths = {"Fukuoka": "fukuoka", "Mount Aso": "mount-aso", "Himeji": "himeji", "Kobe": "kobe", "Kyoto": "kyoto", "Nara": "nara", "Osaka": "osaka", "Uji": "uji", "Hiroshima": "hiroshima", "Mount Fuji": "mount-fuji", "Tokyo": "tokyo", "Yokohama": "yokohama", "Naha": "naha", "Okayama": "okayama"};
         const hasRegions = true;
         const countryIso2 = "JP";
@@ -97,6 +127,20 @@
                 normalizeText,
                 destinationUrl,
             });
+            if (hasRegions) {
+                await TGCountryMap.init({
+                    selector: '#country-map',
+                    mapId: 'japan',
+                    countryName: 'Japan',
+                    countryData: japanData,
+                    destinationPaths,
+                    hasRegions,
+                    iso2: countryIso2,
+                    flagPath: '../../assets/flags/w40/jp.png',
+                    assetsBase: '../../assets/',
+                    activation: TGDestinationActivation,
+                });
+            }
             TGDestinationActivation.setupSearch();
             const scrollTopBtn = document.getElementById('scrollTopBtn');
             window.addEventListener('scroll', () => {
