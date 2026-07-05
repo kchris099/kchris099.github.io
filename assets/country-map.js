@@ -2,10 +2,13 @@
     const SVG_NS = "http://www.w3.org/2000/svg";
     const MARKER_RADIUS_BASE = 6;
     const MARKER_RADIUS_FOCUS_SCALE = 1.2;
+    const MARKER_HIT_RADIUS_MIN = 22;
+    const TOUCH_PAN_THRESHOLD = 10;
     const MARKER_LOC_BASE = 10;
     const MARKER_LOC_MAX = 40;
     const ZOOM_MAX = 8;
     const ZOOM_STEP = 1.35;
+    const MOBILE_INSET_MAX_WIDTH = 767;
 
     const markerRadiusForLocations = (locations) => {
         const count = Number(locations) || 0;
@@ -177,6 +180,15 @@
             this.mainMarkersLayer = null;
             this.insetMarkersLayer = null;
             this.insetScreenGroup = null;
+            this.insetDrawer = null;
+            this.insetDrawerGroup = null;
+            this.insetDrawerMarkersLayer = null;
+            this.insetToggle = null;
+            this.insetDrawerOpen = false;
+            this.insetMobileQuery = null;
+            this.boundInsetMobileChange = null;
+            this.markerTouchQuery = null;
+            this.boundMarkerTouchChange = null;
             this.insetResizeObserver = null;
             this.zoomState = { scale: 1, x: 0, y: 0 };
             this.defaultZoomState = { scale: 1, x: 0, y: 0 };
@@ -283,6 +295,28 @@
             return base * markerRadiusScale;
         }
 
+        useExpandedMarkerHit() {
+            if (typeof window === "undefined" || !window.matchMedia) {
+                return false;
+            }
+            return (
+                window.matchMedia("(pointer: coarse)").matches ||
+                window.matchMedia(`(max-width: ${MOBILE_INSET_MAX_WIDTH}px)`).matches
+            );
+        }
+
+        getMarkerHitRadius(meta, focused = false, marker = null) {
+            const visualRadius = this.getMarkerRadius(meta, focused, marker);
+            if (!this.useExpandedMarkerHit()) {
+                return visualRadius;
+            }
+            return Math.max(visualRadius, MARKER_HIT_RADIUS_MIN);
+        }
+
+        getPanMoveThreshold() {
+            return this.useExpandedMarkerHit() ? TOUCH_PAN_THRESHOLD : 3;
+        }
+
         syncMainMarkerPositions() {
             if (!this.viewport) {
                 return;
@@ -297,11 +331,12 @@
                 if (!Number.isFinite(localX) || !Number.isFinite(localY)) {
                     return;
                 }
-                const dot = marker.querySelector(".country-map-marker__dot");
-                if (dot) {
-                    dot.setAttribute("cx", String(scale * localX + x));
-                    dot.setAttribute("cy", String(scale * localY + y));
-                }
+                const screenX = scale * localX + x;
+                const screenY = scale * localY + y;
+                marker.querySelectorAll(".country-map-marker__dot, .country-map-marker__hit").forEach((node) => {
+                    node.setAttribute("cx", String(screenX));
+                    node.setAttribute("cy", String(screenY));
+                });
             });
         }
 
@@ -317,9 +352,85 @@
 
         setMarkerRadius(marker, meta, focused = false) {
             const dot = marker?.querySelector(".country-map-marker__dot");
+            const hit = marker?.querySelector(".country-map-marker__hit");
+            const visualRadius = this.getMarkerRadius(meta, focused, marker);
+            const hitRadius = this.getMarkerHitRadius(meta, focused, marker);
             if (dot) {
-                dot.setAttribute("r", String(this.getMarkerRadius(meta, focused, marker)));
+                dot.setAttribute("r", String(visualRadius));
             }
+            if (hit) {
+                hit.setAttribute("r", String(hitRadius));
+            }
+        }
+
+        syncAllMarkerGeometry() {
+            this.markerElements.forEach((marker, name) => {
+                const meta = this.getMarkerMeta(name);
+                if (!meta) {
+                    return;
+                }
+                const focused = marker.classList.contains("country-map-marker--focused");
+                this.setMarkerRadius(marker, meta, focused);
+            });
+        }
+
+        setupMarkerTouchListener() {
+            if (typeof window === "undefined" || !window.matchMedia) {
+                return;
+            }
+            this.markerTouchQuery = window.matchMedia("(pointer: coarse)");
+            this.boundMarkerTouchChange = () => this.syncAllMarkerGeometry();
+            if (typeof this.markerTouchQuery.addEventListener === "function") {
+                this.markerTouchQuery.addEventListener("change", this.boundMarkerTouchChange);
+            } else if (typeof this.markerTouchQuery.addListener === "function") {
+                this.markerTouchQuery.addListener(this.boundMarkerTouchChange);
+            }
+        }
+
+        getMarkerScreenPoint(marker) {
+            const dot = marker.querySelector(".country-map-marker__dot");
+            if (!dot) {
+                return null;
+            }
+            const cx = Number(dot.getAttribute("cx"));
+            const cy = Number(dot.getAttribute("cy"));
+            if (!Number.isFinite(cx) || !Number.isFinite(cy)) {
+                return null;
+            }
+            return this.svgPointToScreen(cx, cy, marker.dataset.coordSpace || "root");
+        }
+
+        findNearestMarkerAtClient(clientX, clientY) {
+            if (!this.useExpandedMarkerHit()) {
+                return null;
+            }
+            const maxDistance = MARKER_HIT_RADIUS_MIN + 10;
+            let nearestMeta = null;
+            let nearestDistance = maxDistance;
+            this.markerElements.forEach((marker, name) => {
+                const meta = this.getMarkerMeta(name);
+                if (!meta?.url) {
+                    return;
+                }
+                const screenPoint = this.getMarkerScreenPoint(marker);
+                if (!screenPoint) {
+                    return;
+                }
+                const distance = Math.hypot(screenPoint[0] - clientX, screenPoint[1] - clientY);
+                if (distance < nearestDistance) {
+                    nearestDistance = distance;
+                    nearestMeta = meta;
+                }
+            });
+            return nearestMeta;
+        }
+
+        navigateToMarkerMeta(meta) {
+            if (!meta?.url || Date.now() < this.suppressClickUntil) {
+                return false;
+            }
+            window.location.href = meta.url;
+            return true;
         }
 
         resolveDefaultZoomState() {
@@ -515,6 +626,212 @@
             return path;
         }
 
+        hasMapInsets() {
+            return (this.mapData?.insets || []).length > 0;
+        }
+
+        isMobileInsetLayout() {
+            if (typeof window === "undefined" || !window.matchMedia) {
+                return false;
+            }
+            return window.matchMedia(`(max-width: ${MOBILE_INSET_MAX_WIDTH}px)`).matches;
+        }
+
+        computeInsetViewBox(pad = 8) {
+            const frames = (this.mapData.insets || []).map((inset) => inset.frame);
+            const minX = Math.min(...frames.map((frame) => frame.x)) - pad;
+            const minY = Math.min(...frames.map((frame) => frame.y)) - pad;
+            const maxX = Math.max(...frames.map((frame) => frame.x + frame.width)) + pad;
+            const maxY = Math.max(...frames.map((frame) => frame.y + frame.height)) + pad;
+            return `${minX} ${minY} ${maxX - minX} ${maxY - minY}`;
+        }
+
+        buildInsetsLayer() {
+            const insetsLayer = document.createElementNS(SVG_NS, "g");
+            insetsLayer.setAttribute("class", "country-map-insets");
+            insetsLayer.addEventListener("mouseover", this.boundRegionOver);
+            insetsLayer.addEventListener("mouseout", this.boundRegionOut);
+            (this.mapData.insets || []).forEach((inset) => {
+                insetsLayer.appendChild(this.renderInset(inset));
+            });
+            return insetsLayer;
+        }
+
+        buildInsetMarkersLayer(coordSpace = "inset") {
+            const layer = document.createElementNS(SVG_NS, "g");
+            layer.setAttribute("class", "country-map-markers country-map-markers--inset");
+            layer.addEventListener("mouseover", this.boundMarkerOver);
+            layer.addEventListener("mouseout", this.boundMarkerOut);
+            Object.keys(this.mapData.destinations).forEach((name) => {
+                const meta = this.getMarkerMeta(name);
+                if (!meta || !meta.hasGuide || !this.isInsetPlane(meta.plane)) {
+                    return;
+                }
+                const plane = this.resolveDestinationPlane(meta);
+                const [x, y] = projectPoint(meta.lat, meta.lng, plane.bounds, plane.frame, plane.pad);
+                layer.appendChild(this.createMarker(meta, x, y, coordSpace));
+            });
+            return layer;
+        }
+
+        createInsetDrawer() {
+            if (!this.hasMapInsets()) {
+                return null;
+            }
+
+            const drawer = document.createElement("div");
+            drawer.className = "country-map-inset-drawer";
+            drawer.id = "country-map-inset-drawer";
+            drawer.hidden = true;
+            drawer.setAttribute("aria-hidden", "true");
+
+            const backdrop = document.createElement("div");
+            backdrop.className = "country-map-inset-drawer__backdrop";
+            backdrop.addEventListener("click", () => this.setInsetDrawerOpen(false));
+
+            const panel = document.createElement("div");
+            panel.className = "country-map-inset-drawer__panel";
+
+            const title = document.createElement("div");
+            title.className = "country-map-inset-drawer__title";
+            title.textContent = "Additional regions";
+
+            const svg = document.createElementNS(SVG_NS, "svg");
+            svg.setAttribute("class", "country-map-inset-drawer__svg");
+            svg.setAttribute("viewBox", this.computeInsetViewBox());
+            svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+            svg.setAttribute("role", "img");
+            svg.setAttribute("aria-label", "Island and territory regions");
+
+            const defs = document.createElementNS(SVG_NS, "defs");
+            appendMarkerGlowFilters(defs);
+            svg.appendChild(defs);
+
+            const drawerGroup = document.createElementNS(SVG_NS, "g");
+            drawerGroup.setAttribute("class", "country-map-inset-drawer__content");
+            drawerGroup.appendChild(this.buildInsetsLayer());
+            this.insetDrawerMarkersLayer = this.buildInsetMarkersLayer("inset-drawer");
+            drawerGroup.appendChild(this.insetDrawerMarkersLayer);
+            svg.appendChild(drawerGroup);
+
+            panel.appendChild(title);
+            panel.appendChild(svg);
+            drawer.appendChild(backdrop);
+            drawer.appendChild(panel);
+
+            this.insetDrawer = drawer;
+            this.insetDrawerGroup = drawerGroup;
+            return drawer;
+        }
+
+        createInsetToggle() {
+            if (!this.hasMapInsets()) {
+                return null;
+            }
+
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "country-map-inset-toggle";
+            button.hidden = true;
+            button.setAttribute("aria-label", "Show additional regions");
+            button.setAttribute("aria-expanded", "false");
+            button.setAttribute("aria-controls", "country-map-inset-drawer");
+            button.innerHTML =
+                '<span class="country-map-inset-toggle__icon" aria-hidden="true">\u2039</span>';
+            button.addEventListener("click", (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                this.setInsetDrawerOpen(!this.insetDrawerOpen);
+            });
+            this.insetToggle = button;
+            return button;
+        }
+
+        resolveInsetCoordSpace() {
+            return this.isMobileInsetLayout() ? "inset-drawer" : "inset";
+        }
+
+        syncInsetMarkerMount(mobile) {
+            [...this.markerElements.entries()].forEach(([name, marker]) => {
+                const coordSpace = marker.dataset.coordSpace;
+                if (coordSpace === "inset" || coordSpace === "inset-drawer") {
+                    this.markerElements.delete(name);
+                }
+            });
+
+            const activeLayer = mobile ? this.insetDrawerMarkersLayer : this.insetMarkersLayer;
+            activeLayer?.querySelectorAll(".country-map-marker[data-destination]").forEach((marker) => {
+                this.markerElements.set(marker.dataset.destination, marker);
+            });
+        }
+
+        setInsetDrawerOpen(open) {
+            if (!this.insetDrawer || !this.isMobileInsetLayout()) {
+                return;
+            }
+            this.insetDrawerOpen = open;
+            this.insetDrawer.classList.toggle("country-map-inset-drawer--open", open);
+            this.insetDrawer.setAttribute("aria-hidden", open ? "false" : "true");
+            if (this.insetToggle) {
+                this.insetToggle.setAttribute("aria-expanded", open ? "true" : "false");
+                this.insetToggle.setAttribute(
+                    "aria-label",
+                    open ? "Hide additional regions" : "Show additional regions",
+                );
+                const icon = this.insetToggle.querySelector(".country-map-inset-toggle__icon");
+                if (icon) {
+                    icon.textContent = open ? "\u203A" : "\u2039";
+                }
+            }
+            if (!open) {
+                this.state.hoveredDestination = null;
+                this.state.hoveredRegion = null;
+                this.applyShellState();
+                this.hideOverlay();
+            }
+        }
+
+        syncInsetMobileState() {
+            if (!this.hasMapInsets()) {
+                return;
+            }
+
+            const mobile = this.isMobileInsetLayout();
+            if (this.insetScreenGroup) {
+                this.insetScreenGroup.classList.toggle(
+                    "country-map-insets-screen--mobile-hidden",
+                    mobile,
+                );
+            }
+            if (this.insetToggle) {
+                this.insetToggle.hidden = !mobile;
+            }
+            if (this.insetDrawer) {
+                this.insetDrawer.hidden = !mobile;
+            }
+            if (!mobile && this.insetDrawerOpen) {
+                this.setInsetDrawerOpen(false);
+            }
+            this.syncInsetMarkerMount(mobile);
+            this.syncAllMarkerGeometry();
+            if (!mobile) {
+                this.syncInsetScreenScale();
+            }
+        }
+
+        setupInsetMobileListener() {
+            if (!this.hasMapInsets() || typeof window === "undefined" || !window.matchMedia) {
+                return;
+            }
+            this.insetMobileQuery = window.matchMedia(`(max-width: ${MOBILE_INSET_MAX_WIDTH}px)`);
+            this.boundInsetMobileChange = () => this.syncInsetMobileState();
+            if (typeof this.insetMobileQuery.addEventListener === "function") {
+                this.insetMobileQuery.addEventListener("change", this.boundInsetMobileChange);
+            } else if (typeof this.insetMobileQuery.addListener === "function") {
+                this.insetMobileQuery.addListener(this.boundInsetMobileChange);
+            }
+        }
+
         renderInset(inset) {
             const group = document.createElementNS(SVG_NS, "g");
             group.classList.add("country-map-inset");
@@ -592,23 +909,14 @@
                 regionsLayer.appendChild(this.createRegionPath(regionName, pathData));
             });
 
-            const insetsLayer = document.createElementNS(SVG_NS, "g");
-            insetsLayer.setAttribute("class", "country-map-insets");
-            insetsLayer.addEventListener("mouseover", this.boundRegionOver);
-            insetsLayer.addEventListener("mouseout", this.boundRegionOut);
-            (insets || []).forEach((inset) => {
-                insetsLayer.appendChild(this.renderInset(inset));
-            });
+            const insetsLayer = this.buildInsetsLayer();
 
             const mainMarkersLayer = document.createElementNS(SVG_NS, "g");
             mainMarkersLayer.setAttribute("class", "country-map-markers country-map-markers--main");
             mainMarkersLayer.addEventListener("mouseover", this.boundMarkerOver);
             mainMarkersLayer.addEventListener("mouseout", this.boundMarkerOut);
 
-            const insetMarkersLayer = document.createElementNS(SVG_NS, "g");
-            insetMarkersLayer.setAttribute("class", "country-map-markers country-map-markers--inset");
-            insetMarkersLayer.addEventListener("mouseover", this.boundMarkerOver);
-            insetMarkersLayer.addEventListener("mouseout", this.boundMarkerOut);
+            this.insetMarkersLayer = this.buildInsetMarkersLayer("inset");
 
             Object.keys(this.mapData.destinations).forEach((name) => {
                 const meta = this.getMarkerMeta(name);
@@ -618,15 +926,12 @@
                 const plane = this.resolveDestinationPlane(meta);
                 const [x, y] = projectPoint(meta.lat, meta.lng, plane.bounds, plane.frame, plane.pad);
                 const marker = this.createMarker(meta, x, y);
-                if (this.isInsetPlane(meta.plane)) {
-                    insetMarkersLayer.appendChild(marker);
-                } else {
+                if (!this.isInsetPlane(meta.plane)) {
                     mainMarkersLayer.appendChild(marker);
                 }
             });
 
             this.mainMarkersLayer = mainMarkersLayer;
-            this.insetMarkersLayer = insetMarkersLayer;
 
             this.viewport = document.createElementNS(SVG_NS, "g");
             this.viewport.setAttribute("class", "country-map-viewport");
@@ -637,7 +942,7 @@
             const insetScreenGroup = document.createElementNS(SVG_NS, "g");
             insetScreenGroup.setAttribute("class", "country-map-insets-screen");
             insetScreenGroup.appendChild(insetsLayer);
-            insetScreenGroup.appendChild(insetMarkersLayer);
+            insetScreenGroup.appendChild(this.insetMarkersLayer);
 
             svg.appendChild(this.viewport);
             svg.appendChild(mainMarkersLayer);
@@ -651,10 +956,18 @@
             this.overlay.setAttribute("aria-hidden", "true");
 
             this.zoomControls = this.createZoomControls();
+            const insetDrawer = this.createInsetDrawer();
+            const insetToggle = this.createInsetToggle();
 
             mapRoot.appendChild(svg);
             mapRoot.appendChild(this.overlay);
             this.shell.appendChild(this.zoomControls);
+            if (insetToggle) {
+                this.shell.appendChild(insetToggle);
+            }
+            if (insetDrawer) {
+                this.shell.appendChild(insetDrawer);
+            }
             this.shell.appendChild(mapRoot);
             this.root.innerHTML = "";
             this.root.appendChild(this.shell);
@@ -676,6 +989,9 @@
             this.applyZoomTransform();
             this.syncInsetScreenScale();
             this.setupInsetResizeObserver();
+            this.setupInsetMobileListener();
+            this.setupMarkerTouchListener();
+            this.syncInsetMobileState();
             this.updateLegendCounts();
         }
 
@@ -692,13 +1008,16 @@
                 return;
             }
             this.insetResizeObserver = new ResizeObserver(() => {
-                this.syncInsetScreenScale();
+                this.syncInsetMobileState();
+                if (!this.isMobileInsetLayout()) {
+                    this.syncInsetScreenScale();
+                }
             });
             this.insetResizeObserver.observe(target);
         }
 
         syncInsetScreenScale() {
-            if (!this.svg || !this.insetScreenGroup) {
+            if (!this.svg || !this.insetScreenGroup || this.isMobileInsetLayout()) {
                 return;
             }
             const insets = this.mapData.insets || [];
@@ -898,7 +1217,7 @@
             }
             return Boolean(
                 target.closest(
-                    ".country-map-marker, .country-map-neighbor, .country-map-insets-screen, .country-map-zoom-btn",
+                    ".country-map-marker, .country-map-neighbor, .country-map-insets-screen, .country-map-inset-drawer__panel, .country-map-inset-toggle, .country-map-zoom-btn",
                 ),
             );
         }
@@ -966,7 +1285,8 @@
             }
             const deltaX = event.clientX - this.panState.startClientX;
             const deltaY = event.clientY - this.panState.startClientY;
-            if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) {
+            const panThreshold = this.getPanMoveThreshold();
+            if (Math.abs(deltaX) > panThreshold || Math.abs(deltaY) > panThreshold) {
                 this.panState.moved = true;
             }
             if (!this.panState.moved) {
@@ -981,6 +1301,7 @@
 
         handlePointerUp(event) {
             const endingPinch = this.pinchSnapshot;
+            const panMoved = this.panState?.moved;
             this.activePointers.delete(event.pointerId);
             if (this.activePointers.size < 2) {
                 if (endingPinch?.moved) {
@@ -989,16 +1310,33 @@
                 this.pinchSnapshot = null;
             }
 
-            if (!this.panState || event.pointerId !== this.panState.pointerId) {
+            if (this.panState && event.pointerId === this.panState.pointerId) {
+                if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+                    event.currentTarget.releasePointerCapture(event.pointerId);
+                }
+                if (this.panState.moved) {
+                    this.suppressClickUntil = Date.now() + 250;
+                }
+                this.panState = null;
+            }
+
+            if (panMoved || endingPinch?.moved) {
                 return;
             }
-            if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-                event.currentTarget.releasePointerCapture(event.pointerId);
+            if (event.pointerType !== "touch" && event.pointerType !== "pen") {
+                return;
             }
-            if (this.panState?.moved) {
-                this.suppressClickUntil = Date.now() + 250;
+            if (
+                event.target.closest(
+                    ".country-map-marker, .country-map-region, .country-map-neighbor, .country-map-inset-toggle, .country-map-zoom-btn",
+                )
+            ) {
+                return;
             }
-            this.panState = null;
+            const nearestMeta = this.findNearestMarkerAtClient(event.clientX, event.clientY);
+            if (nearestMeta) {
+                this.navigateToMarkerMeta(nearestMeta);
+            }
         }
 
         setupPointerInteractions(mapRoot) {
@@ -1053,6 +1391,8 @@
                 matrix = this.viewport?.getScreenCTM();
             } else if (coordSpace === "inset") {
                 matrix = this.insetScreenGroup?.getScreenCTM();
+            } else if (coordSpace === "inset-drawer") {
+                matrix = this.insetDrawerGroup?.getScreenCTM();
             } else {
                 matrix = this.svg.getScreenCTM();
             }
@@ -1076,7 +1416,7 @@
             }
         }
 
-        createMarker(meta, x, y) {
+        createMarker(meta, x, y, coordSpaceOverride) {
             const group = document.createElementNS(SVG_NS, "g");
             group.setAttribute("class", "country-map-marker");
             group.classList.toggle("country-map-marker--active", meta.active);
@@ -1084,7 +1424,7 @@
             group.dataset.destination = meta.name;
             group.dataset.region = meta.region || "";
             const isInset = this.isInsetPlane(meta.plane);
-            group.dataset.coordSpace = isInset ? "inset" : "root";
+            group.dataset.coordSpace = coordSpaceOverride || (isInset ? "inset" : "root");
             group.dataset.localX = String(x);
             group.dataset.localY = String(y);
             group.setAttribute("role", "link");
@@ -1095,6 +1435,14 @@
             );
 
             const radius = this.getMarkerRadius(meta, false, group);
+            const hitRadius = this.getMarkerHitRadius(meta, false, group);
+
+            const hit = document.createElementNS(SVG_NS, "circle");
+            hit.setAttribute("class", "country-map-marker__hit");
+            hit.setAttribute("cx", String(x));
+            hit.setAttribute("cy", String(y));
+            hit.setAttribute("r", String(hitRadius));
+
             const dot = document.createElementNS(SVG_NS, "circle");
             dot.setAttribute("class", "country-map-marker__dot");
             dot.setAttribute("cx", String(x));
@@ -1102,17 +1450,31 @@
             dot.setAttribute("r", String(radius));
             this.applyMarkerGlowFilter(dot, meta.active);
 
+            group.appendChild(hit);
             group.appendChild(dot);
 
-            group.addEventListener("click", (event) => {
-                event.preventDefault();
-                event.stopPropagation();
-                if (Date.now() < this.suppressClickUntil) {
+            const activateMarker = (domEvent) => {
+                domEvent.preventDefault();
+                domEvent.stopPropagation();
+                this.navigateToMarkerMeta(meta);
+            };
+            let suppressClickAfterTouch = false;
+
+            group.addEventListener("pointerup", (domEvent) => {
+                if (domEvent.pointerType !== "touch" && domEvent.pointerType !== "pen") {
                     return;
                 }
-                if (meta.url) {
-                    window.location.href = meta.url;
+                suppressClickAfterTouch = true;
+                activateMarker(domEvent);
+                window.setTimeout(() => {
+                    suppressClickAfterTouch = false;
+                }, 400);
+            });
+            group.addEventListener("click", (domEvent) => {
+                if (suppressClickAfterTouch) {
+                    return;
                 }
+                activateMarker(domEvent);
             });
             group.addEventListener("keydown", (event) => {
                 if (event.key === "Enter" || event.key === " ") {
@@ -1454,7 +1816,9 @@
 
             const rect = mapRoot.getBoundingClientRect();
             if (point) {
-                const coordSpace = this.isPointInMainViewport(point[0]) ? "viewport" : "inset";
+                const coordSpace = this.isPointInMainViewport(point[0])
+                    ? "viewport"
+                    : this.resolveInsetCoordSpace();
                 const screenPoint = this.svgPointToScreen(point[0], point[1], coordSpace);
                 if (screenPoint) {
                     this.placeOverlay(
@@ -1519,6 +1883,10 @@
             if (event.key !== "Escape") {
                 return;
             }
+            if (this.insetDrawerOpen) {
+                this.setInsetDrawerOpen(false);
+                return;
+            }
             this.state.hoveredDestination = null;
             this.state.hoveredRegion = null;
             this.state.hoveredCountry = null;
@@ -1535,8 +1903,8 @@
 
         refresh() {
             this.applyRegionActiveState();
-            this.markerElements.forEach((marker, name) => {
-                const meta = this.getMarkerMeta(name);
+            this.shell?.querySelectorAll(".country-map-marker[data-destination]").forEach((marker) => {
+                const meta = this.getMarkerMeta(marker.dataset.destination);
                 if (meta) {
                     marker.classList.toggle("country-map-marker--active", meta.active);
                     marker.classList.toggle("country-map-marker--inactive", !meta.active);
@@ -1557,6 +1925,20 @@
 
         destroy() {
             document.removeEventListener("keydown", this.boundKeyDown);
+            if (this.insetMobileQuery && this.boundInsetMobileChange) {
+                if (typeof this.insetMobileQuery.removeEventListener === "function") {
+                    this.insetMobileQuery.removeEventListener("change", this.boundInsetMobileChange);
+                } else if (typeof this.insetMobileQuery.removeListener === "function") {
+                    this.insetMobileQuery.removeListener(this.boundInsetMobileChange);
+                }
+            }
+            if (this.markerTouchQuery && this.boundMarkerTouchChange) {
+                if (typeof this.markerTouchQuery.removeEventListener === "function") {
+                    this.markerTouchQuery.removeEventListener("change", this.boundMarkerTouchChange);
+                } else if (typeof this.markerTouchQuery.removeListener === "function") {
+                    this.markerTouchQuery.removeListener(this.boundMarkerTouchChange);
+                }
+            }
             if (this.insetResizeObserver) {
                 this.insetResizeObserver.disconnect();
                 this.insetResizeObserver = null;
