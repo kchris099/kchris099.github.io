@@ -4,6 +4,7 @@
     const MARKER_RADIUS_FOCUS_SCALE = 1.2;
     const MARKER_HIT_RADIUS_MIN = 22;
     const TOUCH_PAN_THRESHOLD = 10;
+    const GESTURE_SUPPRESS_MS = 350;
     const MARKER_LOC_BASE = 10;
     const MARKER_LOC_MAX = 40;
     const ZOOM_MAX = 8;
@@ -196,10 +197,12 @@
             this.panState = null;
             this.activePointers = new Map();
             this.pinchSnapshot = null;
+            this.pointerStarts = new Map();
             this.suppressClickUntil = 0;
             this.boundPointerDown = this.handlePointerDown.bind(this);
             this.boundPointerMove = this.handlePointerMove.bind(this);
             this.boundPointerUp = this.handlePointerUp.bind(this);
+            this.boundPointerCancel = this.handlePointerCancel.bind(this);
             this.boundRegionOver = this.handleRegionOver.bind(this);
             this.boundRegionOut = this.handleRegionOut.bind(this);
             this.boundMarkerOver = this.handleMarkerOver.bind(this);
@@ -385,44 +388,6 @@
             } else if (typeof this.markerTouchQuery.addListener === "function") {
                 this.markerTouchQuery.addListener(this.boundMarkerTouchChange);
             }
-        }
-
-        getMarkerScreenPoint(marker) {
-            const dot = marker.querySelector(".country-map-marker__dot");
-            if (!dot) {
-                return null;
-            }
-            const cx = Number(dot.getAttribute("cx"));
-            const cy = Number(dot.getAttribute("cy"));
-            if (!Number.isFinite(cx) || !Number.isFinite(cy)) {
-                return null;
-            }
-            return this.svgPointToScreen(cx, cy, marker.dataset.coordSpace || "root");
-        }
-
-        findNearestMarkerAtClient(clientX, clientY) {
-            if (!this.useExpandedMarkerHit()) {
-                return null;
-            }
-            const maxDistance = MARKER_HIT_RADIUS_MIN + 10;
-            let nearestMeta = null;
-            let nearestDistance = maxDistance;
-            this.markerElements.forEach((marker, name) => {
-                const meta = this.getMarkerMeta(name);
-                if (!meta?.url) {
-                    return;
-                }
-                const screenPoint = this.getMarkerScreenPoint(marker);
-                if (!screenPoint) {
-                    return;
-                }
-                const distance = Math.hypot(screenPoint[0] - clientX, screenPoint[1] - clientY);
-                if (distance < nearestDistance) {
-                    nearestDistance = distance;
-                    nearestMeta = meta;
-                }
-            });
-            return nearestMeta;
         }
 
         navigateToMarkerMeta(meta) {
@@ -1211,22 +1176,61 @@
             };
         }
 
+        isUiChromeTarget(target) {
+            if (!target || typeof target.closest !== "function") {
+                return false;
+            }
+            return Boolean(target.closest(".country-map-zoom-btn, .country-map-inset-toggle"));
+        }
+
         isPanExemptTarget(target) {
             if (!target || typeof target.closest !== "function") {
                 return false;
             }
             return Boolean(
-                target.closest(
-                    ".country-map-marker, .country-map-neighbor, .country-map-insets-screen, .country-map-inset-drawer__panel, .country-map-inset-toggle, .country-map-zoom-btn",
-                ),
+                target.closest(".country-map-insets-screen, .country-map-inset-drawer__panel"),
             );
         }
 
+        suppressMapClick() {
+            this.suppressClickUntil = Date.now() + GESTURE_SUPPRESS_MS;
+        }
+
+        trackPointerStart(event) {
+            this.pointerStarts.set(event.pointerId, {
+                x: event.clientX,
+                y: event.clientY,
+                moved: false,
+            });
+        }
+
+        markPointerMoved(event) {
+            const start = this.pointerStarts.get(event.pointerId);
+            if (!start || start.moved) {
+                return;
+            }
+            const dx = event.clientX - start.x;
+            const dy = event.clientY - start.y;
+            if (Math.hypot(dx, dy) > this.getPanMoveThreshold()) {
+                start.moved = true;
+            }
+        }
+
+        consumePointerTap(event) {
+            const start = this.pointerStarts.get(event.pointerId);
+            this.pointerStarts.delete(event.pointerId);
+            if (!start || start.moved) {
+                return false;
+            }
+            return true;
+        }
+
         handlePointerDown(event) {
-            if (this.isPanExemptTarget(event.target)) {
+            if (this.isUiChromeTarget(event.target)) {
                 return;
             }
 
+            this.trackPointerStart(event);
             this.activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
 
             if (this.activePointers.size === 2) {
@@ -1242,6 +1246,10 @@
                 return;
             }
 
+            if (this.isPanExemptTarget(event.target)) {
+                return;
+            }
+
             if (event.button !== 0 || !this.isZoomedIn()) {
                 return;
             }
@@ -1254,13 +1262,13 @@
                 startY: this.zoomState.y,
                 moved: false,
             };
-            event.currentTarget.setPointerCapture(event.pointerId);
         }
 
         handlePointerMove(event) {
             if (this.activePointers.has(event.pointerId)) {
                 this.activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
             }
+            this.markPointerMoved(event);
 
             if (this.pinchSnapshot && this.activePointers.size >= 2) {
                 event.preventDefault();
@@ -1286,12 +1294,17 @@
             const deltaX = event.clientX - this.panState.startClientX;
             const deltaY = event.clientY - this.panState.startClientY;
             const panThreshold = this.getPanMoveThreshold();
-            if (Math.abs(deltaX) > panThreshold || Math.abs(deltaY) > panThreshold) {
-                this.panState.moved = true;
-            }
             if (!this.panState.moved) {
-                return;
+                if (Math.abs(deltaX) > panThreshold || Math.abs(deltaY) > panThreshold) {
+                    this.panState.moved = true;
+                    if (!event.currentTarget.hasPointerCapture(event.pointerId)) {
+                        event.currentTarget.setPointerCapture(event.pointerId);
+                    }
+                } else {
+                    return;
+                }
             }
+            event.preventDefault();
             const delta = this.clientDeltaToSvg(deltaX, deltaY);
             this.zoomState.x = this.panState.startX + delta.x;
             this.zoomState.y = this.panState.startY + delta.y;
@@ -1301,11 +1314,12 @@
 
         handlePointerUp(event) {
             const endingPinch = this.pinchSnapshot;
-            const panMoved = this.panState?.moved;
+            const panMoved = Boolean(this.panState?.moved);
+            const isTap = this.consumePointerTap(event);
             this.activePointers.delete(event.pointerId);
             if (this.activePointers.size < 2) {
                 if (endingPinch?.moved) {
-                    this.suppressClickUntil = Date.now() + 250;
+                    this.suppressMapClick();
                 }
                 this.pinchSnapshot = null;
             }
@@ -1315,27 +1329,38 @@
                     event.currentTarget.releasePointerCapture(event.pointerId);
                 }
                 if (this.panState.moved) {
-                    this.suppressClickUntil = Date.now() + 250;
+                    this.suppressMapClick();
                 }
                 this.panState = null;
             }
 
-            if (panMoved || endingPinch?.moved) {
+            if (!isTap || panMoved || endingPinch?.moved || Date.now() < this.suppressClickUntil) {
                 return;
             }
             if (event.pointerType !== "touch" && event.pointerType !== "pen") {
                 return;
             }
-            if (
-                event.target.closest(
-                    ".country-map-marker, .country-map-region, .country-map-neighbor, .country-map-inset-toggle, .country-map-zoom-btn",
-                )
-            ) {
+            const marker = event.target.closest?.(".country-map-marker[data-destination]");
+            if (!marker) {
                 return;
             }
-            const nearestMeta = this.findNearestMarkerAtClient(event.clientX, event.clientY);
-            if (nearestMeta) {
-                this.navigateToMarkerMeta(nearestMeta);
+            const meta = this.getMarkerMeta(marker.dataset.destination);
+            if (meta) {
+                this.navigateToMarkerMeta(meta);
+            }
+        }
+
+        handlePointerCancel(event) {
+            this.pointerStarts.delete(event.pointerId);
+            this.activePointers.delete(event.pointerId);
+            if (this.activePointers.size < 2) {
+                this.pinchSnapshot = null;
+            }
+            if (this.panState && event.pointerId === this.panState.pointerId) {
+                if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+                    event.currentTarget.releasePointerCapture(event.pointerId);
+                }
+                this.panState = null;
             }
         }
 
@@ -1343,7 +1368,7 @@
             mapRoot.addEventListener("pointerdown", this.boundPointerDown);
             mapRoot.addEventListener("pointermove", this.boundPointerMove, { passive: false });
             mapRoot.addEventListener("pointerup", this.boundPointerUp);
-            mapRoot.addEventListener("pointercancel", this.boundPointerUp);
+            mapRoot.addEventListener("pointercancel", this.boundPointerCancel);
         }
 
         setupZoom(mapRoot) {
@@ -1458,20 +1483,12 @@
                 domEvent.stopPropagation();
                 this.navigateToMarkerMeta(meta);
             };
-            let suppressClickAfterTouch = false;
 
-            group.addEventListener("pointerup", (domEvent) => {
-                if (domEvent.pointerType !== "touch" && domEvent.pointerType !== "pen") {
+            group.addEventListener("click", (domEvent) => {
+                if (domEvent.pointerType === "touch") {
                     return;
                 }
-                suppressClickAfterTouch = true;
-                activateMarker(domEvent);
-                window.setTimeout(() => {
-                    suppressClickAfterTouch = false;
-                }, 400);
-            });
-            group.addEventListener("click", (domEvent) => {
-                if (suppressClickAfterTouch) {
+                if (Date.now() < this.suppressClickUntil) {
                     return;
                 }
                 activateMarker(domEvent);
