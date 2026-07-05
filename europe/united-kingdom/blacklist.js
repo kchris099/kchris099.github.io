@@ -13,4 +13,8 @@ Liverpool
 Belfast
 
 Cardiff
+
+Bath
+
+Saltaire
 `;

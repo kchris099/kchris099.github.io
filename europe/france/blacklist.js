@@ -13,4 +13,32 @@ Montpellier
 Marseille
 
 Nice
+
+Metz
+
+Nancy
+
+Provins
+
+Le Havre
+
+Reims
+
+Lille
+
+Dijon
+
+Grenoble
+
+Caen
+
+Mont Saint-Michel
+
+Avignon
+
+Strasbourg
+
+Carcassonne
+
+Saint-Émilion
 `;

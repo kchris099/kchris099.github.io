@@ -4,4 +4,8 @@
 const blacklistText = `Szczecin
 
 Gdansk
+
+Katowice
+
+Toruń
 `;

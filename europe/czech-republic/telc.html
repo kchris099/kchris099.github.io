@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telč Guide | Global Explorer Guides</title>
+    <link rel="stylesheet" href="../../assets/tailwind.css">
+    <link rel="stylesheet" href="../../assets/outfit.css">
+    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
+    <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
+    <link rel="stylesheet" href="../../assets/homepage-activation.css">
+    <link rel="stylesheet" href="../../assets/destination-activation.css">
+    <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
+    <script src="../../assets/leaflet/leaflet.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #060B19; }
+        ::-webkit-scrollbar-thumb { background: #1E336B; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0070FF; }
+        .leaflet-popup-content-wrapper { background-color: #fff; color: #333; border-radius: 8px; box-shadow: 0 3px 14px rgba(0,0,0,0.4); }
+        .leaflet-popup-tip { background-color: #fff; }
+    </style>
+</head>
+<body class="bg-deepblue-950 text-slate-200 font-sans min-h-screen relative overflow-x-hidden">
+    <div class="absolute top-0 left-0 w-full h-[450px] md:h-[500px] z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50" style="background-image: url('images/telc_hero.jpg')"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-deepblue-950/10 via-deepblue-950/60 to-deepblue-950"></div>
+    </div>
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon-purple/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neon-cyan/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <main class="container mx-auto px-4 py-8 md:py-16 relative z-20 max-w-5xl">
+        <nav class="mb-12 animate-fade-in-down flex flex-wrap items-center gap-4">
+            <a href="../../index.html" class="flex items-center justify-center w-11 h-11 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0" title="Back to Home">
+                <i class="ph ph-house text-xl group-hover:scale-110 transition-transform"></i>
+            </a>
+            <a href="czech-republic.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0">
+                <i class="ph ph-arrow-left text-lg group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-medium text-sm">Back to Czech Republic</span>
+            </a>
+            <div class="ml-auto flex items-center gap-3 bg-deepblue-900/40 border border-deepblue-700/50 rounded-full px-4 py-2 backdrop-blur-sm shadow-inner shrink-0">
+                <img src="../../assets/flags/w40/cz.png" alt="Czech Republic flag" class="w-6 h-auto rounded-[2px] shadow-sm">
+                <div class="flex items-center gap-2 text-sm font-medium tracking-wide">
+                    <span class="text-slate-200 uppercase text-xs tracking-wider font-bold">Czech Republic</span>
+                    <span class="text-deepblue-500 text-xs">&rsaquo;</span>
+                    <span class="text-neon-cyan text-xs">Telč</span>
+                </div>
+            </div>
+        </nav>
+
+        <header class="mb-16 animate-fade-in-down animation-delay-100 text-center">
+            <button
+                type="button"
+                id="destination-active-toggle"
+                class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
+                data-iso2="CZ"
+                data-slug="telc"
+                data-active="false"
+                data-interactive="true"
+                aria-label="Toggle Telč visibility on Czech Republic guide"
+                aria-pressed="false"
+            >
+                <i class="ph ph-map-pin text-4xl text-neon-cyan pointer-events-none" aria-hidden="true"></i>
+            </button>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple pb-4">
+                Explore Telč
+            </h1>
+            <div class="bg-deepblue-900/40 border border-deepblue-800 rounded-3xl p-8 md:p-10 text-left backdrop-blur-sm mt-10">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                    <i class="ph ph-scroll text-neon-cyan"></i> A Brief History
+                </h2>
+                <p class="text-lg text-slate-400 font-light leading-relaxed">Telč was transformed after 1550 when Renaissance nobleman Zacharias of Hradec rebuilt his water-surrounded chateau and ordered burgher houses with arcades around a triangular square following a fire. The uniform façades and ponds reflect Italianate planning on a Moravian crossroads between Vienna and Prague. Subsequent Habsburg and Czechoslovak rule left the town a county seat whose historic core survived with little modern intrusion, preserving one of Bohemia-Moravia&#x27;s most intact Renaissance ensembles.</p>
+            </div>
+        </header>
+
+        <section class="mb-16 animate-fade-in-down" style="animation-delay: 0.2s;">
+            <h2 class="text-3xl font-bold text-white mb-6">Attractions Map</h2>
+            <div id="map" class="h-[400px] w-full rounded-3xl border border-deepblue-700 shadow-2xl z-10 relative"></div>
+        </section>
+
+        <section class="flex flex-col gap-6 pb-20 animate-fade-in-down" style="animation-delay: 0.3s;">
+            <h2 class="text-3xl font-bold text-white mb-2">Top Sights & Activities</h2>
+            
+            <!-- 1. Franz Kafka - Rotating Head by David Cerny -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_1.jpg" alt="Franz Kafka - Rotating Head by David Cerny" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Franz Kafka - Rotating Head by David Cerny</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">In the heart of Prague, find the striking and modern sculpture known as &quot;Franz Kafka - Rotating Head by David Cerny.&quot; This 11-meter-tall metallic head is a tribute to the influential author Franz Kafka, who was born in Prague. The sculpture consists of 42 rotating layers and is adorned with mirrored panels that create a captivating contrast against the surrounding buildings. Every hour, for about fifteen minutes, this impressive piece comes to life as its layers begin to rotate.</p>
+                </div>
+            </div>
+
+            <!-- 2. Charles Bridge -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_2.jpg" alt="Charles Bridge" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Charles Bridge</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Charles Bridge stands as a landmark that connects Prague&#x27;s Old Town and New Town, embodying the city&#x27;s rich history and vibrant culture. Completed in 1390, this stone bridge has become a must-visit for travelers from around the globe. As you stroll across it, encounter lively street artists and vendors showcasing their crafts, creating an enchanting atmosphere filled with music and creativity.</p>
+                </div>
+            </div>
+
+            <!-- 3. Old Town Bridge Tower -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_3.jpg" alt="Old Town Bridge Tower" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Old Town Bridge Tower</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Old Town Bridge Tower, a Gothic structure dating back to the 14th century, stands proudly at one end of the Charles Bridge. With its grand arched gateway and intricate ornamentation, it captures the essence of medieval architecture. While many travellers admire it from afar as they stroll across the bridge, few realize that this gem can be explored further.</p>
+                </div>
+            </div>
+
+            <!-- 4. Klementinum -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_4.jpg" alt="Klementinum" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Klementinum</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Klementinum is a historic complex located at the eastern end of the Charles Bridge, featuring the Mirror Chapel, Baroque Library, and an Astronomical Tower with an Atlas statue. Originally a Jesuit dormitory in the 16th century, it expanded to include a library, university, and scientific institutions. Guided tours showcase its opulent areas such as the Baroque library adorned with frescoes, Meridian Hall, and the Astronomical Tower offering city views.</p>
+                </div>
+            </div>
+
+            <!-- 5. Prague Zoo -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_5.jpg" alt="Prague Zoo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Prague Zoo</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Prague Zoo, also known as Zoo Praha, is a renowned zoo founded in 1931 and located in the picturesque Drahan-Troja Nature Park. Spanning 58 hectares of hilly landscape, it is home to an impressive collection of nearly 700 species, making it zoological collections in Europe. The zoo&#x27;s challenging setting has been utilized to its full potential, providing habitats for over 4000 animals representing over 600 species.</p>
+                </div>
+            </div>
+
+            <!-- 6. Prague Castle -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_6.jpg" alt="Prague Castle" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> CZK 450
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Prague Castle</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Prague Castle is a sprawling complex that showcases a mix of architectural styles, from Romanesque to Gothic and even 20th-century designs. As the primary attraction in the Czech Republic, it holds significant historical and symbolic importance. Serving as the seat of Czech sovereigns since ancient times and later as the residence for Czech presidents, this expansive site includes various structures such as the Cathedral of saints Vit, Vaclav and Vojtech, noble palaces, a convent, and more.</p>
+                </div>
+            </div>
+
+            <!-- 7. Old Royal Palace -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_7.jpg" alt="Old Royal Palace" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Old Royal Palace</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Old Royal Palace, located within Prague Castle, is a late Gothic palace with Renaissance elements. It features the impressive Vladislav Hall, where royal events were held. The palace has a rich history as the residence of Czech monarchs and Bohemian princes throughout the centuries. Its architectural transformation from a simple wooden building to encompassing various styles such as Gothic, Romanesque, Renaissance, and Baroque is truly remarkable.</p>
+                </div>
+            </div>
+
+            <!-- 8. St. Vitus Cathedral -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_8.jpg" alt="St. Vitus Cathedral" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free (Great South Tower CZK 200)
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">St. Vitus Cathedral</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">St. Vitus Cathedral is a Gothic masterpiece and a resting place for saints like Vitus, Wenceslas, and Adalbert. It&#x27;s part of the Prague Castle district, a UNESCO World Heritage site with a mix of architectural styles. The cathedral features twin towers and houses the tomb of St. Wenceslas and the crown jewels. travellers can also admire gurning gargoyles and stained-glass windows, including one by artist Alfons Mucha.</p>
+                </div>
+            </div>
+
+            <!-- 9. Gardens below Prague Castle -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_9.jpg" alt="Gardens below Prague Castle" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Gardens below Prague Castle</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled below Prague Castle, the Gardens offer a serene escape with their terraced layout and picturesque pavilion, providing views of the city. While exploring Prague Castle, travellers can catch glimpses of the gardens through the fortifications on the eastern end. The expansive complex includes five gardens and the Ledebour Gardens Gallery, making it a attraction in Prague.</p>
+                </div>
+            </div>
+
+            <!-- 10. Vítkov -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_10.jpg" alt="Vítkov" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Vítkov</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Vítkov Hill, located in Prague 3, offers a unique and view of the city. The hill is home to the National Memorial, which provides insight into Czechoslovakia&#x27;s history and its role in World War I. travellers can explore interactive exhibitions inside the memorial. The hill also features a 1929 equestrian statue of Jan Zizka, offering an off-the-beaten-path adventure for travelers.</p>
+                </div>
+            </div>
+
+            <!-- 11. Žižkov Television Tower -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_11.jpg" alt="Žižkov Television Tower" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Žižkov Television Tower</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Žižkov Television Tower is an landmark in Prague, designed by Vaclav Aulicky and completed in 1992. Despite being considered one of the ugliest buildings globally, it remains a fascinating attraction due to its distinctiveness. The tower offers a viewing platform with 360-degree views, along with restaurants and a luxury hotel. Situated in the trendy Žižkov neighborhood, the sky-high restaurant and bar provide international cuisine and city views.</p>
+                </div>
+            </div>
+
+            <!-- 12. Municipal house -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_12.jpg" alt="Municipal house" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Municipal house</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Obecní Dům, also known as Municipal House, is a art nouveau venue in the heart of Prague. This architectural gem took seven years to build and now stands as beautiful buildings in the Czech Republic. It boasts a 2,000-seat concert hall, salons, offices, and restaurants adorned with lavish decorative work. The venue hosts classical concerts, opera, ballet performances, and various events like fashion shows.</p>
+                </div>
+            </div>
+
+            <!-- 13. The Powder Tower -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_13.jpg" alt="The Powder Tower" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">The Powder Tower</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Prašná brána, also known as the Powder Tower, is a historic city gate in Prague that dates back to the 15th century. Originally built in the 11th century and later reconstructed, it served as one of the original entrances to Old Town Prague. During the 17th century, it was repurposed for storing gunpowder, hence its name.</p>
+                </div>
+            </div>
+
+            <!-- 14. Dancing House -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_14.jpg" alt="Dancing House" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Dancing House</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Dancing House, also known as Tancici dum, is a modern architectural marvel located in Prague. Designed by Czech architect Valdo Milunic and Canadian Frank Gehry, this unique building stands out amidst the city&#x27;s centuries-old architectural styles. Resembling two dancers in motion, it features dynamic and static elements that give the impression of a female dancer swaying with her male partner.</p>
+                </div>
+            </div>
+
+            <!-- 15. Orthodox Cathedral of Saints Cyril and Methodius -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_15.jpg" alt="Orthodox Cathedral of Saints Cyril and Methodius" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Orthodox Cathedral of Saints Cyril and Methodius</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Ss. Cyril and Methodius Cathedral is a significant Orthodox church in the former Czechoslovakia, featuring a war resistance museum in its lower level. Located in Prague&#x27;s New Town, amidst Art Nouveau and Revival Architecture, this Baroque Age architectural gem stands out. travellers can explore the eerie yet moving crypt and watch a film about the paratroopers and Heydrich&#x27;s assassination.</p>
+                </div>
+            </div>
+
+            <!-- 16. Emmaus Monastery -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_16.jpg" alt="Emmaus Monastery" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Emmaus Monastery</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Emmaus Monastery, located in the New Town of Prague, is a historic site dating back to the mid-14th century. The Gothic structure was founded by Charles IV and has seen centuries of peace, but it suffered damage during WWII due to Allied bombing. The monastery&#x27;s main building reflects its medieval origins, while some adjacent structures were added during the Baroque period. Despite being damaged in the war, the monastery has been beautifully reconstructed with a modern new roof.</p>
+                </div>
+            </div>
+
+            <!-- 17. Old Town Square -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_17.jpg" alt="Old Town Square" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Old Town Square</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Old Town Square, In Prague, is a historic and picturesque square with origins dating back to the 10th century. This UNESCO-listed site has retained its medieval charm and serves as a hub for travellers seeking to immerse themselves in the city&#x27;s rich history and vibrant atmosphere. The square is adorned with an array of architectural marvels, including Gothic buildings like the Old Town Hall and the Prague Astronomical Clock.</p>
+                </div>
+            </div>
+
+            <!-- 18. Church of Our Lady before Týn -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_18.jpg" alt="Church of Our Lady before Týn" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Church of Our Lady before Týn</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Church of Our Lady before Týn, also known as Týn Church, is a prominent 14th-century landmark in Prague. It features striking 80-meter-tall towers with ornate carvings and a baroque altarpiece. The church has undergone several alterations over the centuries due to changes in the city&#x27;s allegiances.</p>
+                </div>
+            </div>
+
+            <!-- 19. Basilica of St. James the Greater -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_19.jpg" alt="Basilica of St. James the Greater" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Basilica of St. James the Greater</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Basilica of St. James, also known as Bazilika Sv. Jakuba, may seem unassuming from the outside, but its interior is a display of baroque art and architecture. The long nave is adorned with gilded statues and paintings under a beautifully frescoed ceiling depicting stories of the Virgin Mary&#x27;s life. One of its most revered treasures is the bejeweled Madonna Pietatis highlighted by blue light at the altar.</p>
+                </div>
+            </div>
+
+            <!-- 20. The Estates Theatre -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_20.jpg" alt="The Estates Theatre" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">The Estates Theatre</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Estates Theatre, part of the National Theatre family, is an elegant and historic venue in Prague that has been running since 1783. It gained fame for hosting the world premiere of Mozart&#x27;s Don Giovanni opera in 1787 and has continued to stage important Czech opera and drama productions.</p>
+                </div>
+            </div>
+
+            <!-- 21. National Theatre -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_21.jpg" alt="National Theatre" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">National Theatre</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The National Theatre, also known as Narodni Divadlo in Czech, is a significant cultural institution in Prague. It holds a rich artistic tradition and is considered the Alma Mater of Czech Opera. The venue showcases nationally sponsored new and classical ballet, opera, and theater performances. Situated just a five-minute walk from the hotel, this historical late 19th-century building boasts magnificent interiors that are truly captivating.</p>
+                </div>
+            </div>
+
+            <!-- 22. Prague Main Train Station -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_22.jpg" alt="Prague Main Train Station" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Prague Main Train Station</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Prague Main Station, also known as Praha Hlavni nadrazi, is a centrally located and well-connected transportation hub that offers a convenient gateway to the captivating city of Prague. The station boasts impressive historic architecture alongside modern amenities such as shops, restaurants, and cafes.</p>
+                </div>
+            </div>
+
+            <!-- 23. State Opera -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_23.jpg" alt="State Opera" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">State Opera</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Prague State Opera, also known as the Former New German Theatre, is a historic and elegant venue with a rich cultural legacy. Built in 1888, it offers opera and ballet performances. Managed by the National Theatre, this neo-Renaissance building boasts a gilded stage and interior. Despite its unfortunate location across from a major highway, it remains one of Central Europe&#x27;s most important music venues.</p>
+                </div>
+            </div>
+
+            <!-- 24. National Museum -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_24.jpg" alt="National Museum" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">National Museum</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Národní Muzeum, also known as the National Museum, is a grand institution established in 1818 with a diverse array of natural science and history exhibits. The museum&#x27;s origins are tied to the contributions of Czech aristocrats and the pivotal role played by Count Kaspar Maria von Sternberg, a prominent Bohemian botanist. Housed in an impressive neo-Renaissance building at Wenceslas Square, it stands as a symbol of Czech national revival.</p>
+                </div>
+            </div>
+
+            <!-- 25. Lennon Wall -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_25.jpg" alt="Lennon Wall" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Lennon Wall</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled near the Charles Bridge, the Lennon Wall in Prague is a vibrant canvas that has become a symbol of peace and hope since the 1980s. Following John Lennon&#x27;s tragic death, fans began to adorn this wall with colorful graffiti, heartfelt messages, and lyrics celebrating his legacy as a peace advocate. Despite attempts by authorities to erase these expressions during Czechoslovakia&#x27;s communist era, the wall persisted as a testament to resilience and creativity.</p>
+                </div>
+            </div>
+
+            <!-- 26. Karel Zeman Museum -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_26.jpg" alt="Karel Zeman Museum" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Karel Zeman Museum</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Karel Zeman Museum, located in Prague, Czech Republic, is an interactive and family-friendly exhibition showcasing the renowned work of Czech film director and animator Karel Zeman. The museum focuses on Zeman&#x27;s pioneering use of special effects in his fantasy films from the 20th century. travellers can explore his famous movies such as &#x27;Journey to the Prehistoric,&#x27; &#x27;Invention of Destruction,&#x27; and &#x27;Baron Prasil.&#x27;.</p>
+                </div>
+            </div>
+
+            <!-- 27. Lesser Town Bridge Tower -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_27.jpg" alt="Lesser Town Bridge Tower" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Lesser Town Bridge Tower</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Lesser Town Bridge Tower is a must-visit photo spot in Prague, located at the western end of the Charles Bridge. Offering views over the city, it connects to the lesser town and provides unique perspectives of the Charles Bridge, Mala Strana, Prague Castle, and St. Nicholas Church&#x27;s dome. This tower was built in 1464 as an entrance gate to the Lesser Town and offers a less crowded but equally captivating experience compared to its counterpart, the Old Town Bridge Tower.</p>
+                </div>
+            </div>
+
+            <!-- 28. The Vrtba Garden -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_28.jpg" alt="The Vrtba Garden" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">The Vrtba Garden</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Vrtba Garden, built between 1715 and 1720 in Italian baroque style, is a picturesque terraced garden adorned with sculptures and a pool. Nestled in Prague&#x27;s Lesser Quarter, this UNESCO-listed gem designed by Frantisek Maximilian Kanka offers views of the surrounding landscape.</p>
+                </div>
+            </div>
+
+            <!-- 29. Czech Museum of Music -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_29.jpg" alt="Czech Museum of Music" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Czech Museum of Music</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled within the Baroque Church of Santa Maria Magdalena, the Czech Museum of Music is a treasure trove for music enthusiasts. This remarkable museum showcases an extensive array of musical instruments crafted by both Czech and international artisans, alongside fascinating manuscripts and interactive displays that highlight the rich musical heritage of the Czech Republic.</p>
+                </div>
+            </div>
+
+            <!-- 30. Petrin Tower -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_30.jpg" alt="Petrin Tower" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Petrin Tower</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Petrin Tower is a famous landmark in Prague, offering a panoramic view of the city and its skyline. It resembles the Eiffel Tower and is located on Petrin Hill. travellers can enjoy a funicular ride to reach the tower and then climb 299 wooden steps to reach the top. From there, they can admire majestic sights such as Charles Bridge, the Dancing House, and Prague Castle.</p>
+                </div>
+            </div>
+
+            <!-- 31. Petrin Hill -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_31.jpg" alt="Petrin Hill" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Petrin Hill</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Petrin Hill in Prague is a picturesque hillside park known for its Petrin Lookout Tower, resembling the Eiffel Tower, and the funicular. While walking around the hill is free, there&#x27;s an entrance fee for the tower and funicular ride. The area offers beautiful views of the city, woodland walkways, rose gardens, and historic sites like the Hunger Wall.</p>
+                </div>
+            </div>
+
+            <!-- 32. Petřín Gardens -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_32.jpg" alt="Petřín Gardens" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Petřín Gardens</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Petřín Gardens, located on the slope of Petřín Hill in Prague, offer a delightful escape with its extensive grounds that stretch across several districts. travellers can enjoy romantic walks amidst blooming fruit trees and over 7,800 roses in the Rose Orchard and Kvetnice Garden. The gardens also feature attractions such as the funicular railway, Petřín Lookout Tower, Saint Lawrence Church, and a charming Mirror Maze.</p>
+                </div>
+            </div>
+
+            <!-- 33. Memorial to the Victims of Communism -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_33.jpg" alt="Memorial to the Victims of Communism" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Memorial to the Victims of Communism</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Memorial to the Victims of Communism in Prague features a series of 7 bronze statues that symbolize the political prisoners who suffered during the Communist era in Czechoslovakia from 1948 to 1989. Situated at the base of Petrin hill on Ujezd street, this controversial and striking memorial was unveiled in 2002, designed by Czech sculptor Olbram Zoubek and architects Jan Kerel and Zdenek Holzel.</p>
+                </div>
+            </div>
+
+            <!-- 34. Aircraft museum Prague-Kbely -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_34.jpg" alt="Aircraft museum Prague-Kbely" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Aircraft museum Prague-Kbely</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Aircraft Museum Prague-Kbely, located on a historic airfield, is a vast indoor and outdoor museum boasting an extensive collection of aircraft. It is the largest aviation museum in the Czech Republic and one of the biggest in Europe, featuring 275 planes across four buildings.</p>
+                </div>
+            </div>
+
+            <!-- 35. Spanish Synagogue -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_35.jpg" alt="Spanish Synagogue" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Spanish Synagogue</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Located in Prague&#x27;s Jewish Quarter, the Spanish Synagogue is a Moorish-style place of worship that now serves as a venue for exhibits and concerts. Despite being one of the newer synagogues in Prague, it was actually completed in 1868 on the site of a 12th-century synagogue. The interior boasts opulent golden decor and hosts permanent exhibitions on Jewish history in Bohemian lands and silver artifacts.</p>
+                </div>
+            </div>
+
+            <!-- 36. The Old-New Synagogue -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_36.jpg" alt="The Old-New Synagogue" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">The Old-New Synagogue</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Old-New Synagogue, located in Prague&#x27;s Jewish Quarter, is a example of Gothic architecture and holds the title of being the oldest surviving synagogue in Europe. Steeped in history and surrounded by legends, it is believed to be the legendary home of the Golem of Prague, a creature created to protect the city&#x27;s Jewish population.</p>
+                </div>
+            </div>
+
+            <!-- 37. Vyšehrad -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_37.jpg" alt="Vyšehrad" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Vyšehrad</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Vyšehrad is a historical fortress complex situated on a hill overlooking the Vltava River, offering a peaceful oasis with views of Prague. travellers can explore the medieval walls, visit the Basilica of St. Peter and Paul, and stroll through Vyšehrad Park to enjoy its unique atmosphere. The local cemetery is the final resting place of renowned Czech personalities. According to legend, Vyšehrad was the first seat of Czech kings, adding to its historical allure.</p>
+                </div>
+            </div>
+
+            <!-- 38. Museum of Prague -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_38.jpg" alt="Museum of Prague" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Museum of Prague</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The City of Prague Museum offers a captivating journey through the history of Prague, spanning from prehistoric times to the 20th century. Housed in a magnificent neo-Renaissance building, the museum showcases archaeological collections and permanent exhibitions that highlight various periods such as the Middle Ages and the Baroque era.</p>
+                </div>
+            </div>
+
+            <!-- 39. Letna Park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_39.jpg" alt="Letna Park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Letna Park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Letna Park, located in Prague, offers panoramic views of the city and is a popular spot for both locals and tourists. The park features a Baroque-styled pavilion, children&#x27;s play areas, and the giant metronome at the top of the hill. travellers can enjoy picnics, leisurely strolls in nature, and taking in impressive views of the Vltava River and Prague&#x27;s landmarks.</p>
+                </div>
+            </div>
+
+            <!-- 40. Královská obora Stromovka -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/telc_40.jpg" alt="Královská obora Stromovka" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Královská obora Stromovka</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Královská obora Stromovka is a sprawling park with a rich history dating back to the 13th century when it served as a royal hunting ground. Despite being heavily damaged by the 2002 Prague flood, this park has been restored and now offers playgrounds, picnic areas, jogging paths, ponds, fields, and plenty of shade trees. The park&#x27;s name &quot;Stromovka&quot; translates to &quot;tree place,&quot; reflecting the abundance of trees within its grounds.</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
+        <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+    </footer>    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const map = L.map('map').setView([50.086423, 14.415677], 14);
+            L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                attribution: '&copy; Google Maps',
+                maxZoom: 20
+            }).addTo(map);
+            const locations = [{"name": "Franz Kafka - Rotating Head by David Cerny", "lat": 50.081651, "lng": 14.420821}, {"name": "Charles Bridge", "lat": 50.086477, "lng": 14.411437}, {"name": "Old Town Bridge Tower", "lat": 50.086231, "lng": 14.413614}, {"name": "Klementinum", "lat": 50.086598, "lng": 14.416019}, {"name": "Prague Zoo", "lat": 50.117732, "lng": 14.406201}, {"name": "Prague Castle", "lat": 50.091097, "lng": 14.401617}, {"name": "Old Royal Palace", "lat": 50.090691, "lng": 14.401146}, {"name": "St. Vitus Cathedral", "lat": 50.090892, "lng": 14.400511}, {"name": "Gardens below Prague Castle", "lat": 50.09056, "lng": 14.40598}, {"name": "Vítkov", "lat": 50.088767, "lng": 14.451458}, {"name": "Žižkov Television Tower", "lat": 50.081053, "lng": 14.451174}, {"name": "Municipal house", "lat": 50.087721, "lng": 14.427791}, {"name": "The Powder Tower", "lat": 50.087273, "lng": 14.427789}, {"name": "Dancing House", "lat": 50.075403, "lng": 14.414179}, {"name": "Orthodox Cathedral of Saints Cyril and Methodius", "lat": 50.075918, "lng": 14.417063}, {"name": "Emmaus Monastery", "lat": 50.072148, "lng": 14.417274}, {"name": "Old Town Square", "lat": 50.087569, "lng": 14.421187}, {"name": "Church of Our Lady before Týn", "lat": 50.087749, "lng": 14.42254}, {"name": "Basilica of St. James the Greater", "lat": 50.088346, "lng": 14.424759}, {"name": "The Estates Theatre", "lat": 50.085978, "lng": 14.423665}, {"name": "National Theatre", "lat": 50.080846, "lng": 14.413575}, {"name": "Prague Main Train Station", "lat": 50.083209, "lng": 14.435306}, {"name": "State Opera", "lat": 50.080721, "lng": 14.432692}, {"name": "National Museum", "lat": 50.07897, "lng": 14.430937}, {"name": "Lennon Wall", "lat": 50.086251, "lng": 14.406792}, {"name": "Karel Zeman Museum", "lat": 50.086604, "lng": 14.407525}, {"name": "Lesser Town Bridge Tower", "lat": 50.087323, "lng": 14.40686}, {"name": "The Vrtba Garden", "lat": 50.086644, "lng": 14.402878}, {"name": "Czech Museum of Music", "lat": 50.084951, "lng": 14.404544}, {"name": "Petrin Tower", "lat": 50.083527, "lng": 14.395084}, {"name": "Petrin Hill", "lat": 50.081543, "lng": 14.396921}, {"name": "Petřín Gardens", "lat": 50.082704, "lng": 14.398733}, {"name": "Memorial to the Victims of Communism", "lat": 50.081154, "lng": 14.404114}, {"name": "Aircraft museum Prague-Kbely", "lat": 50.125256, "lng": 14.535524}, {"name": "Spanish Synagogue", "lat": 50.090148, "lng": 14.420847}, {"name": "The Old-New Synagogue", "lat": 50.090072, "lng": 14.418605}, {"name": "Vyšehrad", "lat": 50.064194, "lng": 14.418898}, {"name": "Museum of Prague", "lat": 50.089899, "lng": 14.438435}, {"name": "Letna Park", "lat": 50.095986, "lng": 14.415283}, {"name": "Královská obora Stromovka", "lat": 50.10633, "lng": 14.419129}];
+            const customIcon = L.icon({
+                iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32],
+            });
+            const destinationCenter = [50.086423, 14.415677];
+            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.038833, "maxCenterLng": 0.119847};
+            const markers = [];
+            locations.forEach(loc => {
+                markers.push(
+                    L.marker([loc.lat, loc.lng], {icon: customIcon}).addTo(map)
+                        .bindPopup(`<strong class="font-sans text-base text-gray-900">${loc.name}</strong>`)
+                );
+            });
+            const group = new L.featureGroup(markers);
+            let bounds = group.getBounds();
+            const ne = bounds.getNorthEast();
+            const sw = bounds.getSouthWest();
+            const latSpan = ne.lat - sw.lat;
+            const lngSpan = ne.lng - sw.lng;
+            const maxSpan = Math.max(latSpan, lngSpan);
+            const isDegenerate = latSpan < 1e-9 && lngSpan < 1e-9;
+            const markerCenterLat = (ne.lat + sw.lat) / 2;
+            const markerCenterLng = (ne.lng + sw.lng) / 2;
+            if (isDegenerate) {
+                const frameSpan = mapContext.compactRegion ? 0.026 : 0.045;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - frameSpan / 2, destinationCenter[1] - frameSpan / 2],
+                    [destinationCenter[0] + frameSpan / 2, destinationCenter[1] + frameSpan / 2]
+                );
+            } else if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                const expand = maxSpan < 0.12 ? 1.15 : 1.1;
+                const halfLat = latSpan / 2 * expand;
+                const halfLng = lngSpan / 2 * expand;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                const latReach = Math.max(mapContext.maxCenterLat, latSpan / 2) * 1.45;
+                const lngReach = Math.max(mapContext.maxCenterLng, lngSpan / 2) * 1.45;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - latReach, destinationCenter[1] - lngReach],
+                    [destinationCenter[0] + latReach, destinationCenter[1] + lngReach]
+                );
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                const halfLat = latSpan / 2 * 1.1;
+                const halfLng = lngSpan / 2 * 1.1;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                const frameSpan = Math.max(maxSpan * 4, 0.006);
+                bounds = L.latLngBounds(
+                    [markerCenterLat - frameSpan / 2, markerCenterLng - frameSpan / 2],
+                    [markerCenterLat + frameSpan / 2, markerCenterLng + frameSpan / 2]
+                );
+            }
+            const fitOptions = {};
+            if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                fitOptions.padding = maxSpan < 0.12
+                    ? [24, 24]
+                    : (maxSpan < 0.5 ? [24, 24] : [28, 28]);
+                fitOptions.maxZoom = maxSpan < 0.12
+                    ? 14
+                    : (maxSpan < 0.5 ? 10 : 9);
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                fitOptions.padding = [40, 40];
+                fitOptions.maxZoom = 8;
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                fitOptions.padding = [24, 24];
+            } else if (mapContext.denseUrban) {
+                fitOptions.padding = [18, 18];
+            } else if (mapContext.spreadUrban) {
+                fitOptions.padding = [20, 20];
+            } else if (locations.length >= 3 && maxSpan >= 0.02) {
+                fitOptions.padding = maxSpan >= 0.08 ? [20, 20] : [30, 30];
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                fitOptions.padding = [12, 12];
+                fitOptions.maxZoom = 16;
+            } else if (isDegenerate || locations.length === 1) {
+                fitOptions.padding = mapContext.compactRegion ? [16, 16] : [36, 36];
+                if (isDegenerate || maxSpan < 0.015) {
+                    fitOptions.maxZoom = mapContext.compactRegion ? 15 : 14;
+                }
+            } else {
+                fitOptions.padding = [50, 50];
+            }
+            map.fitBounds(bounds, fitOptions);
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                } else {
+                    scrollTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                }
+            });
+            scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        });
+    </script>
+
+    <button id="scrollTopBtn" class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-12 h-12 bg-neon-cyan text-deepblue-950 rounded-full shadow-[0_0_20px_rgba(0,240,255,0.4)] opacity-0 pointer-events-none transition-all duration-300 translate-y-4 hover:bg-white hover:scale-110" aria-label="Scroll to top">
+        <i class="ph ph-arrow-up text-xl font-bold"></i>
+    </button>
+</body>
+</html>

@@ -5,4 +5,42 @@ const blacklistText = `
 Genoa
 
 Turin
+
+Como
+
+Bergamo
+
+Pienza
+
+San Gimignano
+
+Assisi
+
+Palermo
+
+Alberobello
+
+Peschiera del Garda
+
+Modica
+
+Caltagirone
+
+Bari
+
+Bologna
+
+Siena
+
+Vicenza
+
+Mantua
+
+Cefalù
+
+Montecatini Terme
+
+Noto
+
+Catania
 `;

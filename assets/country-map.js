@@ -86,16 +86,14 @@
             defs.appendChild(filter);
         };
 
-        // Outer halo + mid glow + tight edge rim (stronger edge bloom)
+        // Match .country-map-legend-dot box-shadow (10px + 20px blurs)
         addFilter(MARKER_GLOW_FILTER_ACTIVE, "#22c55e", [
+            { stdDev: 0.42, opacity: 0.95 },
             { stdDev: 0.83, opacity: 0.55 },
-            { stdDev: 0.42, opacity: 1 },
-            { stdDev: 0.16, opacity: 1 },
         ]);
         addFilter(MARKER_GLOW_FILTER_INACTIVE, "#ef4444", [
+            { stdDev: 0.42, opacity: 0.9 },
             { stdDev: 0.83, opacity: 0.5 },
-            { stdDev: 0.42, opacity: 0.95 },
-            { stdDev: 0.16, opacity: 0.95 },
         ]);
     };
 
@@ -347,20 +345,21 @@
 
         resolveCountryGuide(country) {
             const guide = getCountryGuideByCode(country.code);
-            const url = country.url || guide?.url || null;
-            const hasGuide = Boolean(url || guide);
+            const url = guide?.url || null;
+            const hasGuide = Boolean(url);
             const activation = window.TGActivation;
             const active = activation
                 ? activation.isCodeVisuallyActive(country.code)
-                : Boolean(url || guide);
+                : Boolean(guide);
             return {
                 url,
                 hasGuide,
                 active,
                 continent:
-                    country.continent && country.continent !== "Unknown"
+                    guide?.continent ||
+                    (country.continent && country.continent !== "Unknown"
                         ? country.continent
-                        : guide?.continent || country.continent || "",
+                        : ""),
             };
         }
 
@@ -553,6 +552,9 @@
 
             const mapRoot = document.createElement("div");
             mapRoot.className = "country-map-root";
+            const strokeWidthScale = Number(this.mapData?.strokeWidthScale) || 1;
+            mapRoot.style.setProperty("--country-map-region-stroke", String(3.5 * strokeWidthScale));
+            mapRoot.style.setProperty("--country-map-neighbor-stroke", String(2.5 * strokeWidthScale));
 
             const svg = document.createElementNS(SVG_NS, "svg");
             svg.setAttribute("viewBox", viewBox);
@@ -890,8 +892,19 @@
             };
         }
 
+        isPanExemptTarget(target) {
+            if (!target || typeof target.closest !== "function") {
+                return false;
+            }
+            return Boolean(
+                target.closest(
+                    ".country-map-marker, .country-map-neighbor, .country-map-insets-screen, .country-map-zoom-btn",
+                ),
+            );
+        }
+
         handlePointerDown(event) {
-            if (event.target.closest(".country-map-zoom-btn")) {
+            if (this.isPanExemptTarget(event.target)) {
                 return;
             }
 
@@ -1094,6 +1107,9 @@
             group.addEventListener("click", (event) => {
                 event.preventDefault();
                 event.stopPropagation();
+                if (Date.now() < this.suppressClickUntil) {
+                    return;
+                }
                 if (meta.url) {
                     window.location.href = meta.url;
                 }

@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/homepage-activation.css">
     <link rel="stylesheet" href="../../assets/destination-activation.css">
+    <link rel="stylesheet" href="../../assets/country-map.css">
     <style>
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #060B19; }
@@ -58,19 +59,47 @@
             </div>
         </header>
 
-        <section id="regions-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-32"></section>
+        <section id="regions-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></section>
+        <section class="country-map-section animate-fade-in-down animation-delay-200" aria-labelledby="country-map-heading">
+            <div class="text-center mb-10">
+                <h2 id="country-map-heading" class="text-3xl md:text-4xl font-bold text-white mb-4">Explore France by Region</h2>
+                <p class="text-slate-400">Hover a region or destination to preview guides, then click a city to open its guide.</p>
+            </div>
+            <div class="country-map-panel">
+                <div id="country-map" style="width: 100%; height: 500px; z-index: 10;"></div>
+                <div class="absolute bottom-6 left-6 bg-deepblue-950/80 border border-deepblue-700/50 backdrop-blur-md rounded-xl p-4 shadow-xl z-20 flex flex-col gap-2 pointer-events-none">
+                    <div class="text-slate-300 text-sm flex items-center justify-between gap-6">
+                        <span class="inline-flex items-center gap-2">
+                            <span class="country-map-legend-dot country-map-legend-dot--active" aria-hidden="true"></span>
+                            <span>Active:</span>
+                        </span>
+                        <span id="country-map-legend-active" class="font-bold text-white">0</span>
+                    </div>
+                    <div class="text-slate-300 text-sm flex items-center justify-between gap-6">
+                        <span class="inline-flex items-center gap-2">
+                            <span class="country-map-legend-dot country-map-legend-dot--inactive" aria-hidden="true"></span>
+                            <span>Inactive:</span>
+                        </span>
+                        <span id="country-map-legend-inactive" class="font-bold text-white">0</span>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
         <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
     </footer>
     <script src="blacklist.js"></script>
+    <script src="../../assets/maps/france-data.js"></script>
+    <script src="../../assets/country-guides.js"></script>
+    <script src="../../assets/country-map.js"></script>
     <script src="../../assets/destination-activation.js"></script>
     <script>
-        const franceData = {"Lyon": ["Lyon"], "Paris": ["Paris"], "Bordeaux": ["Bordeaux"], "Nice": ["Nice"], "Marseille": ["Marseille"], "Montpellier": ["Montpellier"], "Rouen": ["Rouen"], "Toulouse": ["Toulouse"]};
-        const regionIcons = {};
-        const destinationPaths = {"Lyon": "lyon", "Paris": "paris", "Bordeaux": "bordeaux", "Nice": "nice", "Marseille": "marseille", "Montpellier": "montpellier", "Rouen": "rouen", "Toulouse": "toulouse"};
-        const hasRegions = false;
+        const franceData = {"Southern France": ["Avignon", "Carcassonne", "Grenoble", "Lyon", "Marseille", "Montpellier", "Nice", "Toulouse"], "Western France": ["Bordeaux", "Saint-Émilion"], "Northern France": ["Caen", "Le Havre", "Lille", "Mont Saint-Michel", "Paris", "Provins", "Rouen"], "Eastern France": ["Dijon", "Metz", "Nancy", "Reims", "Strasbourg"]};
+        const regionIcons = {"Southern France": "ph-waves", "Western France": "ph-wine", "Northern France": "ph-bank", "Eastern France": "ph-buildings"};
+        const destinationPaths = {"Avignon": "avignon", "Carcassonne": "carcassonne", "Grenoble": "grenoble", "Lyon": "lyon", "Marseille": "marseille", "Montpellier": "montpellier", "Nice": "nice", "Toulouse": "toulouse", "Bordeaux": "bordeaux", "Saint-Émilion": "saint-emilion", "Caen": "caen", "Le Havre": "le-havre", "Lille": "lille", "Mont Saint-Michel": "mont-saint-michel", "Paris": "paris", "Provins": "provins", "Rouen": "rouen", "Dijon": "dijon", "Metz": "metz", "Nancy": "nancy", "Reims": "reims", "Strasbourg": "strasbourg"};
+        const hasRegions = true;
         const countryIso2 = "FR";
 
         const normalizeText = (text) => {
@@ -97,6 +126,20 @@
                 normalizeText,
                 destinationUrl,
             });
+            if (hasRegions) {
+                await TGCountryMap.init({
+                    selector: '#country-map',
+                    mapId: "france",
+                    countryName: "France",
+                    countryData: franceData,
+                    destinationPaths,
+                    hasRegions,
+                    iso2: countryIso2,
+                    flagPath: "../../assets/flags/w40/fr.png",
+                    assetsBase: "../../assets/",
+                    activation: TGDestinationActivation,
+                });
+            }
             TGDestinationActivation.setupSearch();
             const scrollTopBtn = document.getElementById('scrollTopBtn');
             window.addEventListener('scroll', () => {

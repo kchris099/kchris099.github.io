@@ -63,6 +63,12 @@ Essen
 Dortmund
 
 Münster
+
+Kiel
+
+Regensburg
+
+Bad Kissingen
 `;
 
 

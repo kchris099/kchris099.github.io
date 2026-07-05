@@ -10,4 +10,22 @@ Bilbao
 Zaragoza
 
 Valencia
+
+Gijón
+
+Oviedo
+
+Vigo
+
+Burgos
+
+León
+
+Valladolid
+
+Salamanca
+
+Santander
+
+Cordoba
 `;

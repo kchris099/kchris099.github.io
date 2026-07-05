@@ -3,4 +3,10 @@
 
 const blacklistText = `
 Zagreb
+
+Rijeka
+
+Split
+
+Trogir
 `;

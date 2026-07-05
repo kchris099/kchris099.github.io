@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/homepage-activation.css">
     <link rel="stylesheet" href="../../assets/destination-activation.css">
+    <link rel="stylesheet" href="../../assets/country-map.css">
     <style>
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #060B19; }
@@ -58,19 +59,47 @@
             </div>
         </header>
 
-        <section id="regions-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-32"></section>
+        <section id="regions-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></section>
+        <section class="country-map-section animate-fade-in-down animation-delay-200" aria-labelledby="country-map-heading">
+            <div class="text-center mb-10">
+                <h2 id="country-map-heading" class="text-3xl md:text-4xl font-bold text-white mb-4">Explore United Kingdom by Region</h2>
+                <p class="text-slate-400">Hover a region or destination to preview guides, then click a city to open its guide.</p>
+            </div>
+            <div class="country-map-panel">
+                <div id="country-map" style="width: 100%; height: 500px; z-index: 10;"></div>
+                <div class="absolute bottom-6 left-6 bg-deepblue-950/80 border border-deepblue-700/50 backdrop-blur-md rounded-xl p-4 shadow-xl z-20 flex flex-col gap-2 pointer-events-none">
+                    <div class="text-slate-300 text-sm flex items-center justify-between gap-6">
+                        <span class="inline-flex items-center gap-2">
+                            <span class="country-map-legend-dot country-map-legend-dot--active" aria-hidden="true"></span>
+                            <span>Active:</span>
+                        </span>
+                        <span id="country-map-legend-active" class="font-bold text-white">0</span>
+                    </div>
+                    <div class="text-slate-300 text-sm flex items-center justify-between gap-6">
+                        <span class="inline-flex items-center gap-2">
+                            <span class="country-map-legend-dot country-map-legend-dot--inactive" aria-hidden="true"></span>
+                            <span>Inactive:</span>
+                        </span>
+                        <span id="country-map-legend-inactive" class="font-bold text-white">0</span>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
         <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
     </footer>
     <script src="blacklist.js"></script>
+    <script src="../../assets/maps/united-kingdom-data.js"></script>
+    <script src="../../assets/country-guides.js"></script>
+    <script src="../../assets/country-map.js"></script>
     <script src="../../assets/destination-activation.js"></script>
     <script>
-        const unitedkingdomData = {"Belfast": ["Belfast"], "Cardiff": ["Cardiff"], "Edinburgh": ["Edinburgh"], "Glasgow": ["Glasgow"], "Liverpool": ["Liverpool"], "London": ["London"]};
-        const regionIcons = {};
-        const destinationPaths = {"Belfast": "belfast", "Cardiff": "cardiff", "Edinburgh": "edinburgh", "Glasgow": "glasgow", "Liverpool": "liverpool", "London": "london"};
-        const hasRegions = false;
+        const unitedkingdomData = {"England": ["Bath", "Liverpool", "London", "Saltaire"], "Northern Ireland": ["Belfast"], "Wales": ["Cardiff"], "Scotland": ["Edinburgh", "Glasgow"]};
+        const regionIcons = {"England": "ph-crown", "Northern Ireland": "ph-anchor", "Wales": "ph-tree-evergreen", "Scotland": "ph-mountains"};
+        const destinationPaths = {"Bath": "bath", "Liverpool": "liverpool", "London": "london", "Saltaire": "saltaire", "Belfast": "belfast", "Cardiff": "cardiff", "Edinburgh": "edinburgh", "Glasgow": "glasgow"};
+        const hasRegions = true;
         const countryIso2 = "GB";
 
         const normalizeText = (text) => {
@@ -97,6 +126,20 @@
                 normalizeText,
                 destinationUrl,
             });
+            if (hasRegions) {
+                await TGCountryMap.init({
+                    selector: '#country-map',
+                    mapId: "united-kingdom",
+                    countryName: "United Kingdom",
+                    countryData: unitedkingdomData,
+                    destinationPaths,
+                    hasRegions,
+                    iso2: countryIso2,
+                    flagPath: "../../assets/flags/w40/gb.png",
+                    assetsBase: "../../assets/",
+                    activation: TGDestinationActivation,
+                });
+            }
             TGDestinationActivation.setupSearch();
             const scrollTopBtn = document.getElementById('scrollTopBtn');
             window.addEventListener('scroll', () => {
