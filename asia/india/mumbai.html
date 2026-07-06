@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mumbai Guide | Global Explorer Guides</title>
+    <link rel="stylesheet" href="../../assets/tailwind.css">
+    <link rel="stylesheet" href="../../assets/outfit.css">
+    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
+    <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
+    <link rel="stylesheet" href="../../assets/homepage-activation.css">
+    <link rel="stylesheet" href="../../assets/destination-activation.css">
+    <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
+    <script src="../../assets/leaflet/leaflet.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #060B19; }
+        ::-webkit-scrollbar-thumb { background: #1E336B; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0070FF; }
+        .leaflet-popup-content-wrapper { background-color: #fff; color: #333; border-radius: 8px; box-shadow: 0 3px 14px rgba(0,0,0,0.4); }
+        .leaflet-popup-tip { background-color: #fff; }
+    </style>
+</head>
+<body class="bg-deepblue-950 text-slate-200 font-sans min-h-screen relative overflow-x-hidden">
+    <div class="absolute top-0 left-0 w-full h-[450px] md:h-[500px] z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50" style="background-image: url('images/mumbai_hero.jpg')"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-deepblue-950/10 via-deepblue-950/60 to-deepblue-950"></div>
+    </div>
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon-purple/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neon-cyan/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <main class="container mx-auto px-4 py-8 md:py-16 relative z-20 max-w-5xl">
+        <nav class="mb-12 animate-fade-in-down flex flex-wrap items-center gap-4">
+            <a href="../../index.html" class="flex items-center justify-center w-11 h-11 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0" title="Back to Home">
+                <i class="ph ph-house text-xl group-hover:scale-110 transition-transform"></i>
+            </a>
+            <a href="india.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0">
+                <i class="ph ph-arrow-left text-lg group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-medium text-sm">Back to India</span>
+            </a>
+            <div class="ml-auto flex items-center gap-3 bg-deepblue-900/40 border border-deepblue-700/50 rounded-full px-4 py-2 backdrop-blur-sm shadow-inner shrink-0">
+                <img src="../../assets/flags/w40/in.png" alt="India flag" class="w-6 h-auto rounded-[2px] shadow-sm">
+                <div class="flex items-center gap-2 text-sm font-medium tracking-wide">
+                    <span class="text-slate-200 uppercase text-xs tracking-wider font-bold">India</span>
+                    <span class="text-deepblue-500 text-xs">&rsaquo;</span>
+                    <span class="text-neon-cyan text-xs">Mumbai</span>
+                </div>
+            </div>
+        </nav>
+
+        <header class="mb-16 animate-fade-in-down animation-delay-100 text-center">
+            <button
+                type="button"
+                id="destination-active-toggle"
+                class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
+                data-iso2="IN"
+                data-slug="mumbai"
+                data-active="false"
+                data-interactive="true"
+                aria-label="Toggle Mumbai visibility on India guide"
+                aria-pressed="false"
+            >
+                <i class="ph ph-map-pin text-4xl text-slate-500 pointer-events-none" aria-hidden="true"></i>
+            </button>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple pb-4">
+                Explore Mumbai
+            </h1>
+            <div class="bg-deepblue-900/40 border border-deepblue-800 rounded-3xl p-8 md:p-10 text-left backdrop-blur-sm mt-10">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                    <i class="ph ph-scroll text-neon-cyan"></i> A Brief History
+                </h2>
+                <p class="text-lg text-slate-400 font-light leading-relaxed">Mumbai grew from Koli fishing villages into a major port under the East India Company and British Raj. Victorian Gothic railway terminals, art deco seafront apartments, and Gateway of India arch record colonial trade, nationalist politics, and post-independence growth as India&#x27;s financial capital. Marine Drive art deco and Elephanta ferry landings extend harbour commerce along the Arabian Sea rim.</p>
+            </div>
+        </header>
+
+        <section class="mb-16 animate-fade-in-down" style="animation-delay: 0.2s;">
+            <h2 class="text-3xl font-bold text-white mb-6">Attractions Map</h2>
+            <div id="map" class="h-[400px] w-full rounded-3xl border border-deepblue-700 shadow-2xl z-10 relative"></div>
+        </section>
+
+        <section class="flex flex-col gap-6 pb-20 animate-fade-in-down" style="animation-delay: 0.3s;">
+            <h2 class="text-3xl font-bold text-white mb-2">Top Sights & Activities</h2>
+            
+            <!-- 1. Elephanta Caves -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mumbai_1.jpg" alt="Elephanta Caves" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ₹600
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Elephanta Caves</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Elephanta Caves is a 7th-century cave temple located on an island near Mumbai. The city offers a plethora of tourist attractions, including Haji Ali Dargah, Girgaoum Chowpatty, and Siddhivinayak Temple. Visitors can find budget-friendly accommodations in the area.</p>
+                </div>
+            </div>
+
+            <!-- 2. Chhatrapati Shivaji Maharaj Statue -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mumbai_2.jpg" alt="Chhatrapati Shivaji Maharaj Statue" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Chhatrapati Shivaji Maharaj Statue</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Chhatrapati Shivaji Maharaj Statue is listed among principal sites for Mumbai within India. Municipal and regional heritage listings document its place in the historic centre and travellers routes through Mumbai. Chhatrapati Shivaji Maharaj Statue is listed among principal sites for Mumbai within India.</p>
+                </div>
+            </div>
+
+            <!-- 3. Haji Ali Dargah -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mumbai_3.jpg" alt="Haji Ali Dargah" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Haji Ali Dargah</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Haji Ali Dargah is a renowned Mughal-style island mausoleum in Mumbai, housing the tomb of Pir Haji Ali Shah Bukhari, a revered Muslim saint. The site offers exquisite grandeur and beauty, attracting tourists to explore its religious significance and architectural splendor. Situated on an island, the dargah provides a captivating view at sunset as sunlight reflects off the ocean and illuminates the coastal roads.</p>
+                </div>
+            </div>
+
+            <!-- 4. Bandra Fort -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mumbai_4.jpg" alt="Bandra Fort" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Bandra Fort</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Bandra Fort, also known as Castella de Aguada, is a captivating piece of history nestled in the Bandra area of Mumbai. Built by the Portuguese in 1640, this fort served as a watchtower overlooking Mahim Bay and offers views of the Arabian Sea and Worli islands. The rocky pathways lead you through its storied past while providing backdrops for photography enthusiasts.</p>
+                </div>
+            </div>
+
+            <!-- 5. Band Stand -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mumbai_5.jpg" alt="Band Stand" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Band Stand</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Band Stand is listed among principal sites for Mumbai within India. Municipal and regional heritage listings document its place in the historic centre and travellers routes through Mumbai. Band Stand is listed among principal sites for Mumbai within India.</p>
+                </div>
+            </div>
+
+            <!-- 6. Basilica of Our Lady of the Mount (Bandra, Mumbai) -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mumbai_6.jpg" alt="Basilica of Our Lady of the Mount (Bandra, Mumbai)" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Basilica of Our Lady of the Mount (Bandra, Mumbai)</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Basilica of Our Lady of the Mount, also known as Mount Mary Basilica, is a 16th-century Catholic church located in Mumbai. The church holds the annual feast of the Blessed Virgin Mary on September 8, marking the start of the weeklong Bandra Fair. This event attracts numerous tourists and pilgrims who visit temporary shops surrounding the church to purchase candles for healing purposes.</p>
+                </div>
+            </div>
+
+            <!-- 7. Worli Fort -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mumbai_7.jpg" alt="Worli Fort" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Worli Fort</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Worli Fort, a 17th-century British-built fortress located in Mumbai, offers sea views from its walls. Situated near the Worli fishing village, this historic site was originally constructed to protect the coast around Mahim Bay and Worli. The fort&#x27;s strategic location made it a hideout for pirates in the past. Today, it is surrounded by local children playing cricket and visited by tourists seeking a glimpse of history despite its somewhat inconvenient access.</p>
+                </div>
+            </div>
+
+            <!-- 8. Bandra Worli Sea Link -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mumbai_8.jpg" alt="Bandra Worli Sea Link" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Bandra Worli Sea Link</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">If you&#x27;re a fan of scenic drives, the Bandra-Worli Sea Link is a must-visit marvel of modern engineering in Mumbai. This steel bridge connects Bandra to Worli, cutting down travel time significantly. The bridge looks particularly at night when it&#x27;s illuminated by golden lights. Driving on this bridge with the sea on both sides feels like something out of a car commercial and makes for an experience, especially after dark.</p>
+                </div>
+            </div>
+
+            <!-- 9. ISKCON Temple, Juhu -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mumbai_9.jpg" alt="ISKCON Temple, Juhu" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">ISKCON Temple, Juhu</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The ISKCON Temple, Juhu, Mumbai, also known as Sri Radha Rasabihari ji Temple, is a Hindu temple located in the Juhu area of Mumbai. Spanning 4 acres near the beautiful Juhu Beach, it is dedicated to Lord Krishna and is -visited temples in Mumbai. The temple compound includes a monumental marble temple and a vegetarian buffet restaurant.</p>
+                </div>
+            </div>
+
+            <!-- 10. Prithvi Theatre -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mumbai_10.jpg" alt="Prithvi Theatre" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Prithvi Theatre</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Prithvi Theatre, established in 1975 as a tribute to the legendary Prithviraj Kapoor, is a revered cultural institution located in the neighborhood of Juhu. The permanent building was constructed by Shashi Kapoor in 1978, but its origins trace back to 1944 when Prithviraj Kapoor founded Prithvi Theatres. This cozy theater with a capacity of hardly 200 specializes in presenting Hindi works and offers a welcoming atmosphere for theater enthusiasts.</p>
+                </div>
+            </div>
+
+            <!-- 11. जुहू चौपाटी -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mumbai_11.jpg" alt="जुहू चौपाटी" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">जुहू चौपाटी</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">जुहू चौपाटी is listed among principal sites for Mumbai within India. Municipal and regional heritage listings document its place in the historic centre and travellers routes through Mumbai. जुहू चौपाटी is listed among principal sites for Mumbai within India.</p>
+                </div>
+            </div>
+
+            <!-- 12. Shree Siddhivinayak Temple -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mumbai_12.jpg" alt="Shree Siddhivinayak Temple" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Shree Siddhivinayak Temple</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Shree Siddhivinayak Temple, located in Mumbai, is a grand Hindu temple dedicated to Lord Ganesha. It has gained popularity over the years and continues to attract tourists and devotees alike. The temple houses numerous statues of the elephant lord Ganesh and is known for its opulent gold-inlaid interior, making it one of the wealthiest temples in India. Devotees of Ganesha often make pilgrimages to this sacred site to seek blessings and offer prayers.</p>
+                </div>
+            </div>
+
+            <!-- 13. Chaityabhoomi Dr. Babasaheb Ambedkar Smarak -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mumbai_13.jpg" alt="Chaityabhoomi Dr. Babasaheb Ambedkar Smarak" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Chaityabhoomi Dr. Babasaheb Ambedkar Smarak</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Chaityabhoomi Dr. Babasaheb Ambedkar Smarak is listed among principal sites for Mumbai within India. Municipal and regional heritage listings document its place in the historic centre and travellers routes through Mumbai. Chaityabhoomi Dr. Babasaheb Ambedkar Smarak is listed among principal sites for Mumbai within India.</p>
+                </div>
+            </div>
+
+            <!-- 14. Veer Baji Prabhu Udyan -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mumbai_14.jpg" alt="Veer Baji Prabhu Udyan" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Veer Baji Prabhu Udyan</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Veer Baji Prabhu Udyan is listed among principal sites for Mumbai within India. Municipal and regional heritage listings document its place in the historic centre and travellers routes through Mumbai. Veer Baji Prabhu Udyan is listed among principal sites for Mumbai within India.</p>
+                </div>
+            </div>
+
+            <!-- 15. Chhatrapati Shivaji Maharaj Park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mumbai_15.jpg" alt="Chhatrapati Shivaji Maharaj Park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Chhatrapati Shivaji Maharaj Park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Chatrapati Shivaji Maharaj Park, established in 1925, is the largest park in Mumbai. It spans 27 acres and is located in the central Dadar neighborhood. The park features cricket and soccer clubs, a pool, and walking paths. It holds historical significance as it has been the site of gatherings for freedom fighters and political rallies.</p>
+                </div>
+            </div>
+
+            <!-- 16. Mancherji Joshi Five Gardens -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mumbai_16.jpg" alt="Mancherji Joshi Five Gardens" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Mancherji Joshi Five Gardens</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Mancherji Joshi Five Gardens is listed among principal sites for Mumbai within India. Municipal and regional heritage listings document its place in the historic centre and travellers routes through Mumbai. Mancherji Joshi Five Gardens is listed among principal sites for Mumbai within India.</p>
+                </div>
+            </div>
+
+            <!-- 17. BAPS Shri Swaminarayan Mandir, Mumbai -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mumbai_17.jpg" alt="BAPS Shri Swaminarayan Mandir, Mumbai" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">BAPS Shri Swaminarayan Mandir, Mumbai</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">BAPS Shri Swaminarayan Mandir, Mumbai is listed among principal sites for Mumbai within India. Municipal and regional heritage listings document its place in the historic centre and travellers routes through Mumbai. BAPS Shri Swaminarayan Mandir, Mumbai is listed among principal sites for Mumbai within India.</p>
+                </div>
+            </div>
+
+            <!-- 18. Sion Fort -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mumbai_18.jpg" alt="Sion Fort" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Sion Fort</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Shiv Fort, built between 1669 and 1677, stands in ruins atop a hill offering panoramic views. Visitors are often amazed by the vistas from the fort. Despite being relatively unknown, it is a great spot for photography and a peaceful trip or romantic outing. The fort is open from 8 am to 2 pm and then again from 4 pm to 8 pm, making it accessible for most of the day.</p>
+                </div>
+            </div>
+
+            <!-- 19. Kanheri Caves -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mumbai_19.jpg" alt="Kanheri Caves" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ₹500
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Kanheri Caves</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled within the Sanjay Gandhi National Park in Mumbai, India, the Kanheri Caves are a remarkable testament to ancient Buddhist architecture and art. Carved by monks over 2,000 years ago, these 109 caves feature rock-hewn temples adorned with intricate sculptures, paintings of Buddha, and inscriptions dating from the 1st century BCE to the 10th century AD.</p>
+                </div>
+            </div>
+
+            <!-- 20. Mahakavi Kalidas Natyamandir -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mumbai_20.jpg" alt="Mahakavi Kalidas Natyamandir" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Mahakavi Kalidas Natyamandir</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Located in Mulund, Mumbai, the Mahakavi Kalidas Natyamandir is a prominent cultural center and one of the city&#x27;s oldest theaters. Despite its grand inauguration by Shiv Sena chief Uddhav Thackeray, the venue has yet to host any shows due to a dispute between the BMC and BKLP. However, there are indications that this may soon change as efforts are being made to resolve the issue.</p>
+                </div>
+            </div>
+
+            <!-- 21. Priyadarshini Indira Gandhi Sports Complex -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mumbai_21.jpg" alt="Priyadarshini Indira Gandhi Sports Complex" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Priyadarshini Indira Gandhi Sports Complex</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Priyadarshi Indira Gandhi Sports Complex is the largest sports facility in Mumbai, offering a wide range of amenities such as swimming pool, tennis and badminton courts, and a well-equipped gym with cardio section. The complex also provides coaching classes for various sports including badminton, tennis, swimming, football, and karate. Additionally, it features open facilities that are occasionally used for events like weddings.</p>
+                </div>
+            </div>
+
+            <!-- 22. KidZania Mumbai -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mumbai_22.jpg" alt="KidZania Mumbai" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ₹1400
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">KidZania Mumbai</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">KidZania Mumbai is an indoor amusement park located in R City Mall, Ghatkopar, designed to inspire and motivate children through role-play activities. Unlike traditional amusement parks, KidZania doesn&#x27;t have automatic rides or roller coasters. Instead, it offers a child-size city where kids can explore various professions and engage in fun tasks. This unique blend of entertainment and learning allows children to develop skills while enjoying a safe and engaging environment.</p>
+                </div>
+            </div>
+
+            <!-- 23. Powai Lake -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mumbai_23.jpg" alt="Powai Lake" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Powai Lake</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Powai Lake, a 19th-century artificial lake in Mumbai, offers a serene escape with boating and fishing opportunities. Surrounded by lush greenery, the lake is home to migratory birds and crocodiles. Visitors can enjoy a long jogging track, a musical fountain, and children&#x27;s play areas. This popular destination also provides budget-friendly accommodation options nearby.</p>
+                </div>
+            </div>
+
+            <!-- 24. Snow World -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mumbai_24.jpg" alt="Snow World" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ₹900
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Snow World</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">If you&#x27;re looking for a unique escape from the sweltering heat of Mumbai, look no further than Snow World, an enchanting indoor snow theme park nestled in Phoenix Market City, Kurla. This family-friendly destination offers a delightful array of winter activities such as ice skating, sledding, and snowboarding. Imagine spending a day bundled up in cozy attire while enjoying thrilling snowball fights and experiencing the magic of realistic snowfall in the Snow Dance arena—all at a frosty -10°C!.</p>
+                </div>
+            </div>
+
+            <!-- 25. Bandra Sea View -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mumbai_25.jpg" alt="Bandra Sea View" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Bandra Sea View</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Bandra Sea View is listed among principal sites for Mumbai within India. Municipal and regional heritage listings document its place in the historic centre and travellers routes through Mumbai. Bandra Sea View is listed among principal sites for Mumbai within India.</p>
+                </div>
+            </div>
+
+            <!-- 26. Mahakali Caves -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mumbai_26.jpg" alt="Mahakali Caves" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Mahakali Caves</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">In Mumbai, India, the Mahakali Caves are an ancient archaeological site featuring 19 hillside caves carved out of solid black basalt between the 1st century BCE and 6th century CE. Also known as Kondivite Caves, these stone monastery caves once housed Buddhist monks and feature Buddha figures, Stupas, and carved idols of Lord Buddha.</p>
+                </div>
+            </div>
+
+            <!-- 27. Jogeshwari Caves -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mumbai_27.jpg" alt="Jogeshwari Caves" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Jogeshwari Caves</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Jogeshwari Caves is listed among principal sites for Mumbai within India. Municipal and regional heritage listings document its place in the historic centre and travellers routes through Mumbai. Jogeshwari Caves is listed among principal sites for Mumbai within India.</p>
+                </div>
+            </div>
+
+            <!-- 28. Aksa Beach -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/mumbai_28.jpg" alt="Aksa Beach" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Aksa Beach</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Aksa Beach, located in the western suburbs of Mumbai, is a popular destination for both locals and tourists. It offers a serene retreat from the bustling city life and boasts one of the longest coastlines in the area. Visitors can enjoy shallow waters, sunsets, and a variety of street food vendors offering local delicacies like bhelpuri, pav bhaji, and South Indian dishes.</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
+        <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+    </footer>    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const map = L.map('map').setView([19.073449, 72.856702], 14);
+            L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                attribution: '&copy; Google Maps',
+                maxZoom: 20
+            }).addTo(map);
+            const locations = [{"name": "Elephanta Caves", "lat": 18.963347, "lng": 72.931486}, {"name": "Chhatrapati Shivaji Maharaj Statue", "lat": 19.0458365, "lng": 72.9095358}, {"name": "Haji Ali Dargah", "lat": 18.982794, "lng": 72.809}, {"name": "Bandra Fort", "lat": 19.041889, "lng": 72.818359}, {"name": "Band Stand", "lat": 19.0451833, "lng": 72.81908659999999}, {"name": "Basilica of Our Lady of the Mount (Bandra, Mumbai)", "lat": 19.046558, "lng": 72.822475}, {"name": "Worli Fort", "lat": 19.023713, "lng": 72.8168}, {"name": "Bandra Worli Sea Link", "lat": 19.033856, "lng": 72.816723}, {"name": "ISKCON Temple, Juhu", "lat": 19.113016, "lng": 72.826576}, {"name": "Prithvi Theatre", "lat": 19.10592, "lng": 72.825718}, {"name": "जुहू चौपाटी", "lat": 19.0977745, "lng": 72.82623579999999}, {"name": "Shree Siddhivinayak Temple", "lat": 19.016954, "lng": 72.830394}, {"name": "Chaityabhoomi Dr. Babasaheb Ambedkar Smarak", "lat": 19.0261569, "lng": 72.8345848}, {"name": "Veer Baji Prabhu Udyan", "lat": 19.0267567, "lng": 72.8352943}, {"name": "Chhatrapati Shivaji Maharaj Park", "lat": 19.0268, "lng": 72.838228}, {"name": "Mancherji Joshi Five Gardens", "lat": 19.0201612, "lng": 72.8537501}, {"name": "BAPS Shri Swaminarayan Mandir, Mumbai", "lat": 19.0177255, "lng": 72.8443667}, {"name": "Sion Fort", "lat": 19.046592, "lng": 72.867682}, {"name": "Kanheri Caves", "lat": 19.20786, "lng": 72.904807}, {"name": "Mahakavi Kalidas Natyamandir", "lat": 19.173295, "lng": 72.949419}, {"name": "Priyadarshini Indira Gandhi Sports Complex", "lat": 19.174428, "lng": 72.949088}, {"name": "KidZania Mumbai", "lat": 19.099801, "lng": 72.916986}, {"name": "Powai Lake", "lat": 19.127266, "lng": 72.90485}, {"name": "Snow World", "lat": 19.08662, "lng": 72.88855}, {"name": "Bandra Sea View", "lat": 19.061267, "lng": 72.821968}, {"name": "Mahakali Caves", "lat": 19.13008, "lng": 72.873174}, {"name": "Jogeshwari Caves", "lat": 19.138957, "lng": 72.857173}, {"name": "Aksa Beach", "lat": 19.175961, "lng": 72.795351}];
+            const customIcon = L.icon({
+                iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32],
+            });
+            const destinationCenter = [19.073449, 72.856702];
+            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": true, "compactRegion": false, "denseUrban": false, "maxCenterLat": 0.134411, "maxCenterLng": 0.092717};
+            const markers = [];
+            locations.forEach(loc => {
+                markers.push(
+                    L.marker([loc.lat, loc.lng], {icon: customIcon}).addTo(map)
+                        .bindPopup(`<strong class="font-sans text-base text-gray-900">${loc.name}</strong>`)
+                );
+            });
+            const group = new L.featureGroup(markers);
+            let bounds = group.getBounds();
+            const ne = bounds.getNorthEast();
+            const sw = bounds.getSouthWest();
+            const latSpan = ne.lat - sw.lat;
+            const lngSpan = ne.lng - sw.lng;
+            const maxSpan = Math.max(latSpan, lngSpan);
+            const isDegenerate = latSpan < 1e-9 && lngSpan < 1e-9;
+            const markerCenterLat = (ne.lat + sw.lat) / 2;
+            const markerCenterLng = (ne.lng + sw.lng) / 2;
+            if (isDegenerate) {
+                const frameSpan = mapContext.compactRegion ? 0.026 : 0.045;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - frameSpan / 2, destinationCenter[1] - frameSpan / 2],
+                    [destinationCenter[0] + frameSpan / 2, destinationCenter[1] + frameSpan / 2]
+                );
+            } else if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                const expand = maxSpan < 0.12 ? 1.15 : 1.1;
+                const halfLat = latSpan / 2 * expand;
+                const halfLng = lngSpan / 2 * expand;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                const latReach = Math.max(mapContext.maxCenterLat, latSpan / 2) * 1.45;
+                const lngReach = Math.max(mapContext.maxCenterLng, lngSpan / 2) * 1.45;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - latReach, destinationCenter[1] - lngReach],
+                    [destinationCenter[0] + latReach, destinationCenter[1] + lngReach]
+                );
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                const halfLat = latSpan / 2 * 1.1;
+                const halfLng = lngSpan / 2 * 1.1;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                const frameSpan = Math.max(maxSpan * 4, 0.006);
+                bounds = L.latLngBounds(
+                    [markerCenterLat - frameSpan / 2, markerCenterLng - frameSpan / 2],
+                    [markerCenterLat + frameSpan / 2, markerCenterLng + frameSpan / 2]
+                );
+            }
+            const fitOptions = {};
+            if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                fitOptions.padding = maxSpan < 0.12
+                    ? [24, 24]
+                    : (maxSpan < 0.5 ? [24, 24] : [28, 28]);
+                fitOptions.maxZoom = maxSpan < 0.12
+                    ? 14
+                    : (maxSpan < 0.5 ? 10 : 9);
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                fitOptions.padding = [40, 40];
+                fitOptions.maxZoom = 8;
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                fitOptions.padding = [24, 24];
+            } else if (mapContext.denseUrban) {
+                fitOptions.padding = [18, 18];
+            } else if (mapContext.spreadUrban) {
+                fitOptions.padding = [20, 20];
+            } else if (locations.length >= 3 && maxSpan >= 0.02) {
+                fitOptions.padding = maxSpan >= 0.08 ? [20, 20] : [30, 30];
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                fitOptions.padding = [12, 12];
+                fitOptions.maxZoom = 16;
+            } else if (isDegenerate || locations.length === 1) {
+                fitOptions.padding = mapContext.compactRegion ? [16, 16] : [36, 36];
+                if (isDegenerate || maxSpan < 0.015) {
+                    fitOptions.maxZoom = mapContext.compactRegion ? 15 : 14;
+                }
+            } else {
+                fitOptions.padding = [50, 50];
+            }
+            map.fitBounds(bounds, fitOptions);
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                } else {
+                    scrollTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                }
+            });
+            scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        });
+    </script>
+
+    <button id="scrollTopBtn" class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-12 h-12 bg-neon-cyan text-deepblue-950 rounded-full shadow-[0_0_20px_rgba(0,240,255,0.4)] opacity-0 pointer-events-none transition-all duration-300 translate-y-4 hover:bg-white hover:scale-110" aria-label="Scroll to top">
+        <i class="ph ph-arrow-up text-xl font-bold"></i>
+    </button>
+</body>
+</html>

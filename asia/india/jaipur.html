@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jaipur Guide | Global Explorer Guides</title>
+    <link rel="stylesheet" href="../../assets/tailwind.css">
+    <link rel="stylesheet" href="../../assets/outfit.css">
+    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
+    <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
+    <link rel="stylesheet" href="../../assets/homepage-activation.css">
+    <link rel="stylesheet" href="../../assets/destination-activation.css">
+    <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
+    <script src="../../assets/leaflet/leaflet.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #060B19; }
+        ::-webkit-scrollbar-thumb { background: #1E336B; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0070FF; }
+        .leaflet-popup-content-wrapper { background-color: #fff; color: #333; border-radius: 8px; box-shadow: 0 3px 14px rgba(0,0,0,0.4); }
+        .leaflet-popup-tip { background-color: #fff; }
+    </style>
+</head>
+<body class="bg-deepblue-950 text-slate-200 font-sans min-h-screen relative overflow-x-hidden">
+    <div class="absolute top-0 left-0 w-full h-[450px] md:h-[500px] z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50" style="background-image: url('images/jaipur_hero.jpg')"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-deepblue-950/10 via-deepblue-950/60 to-deepblue-950"></div>
+    </div>
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon-purple/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neon-cyan/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <main class="container mx-auto px-4 py-8 md:py-16 relative z-20 max-w-5xl">
+        <nav class="mb-12 animate-fade-in-down flex flex-wrap items-center gap-4">
+            <a href="../../index.html" class="flex items-center justify-center w-11 h-11 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0" title="Back to Home">
+                <i class="ph ph-house text-xl group-hover:scale-110 transition-transform"></i>
+            </a>
+            <a href="india.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0">
+                <i class="ph ph-arrow-left text-lg group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-medium text-sm">Back to India</span>
+            </a>
+            <div class="ml-auto flex items-center gap-3 bg-deepblue-900/40 border border-deepblue-700/50 rounded-full px-4 py-2 backdrop-blur-sm shadow-inner shrink-0">
+                <img src="../../assets/flags/w40/in.png" alt="India flag" class="w-6 h-auto rounded-[2px] shadow-sm">
+                <div class="flex items-center gap-2 text-sm font-medium tracking-wide">
+                    <span class="text-slate-200 uppercase text-xs tracking-wider font-bold">India</span>
+                    <span class="text-deepblue-500 text-xs">&rsaquo;</span>
+                    <span class="text-neon-cyan text-xs">Jaipur</span>
+                </div>
+            </div>
+        </nav>
+
+        <header class="mb-16 animate-fade-in-down animation-delay-100 text-center">
+            <button
+                type="button"
+                id="destination-active-toggle"
+                class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
+                data-iso2="IN"
+                data-slug="jaipur"
+                data-active="false"
+                data-interactive="true"
+                aria-label="Toggle Jaipur visibility on India guide"
+                aria-pressed="false"
+            >
+                <i class="ph ph-map-pin text-4xl text-slate-500 pointer-events-none" aria-hidden="true"></i>
+            </button>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple pb-4">
+                Explore Jaipur
+            </h1>
+            <div class="bg-deepblue-900/40 border border-deepblue-800 rounded-3xl p-8 md:p-10 text-left backdrop-blur-sm mt-10">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                    <i class="ph ph-scroll text-neon-cyan"></i> A Brief History
+                </h2>
+                <p class="text-lg text-slate-400 font-light leading-relaxed">Jaipur was planned in 1727 by Maharaja Sawai Jai Singh II as a fortified Rajput capital with a grid of bazaars and palaces painted pink for a later royal visit. Hawa Mahal, Jantar Mantar, and Amber Fort record how astronomy, court ritual, and desert trade shaped Rajasthan&#x27;s principal city. City Palace courtyards and Nahargarh ridge forts frame Rajput capitals above the Aravalli hills.</p>
+            </div>
+        </header>
+
+        <section class="mb-16 animate-fade-in-down" style="animation-delay: 0.2s;">
+            <h2 class="text-3xl font-bold text-white mb-6">Attractions Map</h2>
+            <div id="map" class="h-[400px] w-full rounded-3xl border border-deepblue-700 shadow-2xl z-10 relative"></div>
+        </section>
+
+        <section class="flex flex-col gap-6 pb-20 animate-fade-in-down" style="animation-delay: 0.3s;">
+            <h2 class="text-3xl font-bold text-white mb-2">Top Sights & Activities</h2>
+            
+            <!-- 1. Shri Khole Ke Hanuman Ji Temple, Jaipur -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jaipur_1.jpg" alt="Shri Khole Ke Hanuman Ji Temple, Jaipur" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Shri Khole Ke Hanuman Ji Temple, Jaipur</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Shree Khole Ke Hanuman Ji ka Mandir, located in Laxman Dungri, Jaipur, is a historic temple dedicated to Lord Hanuman. It is considered one of the famous temples in Jaipur and is a must-visit spot for tourists. The temple&#x27;s inner sanctum can accommodate up to 500 devotees and offers panoramic views of the green surroundings from its location atop a hillock on the Delhi bypass.</p>
+                </div>
+            </div>
+
+            <!-- 2. Jal Mahal -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jaipur_2.jpg" alt="Jal Mahal" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Jal Mahal</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Jal Mahal, also known as the Water Palace, is a grand red sandstone palace situated in the middle of Man Sagar Lake in Jaipur. Built in the 18th century by Sawai Madho Singh, it was originally intended as a summer resort for the royal family and guests. The palace&#x27;s unique location makes it one of Jaipur&#x27;s most famous landmarks.</p>
+                </div>
+            </div>
+
+            <!-- 3. Birla Mandir, Jaipur -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jaipur_3.jpg" alt="Birla Mandir, Jaipur" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Birla Mandir, Jaipur</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Birla Mandir in Jaipur is a modern temple dedicated to the revered deities Laxmi Narayan. Nestled at the base of Moti Doongri, this architectural marvel was constructed in 1985 and showcases exquisite white marble adorned with intricate carvings. The temple features three grand domes, each symbolizing different paths within Hinduism, while its mesmerizing idols are carved from a single stone.</p>
+                </div>
+            </div>
+
+            <!-- 4. Moti Doongri Fort -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jaipur_4.jpg" alt="Moti Doongri Fort" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Moti Doongri Fort</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Perched atop the Moti Dungari hill, Moti Doongri Fort is a charming fortress that draws inspiration from a Scottish castle. This structure not only serves as a royal residence but also overlooks the revered Ganesh temple, making it an important spiritual site for many devotees who believe in its blessings.</p>
+                </div>
+            </div>
+
+            <!-- 5. Moti Dungri Ganesh Ji Temple -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jaipur_5.jpg" alt="Moti Dungri Ganesh Ji Temple" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Moti Dungri Ganesh Ji Temple</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled atop the picturesque Moti Doongri hill, the Moti Dungri Ganesh Ji Temple is a and serene destination that beautifully encapsulates Jaipur&#x27;s rich cultural heritage. This sacred site, dedicated to Lord Ganesha, boasts architecture and colorful decor that draws visitors from near and far. Located conveniently close to the majestic Moti Doongri Palace and just a short distance from Birla Temple, it serves as an important pilgrimage spot in the heart of Jaipur.</p>
+                </div>
+            </div>
+
+            <!-- 6. Hawa Mahal -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jaipur_6.jpg" alt="Hawa Mahal" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ₹600
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Hawa Mahal</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Hawa Mahal, often referred to as the &quot;Palace of Winds,&quot; is a architectural gem located in Jaipur, Rajasthan. Built in 1799 by Maharaja Sawai Pratap Singh, this five-story palace is renowned for its striking facade adorned with numerous small windows known as jharokhas. These intricately designed openings not only enhance the beauty of the structure but also serve a practical purpose by allowing cool breezes to flow through, making it an early form of natural air conditioning.</p>
+                </div>
+            </div>
+
+            <!-- 7. The City Palace -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jaipur_7.jpg" alt="The City Palace" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ₹1000
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">The City Palace</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The City Palace in Jaipur is an opulent 18th-century palace that once served as the residence of Maharaja Sawai Jai Singh II and is now a museum. It&#x27;s a popular historical attraction known for its beautiful collection of paintings, textile gallery, armory, Durbar hall, BaggiKhana, and SarvatoBhadraor (Diwan E-Khas) with exquisite architectural beauty.</p>
+                </div>
+            </div>
+
+            <!-- 8. Tripolia Gate -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jaipur_8.jpg" alt="Tripolia Gate" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Tripolia Gate</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Tripolia Gate is a significant landmark in Jaipur, located at the southern edge of the city palace. The gate derives its name from its three Pols, which are part of a single structure. It is surrounded by a bustling bazaar and features dramatic night lighting. This 18th-century palace entry gate is an important part of Tripolia Bazar and is particularly beautiful when illuminated at night.</p>
+                </div>
+            </div>
+
+            <!-- 9. Isarlat Sargasooli -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jaipur_9.jpg" alt="Isarlat Sargasooli" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ₹300
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Isarlat Sargasooli</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Isarlat Sargasooli, also known as Sargasuli, is an 18th-century minaret located in Jaipur. It stands tall in the midst of bustling local markets and offers panoramic views of the Pink City and its major monuments, including Nahargarh Fort, City Palace, Jantar Mantar, Hawa Mahal, and the old Vidhan Sabha.</p>
+                </div>
+            </div>
+
+            <!-- 10. Ajmeri Gate -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jaipur_10.jpg" alt="Ajmeri Gate" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Ajmeri Gate</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Ajmeri Gate is listed among principal sites for Jaipur within India. Municipal and regional heritage listings document its place in the historic centre and travellers routes through Jaipur. Ajmeri Gate is listed among principal sites for Jaipur within India.</p>
+                </div>
+            </div>
+
+            <!-- 11. Shri Radha Gopinath Ji Temple, Jaipur -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jaipur_11.jpg" alt="Shri Radha Gopinath Ji Temple, Jaipur" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Shri Radha Gopinath Ji Temple, Jaipur</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled in the old city of Jaipur, Shri Radha Gopinath Ji Temple is a captivating destination for devotees and travelers alike. This temple holds a fascinating history, as it houses an idol believed to have been crafted by Vajranabha, Lord Krishna&#x27;s grandson. Originally from Vrindavan, the deity was relocated during the Mughal era for protection and has graced its current location since the 18th century.</p>
+                </div>
+            </div>
+
+            <!-- 12. Sisodia Rani ka Bagh -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jaipur_12.jpg" alt="Sisodia Rani ka Bagh" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ₹200
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Sisodia Rani ka Bagh</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Sisodia Rani ka Bagh is a 18th-century palace surrounded by formal gardens, fountains, temples, and pavilions. It was built by Raja Sawai Singh as a symbol of love for his second queen, Sisodiya Rani. The garden showcases a blend of Indian and Mughal architecture with lush greenery, beautiful fountains, ponds, and flower beds.</p>
+                </div>
+            </div>
+
+            <!-- 13. BAPS Shri Swaminarayan Akshardham Mandir, Jaipur -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jaipur_13.jpg" alt="BAPS Shri Swaminarayan Akshardham Mandir, Jaipur" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">BAPS Shri Swaminarayan Akshardham Mandir, Jaipur</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Shree Akshardham Temple in Jaipur is a Hindu temple dedicated to the deity Narayan. Built at the beginning of the 21st century, it boasts intricate carvings, religious artworks, and statues of Hindu gods and goddesses. The temple sits amidst beautiful gardens with fountains, flowers, trees, and statues that make for a picturesque setting. This 23-acre complex showcases the intricacy of Hindu architecture with its stone carvings of deities and animals.</p>
+                </div>
+            </div>
+
+            <!-- 14. World Trade Park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jaipur_14.jpg" alt="World Trade Park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">World Trade Park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">World Trade Park is a newly established shopping center in Jaipur that has quickly become a favorite among locals and tourists. This upscale retail destination offers a unique shopping experience with its global-themed avenues of shops, featuring everything from skincare products to Indian and Western clothing, electronic items, and more. The architectural design of the mall is truly remarkable, creating an immersive environment reminiscent of the Arabian Nights.</p>
+                </div>
+            </div>
+
+            <!-- 15. Patrika Gate -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jaipur_15.jpg" alt="Patrika Gate" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Patrika Gate</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Patrika Gate is a gem in Jaipur that has recently gained fame on social media, yet it remains relatively undiscovered by many tourists. This modern architectural wonder serves as a gateway to the city&#x27;s rich culture, featuring stunningly colorful arches adorned with intricate murals that celebrate Rajasthan&#x27;s history and festivals.</p>
+                </div>
+            </div>
+
+            <!-- 16. Shree Digambar Jain Atishay Kshetra Mandir Sanghi Ji, Sanganer -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jaipur_16.jpg" alt="Shree Digambar Jain Atishay Kshetra Mandir Sanghi Ji, Sanganer" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Shree Digambar Jain Atishay Kshetra Mandir Sanghi Ji, Sanganer</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Shree Digambar Jain Atishay Kshetra Mandir Sanghi Ji, Sanganer is a significant Jain temple in Jaipur, known for its elaborate architecture and historical significance. This 10th-century temple is dedicated to Lord Adinath and features impressive red stone structures with intricate carvings. The temple also offers overnight accommodations and serves as a popular inclusion in Jaipur holiday packages.</p>
+                </div>
+            </div>
+
+            <!-- 17. Amber Palace -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jaipur_17.jpg" alt="Amber Palace" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ₹1000
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Amber Palace</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Amber Palace, also known as Amer Fort, is a architectural marvel located in Jaipur, Rajasthan. This magnificent fort showcases a blend of Hindu and Muslim design elements, making it a unique cultural landmark. Visitors can enjoy elephant rides that add to the enchanting experience of exploring this historical site. The fort&#x27;s intricate structures are built from various colored stones—milk white, light yellow, rose red, and pure white—which give it an amber-like appearance from afar.</p>
+                </div>
+            </div>
+
+            <!-- 18. Amer Fort -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jaipur_18.jpg" alt="Amer Fort" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ₹1000
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Amer Fort</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Amber Fort View offers a perspective of Jaipur, showcasing the impressive blend of Mughal and Rajput architecture. The fort, constructed in 1592 by Raja Man Singh, boasts elaborately mirrored rooms like Diwan-Aam and Sheesh Mahal, narrating tales of grandeur and bravery. While the climb to reach this vantage point may be challenging for beginners due to numerous stairs, the views from the top make it a memorable experience.</p>
+                </div>
+            </div>
+
+            <!-- 19. Panna Meena ka Kund -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jaipur_19.jpg" alt="Panna Meena ka Kund" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Panna Meena ka Kund</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Panna Meena ka Kund is a historic stepwell and rainwater catchment located near Amber Fort in Jaipur. Dating back to the 16th century, this architectural wonder features picturesque symmetrical stairways on three sides and a multi-story balcony on the fourth. It is a popular spot for photography, especially during monsoon rains when it transforms into a peaceful oasis.</p>
+                </div>
+            </div>
+
+            <!-- 20. Jaigarh Fort -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jaipur_20.jpg" alt="Jaigarh Fort" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ₹200
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Jaigarh Fort</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Jaigarh Fort, located in Jaipur, was built in the 18th century by Maharaja Sawai Jai Singh II to protect the Amber Fort complex. The fort spans 3 km in length and 1 km in breadth and offers views of Maota Lake and Amer Fort. It houses temples, residential complexes, and well-preserved water reservoirs. One of its main attractions is the Jaivana Cannon, known as the world&#x27;s largest cannon on wheels.</p>
+                </div>
+            </div>
+
+            <!-- 21. Nahargarh Biological Park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jaipur_21.jpg" alt="Nahargarh Biological Park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ₹50
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Nahargarh Biological Park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nahargarh Biological Park is a sprawling conservation park located within the Nahargarh Fort complex in Jaipur. It offers a glimpse into the region&#x27;s wildlife, featuring hundreds of bird species and various wild animals such as Asiatic lions, Bengal tigers, crocodiles, and Himalayan black bears. The park also includes a zoo and is known for being the fourth largest ghariyal breeding firm in India.</p>
+                </div>
+            </div>
+
+            <!-- 22. Amar Jawan Jyoti -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jaipur_22.jpg" alt="Amar Jawan Jyoti" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Amar Jawan Jyoti</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Amar Jawan Jyoti is listed among principal sites for Jaipur within India. Municipal and regional heritage listings document its place in the historic centre and travellers routes through Jaipur. Amar Jawan Jyoti is listed among principal sites for Jaipur within India.</p>
+                </div>
+            </div>
+
+            <!-- 23. Central Park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jaipur_23.jpg" alt="Central Park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Central Park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Central Park in Jaipur is a sprawling green oasis located near the Statue Circle and Dr. Ambedkar Statue, making it a popular destination for locals and tourists alike. Constructed by the Jaipur Development Authority, this expansive park features lush gardens, a jogging track, and notable landmarks such as the Rambagh Polo Ground and Rambagh Golf Club.</p>
+                </div>
+            </div>
+
+            <!-- 24. Statue Circle -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jaipur_24.jpg" alt="Statue Circle" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Statue Circle</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Statue Circle is a captivating landmark nestled in the heart of Jaipur, blending modern charm with rich historical significance. Dominated by an impressive statue of Maharaja Sawai Jai Singh II, this pristine white monument stands as a tribute to the city&#x27;s founder. The marble structure exudes regal elegance and offers visitors a view of Jaipur. As night falls, Statue Circle transforms into a magical sight, illuminated beautifully and showcasing the warrior spirit of its namesake.</p>
+                </div>
+            </div>
+
+            <!-- 25. Nehru Bal Udyan -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jaipur_25.jpg" alt="Nehru Bal Udyan" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Nehru Bal Udyan</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nehru Bal Udyan is listed among principal sites for Jaipur within India. Municipal and regional heritage listings document its place in the historic centre and travellers routes through Jaipur. Nehru Bal Udyan is listed among principal sites for Jaipur within India.</p>
+                </div>
+            </div>
+
+            <!-- 26. Nahargarh Fort -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jaipur_26.jpg" alt="Nahargarh Fort" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ₹600
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Nahargarh Fort</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nahargarh Fort, built in 1734 above Jaipur, is part of a trio of forts along with Jaigarh and Amer. It was constructed to protect the city and has a rich military history. The fort also houses a wax museum featuring sports stars, freedom fighters, and Bollywood celebrities. Visitors can embark on a cycling expedition to explore the fort in a unique way while enjoying views of Jaipur and Man Sagar Lake.</p>
+                </div>
+            </div>
+
+            <!-- 27. Gaitor Ki Chhatriyan -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jaipur_27.jpg" alt="Gaitor Ki Chhatriyan" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ₹200
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Gaitor Ki Chhatriyan</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled at the base of Nahargarh Fort in Jaipur, Gaitor Ki Chhatriyan stands as a testament to Rajasthan&#x27;s rich heritage. This royal crematory is renowned for its intricately carved stone monuments that reflect the grandeur of Rajput architecture blended with traditional Mughal influences. The cenotaphs here honor the legacy of Maharaja Sawai Jai Singh and other former kings, showcasing exquisite craftsmanship through detailed carvings depicting mythological scenes and floral motifs.</p>
+                </div>
+            </div>
+
+            <!-- 28. SHRI GARH GANESH Ji TEMPLE -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jaipur_28.jpg" alt="SHRI GARH GANESH Ji TEMPLE" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">SHRI GARH GANESH Ji TEMPLE</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Perched on a hill just 7 km from Jaipur Junction Railway Station, the Shri Garh Ganesh Ji Temple is an ancient and site dedicated to the Hindu god Ganesh. Built by Maharaja Sawai Jai Singh before the establishment of Jaipur, this 18th-century temple offers dramatic views of the city below.</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
+        <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+    </footer>    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const map = L.map('map').setView([26.921627, 75.821966], 14);
+            L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                attribution: '&copy; Google Maps',
+                maxZoom: 20
+            }).addTo(map);
+            const locations = [{"name": "Shri Khole Ke Hanuman Ji Temple, Jaipur", "lat": 26.934343, "lng": 75.854129}, {"name": "Jal Mahal", "lat": 26.953458, "lng": 75.846123}, {"name": "Birla Mandir, Jaipur", "lat": 26.892169, "lng": 75.815309}, {"name": "Moti Doongri Fort", "lat": 26.89337, "lng": 75.816761}, {"name": "Moti Dungri Ganesh Ji Temple", "lat": 26.894658, "lng": 75.816715}, {"name": "Hawa Mahal", "lat": 26.924046, "lng": 75.826714}, {"name": "The City Palace", "lat": 26.925794, "lng": 75.823671}, {"name": "Tripolia Gate", "lat": 26.92405, "lng": 75.822752}, {"name": "Isarlat Sargasooli", "lat": 26.924445, "lng": 75.820837}, {"name": "Ajmeri Gate", "lat": 26.917647, "lng": 75.81665679999999}, {"name": "Shri Radha Gopinath Ji Temple, Jaipur", "lat": 26.929452, "lng": 75.814136}, {"name": "Sisodia Rani ka Bagh", "lat": 26.899422, "lng": 75.858731}, {"name": "BAPS Shri Swaminarayan Akshardham Mandir, Jaipur", "lat": 26.902219, "lng": 75.740623}, {"name": "World Trade Park", "lat": 26.852989, "lng": 75.804869}, {"name": "Patrika Gate", "lat": 26.841565, "lng": 75.80138}, {"name": "Shree Digambar Jain Atishay Kshetra Mandir Sanghi Ji, Sanganer", "lat": 26.814946, "lng": 75.786386}, {"name": "Amber Palace", "lat": 26.985487, "lng": 75.851345}, {"name": "Amer Fort", "lat": 26.986905, "lng": 75.851136}, {"name": "Panna Meena ka Kund", "lat": 26.991231, "lng": 75.851285}, {"name": "Jaigarh Fort", "lat": 26.981605, "lng": 75.844792}, {"name": "Nahargarh Biological Park", "lat": 27.016058, "lng": 75.864463}, {"name": "Amar Jawan Jyoti", "lat": 26.895603, "lng": 75.799957}, {"name": "Central Park", "lat": 26.904904, "lng": 75.808722}, {"name": "Statue Circle", "lat": 26.907526, "lng": 75.805494}, {"name": "Nehru Bal Udyan", "lat": 26.883344, "lng": 75.8023328}, {"name": "Nahargarh Fort", "lat": 26.940166, "lng": 75.817037}, {"name": "Gaitor Ki Chhatriyan", "lat": 26.943069, "lng": 75.824653}, {"name": "SHRI GARH GANESH Ji TEMPLE", "lat": 26.945079, "lng": 75.82805}];
+            const customIcon = L.icon({
+                iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32],
+            });
+            const destinationCenter = [26.921627, 75.821966];
+            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": true, "compactRegion": false, "denseUrban": false, "maxCenterLat": 0.106681, "maxCenterLng": 0.081343};
+            const markers = [];
+            locations.forEach(loc => {
+                markers.push(
+                    L.marker([loc.lat, loc.lng], {icon: customIcon}).addTo(map)
+                        .bindPopup(`<strong class="font-sans text-base text-gray-900">${loc.name}</strong>`)
+                );
+            });
+            const group = new L.featureGroup(markers);
+            let bounds = group.getBounds();
+            const ne = bounds.getNorthEast();
+            const sw = bounds.getSouthWest();
+            const latSpan = ne.lat - sw.lat;
+            const lngSpan = ne.lng - sw.lng;
+            const maxSpan = Math.max(latSpan, lngSpan);
+            const isDegenerate = latSpan < 1e-9 && lngSpan < 1e-9;
+            const markerCenterLat = (ne.lat + sw.lat) / 2;
+            const markerCenterLng = (ne.lng + sw.lng) / 2;
+            if (isDegenerate) {
+                const frameSpan = mapContext.compactRegion ? 0.026 : 0.045;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - frameSpan / 2, destinationCenter[1] - frameSpan / 2],
+                    [destinationCenter[0] + frameSpan / 2, destinationCenter[1] + frameSpan / 2]
+                );
+            } else if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                const expand = maxSpan < 0.12 ? 1.15 : 1.1;
+                const halfLat = latSpan / 2 * expand;
+                const halfLng = lngSpan / 2 * expand;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                const latReach = Math.max(mapContext.maxCenterLat, latSpan / 2) * 1.45;
+                const lngReach = Math.max(mapContext.maxCenterLng, lngSpan / 2) * 1.45;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - latReach, destinationCenter[1] - lngReach],
+                    [destinationCenter[0] + latReach, destinationCenter[1] + lngReach]
+                );
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                const halfLat = latSpan / 2 * 1.1;
+                const halfLng = lngSpan / 2 * 1.1;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                const frameSpan = Math.max(maxSpan * 4, 0.006);
+                bounds = L.latLngBounds(
+                    [markerCenterLat - frameSpan / 2, markerCenterLng - frameSpan / 2],
+                    [markerCenterLat + frameSpan / 2, markerCenterLng + frameSpan / 2]
+                );
+            }
+            const fitOptions = {};
+            if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                fitOptions.padding = maxSpan < 0.12
+                    ? [24, 24]
+                    : (maxSpan < 0.5 ? [24, 24] : [28, 28]);
+                fitOptions.maxZoom = maxSpan < 0.12
+                    ? 14
+                    : (maxSpan < 0.5 ? 10 : 9);
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                fitOptions.padding = [40, 40];
+                fitOptions.maxZoom = 8;
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                fitOptions.padding = [24, 24];
+            } else if (mapContext.denseUrban) {
+                fitOptions.padding = [18, 18];
+            } else if (mapContext.spreadUrban) {
+                fitOptions.padding = [20, 20];
+            } else if (locations.length >= 3 && maxSpan >= 0.02) {
+                fitOptions.padding = maxSpan >= 0.08 ? [20, 20] : [30, 30];
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                fitOptions.padding = [12, 12];
+                fitOptions.maxZoom = 16;
+            } else if (isDegenerate || locations.length === 1) {
+                fitOptions.padding = mapContext.compactRegion ? [16, 16] : [36, 36];
+                if (isDegenerate || maxSpan < 0.015) {
+                    fitOptions.maxZoom = mapContext.compactRegion ? 15 : 14;
+                }
+            } else {
+                fitOptions.padding = [50, 50];
+            }
+            map.fitBounds(bounds, fitOptions);
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                } else {
+                    scrollTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                }
+            });
+            scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        });
+    </script>
+
+    <button id="scrollTopBtn" class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-12 h-12 bg-neon-cyan text-deepblue-950 rounded-full shadow-[0_0_20px_rgba(0,240,255,0.4)] opacity-0 pointer-events-none transition-all duration-300 translate-y-4 hover:bg-white hover:scale-110" aria-label="Scroll to top">
+        <i class="ph ph-arrow-up text-xl font-bold"></i>
+    </button>
+</body>
+</html>

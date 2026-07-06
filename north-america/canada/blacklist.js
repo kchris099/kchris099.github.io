@@ -5,4 +5,6 @@ const blacklistText = `
 Toronto
 
 Montreal
+
+Quebec City
 `;

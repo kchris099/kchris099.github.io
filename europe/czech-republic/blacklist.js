@@ -7,4 +7,6 @@ Brno
 Ostrava
 
 Telč
+
+Kutna Hora
 `;

@@ -5,4 +5,10 @@ const blacklistText = `
 Tashkent
 
 Samarkand
+
+Bukhara
+
+Khiva
+
+Shahrisabz
 `;

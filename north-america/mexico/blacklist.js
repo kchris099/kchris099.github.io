@@ -5,4 +5,14 @@ const blacklistText = `
 Mexico City
 
 Monterrey
+
+Oaxaca
+
+Guanajuato
+
+Morelia
+
+San Miguel de Allende
+
+Puebla
 `;

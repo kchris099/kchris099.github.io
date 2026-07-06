@@ -3,4 +3,8 @@
 
 const blacklistText = `
 Cairo
+
+Luxor
+
+Alexandria
 `;

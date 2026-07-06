@@ -3,4 +3,10 @@
 
 const blacklistText = `
 Casablanca
+
+Fez
+
+Marrakesh
+
+Rabat
 `;

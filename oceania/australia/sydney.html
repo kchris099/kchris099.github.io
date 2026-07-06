@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sydney Guide | Global Explorer Guides</title>
+    <link rel="stylesheet" href="../../assets/tailwind.css">
+    <link rel="stylesheet" href="../../assets/outfit.css">
+    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
+    <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
+    <link rel="stylesheet" href="../../assets/homepage-activation.css">
+    <link rel="stylesheet" href="../../assets/destination-activation.css">
+    <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
+    <script src="../../assets/leaflet/leaflet.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #060B19; }
+        ::-webkit-scrollbar-thumb { background: #1E336B; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0070FF; }
+        .leaflet-popup-content-wrapper { background-color: #fff; color: #333; border-radius: 8px; box-shadow: 0 3px 14px rgba(0,0,0,0.4); }
+        .leaflet-popup-tip { background-color: #fff; }
+    </style>
+</head>
+<body class="bg-deepblue-950 text-slate-200 font-sans min-h-screen relative overflow-x-hidden">
+    <div class="absolute top-0 left-0 w-full h-[450px] md:h-[500px] z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50" style="background-image: url('images/sydney_hero.jpg')"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-deepblue-950/10 via-deepblue-950/60 to-deepblue-950"></div>
+    </div>
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon-purple/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neon-cyan/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <main class="container mx-auto px-4 py-8 md:py-16 relative z-20 max-w-5xl">
+        <nav class="mb-12 animate-fade-in-down flex flex-wrap items-center gap-4">
+            <a href="../../index.html" class="flex items-center justify-center w-11 h-11 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0" title="Back to Home">
+                <i class="ph ph-house text-xl group-hover:scale-110 transition-transform"></i>
+            </a>
+            <a href="australia.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0">
+                <i class="ph ph-arrow-left text-lg group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-medium text-sm">Back to Australia</span>
+            </a>
+            <div class="ml-auto flex items-center gap-3 bg-deepblue-900/40 border border-deepblue-700/50 rounded-full px-4 py-2 backdrop-blur-sm shadow-inner shrink-0">
+                <img src="../../assets/flags/w40/au.png" alt="Australia flag" class="w-6 h-auto rounded-[2px] shadow-sm">
+                <div class="flex items-center gap-2 text-sm font-medium tracking-wide">
+                    <span class="text-slate-200 uppercase text-xs tracking-wider font-bold">Australia</span>
+                    <span class="text-deepblue-500 text-xs">&rsaquo;</span>
+                    <span class="text-neon-cyan text-xs">Sydney</span>
+                </div>
+            </div>
+        </nav>
+
+        <header class="mb-16 animate-fade-in-down animation-delay-100 text-center">
+            <button
+                type="button"
+                id="destination-active-toggle"
+                class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
+                data-iso2="AU"
+                data-slug="sydney"
+                data-active="false"
+                data-interactive="true"
+                aria-label="Toggle Sydney visibility on Australia guide"
+                aria-pressed="false"
+            >
+                <i class="ph ph-map-pin text-4xl text-slate-500 pointer-events-none" aria-hidden="true"></i>
+            </button>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple pb-4">
+                Explore Sydney
+            </h1>
+            <div class="bg-deepblue-900/40 border border-deepblue-800 rounded-3xl p-8 md:p-10 text-left backdrop-blur-sm mt-10">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                    <i class="ph ph-scroll text-neon-cyan"></i> A Brief History
+                </h2>
+                <p class="text-lg text-slate-400 font-light leading-relaxed">Sydney Harbour was settled by Britain in 1788 as a penal colony that grew into Australia&#x27;s largest metropolis. Opera House sails, sandstone convict precincts, and harbour bridges record colonial foundations and post-war immigration on the Pacific rim. Bondi-to-Coogee coastal walks and Rocks laneways extend harbour settlement layers along the Pacific escarpment.</p>
+            </div>
+        </header>
+
+        <section class="mb-16 animate-fade-in-down" style="animation-delay: 0.2s;">
+            <h2 class="text-3xl font-bold text-white mb-6">Attractions Map</h2>
+            <div id="map" class="h-[400px] w-full rounded-3xl border border-deepblue-700 shadow-2xl z-10 relative"></div>
+        </section>
+
+        <section class="flex flex-col gap-6 pb-20 animate-fade-in-down" style="animation-delay: 0.3s;">
+            <h2 class="text-3xl font-bold text-white mb-2">Top Sights & Activities</h2>
+            
+            <!-- 1. Mrs Macquarie&#x27;s Chair -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/sydney_1.jpg" alt="Mrs Macquarie&#x27;s Chair" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Mrs Macquarie&#x27;s Chair</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Mrs Macquarie&#x27;s Chair is a historic sandstone bench, skillfully carved by convicts in 1810 for Elizabeth Macquarie, the wife of New South Wales&#x27; governor. This charming spot offers views of Sydney Harbour, including the Opera House and Harbour Bridge—making it a must-visit for photography enthusiasts. Located at the edge of The Domain and near the Royal Botanic Gardens, it&#x27;s an ideal place to unwind while soaking in scenery.</p>
+                </div>
+            </div>
+
+            <!-- 2. St Mary&#x27;s Cathedral -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/sydney_2.jpg" alt="St Mary&#x27;s Cathedral" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">St Mary&#x27;s Cathedral</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Saint Mary&#x27;s Cathedral, a Gothic-style Catholic cathedral constructed from local sandstone between 1868 and 1928, is a magnificent structure that can accommodate up to 2,000 worshippers. Standing at 75 meters tall, it is the second largest church in Australia. The cathedral&#x27;s timeless architecture and grandeur make it a popular tourist attraction. Inside, visitors can admire beautiful stained glass windows, an impressive organ, intricate wood carvings, and towering neo-Gothic arches.</p>
+                </div>
+            </div>
+
+            <!-- 3. Hyde Park Barracks -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/sydney_3.jpg" alt="Hyde Park Barracks" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Hyde Park Barracks</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Hyde Park Barracks, erected in 1819 in Sydney, Australia, served as a prison for British convicts and later housed female immigrants and destitute elderly women. The barracks transitioned through various roles over the years, including functioning as a courthouse and government offices. Today, it offers visitors a glimpse into the lives of convicts and orphans who lived there in the 1800s through twice-daily tours or audio guides.</p>
+                </div>
+            </div>
+
+            <!-- 4. Sydney Tower Eye -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/sydney_4.jpg" alt="Sydney Tower Eye" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> A$29
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Sydney Tower Eye</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Formerly known as Centrepoint Tower, Sydney Tower Eye is a must-visit landmark in Sydney. It offers a 4-D cinema, an observation deck, and an outdoor viewing platform that provides 360-degree views of the city. This tower serves as a great starting point for first-time visitors to get their bearings in Sydney. The panoramic scenery from the top allows visitors to familiarize themselves with the city&#x27;s layout and plan their transportation options accordingly.</p>
+                </div>
+            </div>
+
+            <!-- 5. State Theatre -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/sydney_5.jpg" alt="State Theatre" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">State Theatre</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The State Theatre, located in Sydney&#x27;s CBD, is a establishment that hosts live music, film screenings, and comedy shows. The building boasts ornate Gothic, Italian, and art deco architecture and was originally opened in 1929 as a &#x27;Fantasy Palace for the People.&#x27; With its opulent design featuring vaulted ceilings, mosaic floors, marble columns and statues, brass and bronze doors, it offers a unique experience for visitors.</p>
+                </div>
+            </div>
+
+            <!-- 6. Queen Victoria Building -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/sydney_6.jpg" alt="Queen Victoria Building" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Queen Victoria Building</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Queen Victoria Building, a historic shopping center in Sydney&#x27;s CBD, is a example of Romanesque architecture designed by George McRae. Built in the late 19th century, it now houses over 175 modern stores including renowned brands like Tiffany and Ralph Lauren alongside charming tea rooms, florists, and jewelry stores. The building&#x27;s grand arches, pillars, and stained-glass windows reflect the artistry of its craftsmen from a bygone era.</p>
+                </div>
+            </div>
+
+            <!-- 7. Sydney Town Hall -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/sydney_7.jpg" alt="Sydney Town Hall" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Sydney Town Hall</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Sydney Town Hall is a grand 19th-century building located on George Street in the heart of Sydney. Constructed from local sandstone in the Victorian Second Empire style, it is home to the Lord Mayor&#x27;s chambers, council offices, and venues for various functions and meetings. The building features ornate interiors with stained-glass windows and an impressive crystal chandelier in its vestibule.</p>
+                </div>
+            </div>
+
+            <!-- 8. Taronga Zoo Sydney -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/sydney_8.jpg" alt="Taronga Zoo Sydney" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> A$50
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Taronga Zoo Sydney</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled along the picturesque Sydney Harbour, Taronga Zoo is a must-visit destination for animal lovers and adventure seekers alike. Home to over 350 distinct species, this zoo offers an immersive experience that connects visitors with wildlife in a natural setting. Accessible via a scenic ferry ride from the city center, it provides views of landmarks like the Sydney Opera House and Harbour Bridge.</p>
+                </div>
+            </div>
+
+            <!-- 9. Darling Harbour -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/sydney_9.jpg" alt="Darling Harbour" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Darling Harbour</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Darling Harbour is a waterfront destination in Sydney, offering a plethora of attractions and hosting large-scale events. Spanning 20 hectares, it serves as the gateway to various tourist hotspots including SEA LIFE Sydney Aquarium, IMAX theatre, Australian National Maritime Museum, WILD LIFE Sydney Zoo, and the Chinese Garden of Friendship.</p>
+                </div>
+            </div>
+
+            <!-- 10. Chinese Garden of Friendship -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/sydney_10.jpg" alt="Chinese Garden of Friendship" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> A$12
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Chinese Garden of Friendship</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Chinese Garden of Friendship is a serene walled garden in Sydney, located near Darling Harbour. It was gifted to Australia by the city of Guangzhou as a symbol of friendship between the two countries. The garden features pavilions, ponds, waterfalls, and exotic plants inspired by classical Guangzhou gardens. Despite its smaller size compared to other green spaces in the city, it offers a unique charm and tranquil atmosphere for visitors to enjoy.</p>
+                </div>
+            </div>
+
+            <!-- 11. Sydney Fish Market -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/sydney_11.jpg" alt="Sydney Fish Market" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Sydney Fish Market</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Sydney Fish Market is a beloved institution among locals and a seafood destination. It&#x27;s the second-largest seafood market globally in terms of variety, offering some of the freshest seafood in Sydney. The market features shops for seafood, deli items, wine, and baked goods, as well as casual cafes and restaurants serving fresh oysters and fish and chips.</p>
+                </div>
+            </div>
+
+            <!-- 12. SEA LIFE Sydney Aquarium -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/sydney_12.jpg" alt="SEA LIFE Sydney Aquarium" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> A$49
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">SEA LIFE Sydney Aquarium</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">SEA LIFE Sydney Aquarium is a must-visit aquatic attraction in Sydney, offering five distinct habitat exhibitions showcasing Australia&#x27;s marine life. Conveniently located near Circular Quay, it provides easy access for visitors. The aquarium houses a diverse range of ocean creatures and offers educational sessions on animal feeding and more. It&#x27;s an ideal family-friendly activity that allows you to explore the rich underwater world of Australia&#x27;s aquatic animals.</p>
+                </div>
+            </div>
+
+            <!-- 13. Sydney Cricket Ground -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/sydney_13.jpg" alt="Sydney Cricket Ground" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> A$35
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Sydney Cricket Ground</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Sydney Cricket Ground (SCG) in Moore Park is a historic sports stadium that has been hosting cricket, rugby, soccer, and even Olympic events since 1876. It&#x27;s a popular venue for both domestic and international matches, as well as concerts featuring renowned artists like Madonna and U2. Visitors can take a behind-the-scenes tour of the SCG to explore the fields of play, dressing rooms, media room, and Walk of Honour while learning about the venue&#x27;s rich history.</p>
+                </div>
+            </div>
+
+            <!-- 14. Paddington Reservoir Gardens -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/sydney_14.jpg" alt="Paddington Reservoir Gardens" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Paddington Reservoir Gardens</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">In Paddington, Sydney, the Paddington Reservoir Gardens is a urban sunken garden that has been transformed from a derelict water reservoir into an award-winning public park. The site seamlessly blends salvaged masonry with modern steel boardwalks, creating a unique and picturesque setting reminiscent of ancient architectural wonders.</p>
+                </div>
+            </div>
+
+            <!-- 15. Hornby Lighthouse -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/sydney_15.jpg" alt="Hornby Lighthouse" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Hornby Lighthouse</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Hornby Lighthouse, a striking red and white striped structure, has been guiding ships since its construction in 1858. Situated at Sydney&#x27;s South Head, it offers views of the ocean and serves as a reminder of the city&#x27;s serene side. Visitors can enjoy scenic walking tracks and lookouts that provide panoramic vistas of Sydney Harbour. The lighthouse is part of the Sydney Harbour National Park and is accessible via a picturesque 2.8 km walk from Watsons Bay.</p>
+                </div>
+            </div>
+
+            <!-- 16. North Head -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/sydney_16.jpg" alt="North Head" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">North Head</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">North Head, located about 3km south of central Manly, is a picturesque coastal national park with cliffs that offer panoramic views of Sydney Harbour. The area features secluded beaches, scenic walking paths through native scrubland, and former military sites such as barracks and WWII gun emplacements. Visitors can explore the headland on foot or by bike, taking in the natural beauty and historical landmarks along the way.</p>
+                </div>
+            </div>
+
+            <!-- 17. Macquarie Lighthouse -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/sydney_17.jpg" alt="Macquarie Lighthouse" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Macquarie Lighthouse</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Macquarie Lighthouse is the first lighthouse that was constructed in Australia. It provides guided tours and a panoramic view of Sydney Harbour, which is also noticeable from the coastal cliff walking trail nearby. The builder of this historical landmark remains unknown, but it sits at the end of a scenic walkway with lots of roadside parking available.</p>
+                </div>
+            </div>
+
+            <!-- 18. Sydney Opera House -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/sydney_18.jpg" alt="Sydney Opera House" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> A$43
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Sydney Opera House</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Sydney Opera House is an arts center located on Bennelong Point in Sydney Harbour, offering views of the harbor, bridge, and city skyline. With over 1,600 performances annually, it hosts a diverse range of events including opera, theatre, music, dance, and comedy shows. This architectural marvel is a attraction that draws millions of visitors each year. Its unique design and cultural significance make it a standout feature of the picturesque Sydney Harbour.</p>
+                </div>
+            </div>
+
+            <!-- 19. Government House -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/sydney_19.jpg" alt="Government House" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Government House</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Government House, the official residence of the New South Wales governor, is a grand mansion dating back to the 1800s. Designed by Edward Blore in a Gothic Revival style, it boasts crenellated battlements and detailed interiors reminiscent of a castle. The State Rooms are marvelously restored and showcase Victorian pomp.</p>
+                </div>
+            </div>
+
+            <!-- 20. Royal Botanic Garden Sydney -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/sydney_20.jpg" alt="Royal Botanic Garden Sydney" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Royal Botanic Garden Sydney</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Royal Botanic Garden Sydney, established in 1816, is the oldest scientific institution in Australia. Spanning 30 hectares, it offers a tranquil escape within the bustling city. With over 8000 species of plants from around the world, including ancient rainforest trees and delicate desert flowers, this garden provides a serene environment for nature enthusiasts.</p>
+                </div>
+            </div>
+
+            <!-- 21. Sydney Harbour Bridge -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/sydney_21.jpg" alt="Sydney Harbour Bridge" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Sydney Harbour Bridge</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Sydney Harbour Bridge, an structure opened in 1932, offers the thrilling BridgeClimb experience and the Pylon Lookout with exhibitions. Beyond its fame, Sydney&#x27;s surroundings offer unique experiences like camping beneath the bridge or glamping in a zoo with a harbor view. The city&#x27;s wild heart extends to camping areas and caravan parks near the CBD, while train rides from Central Station lead to the Blue Mountains or coastal beaches.</p>
+                </div>
+            </div>
+
+            <!-- 22. Luna Park Sydney -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/sydney_22.jpg" alt="Luna Park Sydney" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free (day pass A$44)
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Luna Park Sydney</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Luna Park Sydney, a beloved amusement park located at Milsons Point, has been enchanting visitors since its grand opening in 1935. After undergoing redevelopment and reopening in 2004, this destination features a charming blend of vintage rides like the Wild Mouse Rollercoaster and the Big Dipper, alongside classic attractions such as the Carousel.</p>
+                </div>
+            </div>
+
+            <!-- 23. Blues Point Reserve -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/sydney_23.jpg" alt="Blues Point Reserve" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Blues Point Reserve</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Blues Point Reserve is a picturesque bayfront park in Sydney, offering views of the Sydney Harbour, including the Opera House and the Harbour Bridge. The reserve features a nautical-themed playground, fig trees, and picnic tables, making it an ideal spot for a leisurely day out. It&#x27;s also a popular location for fishing enthusiasts looking to catch trevally, kingfish, or jewfish while enjoying the scenery.</p>
+                </div>
+            </div>
+
+            <!-- 24. Mary Booth Lookout Reserve -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/sydney_24.jpg" alt="Mary Booth Lookout Reserve" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Mary Booth Lookout Reserve</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Located in Kirribilli, just 5km or a 22-minute drive from Sydney CBD, Mary Booth Lookout Reserve offers a secluded and view of the Harbour Bridge without the usual crowds. Accessible from Milsons Point train station, visitors can enjoy a perfect picnic spot on the grassy reserve above. The lookout provides an awe-inspiring vista of landmarks such as the Opera House and Harbour Bridge, along with serene suburbs and bustling river traffic.</p>
+                </div>
+            </div>
+
+            <!-- 25. Paddy&#x27;s Markets Haymarket -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/sydney_25.jpg" alt="Paddy&#x27;s Markets Haymarket" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Paddy&#x27;s Markets Haymarket</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Paddy&#x27;s Markets Haymarket is a historic and bustling marketplace in Sydney, located near Chinatown. Open five days a week, it offers a wide variety of goods including souvenirs, clothing, fresh produce, hand-crafted jewelry, vintage records, and handmade Chinese lanterns. The market also features stalls selling fresh fruit and vegetables, dairy products, bakery goods as well as imitation designer wear.</p>
+                </div>
+            </div>
+
+            <!-- 26. Chinatown Sydney -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/sydney_26.jpg" alt="Chinatown Sydney" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Chinatown Sydney</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Chinatown Sydney is listed among principal sites for Sydney within Australia. Municipal and regional heritage listings document its place in the historic centre and travellers routes through Sydney. Chinatown Sydney is listed among principal sites for Sydney within Australia.</p>
+                </div>
+            </div>
+
+            <!-- 27. Capitol Theatre -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/sydney_27.jpg" alt="Capitol Theatre" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Capitol Theatre</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Capitol Theatre, located in the Haymarket district of Sydney, is a historic Victorian theatre known for its ornate decor and opulent atmosphere. The venue has been hosting a variety of performances including musicals, comedy acts, ballets, and plays since it first opened in 1892. With its sparkling chandeliers, intricate plasterwork, and marble staircase, the theatre has become a top tourist attraction in Sydney.</p>
+                </div>
+            </div>
+
+            <!-- 28. BridgeClimb Sydney -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/sydney_28.jpg" alt="BridgeClimb Sydney" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> A$298
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">BridgeClimb Sydney</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">BridgeClimb Sydney is listed among principal sites for Sydney within Australia. Municipal and regional heritage listings document its place in the historic centre and travellers routes through Sydney. BridgeClimb Sydney is listed among principal sites for Sydney within Australia.</p>
+                </div>
+            </div>
+
+            <!-- 29. The Rocks Market -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/sydney_29.jpg" alt="The Rocks Market" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">The Rocks Market</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Rocks Market is a lively open-air waterfront market held every weekend near Sydney&#x27;s CBD. It transforms the historic cobblestone laneways into a display of talented chefs and artisans, offering a carefully curated collection of fashion, homewares, artworks, and gifts. Visitors can indulge in gourmet street food while enjoying live entertainment, supporting local makers and creatives.</p>
+                </div>
+            </div>
+
+            <!-- 30. Accor Stadium -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/sydney_30.jpg" alt="Accor Stadium" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> A$25
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Accor Stadium</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Accor Stadium, formerly known as Stadium Australia, is a versatile venue located in Sydney Olympic Park, Australia. Built for the 2000 Olympics, it has since been refurbished to accommodate various sports including Australian Rules Football, Cricket, Rugby league and Rugby Union matches. Additionally, it hosts concerts and events such as the upcoming FIFA Women&#x27;s World Cup 2023. The stadium offers an electrifying atmosphere for sporting events and provides ample amenities for visitors.</p>
+                </div>
+            </div>
+
+            <!-- 31. Sydney Showground -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/sydney_31.jpg" alt="Sydney Showground" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> A$25
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Sydney Showground</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Sydney Showground, located in Sydney Olympic Park, is a premier events venue that has hosted major events in Australia. It offers versatile indoor and outdoor spaces suitable for small meetings, large-scale exhibitions, trade shows, and festivals. The Easter Show at Sydney Showground is a popular but expensive experience with various food stalls, performances, grand parades, and thrilling rides. The highlight of the show is the fireworks display.</p>
+                </div>
+            </div>
+
+            <!-- 32. Coal Loader Centre for Sustainability -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/sydney_32.jpg" alt="Coal Loader Centre for Sustainability" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Coal Loader Centre for Sustainability</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Coal Loader Centre for Sustainability in Waverton, Sydney offers a unique experience that combines history and sustainability. Visitors can explore the 160m-long former coal-loading tunnel with sensor lights guiding the way, as well as the green roof on the platform above. The site also features an Aboriginal bush foods garden and a rock carving of a whale, showcasing its rich indigenous heritage.</p>
+                </div>
+            </div>
+
+            <!-- 33. Ritz Cinemas -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/sydney_33.jpg" alt="Ritz Cinemas" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> A$25
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Ritz Cinemas</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Ritz Cinemas, located in a 1930s art deco building, offers a unique movie-watching experience with its cocktail bar and balcony. It is a popular destination for film enthusiasts of all ages, showcasing the latest movies on big screens with top-notch surround sound. The cinema holds historical significance as one of the only two original Art Deco cinemas still standing in Sydney. Additionally, it provides an opportunity to watch films in 70mm format, making it a rare find in the city.</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
+        <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+    </footer>    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const map = L.map('map').setView([-33.863710, 151.209673], 14);
+            L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                attribution: '&copy; Google Maps',
+                maxZoom: 20
+            }).addTo(map);
+            const locations = [{"name": "Mrs Macquarie's Chair", "lat": -33.859664, "lng": 151.222571}, {"name": "St Mary's Cathedral", "lat": -33.87119, "lng": 151.213325}, {"name": "Hyde Park Barracks", "lat": -33.869604, "lng": 151.212585}, {"name": "Sydney Tower Eye", "lat": -33.870315, "lng": 151.20888}, {"name": "State Theatre", "lat": -33.870829, "lng": 151.207615}, {"name": "Queen Victoria Building", "lat": -33.871716, "lng": 151.206701}, {"name": "Sydney Town Hall", "lat": -33.873157, "lng": 151.206116}, {"name": "Taronga Zoo Sydney", "lat": -33.843547, "lng": 151.241342}, {"name": "Darling Harbour", "lat": -33.87488, "lng": 151.2009}, {"name": "Chinese Garden of Friendship", "lat": -33.876526, "lng": 151.202797}, {"name": "Sydney Fish Market", "lat": -33.875117, "lng": 151.189992}, {"name": "SEA LIFE Sydney Aquarium", "lat": -33.8696, "lng": 151.202138}, {"name": "Sydney Cricket Ground", "lat": -33.891668, "lng": 151.224815}, {"name": "Paddington Reservoir Gardens", "lat": -33.885276, "lng": 151.226738}, {"name": "Hornby Lighthouse", "lat": -33.833531, "lng": 151.280983}, {"name": "North Head", "lat": -33.822357, "lng": 151.299387}, {"name": "Macquarie Lighthouse", "lat": -33.853903, "lng": 151.285192}, {"name": "Sydney Opera House", "lat": -33.856784, "lng": 151.215297}, {"name": "Government House", "lat": -33.859643, "lng": 151.21485}, {"name": "Royal Botanic Garden Sydney", "lat": -33.864186, "lng": 151.216571}, {"name": "Sydney Harbour Bridge", "lat": -33.852306, "lng": 151.210787}, {"name": "Luna Park Sydney", "lat": -33.847699, "lng": 151.209838}, {"name": "Blues Point Reserve", "lat": -33.849866, "lng": 151.203863}, {"name": "Mary Booth Lookout Reserve", "lat": -33.85015, "lng": 151.215829}, {"name": "Paddy's Markets Haymarket", "lat": -33.880009, "lng": 151.203562}, {"name": "Chinatown Sydney", "lat": -33.8787982, "lng": 151.2040867}, {"name": "Capitol Theatre", "lat": -33.879399, "lng": 151.206303}, {"name": "BridgeClimb Sydney", "lat": -33.857439, "lng": 151.2077747}, {"name": "The Rocks Market", "lat": -33.857787, "lng": 151.20856}, {"name": "Accor Stadium", "lat": -33.847116, "lng": 151.063414}, {"name": "Sydney Showground", "lat": -33.845306, "lng": 151.068619}, {"name": "Coal Loader Centre for Sustainability", "lat": -33.842989, "lng": 151.194468}, {"name": "Ritz Cinemas", "lat": -33.920074, "lng": 151.243326}];
+            const customIcon = L.icon({
+                iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32],
+            });
+            const destinationCenter = [-33.863710, 151.209673];
+            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": true, "compactRegion": false, "denseUrban": false, "maxCenterLat": 0.056364, "maxCenterLng": 0.146259};
+            const markers = [];
+            locations.forEach(loc => {
+                markers.push(
+                    L.marker([loc.lat, loc.lng], {icon: customIcon}).addTo(map)
+                        .bindPopup(`<strong class="font-sans text-base text-gray-900">${loc.name}</strong>`)
+                );
+            });
+            const group = new L.featureGroup(markers);
+            let bounds = group.getBounds();
+            const ne = bounds.getNorthEast();
+            const sw = bounds.getSouthWest();
+            const latSpan = ne.lat - sw.lat;
+            const lngSpan = ne.lng - sw.lng;
+            const maxSpan = Math.max(latSpan, lngSpan);
+            const isDegenerate = latSpan < 1e-9 && lngSpan < 1e-9;
+            const markerCenterLat = (ne.lat + sw.lat) / 2;
+            const markerCenterLng = (ne.lng + sw.lng) / 2;
+            if (isDegenerate) {
+                const frameSpan = mapContext.compactRegion ? 0.026 : 0.045;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - frameSpan / 2, destinationCenter[1] - frameSpan / 2],
+                    [destinationCenter[0] + frameSpan / 2, destinationCenter[1] + frameSpan / 2]
+                );
+            } else if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                const expand = maxSpan < 0.12 ? 1.15 : 1.1;
+                const halfLat = latSpan / 2 * expand;
+                const halfLng = lngSpan / 2 * expand;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                const latReach = Math.max(mapContext.maxCenterLat, latSpan / 2) * 1.45;
+                const lngReach = Math.max(mapContext.maxCenterLng, lngSpan / 2) * 1.45;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - latReach, destinationCenter[1] - lngReach],
+                    [destinationCenter[0] + latReach, destinationCenter[1] + lngReach]
+                );
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                const halfLat = latSpan / 2 * 1.1;
+                const halfLng = lngSpan / 2 * 1.1;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                const frameSpan = Math.max(maxSpan * 4, 0.006);
+                bounds = L.latLngBounds(
+                    [markerCenterLat - frameSpan / 2, markerCenterLng - frameSpan / 2],
+                    [markerCenterLat + frameSpan / 2, markerCenterLng + frameSpan / 2]
+                );
+            }
+            const fitOptions = {};
+            if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                fitOptions.padding = maxSpan < 0.12
+                    ? [24, 24]
+                    : (maxSpan < 0.5 ? [24, 24] : [28, 28]);
+                fitOptions.maxZoom = maxSpan < 0.12
+                    ? 14
+                    : (maxSpan < 0.5 ? 10 : 9);
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                fitOptions.padding = [40, 40];
+                fitOptions.maxZoom = 8;
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                fitOptions.padding = [24, 24];
+            } else if (mapContext.denseUrban) {
+                fitOptions.padding = [18, 18];
+            } else if (mapContext.spreadUrban) {
+                fitOptions.padding = [20, 20];
+            } else if (locations.length >= 3 && maxSpan >= 0.02) {
+                fitOptions.padding = maxSpan >= 0.08 ? [20, 20] : [30, 30];
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                fitOptions.padding = [12, 12];
+                fitOptions.maxZoom = 16;
+            } else if (isDegenerate || locations.length === 1) {
+                fitOptions.padding = mapContext.compactRegion ? [16, 16] : [36, 36];
+                if (isDegenerate || maxSpan < 0.015) {
+                    fitOptions.maxZoom = mapContext.compactRegion ? 15 : 14;
+                }
+            } else {
+                fitOptions.padding = [50, 50];
+            }
+            map.fitBounds(bounds, fitOptions);
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                } else {
+                    scrollTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                }
+            });
+            scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        });
+    </script>
+
+    <button id="scrollTopBtn" class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-12 h-12 bg-neon-cyan text-deepblue-950 rounded-full shadow-[0_0_20px_rgba(0,240,255,0.4)] opacity-0 pointer-events-none transition-all duration-300 translate-y-4 hover:bg-white hover:scale-110" aria-label="Scroll to top">
+        <i class="ph ph-arrow-up text-xl font-bold"></i>
+    </button>
+</body>
+</html>

@@ -7,4 +7,6 @@ Jakarta
 Denpasar
 
 Yogyakarta
+
+Ubud
 `;

@@ -7,4 +7,8 @@ Bursa
 Diyarbakır
 
 Ephesus
+
+Göreme
+
+Konya
 `;

@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valparaíso Guide | Global Explorer Guides</title>
+    <link rel="stylesheet" href="../../assets/tailwind.css">
+    <link rel="stylesheet" href="../../assets/outfit.css">
+    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
+    <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
+    <link rel="stylesheet" href="../../assets/homepage-activation.css">
+    <link rel="stylesheet" href="../../assets/destination-activation.css">
+    <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
+    <script src="../../assets/leaflet/leaflet.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #060B19; }
+        ::-webkit-scrollbar-thumb { background: #1E336B; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0070FF; }
+        .leaflet-popup-content-wrapper { background-color: #fff; color: #333; border-radius: 8px; box-shadow: 0 3px 14px rgba(0,0,0,0.4); }
+        .leaflet-popup-tip { background-color: #fff; }
+    </style>
+</head>
+<body class="bg-deepblue-950 text-slate-200 font-sans min-h-screen relative overflow-x-hidden">
+    <div class="absolute top-0 left-0 w-full h-[450px] md:h-[500px] z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50" style="background-image: url('images/valparaiso_hero.jpg')"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-deepblue-950/10 via-deepblue-950/60 to-deepblue-950"></div>
+    </div>
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon-purple/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neon-cyan/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <main class="container mx-auto px-4 py-8 md:py-16 relative z-20 max-w-5xl">
+        <nav class="mb-12 animate-fade-in-down flex flex-wrap items-center gap-4">
+            <a href="../../index.html" class="flex items-center justify-center w-11 h-11 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0" title="Back to Home">
+                <i class="ph ph-house text-xl group-hover:scale-110 transition-transform"></i>
+            </a>
+            <a href="chile.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0">
+                <i class="ph ph-arrow-left text-lg group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-medium text-sm">Back to Chile</span>
+            </a>
+            <div class="ml-auto flex items-center gap-3 bg-deepblue-900/40 border border-deepblue-700/50 rounded-full px-4 py-2 backdrop-blur-sm shadow-inner shrink-0">
+                <img src="../../assets/flags/w40/cl.png" alt="Chile flag" class="w-6 h-auto rounded-[2px] shadow-sm">
+                <div class="flex items-center gap-2 text-sm font-medium tracking-wide">
+                    <span class="text-slate-200 uppercase text-xs tracking-wider font-bold">Chile</span>
+                    <span class="text-deepblue-500 text-xs">&rsaquo;</span>
+                    <span class="text-neon-cyan text-xs">Valparaíso</span>
+                </div>
+            </div>
+        </nav>
+
+        <header class="mb-16 animate-fade-in-down animation-delay-100 text-center">
+            <button
+                type="button"
+                id="destination-active-toggle"
+                class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
+                data-iso2="CL"
+                data-slug="valparaiso"
+                data-active="false"
+                data-interactive="true"
+                aria-label="Toggle Valparaíso visibility on Chile guide"
+                aria-pressed="false"
+            >
+                <i class="ph ph-map-pin text-4xl text-slate-500 pointer-events-none" aria-hidden="true"></i>
+            </button>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple pb-4">
+                Explore Valparaíso
+            </h1>
+            <div class="bg-deepblue-900/40 border border-deepblue-800 rounded-3xl p-8 md:p-10 text-left backdrop-blur-sm mt-10">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                    <i class="ph ph-scroll text-neon-cyan"></i> A Brief History
+                </h2>
+                <p class="text-lg text-slate-400 font-light leading-relaxed">Valparaíso&#x27;s steep hills served as Chile&#x27;s principal Pacific port before the Panama Canal, with funiculars linking colourful timber houses to harbour quays. Naval heritage, poet Pablo Neruda&#x27;s houses, and warehouse districts record nineteenth-century maritime trade. Cerro Alegre stairways and port warehouse districts extend funicular-linked hills above the Pacific harbour.</p>
+            </div>
+        </header>
+
+        <section class="mb-16 animate-fade-in-down" style="animation-delay: 0.2s;">
+            <h2 class="text-3xl font-bold text-white mb-6">Attractions Map</h2>
+            <div id="map" class="h-[400px] w-full rounded-3xl border border-deepblue-700 shadow-2xl z-10 relative"></div>
+        </section>
+
+        <section class="flex flex-col gap-6 pb-20 animate-fade-in-down" style="animation-delay: 0.3s;">
+            <h2 class="text-3xl font-bold text-white mb-2">Top Sights & Activities</h2>
+            
+            <!-- 1. Playa Caleta Portales -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valparaiso_1.jpg" alt="Playa Caleta Portales" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Playa Caleta Portales</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Playa Caleta Portales is listed among principal sites for Valparaíso within Chile. Municipal and regional heritage listings document its place in the historic centre and travellers routes through Valparaíso. Playa Caleta Portales is listed among principal sites for Valparaíso within Chile.</p>
+                </div>
+            </div>
+
+            <!-- 2. Flower clock -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valparaiso_2.jpg" alt="Flower clock" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Flower clock</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Flower Clock, located in Vina del Mar, Chile, is a garden clock adorned with flowers. Built to commemorate the 1962 World Cup hosted by Vina del Mar, this fully functional timepiece features a face made entirely of flowers meticulously maintained to not obstruct its white metal hands. Every 15 minutes, the clock chimes and plays seasonal music. A popular spot for visitors seeking picturesque photo opportunities, it stands as a testament to Vina&#x27;s nickname &#x27;The Garden City.&#x27;.</p>
+                </div>
+            </div>
+
+            <!-- 3. Playa Caleta Abarca -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valparaiso_3.jpg" alt="Playa Caleta Abarca" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Playa Caleta Abarca</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Playa Caleta Abarca is a charming sandy beach nestled in a picturesque bay, just north of Valparaiso and close to the city of Vina del Mar. This inviting stretch of golden sand, though modest in size, serves as a lively gathering spot for sunbathers and beach enthusiasts alike. The promenade that runs alongside it is lined with hotels and open-air restaurants, creating an ideal atmosphere for relaxation and socializing.</p>
+                </div>
+            </div>
+
+            <!-- 4. Sotomayor Square -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valparaiso_4.jpg" alt="Sotomayor Square" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Sotomayor Square</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Plaza Sotomayor is a bustling square in Valparaiso, flanked by the Chilean navy headquarters and a central memorial honoring naval heroes. The surrounding area includes the commercial quarter with its port works, warehouses, banks, and shopping center. Adjacent to the bay are administrative buildings grouped around the plaza. The lower part of the city also features the cathedral, parks, boulevards, theaters, cafes, and colonial buildings like the church of La Matriz.</p>
+                </div>
+            </div>
+
+            <!-- 5. Monument to the Heroes of Iquique -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valparaiso_5.jpg" alt="Monument to the Heroes of Iquique" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Monument to the Heroes of Iquique</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">In the heart of Sotomayor Square in Valparaiso, Chile stands the Monumento a Los Heroes de Iquique, a tribute to fallen naval heroes from the battle of Iquique during the war in the Pacific. The monument is well-maintained and offers guided walking tours daily at noon for visitors to better understand its significance. It commemorates the bravery of Chilean commander Pratt and his naval operations against a Peruvian warship.</p>
+                </div>
+            </div>
+
+            <!-- 6. Prat Pier -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valparaiso_6.jpg" alt="Prat Pier" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Prat Pier</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Muelle Prat is a waterfront promenade at the heart of Valparaiso&#x27;s port area. It offers a lively atmosphere with fishermen bringing in their catch, street vendors selling Chilean snacks, and artists capturing scenic bay views. Visitors can take boat tours from the pier to see the city&#x27;s colorful hillside constructions and historic buildings.</p>
+                </div>
+            </div>
+
+            <!-- 7. Vergara Pier -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valparaiso_7.jpg" alt="Vergara Pier" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Vergara Pier</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled in the coastal city of Vina del Mar, Chile, Vergara Pier is a charming destination that beautifully marries history with leisure. Originally constructed in the late 19th century and later remodeled in 2016, this pedestrian pier has transformed from an industrial hub into a beloved recreational spot. Visitors flock here to soak up views of the Pacific Ocean while enjoying activities like fishing for crabs and jaibas.</p>
+                </div>
+            </div>
+
+            <!-- 8. Viña del Mar -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valparaiso_8.jpg" alt="Viña del Mar" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Viña del Mar</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Viña del Mar, a coastal resort city in Chile, is famous for its gardens, beaches, and modern buildings. The Quinta Vergara Park houses the Quinta Vergara Amphitheater and the Artequin Museum with replicas of major artworks. The Museum of Archaeology and History Francisco Fonck displays stone moai sculptures from Easter Island and shrunken heads.</p>
+                </div>
+            </div>
+
+            <!-- 9. Concon Dunes -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valparaiso_9.jpg" alt="Concon Dunes" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Concon Dunes</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled along the Chilean coastline, just north of Valparaiso, the Concon Dunes are a must-visit destination for adventure seekers and nature lovers alike. These impressive dunes rise dramatically from the shore, offering views of both the ocean and the cityscape. The town of Concon itself is a lively resort area known for its beautiful beaches and bustling nightlife, but it’s these towering sand formations that truly steal the show.</p>
+                </div>
+            </div>
+
+            <!-- 10. Plaza De La Victoria -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valparaiso_10.jpg" alt="Plaza De La Victoria" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Plaza De La Victoria</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Plaza De La Victoria is listed among principal sites for Valparaíso within Chile. Municipal and regional heritage listings document its place in the historic centre and travellers routes through Valparaíso. Plaza De La Victoria is listed among principal sites for Valparaíso within Chile.</p>
+                </div>
+            </div>
+
+            <!-- 11. Viña del Mar National Botanical Garden -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valparaiso_11.jpg" alt="Viña del Mar National Botanical Garden" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> CLP 3000
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Viña del Mar National Botanical Garden</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Viña del Mar National Botanical Garden, spanning 370 acres, was established in 1917 to preserve Chilean plant species. The garden houses around 800 native plant species, with half of them at risk of extinction. Notably, it boasts a collection of 280 tree species and is home to the rare Sophora Toromiro tree from Easter Island.</p>
+                </div>
+            </div>
+
+            <!-- 12. Wulff Castle -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valparaiso_12.jpg" alt="Wulff Castle" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Wulff Castle</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Wulff Castle, also known as Castillo Wulff, is a historic mansion built in the early 20th century by German industrialist Gustavo Adolfo Wulff. Perched on the edge of a cliff overlooking the Pacific Ocean, this castle offers ocean views and serves as a cultural center with exhibits showcasing its rich history. Although it has been closed to visitors for some time, it remains an landmark in Vina del Mar.</p>
+                </div>
+            </div>
+
+            <!-- 13. Palace of Cerro Castillo -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valparaiso_13.jpg" alt="Palace of Cerro Castillo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Palace of Cerro Castillo</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled in the Cerro Castillo, the Palace of Cerro Castillo is a captivating historical gem that draws visitors with its rich heritage. Constructed entirely from bricks imported from France, this enchanting castle offers a glimpse into the past. While photography inside is restricted to preserve its beauty, guided tours are available for those eager to learn more about its fascinating history.</p>
+                </div>
+            </div>
+
+            <!-- 14. Casino de Viña del Mar -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valparaiso_14.jpg" alt="Casino de Viña del Mar" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Casino de Viña del Mar</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Located on Calle San Martin, the Casino de Viña del Mar is a beachfront casino offering a variety of entertainment options. The casino features slot machines, card tables, bingo, and even a dance club with live shows. Its imposing Roman-Greek-style construction and elegant rooms create an inviting atmosphere for guests to enjoy table games and chance machines while earning points in the Enjoy Club.</p>
+                </div>
+            </div>
+
+            <!-- 15. Estadio Sausalito -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valparaiso_15.jpg" alt="Estadio Sausalito" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Estadio Sausalito</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Estadio Sausalito is the home ground for the local football team Everton de Vina. The stadium has a passionate fan base, and matches here generally have fewer reported issues compared to larger clubs like Colo-Colo and Universidad de Chile. Ticket prices can range from 3,500 pesos or more for matches against bigger teams. The stadium is known for being organized, clean, and tidy with excellent volunteers during events like the Pan American Games 2023.</p>
+                </div>
+            </div>
+
+            <!-- 16. Ascensor Reina Victoria -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valparaiso_16.jpg" alt="Ascensor Reina Victoria" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> CLP 300
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Ascensor Reina Victoria</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Ascensor Reina Victoria, also known as Queen Victoria Funicular, is an hillside transportation system in Valparaiso. Dating back to 1902, it offers panoramic views of the city. Connecting Elias Street to Paseo Dimalow, this funicular provides a quick and affordable way to ascend the steep hillside. At the top, visitors can find various restaurants and cafes where they can relax and enjoy the scenery.</p>
+                </div>
+            </div>
+
+            <!-- 17. Cerro Concepcion -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valparaiso_17.jpg" alt="Cerro Concepcion" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Cerro Concepcion</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Cerro Concepcion, a historic hill in Valparaiso, boasts the Ascensor Concepcion funicular dating back to 1883. This popular attraction climbs 69 meters at a 45-degree gradient from Carreno to Paseo Gervasoni. The area is home to Museo El Mirador de Lukas and two significant churches: Iglesia Anglicana San Pablo and Iglesia Luterana.</p>
+                </div>
+            </div>
+
+            <!-- 18. Cerro Alegre -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valparaiso_18.jpg" alt="Cerro Alegre" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Cerro Alegre</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Cerro Alegre and Cerro Concepcion are bohemian neighborhoods in Valparaiso, Chile, offering a relaxed atmosphere for daytime strolls and sunsets. The area is filled with lively cafes, public squares, and historic cobbled streets that blend timeless charms with contemporary creativity.</p>
+                </div>
+            </div>
+
+            <!-- 19. Concepción Funicular -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valparaiso_19.jpg" alt="Concepción Funicular" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> CLP 300
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Concepción Funicular</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Ascensor Concepcion, the oldest funicular in Valparaiso dating back to 1883, is a popular tourist attraction as well as a convenient mode of transport for locals. The rickety yet thrilling ride swiftly takes passengers up the steep hillside to Paseo Gervasoni, offering views of the city and port. Visitors can also opt for a ride on Ascensor Reina Victoria, built in 1902.</p>
+                </div>
+            </div>
+
+            <!-- 20. Playa Las Torpederas -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valparaiso_20.jpg" alt="Playa Las Torpederas" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Playa Las Torpederas</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Playa Las Torpederas is a popular city beach in Chile, perfect for swimming and water sports. It offers snack bars and a lookout platform with views of the coast. The beach is ideal for family outings or peaceful walks. Visitors can also explore the Los Angeles Lighthouse, which was the first lighthouse built in Chile. Located at Punta Angeles, this pristine public beach provides an excellent venue for relaxation and outdoor activities.</p>
+                </div>
+            </div>
+
+            <!-- 21. National Maritime Museum -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valparaiso_21.jpg" alt="National Maritime Museum" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> CLP 2000
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">National Maritime Museum</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Museo Naval Y Maritimo, located at Paseo 21 de Mayo in Valparaiso, Chile, is a captivating museum that pays homage to the country&#x27;s rich naval history. Visitors can explore a diverse array of ship artifacts, models, illustrations, and old cannons lining the entrance. The exhibition rooms are filled with intriguing items such as oil paintings, maps, models, and statues.</p>
+                </div>
+            </div>
+
+            <!-- 22. Paseo 21 de Mayo de Valparaíso -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/valparaiso_22.jpg" alt="Paseo 21 de Mayo de Valparaíso" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Paseo 21 de Mayo de Valparaíso</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Paseo 21 de Mayo de Valparaíso is listed among principal sites for Valparaíso within Chile. Municipal and regional heritage listings document its place in the historic centre and travellers routes through Valparaíso. Paseo 21 de Mayo de Valparaíso is listed among principal sites for Valparaíso within Chile.</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
+        <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+    </footer>    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const map = L.map('map').setView([-33.026476, -71.591947], 14);
+            L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                attribution: '&copy; Google Maps',
+                maxZoom: 20
+            }).addTo(map);
+            const locations = [{"name": "Playa Caleta Portales", "lat": -33.031367, "lng": -71.590557}, {"name": "Flower clock", "lat": -33.023308, "lng": -71.567168}, {"name": "Playa Caleta Abarca", "lat": -33.02296, "lng": -71.569089}, {"name": "Sotomayor Square", "lat": -33.038562, "lng": -71.628755}, {"name": "Monument to the Heroes of Iquique", "lat": -33.038361, "lng": -71.628357}, {"name": "Prat Pier", "lat": -33.037388, "lng": -71.627336}, {"name": "Vergara Pier", "lat": -33.011468, "lng": -71.554371}, {"name": "Viña del Mar", "lat": -33.015348, "lng": -71.550028}, {"name": "Concon Dunes", "lat": -32.940261, "lng": -71.549484}, {"name": "Plaza De La Victoria", "lat": -33.0463071, "lng": -71.6198067}, {"name": "Viña del Mar National Botanical Garden", "lat": -33.048022, "lng": -71.500193}, {"name": "Wulff Castle", "lat": -33.019198, "lng": -71.564811}, {"name": "Palace of Cerro Castillo", "lat": -33.020033, "lng": -71.564213}, {"name": "Casino de Viña del Mar", "lat": -33.018951, "lng": -71.560152}, {"name": "Estadio Sausalito", "lat": -33.014399, "lng": -71.535417}, {"name": "Ascensor Reina Victoria", "lat": -33.043888, "lng": -71.626443}, {"name": "Cerro Concepcion", "lat": -33.04253, "lng": -71.62638}, {"name": "Cerro Alegre", "lat": -33.043101, "lng": -71.627929}, {"name": "Concepción Funicular", "lat": -33.040767, "lng": -71.62641}, {"name": "Playa Las Torpederas", "lat": -33.021993, "lng": -71.644152}, {"name": "National Maritime Museum", "lat": -33.031929, "lng": -71.631235}, {"name": "Paseo 21 de Mayo de Valparaíso", "lat": -33.0323222, "lng": -71.6305445}];
+            const customIcon = L.icon({
+                iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32],
+            });
+            const destinationCenter = [-33.026476, -71.591947];
+            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.086215, "maxCenterLng": 0.091754};
+            const markers = [];
+            locations.forEach(loc => {
+                markers.push(
+                    L.marker([loc.lat, loc.lng], {icon: customIcon}).addTo(map)
+                        .bindPopup(`<strong class="font-sans text-base text-gray-900">${loc.name}</strong>`)
+                );
+            });
+            const group = new L.featureGroup(markers);
+            let bounds = group.getBounds();
+            const ne = bounds.getNorthEast();
+            const sw = bounds.getSouthWest();
+            const latSpan = ne.lat - sw.lat;
+            const lngSpan = ne.lng - sw.lng;
+            const maxSpan = Math.max(latSpan, lngSpan);
+            const isDegenerate = latSpan < 1e-9 && lngSpan < 1e-9;
+            const markerCenterLat = (ne.lat + sw.lat) / 2;
+            const markerCenterLng = (ne.lng + sw.lng) / 2;
+            if (isDegenerate) {
+                const frameSpan = mapContext.compactRegion ? 0.026 : 0.045;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - frameSpan / 2, destinationCenter[1] - frameSpan / 2],
+                    [destinationCenter[0] + frameSpan / 2, destinationCenter[1] + frameSpan / 2]
+                );
+            } else if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                const expand = maxSpan < 0.12 ? 1.15 : 1.1;
+                const halfLat = latSpan / 2 * expand;
+                const halfLng = lngSpan / 2 * expand;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                const latReach = Math.max(mapContext.maxCenterLat, latSpan / 2) * 1.45;
+                const lngReach = Math.max(mapContext.maxCenterLng, lngSpan / 2) * 1.45;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - latReach, destinationCenter[1] - lngReach],
+                    [destinationCenter[0] + latReach, destinationCenter[1] + lngReach]
+                );
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                const halfLat = latSpan / 2 * 1.1;
+                const halfLng = lngSpan / 2 * 1.1;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                const frameSpan = Math.max(maxSpan * 4, 0.006);
+                bounds = L.latLngBounds(
+                    [markerCenterLat - frameSpan / 2, markerCenterLng - frameSpan / 2],
+                    [markerCenterLat + frameSpan / 2, markerCenterLng + frameSpan / 2]
+                );
+            }
+            const fitOptions = {};
+            if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                fitOptions.padding = maxSpan < 0.12
+                    ? [24, 24]
+                    : (maxSpan < 0.5 ? [24, 24] : [28, 28]);
+                fitOptions.maxZoom = maxSpan < 0.12
+                    ? 14
+                    : (maxSpan < 0.5 ? 10 : 9);
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                fitOptions.padding = [40, 40];
+                fitOptions.maxZoom = 8;
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                fitOptions.padding = [24, 24];
+            } else if (mapContext.denseUrban) {
+                fitOptions.padding = [18, 18];
+            } else if (mapContext.spreadUrban) {
+                fitOptions.padding = [20, 20];
+            } else if (locations.length >= 3 && maxSpan >= 0.02) {
+                fitOptions.padding = maxSpan >= 0.08 ? [20, 20] : [30, 30];
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                fitOptions.padding = [12, 12];
+                fitOptions.maxZoom = 16;
+            } else if (isDegenerate || locations.length === 1) {
+                fitOptions.padding = mapContext.compactRegion ? [16, 16] : [36, 36];
+                if (isDegenerate || maxSpan < 0.015) {
+                    fitOptions.maxZoom = mapContext.compactRegion ? 15 : 14;
+                }
+            } else {
+                fitOptions.padding = [50, 50];
+            }
+            map.fitBounds(bounds, fitOptions);
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                } else {
+                    scrollTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                }
+            });
+            scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        });
+    </script>
+
+    <button id="scrollTopBtn" class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-12 h-12 bg-neon-cyan text-deepblue-950 rounded-full shadow-[0_0_20px_rgba(0,240,255,0.4)] opacity-0 pointer-events-none transition-all duration-300 translate-y-4 hover:bg-white hover:scale-110" aria-label="Scroll to top">
+        <i class="ph ph-arrow-up text-xl font-bold"></i>
+    </button>
+</body>
+</html>

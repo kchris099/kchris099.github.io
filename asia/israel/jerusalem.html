@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jerusalem Guide | Global Explorer Guides</title>
+    <link rel="stylesheet" href="../../assets/tailwind.css">
+    <link rel="stylesheet" href="../../assets/outfit.css">
+    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
+    <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
+    <link rel="stylesheet" href="../../assets/homepage-activation.css">
+    <link rel="stylesheet" href="../../assets/destination-activation.css">
+    <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
+    <script src="../../assets/leaflet/leaflet.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #060B19; }
+        ::-webkit-scrollbar-thumb { background: #1E336B; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0070FF; }
+        .leaflet-popup-content-wrapper { background-color: #fff; color: #333; border-radius: 8px; box-shadow: 0 3px 14px rgba(0,0,0,0.4); }
+        .leaflet-popup-tip { background-color: #fff; }
+    </style>
+</head>
+<body class="bg-deepblue-950 text-slate-200 font-sans min-h-screen relative overflow-x-hidden">
+    <div class="absolute top-0 left-0 w-full h-[450px] md:h-[500px] z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50" style="background-image: url('images/jerusalem_hero.jpg')"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-deepblue-950/10 via-deepblue-950/60 to-deepblue-950"></div>
+    </div>
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon-purple/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neon-cyan/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <main class="container mx-auto px-4 py-8 md:py-16 relative z-20 max-w-5xl">
+        <nav class="mb-12 animate-fade-in-down flex flex-wrap items-center gap-4">
+            <a href="../../index.html" class="flex items-center justify-center w-11 h-11 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0" title="Back to Home">
+                <i class="ph ph-house text-xl group-hover:scale-110 transition-transform"></i>
+            </a>
+            <a href="israel.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0">
+                <i class="ph ph-arrow-left text-lg group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-medium text-sm">Back to Israel</span>
+            </a>
+            <div class="ml-auto flex items-center gap-3 bg-deepblue-900/40 border border-deepblue-700/50 rounded-full px-4 py-2 backdrop-blur-sm shadow-inner shrink-0">
+                <img src="../../assets/flags/w40/il.png" alt="Israel flag" class="w-6 h-auto rounded-[2px] shadow-sm">
+                <div class="flex items-center gap-2 text-sm font-medium tracking-wide">
+                    <span class="text-slate-200 uppercase text-xs tracking-wider font-bold">Israel</span>
+                    <span class="text-deepblue-500 text-xs">&rsaquo;</span>
+                    <span class="text-neon-cyan text-xs">Jerusalem</span>
+                </div>
+            </div>
+        </nav>
+
+        <header class="mb-16 animate-fade-in-down animation-delay-100 text-center">
+            <button
+                type="button"
+                id="destination-active-toggle"
+                class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
+                data-iso2="IL"
+                data-slug="jerusalem"
+                data-active="false"
+                data-interactive="true"
+                aria-label="Toggle Jerusalem visibility on Israel guide"
+                aria-pressed="false"
+            >
+                <i class="ph ph-map-pin text-4xl text-slate-500 pointer-events-none" aria-hidden="true"></i>
+            </button>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple pb-4">
+                Explore Jerusalem
+            </h1>
+            <div class="bg-deepblue-900/40 border border-deepblue-800 rounded-3xl p-8 md:p-10 text-left backdrop-blur-sm mt-10">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                    <i class="ph ph-scroll text-neon-cyan"></i> A Brief History
+                </h2>
+                <p class="text-lg text-slate-400 font-light leading-relaxed">Jerusalem&#x27;s Old City layers Canaanite, Jewish, Roman, Byzantine, Islamic, and Ottoman sacred landscapes within Ottoman walls. The Western Wall, Church of the Holy Sepulchre, and Dome of the Rock anchor competing yet intertwined pilgrimage traditions that shaped Levantine history for three millennia. Mount of Olives viewpoints and city-wall gates connect sacred quarters to surrounding Judaean hills.</p>
+            </div>
+        </header>
+
+        <section class="mb-16 animate-fade-in-down" style="animation-delay: 0.2s;">
+            <h2 class="text-3xl font-bold text-white mb-6">Attractions Map</h2>
+            <div id="map" class="h-[400px] w-full rounded-3xl border border-deepblue-700 shadow-2xl z-10 relative"></div>
+        </section>
+
+        <section class="flex flex-col gap-6 pb-20 animate-fade-in-down" style="animation-delay: 0.3s;">
+            <h2 class="text-3xl font-bold text-white mb-2">Top Sights & Activities</h2>
+            
+            <!-- 1. Church of the Holy Sepulchre -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jerusalem_1.jpg" alt="Church of the Holy Sepulchre" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Church of the Holy Sepulchre</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Church of the Holy Sepulchre is a historic basilica dating back to the 4th century and is believed by some Christians to be the site of Jesus&#x27;s tomb. The church holds historical significance, with its roots tracing back through thousands of years of Jewish history, from Byzantine Rule to the British Mandate. Visitors can experience a whirlwind tour that includes stops at sites like the Western Wall, Via Dolorosa, and Bethlehem.</p>
+                </div>
+            </div>
+
+            <!-- 2. New Gate -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jerusalem_2.jpg" alt="New Gate" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">New Gate</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">New Gate is listed among principal sites for Jerusalem within Israel. Municipal and regional heritage listings document its place in the historic centre and travellers routes through Jerusalem. New Gate is listed among principal sites for Jerusalem within Israel.</p>
+                </div>
+            </div>
+
+            <!-- 3. Alrov Mamilla Avenue -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jerusalem_3.jpg" alt="Alrov Mamilla Avenue" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Alrov Mamilla Avenue</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Alrov Mamilla Avenue, also known as Mamilla Avenue, is a and historic shopping destination located near the Old City in Jerusalem. The avenue features a variety of stores housed in converted historic buildings, offering everything from locally owned boutiques and Israeli designs to high-end fashion brands and affordable options like Zara and Mango. Visitors can enjoy street artists, painters, musicians, cafes, and dining options along the pedestrian mall.</p>
+                </div>
+            </div>
+
+            <!-- 4. Museum of The Underground Prisoners -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jerusalem_4.jpg" alt="Museum of The Underground Prisoners" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ₪20
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Museum of The Underground Prisoners</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">This museum tells the story of a group of Jewish fighters who operated an underground network in pre-state Israel. The building where the museum is located served as a prison during the British occupation of Palestine, and many sympathizers with the Jewish cause were imprisoned here.</p>
+                </div>
+            </div>
+
+            <!-- 5. Friends of Zion Museum -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jerusalem_5.jpg" alt="Friends of Zion Museum" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ₪45
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Friends of Zion Museum</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled in the heart of Jerusalem, the Friends of Zion Museum stands as a testament to the enduring friendship between Jewish and Christian communities throughout history. This modern facility employs cutting-edge technology, including immersive 3D movies, surround sound, and interactive touchscreens to guide visitors through a captivating narrative that spans over 3,000 years.</p>
+                </div>
+            </div>
+
+            <!-- 6. Mahaneh Yehudah Market -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jerusalem_6.jpg" alt="Mahaneh Yehudah Market" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Mahaneh Yehudah Market</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Mahaneh Yehudah Market is listed among principal sites for Jerusalem within Israel. Municipal and regional heritage listings document its place in the historic centre and travellers routes through Jerusalem. Mahaneh Yehudah Market is listed among principal sites for Jerusalem within Israel.</p>
+                </div>
+            </div>
+
+            <!-- 7. Belz Great Synagogue -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jerusalem_7.jpg" alt="Belz Great Synagogue" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Belz Great Synagogue</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Belz Great Synagogue in Jerusalem stands as a magnificent tribute to Jewish heritage, far surpassing its original European counterpart. This architectural marvel is not only the largest synagogue in Jerusalem but also potentially the largest in the world, accommodating up to 7,000 worshippers within its grand central sanctuary. Its striking design draws inspiration from the Second Temple and becomes even more enchanting when illuminated at night.</p>
+                </div>
+            </div>
+
+            <!-- 8. Gethsemane -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jerusalem_8.jpg" alt="Gethsemane" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Gethsemane</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Garden of Gethsemane, located at the base of the Mount of Olives in Jerusalem, is a remarkable site steeped in Christian heritage and historical depth. This serene olive grove is renowned as the location where Jesus prayed prior to his arrest, making it a significant pilgrimage destination for many Christians. The garden boasts ancient olive trees that are thought to be over 900 years old, offering visitors a tangible link to its biblical narrative.</p>
+                </div>
+            </div>
+
+            <!-- 9. St. Anne&#x27;s Church, Jerusalem -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jerusalem_9.jpg" alt="St. Anne&#x27;s Church, Jerusalem" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ₪15
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">St. Anne&#x27;s Church, Jerusalem</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">St. Anne&#x27;s Church in Jerusalem is a restored Romanesque church with a rich history dating back to its completion in 1138 by the Crusaders. Situated near the beginning of the Via Dolorosa, it holds significance as the traditional birthplace of the Virgin Mary. The church&#x27;s remarkable Romanesque architecture features high arches and an austere design, representing medieval European architecture in Jerusalem.</p>
+                </div>
+            </div>
+
+            <!-- 10. Dome of the Rock -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jerusalem_10.jpg" alt="Dome of the Rock" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Dome of the Rock</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Dome of the Rock is an Islamic shrine with a gold-topped structure built around 690AD. It holds great significance for Christians and Jews as well. Situated on the Temple Mount, it was completed under the rule of Umayyad Caliph Abd al-Malik and has been covered in gold twice in the 20th century. Despite common misconceptions, it is not a mosque but rather a shrine to the Foundation Stone, important in both Torah and Islamic beliefs.</p>
+                </div>
+            </div>
+
+            <!-- 11. Western Wall -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jerusalem_11.jpg" alt="Western Wall" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Western Wall</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Western Wall, also known as the Wailing Wall, is a significant site in the Jewish Quarter of Jerusalem. It is a remnant of the ancient wall that surrounded the Temple courtyard and holds great religious and historical importance for Jewish people. Visitors can witness worshippers reciting verses or leaving written prayers in its stones. The wall was built around 2000 years ago to support Temple Mount, and after the destruction of the Second Temple, it became a place for lamentation.</p>
+                </div>
+            </div>
+
+            <!-- 12. Al-Aqsa Mosque -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jerusalem_12.jpg" alt="Al-Aqsa Mosque" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Al-Aqsa Mosque</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled in the heart of Jerusalem&#x27;s Old City, Al-Aqsa Mosque stands as a magnificent testament to Islamic architecture and spirituality. Revered as the third holiest site in Islam, this domed mosque has deep historical roots, having been rebuilt between the 8th and 11th centuries. It occupies a significant location on Temple Mount, which is also sacred to Judaism due to its connection with the ancient Temple.</p>
+                </div>
+            </div>
+
+            <!-- 13. Dung Gate -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jerusalem_13.jpg" alt="Dung Gate" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Dung Gate</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Dung Gate is an ancient landmark constructed in 1537 that leads pedestrians to the Western Wall. It is situated not far from the Wailing Wall and provides access to various archaeological sites such as the City of David, where Jerusalem began 3000-4000 years ago. This area has many underground paths, some of which are submerged in water, allowing visitors to explore the historical exhibition at the Davidson Center located next to the Wailing Wall.</p>
+                </div>
+            </div>
+
+            <!-- 14. Saint Peter in Gallicantu -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jerusalem_14.jpg" alt="Saint Peter in Gallicantu" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ₪10
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Saint Peter in Gallicantu</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Church of Saint Peter in Gallicantu is a remarkable hillside church built in 1931 to commemorate the denial of Jesus by the apostle Peter. It is believed to be the site where Peter denied Jesus and later accepted him after the resurrection. The church has an intriguing design with four levels, including the upper church, middle church, guardroom, and dungeon where Jesus was believed to have been kept after his arrest.</p>
+                </div>
+            </div>
+
+            <!-- 15. Zion Gate -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jerusalem_15.jpg" alt="Zion Gate" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Zion Gate</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Zion Gate is listed among principal sites for Jerusalem within Israel. Municipal and regional heritage listings document its place in the historic centre and travellers routes through Jerusalem. Zion Gate is listed among principal sites for Jerusalem within Israel.</p>
+                </div>
+            </div>
+
+            <!-- 16. Dormition Abbey - Hagia Maria -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jerusalem_16.jpg" alt="Dormition Abbey - Hagia Maria" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Dormition Abbey - Hagia Maria</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Dormition Abbey, also known as Hagia Maria, is a historic Christian complex located on Mount Zion in Jerusalem. It is believed to be the site where the Virgin Mary passed away and where Jesus held the Last Supper. The abbey hosts Christmas carols and a traditional Midnight Mass on Christmas Eve, followed by a communal walk to Bethlehem with the monks.</p>
+                </div>
+            </div>
+
+            <!-- 17. Menachem Begin Heritage Center -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jerusalem_17.jpg" alt="Menachem Begin Heritage Center" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ₪35
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Menachem Begin Heritage Center</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Menachem Begin Heritage Center in Jerusalem is a captivating destination that offers a deep dive into the life and impact of the former revolutionary soldier and Israeli leader. Situated on the Hinnom Ridge, it provides views of Mount Zion and the Old City walls. The center boasts multimedia exhibits, documentaries, and touchscreen displays that make for an engaging experience. Additionally, recent archaeological findings from the First Temple period add to its uniqueness.</p>
+                </div>
+            </div>
+
+            <!-- 18. The First Station -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jerusalem_18.jpg" alt="The First Station" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">The First Station</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The First Station in Jerusalem is a cultural and entertainment hub located at a 19th-century train station. Renovated in recent years, it offers an array of experiences including local food, organic produce shopping, boutiques with local and international goods, live concerts, and themed events. This historical complex is In Jerusalem and features a bustling restaurant scene.</p>
+                </div>
+            </div>
+
+            <!-- 19. Montefiore Windmill -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jerusalem_19.jpg" alt="Montefiore Windmill" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Montefiore Windmill</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled in the charming Mishkenot Shaananim neighborhood, the Montefiore Windmill stands as a testament to Jerusalem&#x27;s rich history and romantic allure. Constructed in 1857, this structure was envisioned by Sir Moses Montefiore during his multiple visits to the city in the 19th century. His dream was to alleviate overcrowding within the Old City walls by establishing a new community complete with residential apartments and a windmill for flour production.</p>
+                </div>
+            </div>
+
+            <!-- 20. Damascus Gate -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jerusalem_20.jpg" alt="Damascus Gate" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Damascus Gate</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Damascus Gate, a historic stone structure dating back to 1537, serves as one of the primary entrances to Jerusalem&#x27;s Old City. It is located near significant religious sites such as the believed crucifixion and resurrection site of Jesus. Annually, an evening of Christmas carols in English, Hebrew, and Arabic takes place here. Additionally, nearby attractions include Ein Kerem village with its ancient holy sites like the Church of the Visitation and the Church of John the Baptist.</p>
+                </div>
+            </div>
+
+            <!-- 21. Herod&#x27;s Gate -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jerusalem_21.jpg" alt="Herod&#x27;s Gate" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Herod&#x27;s Gate</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Herod&#x27;s Gate is an Ottoman-era access gate located in the Old City of Jerusalem. It provides quick access to public transportation and taxis, making it convenient for reaching West Jerusalem&#x27;s city center. The gate also leads to a variety of shops and eateries. Visitors can walk through the 500-foot-long Herodian Channel in the tunnels, passing by the massive foundation stones of the Western Wall before exiting near this site.</p>
+                </div>
+            </div>
+
+            <!-- 22. Mt of Olives -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jerusalem_22.jpg" alt="Mt of Olives" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Mt of Olives</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Mount of Olives, a historic mountain referenced in the Old and New Testaments of the Bible, holds significant religious and cultural importance. It has been a sacred spot for centuries and is now home to several important churches and holy sites. Notably, it was mentioned in the Scriptures as King David&#x27;s escape route during his son&#x27;s rebellion and later in the prophets. In the New Testament, it is where Jesus taught his disciples, wept over Jerusalem, and ascended into heaven.</p>
+                </div>
+            </div>
+
+            <!-- 23. Shrine of the Book -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jerusalem_23.jpg" alt="Shrine of the Book" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ₪62
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Shrine of the Book</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Shrine of the Book, located within the Israel Museum, is a unique dome-shaped structure that houses the Dead Sea Scrolls, significant archaeological discoveries of the 20th century. These ancient biblical manuscripts were accidentally found in remote caves near Qumran and are considered a literary treasure of importance. The building&#x27;s design is inspired by the covers of the pots in which the scrolls were originally discovered.</p>
+                </div>
+            </div>
+
+            <!-- 24. Church of the Nativity -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jerusalem_24.jpg" alt="Church of the Nativity" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Church of the Nativity</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Church of the Nativity is a 4th-century heritage site built above a cave believed to be the birthplace of Jesus. The city where it stands has references dating back to the Canaanite period, but its significance grew when Queen Helena identified it as Jesus&#x27; birthplace. The historic center still reflects its Ottoman heritage with narrow streets, stone structures, and architectural features from that era.</p>
+                </div>
+            </div>
+
+            <!-- 25. Yad Vashem -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jerusalem_25.jpg" alt="Yad Vashem" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Yad Vashem</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Yad Vashem, established in 1953, is a memorial complex dedicated to honoring the six million Jewish victims of the Holocaust. It also pays tribute to the bravery of Jewish resistance fighters and non-Jews who risked their lives to save Jews during that time. Located on Har Hazikaron in Jerusalem, it includes monuments, a historical museum, an archive and research center for documenting the Holocaust, and an educational facility.</p>
+                </div>
+            </div>
+
+            <!-- 26. Herzl Museum -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jerusalem_26.jpg" alt="Herzl Museum" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ₪25
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Herzl Museum</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Herzl Museum, located at Mount Herzl in Israel, is a tribute to Theodor Herzl, the visionary behind the Zionist movement and the establishment of the State of Israel. The museum offers an interactive experience showcasing Herzl&#x27;s life and his significant role in advocating for a Jewish state. Visitors can explore reconstructions of his study and library, as well as view original documents, photos, and audio-visual presentations.</p>
+                </div>
+            </div>
+
+            <!-- 27. The Tisch Family Zoological Gardens in Jerusalem -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jerusalem_27.jpg" alt="The Tisch Family Zoological Gardens in Jerusalem" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ₪58
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">The Tisch Family Zoological Gardens in Jerusalem</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Tisch Family Zoological Gardens in Jerusalem is listed among principal sites for Jerusalem within Israel. Municipal and regional heritage listings document its place in the historic centre and travellers routes through Jerusalem. The Tisch Family Zoological Gardens in Jerusalem is listed among principal sites for Jerusalem within Israel.</p>
+                </div>
+            </div>
+
+            <!-- 28. Israel Aquarium -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jerusalem_28.jpg" alt="Israel Aquarium" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ₪50
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Israel Aquarium</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Israel Aquarium is listed among principal sites for Jerusalem within Israel. Municipal and regional heritage listings document its place in the historic centre and travellers routes through Jerusalem. Israel Aquarium is listed among principal sites for Jerusalem within Israel.</p>
+                </div>
+            </div>
+
+            <!-- 29. Ein Lavan -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jerusalem_29.jpg" alt="Ein Lavan" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Ein Lavan</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled in the picturesque Judean Hills, Ein Lavan is a hidden gem that beckons visitors year-round, but truly shines during late summer and early autumn. This natural spring features two beautifully refurbished pools—one shallow enough for little ones to splash around in and another deeper pool for those seeking a refreshing swim. Accessing this serene oasis involves climbing a set of stone stairs after following blue trail markers from the nearby Jerusalem Biblical Zoo parking lot.</p>
+                </div>
+            </div>
+
+            <!-- 30. Sataf -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jerusalem_30.jpg" alt="Sataf" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ₪15
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Sataf</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Sataf, located just a short drive from Jerusalem, is an ancient agricultural site nestled in the Mountains of Jerusalem. The area boasts millennia-old olive and almond trees, as well as vineyards that thrive on its slopes. Visitors can explore five interconnected hiking trails that offer various options for a circular walk starting from the main entrance and car park. Along the blue trail, hikers pass through olive groves, a well, and an inhabited cave from ancient times.</p>
+                </div>
+            </div>
+
+            <!-- 31. Ein Hemed National Park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jerusalem_31.jpg" alt="Ein Hemed National Park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ₪22
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Ein Hemed National Park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Ein Hemed National Park is listed among principal sites for Jerusalem within Israel. Municipal and regional heritage listings document its place in the historic centre and travellers routes through Jerusalem. Ein Hemed National Park is listed among principal sites for Jerusalem within Israel.</p>
+                </div>
+            </div>
+
+            <!-- 32. Nebi Samuel National Park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/jerusalem_32.jpg" alt="Nebi Samuel National Park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ₪22
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Nebi Samuel National Park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nebi Samuel National Park is listed among principal sites for Jerusalem within Israel. Municipal and regional heritage listings document its place in the historic centre and travellers routes through Jerusalem. Nebi Samuel National Park is listed among principal sites for Jerusalem within Israel.</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
+        <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+    </footer>    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const map = L.map('map').setView([31.774225, 35.210623], 14);
+            L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                attribution: '&copy; Google Maps',
+                maxZoom: 20
+            }).addTo(map);
+            const locations = [{"name": "Church of the Holy Sepulchre", "lat": 31.778481, "lng": 35.2296}, {"name": "New Gate", "lat": 31.7792943, "lng": 35.2261752}, {"name": "Alrov Mamilla Avenue", "lat": 31.777785, "lng": 35.223819}, {"name": "Museum of The Underground Prisoners", "lat": 31.781093, "lng": 35.224094}, {"name": "Friends of Zion Museum", "lat": 31.780129, "lng": 35.220295}, {"name": "Mahaneh Yehudah Market", "lat": 31.7848355, "lng": 35.2126355}, {"name": "Belz Great Synagogue", "lat": 31.79721, "lng": 35.207669}, {"name": "Gethsemane", "lat": 31.77931, "lng": 35.23978}, {"name": "St. Anne's Church, Jerusalem", "lat": 31.780888, "lng": 35.236126}, {"name": "Dome of the Rock", "lat": 31.778019, "lng": 35.235408}, {"name": "Western Wall", "lat": 31.776719, "lng": 35.234509}, {"name": "Al-Aqsa Mosque", "lat": 31.776069, "lng": 35.23578}, {"name": "Dung Gate", "lat": 31.774827, "lng": 35.23414}, {"name": "Saint Peter in Gallicantu", "lat": 31.771288, "lng": 35.232111}, {"name": "Zion Gate", "lat": 31.772842, "lng": 35.229724}, {"name": "Dormition Abbey - Hagia Maria", "lat": 31.771667, "lng": 35.229044}, {"name": "Menachem Begin Heritage Center", "lat": 31.76933, "lng": 35.225435}, {"name": "The First Station", "lat": 31.767219, "lng": 35.224282}, {"name": "Montefiore Windmill", "lat": 31.771505, "lng": 35.223994}, {"name": "Damascus Gate", "lat": 31.781625, "lng": 35.230408}, {"name": "Herod's Gate", "lat": 31.782949, "lng": 35.233669}, {"name": "Mt of Olives", "lat": 31.777932, "lng": 35.245698}, {"name": "Shrine of the Book", "lat": 31.773466, "lng": 35.202982}, {"name": "Church of the Nativity", "lat": 31.704303, "lng": 35.207529}, {"name": "Yad Vashem", "lat": 31.774194, "lng": 35.175302}, {"name": "Herzl Museum", "lat": 31.772442, "lng": 35.181467}, {"name": "The Tisch Family Zoological Gardens in Jerusalem", "lat": 31.74622, "lng": 35.177338}, {"name": "Israel Aquarium", "lat": 31.744709, "lng": 35.1657752}, {"name": "Ein Lavan", "lat": 31.74928, "lng": 35.159371}, {"name": "Sataf", "lat": 31.771742, "lng": 35.127656}, {"name": "Ein Hemed National Park", "lat": 31.794795, "lng": 35.127566}, {"name": "Nebi Samuel National Park", "lat": 31.833024, "lng": 35.180546}];
+            const customIcon = L.icon({
+                iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32],
+            });
+            const destinationCenter = [31.774225, 35.210623];
+            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.069922, "maxCenterLng": 0.083057};
+            const markers = [];
+            locations.forEach(loc => {
+                markers.push(
+                    L.marker([loc.lat, loc.lng], {icon: customIcon}).addTo(map)
+                        .bindPopup(`<strong class="font-sans text-base text-gray-900">${loc.name}</strong>`)
+                );
+            });
+            const group = new L.featureGroup(markers);
+            let bounds = group.getBounds();
+            const ne = bounds.getNorthEast();
+            const sw = bounds.getSouthWest();
+            const latSpan = ne.lat - sw.lat;
+            const lngSpan = ne.lng - sw.lng;
+            const maxSpan = Math.max(latSpan, lngSpan);
+            const isDegenerate = latSpan < 1e-9 && lngSpan < 1e-9;
+            const markerCenterLat = (ne.lat + sw.lat) / 2;
+            const markerCenterLng = (ne.lng + sw.lng) / 2;
+            if (isDegenerate) {
+                const frameSpan = mapContext.compactRegion ? 0.026 : 0.045;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - frameSpan / 2, destinationCenter[1] - frameSpan / 2],
+                    [destinationCenter[0] + frameSpan / 2, destinationCenter[1] + frameSpan / 2]
+                );
+            } else if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                const expand = maxSpan < 0.12 ? 1.15 : 1.1;
+                const halfLat = latSpan / 2 * expand;
+                const halfLng = lngSpan / 2 * expand;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                const latReach = Math.max(mapContext.maxCenterLat, latSpan / 2) * 1.45;
+                const lngReach = Math.max(mapContext.maxCenterLng, lngSpan / 2) * 1.45;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - latReach, destinationCenter[1] - lngReach],
+                    [destinationCenter[0] + latReach, destinationCenter[1] + lngReach]
+                );
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                const halfLat = latSpan / 2 * 1.1;
+                const halfLng = lngSpan / 2 * 1.1;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                const frameSpan = Math.max(maxSpan * 4, 0.006);
+                bounds = L.latLngBounds(
+                    [markerCenterLat - frameSpan / 2, markerCenterLng - frameSpan / 2],
+                    [markerCenterLat + frameSpan / 2, markerCenterLng + frameSpan / 2]
+                );
+            }
+            const fitOptions = {};
+            if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                fitOptions.padding = maxSpan < 0.12
+                    ? [24, 24]
+                    : (maxSpan < 0.5 ? [24, 24] : [28, 28]);
+                fitOptions.maxZoom = maxSpan < 0.12
+                    ? 14
+                    : (maxSpan < 0.5 ? 10 : 9);
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                fitOptions.padding = [40, 40];
+                fitOptions.maxZoom = 8;
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                fitOptions.padding = [24, 24];
+            } else if (mapContext.denseUrban) {
+                fitOptions.padding = [18, 18];
+            } else if (mapContext.spreadUrban) {
+                fitOptions.padding = [20, 20];
+            } else if (locations.length >= 3 && maxSpan >= 0.02) {
+                fitOptions.padding = maxSpan >= 0.08 ? [20, 20] : [30, 30];
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                fitOptions.padding = [12, 12];
+                fitOptions.maxZoom = 16;
+            } else if (isDegenerate || locations.length === 1) {
+                fitOptions.padding = mapContext.compactRegion ? [16, 16] : [36, 36];
+                if (isDegenerate || maxSpan < 0.015) {
+                    fitOptions.maxZoom = mapContext.compactRegion ? 15 : 14;
+                }
+            } else {
+                fitOptions.padding = [50, 50];
+            }
+            map.fitBounds(bounds, fitOptions);
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                } else {
+                    scrollTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                }
+            });
+            scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        });
+    </script>
+
+    <button id="scrollTopBtn" class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-12 h-12 bg-neon-cyan text-deepblue-950 rounded-full shadow-[0_0_20px_rgba(0,240,255,0.4)] opacity-0 pointer-events-none transition-all duration-300 translate-y-4 hover:bg-white hover:scale-110" aria-label="Scroll to top">
+        <i class="ph ph-arrow-up text-xl font-bold"></i>
+    </button>
+</body>
+</html>

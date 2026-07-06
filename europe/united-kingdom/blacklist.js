@@ -17,4 +17,6 @@ Cardiff
 Bath
 
 Saltaire
+
+Canterbury
 `;

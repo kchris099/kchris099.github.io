@@ -3,4 +3,8 @@
 
 const blacklistText = `
 Kota Kinabalu
+
+George Town
+
+Melaka
 `;

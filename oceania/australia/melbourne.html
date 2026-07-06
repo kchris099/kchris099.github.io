@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Melbourne Guide | Global Explorer Guides</title>
+    <link rel="stylesheet" href="../../assets/tailwind.css">
+    <link rel="stylesheet" href="../../assets/outfit.css">
+    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
+    <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
+    <link rel="stylesheet" href="../../assets/homepage-activation.css">
+    <link rel="stylesheet" href="../../assets/destination-activation.css">
+    <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
+    <script src="../../assets/leaflet/leaflet.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #060B19; }
+        ::-webkit-scrollbar-thumb { background: #1E336B; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0070FF; }
+        .leaflet-popup-content-wrapper { background-color: #fff; color: #333; border-radius: 8px; box-shadow: 0 3px 14px rgba(0,0,0,0.4); }
+        .leaflet-popup-tip { background-color: #fff; }
+    </style>
+</head>
+<body class="bg-deepblue-950 text-slate-200 font-sans min-h-screen relative overflow-x-hidden">
+    <div class="absolute top-0 left-0 w-full h-[450px] md:h-[500px] z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50" style="background-image: url('images/melbourne_hero.jpg')"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-deepblue-950/10 via-deepblue-950/60 to-deepblue-950"></div>
+    </div>
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon-purple/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neon-cyan/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <main class="container mx-auto px-4 py-8 md:py-16 relative z-20 max-w-5xl">
+        <nav class="mb-12 animate-fade-in-down flex flex-wrap items-center gap-4">
+            <a href="../../index.html" class="flex items-center justify-center w-11 h-11 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0" title="Back to Home">
+                <i class="ph ph-house text-xl group-hover:scale-110 transition-transform"></i>
+            </a>
+            <a href="australia.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0">
+                <i class="ph ph-arrow-left text-lg group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-medium text-sm">Back to Australia</span>
+            </a>
+            <div class="ml-auto flex items-center gap-3 bg-deepblue-900/40 border border-deepblue-700/50 rounded-full px-4 py-2 backdrop-blur-sm shadow-inner shrink-0">
+                <img src="../../assets/flags/w40/au.png" alt="Australia flag" class="w-6 h-auto rounded-[2px] shadow-sm">
+                <div class="flex items-center gap-2 text-sm font-medium tracking-wide">
+                    <span class="text-slate-200 uppercase text-xs tracking-wider font-bold">Australia</span>
+                    <span class="text-deepblue-500 text-xs">&rsaquo;</span>
+                    <span class="text-neon-cyan text-xs">Melbourne</span>
+                </div>
+            </div>
+        </nav>
+
+        <header class="mb-16 animate-fade-in-down animation-delay-100 text-center">
+            <button
+                type="button"
+                id="destination-active-toggle"
+                class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
+                data-iso2="AU"
+                data-slug="melbourne"
+                data-active="false"
+                data-interactive="true"
+                aria-label="Toggle Melbourne visibility on Australia guide"
+                aria-pressed="false"
+            >
+                <i class="ph ph-map-pin text-4xl text-slate-500 pointer-events-none" aria-hidden="true"></i>
+            </button>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple pb-4">
+                Explore Melbourne
+            </h1>
+            <div class="bg-deepblue-900/40 border border-deepblue-800 rounded-3xl p-8 md:p-10 text-left backdrop-blur-sm mt-10">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                    <i class="ph ph-scroll text-neon-cyan"></i> A Brief History
+                </h2>
+                <p class="text-lg text-slate-400 font-light leading-relaxed">Melbourne prospered after an 1850s gold rush with Victorian arcades, tramlines, and laneway culture. Federation Square, Royal Exhibition Building, and Yarra embankments record how Victoria&#x27;s capital became a finance and arts hub in southeast Australia. Royal Botanic Gardens and Yarra riverside precincts extend gold-era boulevards through Victoria&#x27;s capital grid.</p>
+            </div>
+        </header>
+
+        <section class="mb-16 animate-fade-in-down" style="animation-delay: 0.2s;">
+            <h2 class="text-3xl font-bold text-white mb-6">Attractions Map</h2>
+            <div id="map" class="h-[400px] w-full rounded-3xl border border-deepblue-700 shadow-2xl z-10 relative"></div>
+        </section>
+
+        <section class="flex flex-col gap-6 pb-20 animate-fade-in-down" style="animation-delay: 0.3s;">
+            <h2 class="text-3xl font-bold text-white mb-2">Top Sights & Activities</h2>
+            
+            <!-- 1. South Melbourne Market -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_1.jpg" alt="South Melbourne Market" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">South Melbourne Market</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">South Melbourne Market is a indoor market that has been drawing locals and tourists since 1867. While it may not be as large as Queen Victoria Market, it offers a diverse range of stalls selling fresh produce, meat, seafood, artisanal products, and vintage items. The market also features cafes serving global cuisine.</p>
+                </div>
+            </div>
+
+            <!-- 2. Shrine of Remembrance -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_2.jpg" alt="Shrine of Remembrance" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Shrine of Remembrance</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Shrine of Remembrance in Melbourne is the largest war memorial in Victoria, serving as a tribute to Australian soldiers who sacrificed their lives during the World Wars. The shrine hosts over 120 ceremonies and commemorative services annually, making it an active venue for honoring heroes. Its location offers views of Melbourne city and the bay area. The solemn atmosphere and architectural design resembling ancient Greece create a poignant experience for visitors.</p>
+                </div>
+            </div>
+
+            <!-- 3. Royal Botanic Gardens Victoria - Melbourne Gardens -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_3.jpg" alt="Royal Botanic Gardens Victoria - Melbourne Gardens" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Royal Botanic Gardens Victoria - Melbourne Gardens</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Royal Botanic Gardens Victoria - Melbourne Gardens, established in 1846, covers 36 hectares and features Australian species as well as non-native gardens. Similar to New York&#x27;s Central Park, it occupies a significant portion of the city and offers various attractions such as the Melbourne Observatory, Guilfoyles Volcano, and Fern Gully. The gardens are home to diverse wildlife including black swans, kookaburras, and cockatoos.</p>
+                </div>
+            </div>
+
+            <!-- 4. Royal Exhibition Building -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_4.jpg" alt="Royal Exhibition Building" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free (guided tour A$10)
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Royal Exhibition Building</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Royal Exhibition Building, constructed in 1880, is a significant 19th-century exhibition center with a striking dome. It is situated amidst beautifully landscaped gardens and holds UNESCO World Heritage status. This venue hosts various major events and exhibitions throughout the year, such as the Melbourne International Flower &amp; Garden Show and GABS (the Great Australasian Beer SpecTAPular). Notably, it was also the location of Australia&#x27;s first Parliament in 1901.</p>
+                </div>
+            </div>
+
+            <!-- 5. Carlton Gardens -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_5.jpg" alt="Carlton Gardens" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Carlton Gardens</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Carlton Gardens, located in Carlton near Melbourne&#x27;s CBD, is a beautifully landscaped Victorian-era park that houses the Royal Exhibition Building and Melbourne Museum. This World Heritage-listed site offers a picturesque setting for picnics and leisurely strolls. Visitors can grab delicious takeaway treats from nearby delis, trattorias, or cafes on Lygon or Brunswick Streets before finding a cozy spot on the grassy patches within the gardens.</p>
+                </div>
+            </div>
+
+            <!-- 6. DFO South Wharf -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_6.jpg" alt="DFO South Wharf" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">DFO South Wharf</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">DFO South Wharf is a shopping haven for both local and international brands, with over 180 stores offering a wide range of products from fashion to household items. Popular brands like Adidas, Armani, Calvin Klein, and Nike can be found here. After a day of shopping, visitors can relax at the waterfront cafes, restaurants, and bars along the South Wharf Promenade.</p>
+                </div>
+            </div>
+
+            <!-- 7. Brighton Bathing Boxes -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_7.jpg" alt="Brighton Bathing Boxes" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Brighton Bathing Boxes</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Brighton Bathing Boxes, located about 12km south of Melbourne city center at Brighton Beach, are a collection of 82 brightly colored wooden beach huts dating back to the early 1900s. Originally used for changing into swimwear during the Victorian era, these and much-photographed structures have become a staple of the beachfront. Each hut has its own unique design and character, making them a popular spot for tourists and locals alike to capture memorable photos.</p>
+                </div>
+            </div>
+
+            <!-- 8. Melbourne Central -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_8.jpg" alt="Melbourne Central" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Melbourne Central</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Melbourne Central is a bustling multilevel space with over 300 retailers, offering a wide array of Australian and international fashion brands, dining options, cafes, pubs, bars, beauty shops, and a cinema. The Coops Shot Tower stands tall under a glass-domed roof and is a popular spot for visitors to catch the hourly performance of the Australian song Waltzing Matilda.</p>
+                </div>
+            </div>
+
+            <!-- 9. St Francis’ Church -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_9.jpg" alt="St Francis’ Church" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">St Francis’ Church</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">St. Francis’ Church is a beautiful Catholic church in Victoria, built between 1841 and 1845. It is one of the oldest churches in the city, and despite its age it is very well maintained. The ambience on a Sunday night during Easter mass was peaceful and serene. recommend visiting if you are ever in the area!.</p>
+                </div>
+            </div>
+
+            <!-- 10. Chinatown Melbourne -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_10.jpg" alt="Chinatown Melbourne" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Chinatown Melbourne</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Chinatown Melbourne is a and historic neighborhood that includes Chinese eateries, shops, and cultural events. The culinary scene in Melbourne reflects its diversity, with options ranging from street food in Chinatown to upscale dining experiences along the Yarra River. Visitors are encouraged to try local delights such as fairy bread, salt and pepper calamari, and Anzac biscuits. Additionally, the city&#x27;s passion for brunch at quirky cafes in Fitzroy is not to be missed.</p>
+                </div>
+            </div>
+
+            <!-- 11. Her Majesty&#x27;s Theatre -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_11.jpg" alt="Her Majesty&#x27;s Theatre" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Her Majesty&#x27;s Theatre</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Her Majesty&#x27;s Theatre, located on Exhibition Street in Melbourne, is a historic 19th-century venue known for its opulent red and gold decor. Originally built in 1886 as the Alexandra Theatre, it has since become a popular destination for musicals, ballet performances, and international concert acts. The grand architecture of the building adds to its charm and allure.</p>
+                </div>
+            </div>
+
+            <!-- 12. Queen Victoria Market -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_12.jpg" alt="Queen Victoria Market" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Queen Victoria Market</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Queen Victoria Market, also known as Queen Vic or the Vic Market, is a historic landmark in Melbourne spanning 2 city blocks. It&#x27;s a paradise for retail enthusiasts, offering everything from food to clothing and hand-crafted jewelry. With over 600 vendors, the market features fresh food, specialty restaurants, grocers, cafes, and ice cream shops. Additionally, it hosts other markets such as the Summer Night Market and the Melbourne Book Market on specific days.</p>
+                </div>
+            </div>
+
+            <!-- 13. Flagstaff Gardens -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_13.jpg" alt="Flagstaff Gardens" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Flagstaff Gardens</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Flagstaff Gardens, established in 1862, is one of Melbourne&#x27;s oldest parks and a designated heritage site. Located across from the renowned Queen Victoria Market, it offers spacious lawns, seasonal flower displays, and diverse tree species. The park features recreational facilities such as tennis courts, a playground, public toilets, barbecues, and a bowling green.</p>
+                </div>
+            </div>
+
+            <!-- 14. Melbourne Skydeck -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_14.jpg" alt="Melbourne Skydeck" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> A$33
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Melbourne Skydeck</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Melbourne Skydeck, located on the 88th floor of the Eureka Tower, offers a luxurious observation deck with panoramic views of the city. Visitors can enjoy vistas of the CBD, Yarra River, and surrounding suburbs from this gold-plated vantage point. The highlight is a protruding glass cube that provides an exhilarating experience for those seeking an adrenaline rush.</p>
+                </div>
+            </div>
+
+            <!-- 15. Hamer Hall -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_15.jpg" alt="Hamer Hall" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Hamer Hall</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Hamer Hall is a renowned concert venue in the heart of Melbourne, offering an elegant space for symphony and chamber orchestras, as well as jazz and rock &#x27;n&#x27; roll concerts. What sets it apart is its unique design that allows visitors to enjoy views without having to ride an elevator. The exterior staircase provides access to city and riverside vistas. Once inside, the hall&#x27;s intimate atmosphere and beautiful acoustics create a captivating experience for concert-goers.</p>
+                </div>
+            </div>
+
+            <!-- 16. Flinders Street -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_16.jpg" alt="Flinders Street" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Flinders Street</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Flinders Street Railway Station is a true gem nestled in the heart of Melbourne, boasting a yellow facade and an dome that has captured the hearts of locals and visitors alike since its opening in 1909. This architectural marvel, with its grand arched entrance and Romanesque Revival style, serves as both a bustling transport hub and a beloved meeting point for generations.</p>
+                </div>
+            </div>
+
+            <!-- 17. St Paul&#x27;s Cathedral, Melbourne -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_17.jpg" alt="St Paul&#x27;s Cathedral, Melbourne" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">St Paul&#x27;s Cathedral, Melbourne</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">St Paul&#x27;s Cathedral in Melbourne, consecrated in 1891, is a neo-Gothic structure with twin spires and stained-glass processional doors. Located at the intersection of Flinders Street and Swanston Street, it stands as one of the city&#x27;s most recognizable landmarks. Designed by renowned architect William Butterfield, the cathedral boasts impressive vaulted ceilings, intricate statuary, and patterned floor tiles inside. The exterior features a towering statue of Matthew Flinders.</p>
+                </div>
+            </div>
+
+            <!-- 18. Regent Theatre -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_18.jpg" alt="Regent Theatre" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Regent Theatre</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Regent Theatre, originally a 1920s cinema, has been splendidly refurbished and stands as a charming and opulent venue for live concerts and internationally renowned musicals. Despite facing challenges like fire and threats of demolition, the theatre was magnificently restored in 1996 to its former glory. With seating for up to 2,145 patrons over two levels, complete with chandeliers and lavish seating, the theatre offers a luxurious experience.</p>
+                </div>
+            </div>
+
+            <!-- 19. Melbourne Town Hall -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_19.jpg" alt="Melbourne Town Hall" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Melbourne Town Hall</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Melbourne Town Hall is a 19th-century building In the city, serving as the seat of local government and a venue for various events. The grand organ with its 10,000 pipes is a hidden gem within the hall and is the largest of its kind in the Southern Hemisphere.</p>
+                </div>
+            </div>
+
+            <!-- 20. Forum Melbourne -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_20.jpg" alt="Forum Melbourne" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Forum Melbourne</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Forum Melbourne, In Melbourne&#x27;s CBD, is a live music venue that has recently undergone extensive renovation and restoration. The auditorium boasts a beautiful domed ceiling adorned with lights to resemble the night sky and statues reminiscent of ancient Greece. Hosting an impressive lineup of artists such as Marlon Williams, Bastille, Amy Shark, and Flight Facilities, it offers top-notch acoustics for a crystal-clear musical experience.</p>
+                </div>
+            </div>
+
+            <!-- 21. Melbourne Star Observation Wheel -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_21.jpg" alt="Melbourne Star Observation Wheel" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Melbourne Star Observation Wheel</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Melbourne Star Observation Wheel is a massive rotating wheel offering 360-degree views and glass-enclosed cabins for up to 20 people. It provides a unique introduction to the color, history, and culture of the city. Whether you&#x27;re familiar with Melbourne or visiting for the first time, it offers a way to get your bearings. The 30-minute rotation allows you to take in ever-changing views of inner Melbourne, lush gardens, sports stadiums, cultural precincts, and Port Phillip Bay.</p>
+                </div>
+            </div>
+
+            <!-- 22. Sidney Myer Music Bowl -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_22.jpg" alt="Sidney Myer Music Bowl" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Sidney Myer Music Bowl</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Sidney Myer Music Bowl is a popular performance venue located within the King&#x27;s Domain Gardens in Melbourne. The gardens feature mature trees, beautiful flower beds, and notable landmarks such as Government House and the Shrine of Remembrance. The music bowl hosts free concerts by the Melbourne Symphony Orchestra during the summer months, offering a unique outdoor musical experience. Events like Carols by Candlelight are well-organized and provide a meaningful celebration for attendees.</p>
+                </div>
+            </div>
+
+            <!-- 23. Cooks&#x27; Cottage -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_23.jpg" alt="Cooks&#x27; Cottage" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> A$8
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Cooks&#x27; Cottage</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Cooks&#x27; Cottage is a historic building located in the serene Fitzroy Gardens, Melbourne. Originally constructed in Yorkshire, England in 1755, it was later transported to Australia as a tribute to Captain James Cook&#x27;s family. Although the famous explorer never resided here, his father built the cottage. Visitors can explore its interior, which showcases 18th-century living with period furniture and artifacts.</p>
+                </div>
+            </div>
+
+            <!-- 24. Fitzroy Gardens -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_24.jpg" alt="Fitzroy Gardens" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Fitzroy Gardens</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Fitzroy Gardens, a historic 26-hectare site located in the city center, offers a picturesque setting with its lush lawns, tree-lined walking paths, and charming cafes. The gardens boast a rich history spanning 150 years and feature various attractions such as fountains, sculptures, historic buildings, ornamental follies like the old bandstand and Temple of the Winds Rotunda.</p>
+                </div>
+            </div>
+
+            <!-- 25. Treasury Gardens -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_25.jpg" alt="Treasury Gardens" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Treasury Gardens</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Located on the corner of Fitzroy Gardens and adjoining Spring Street, Treasury Gardens is a picturesque green space in Melbourne. It hosts community events and private functions while serving as a recreational facility for those living on the east side of the CBD. The gardens feature an ornamental pond with monuments to John F. Kennedy, Robert Burns, and Sir William Clarke. Additionally, there are statues of Victorian politicians scattered around the large embankment.</p>
+                </div>
+            </div>
+
+            <!-- 26. SEA LIFE Melbourne Aquarium -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_26.jpg" alt="SEA LIFE Melbourne Aquarium" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> A$49
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">SEA LIFE Melbourne Aquarium</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">SEA LIFE Melbourne Aquarium is a popular attraction for families and travelers in Melbourne. It houses over 10,000 marine animals, including sharks, crocodiles, penguins, and colorful fish. The aquarium features 12 interactive zones where visitors can walk through underwater tunnels to observe sea creatures swimming overhead. Additionally, guests can come face to face with Pinjarra, one of Australia&#x27;s largest saltwater crocodiles.</p>
+                </div>
+            </div>
+
+            <!-- 27. Rialto -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_27.jpg" alt="Rialto" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Rialto</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Rialto Towers, celebrating its 30th anniversary, is an part of Melbourne&#x27;s skyline. The South Tower stands at 251m and is the seventh tallest building in Australia, while the North Tower reaches 185 meters. The complex underwent a recent refurbishment that seamlessly blends old and new elements across its 55+ levels. Visitors can enjoy ground-level coffee shops and eateries as well as views from the top floors.</p>
+                </div>
+            </div>
+
+            <!-- 28. St Kilda Botanical Gardens -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_28.jpg" alt="St Kilda Botanical Gardens" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">St Kilda Botanical Gardens</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">St Kilda Botanical Gardens, established in 1857, cover 16 acres and offer a more intimate and community-oriented experience compared to the larger Royal Botanic Garden. The gardens feature a variety of attractions including a rosary, flower beds, exotic trees, a pond, a conservatory, a rotunda, playgrounds, and even a giant chessboard with tables.</p>
+                </div>
+            </div>
+
+            <!-- 29. Palais Theatre -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_29.jpg" alt="Palais Theatre" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Palais Theatre</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Palais Theatre, a classic 1920s picture house turned live entertainment venue, is an landmark on the St Kilda foreshore in Melbourne. This beautifully restored art deco building has hosted a wide range of events over its 90-plus-year history, from mainstream musical acts to ballet and comedy shows. With its rich history and architecture, the theatre attracts both local talent and international superstars.</p>
+                </div>
+            </div>
+
+            <!-- 30. St Kilda Pier -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_30.jpg" alt="St Kilda Pier" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">St Kilda Pier</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">St Kilda Pier is a popular spot in Melbourne, offering views of the city skyline and Port Phillip Bay. During the day, visitors can take a leisurely stroll along the pier, bask in the sunshine, and admire the panoramic vistas. The heritage-listed St Kilda Pier Kiosk at the end of the pier provides an opportunity to grab a coffee or snack. As evening falls, it becomes an ideal location for spotting Little Penguins as they make their way back home.</p>
+                </div>
+            </div>
+
+            <!-- 31. Rippon Lea Estate -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_31.jpg" alt="Rippon Lea Estate" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> A$15
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Rippon Lea Estate</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Rippon Lea Estate is a grand 19th-century mansion set within expansive manicured gardens, offering guided tours and a charming cafe. Originally built in 1868 for businessman Frederick Sargood, the estate now welcomes visitors to explore its opulent interiors and lush grounds spanning 14 acres. The estate hosts various events throughout the year, from high tea and markets to themed parties.</p>
+                </div>
+            </div>
+
+            <!-- 32. Point Ormond Lookout -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_32.jpg" alt="Point Ormond Lookout" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Point Ormond Lookout</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Point Ormond Lookout, located at Elwood Beach in Australia, is a popular spot for photographers seeking views of the city skyline during sunset and sunrise. The lookout offers vistas of the bay, making it an ideal location for capturing dramatic seascapes under various weather conditions. Visitors can also enjoy walking or cycling along the continuous Bay trail adorned with interesting artwork and information.</p>
+                </div>
+            </div>
+
+            <!-- 33. Caulfield Racecourse -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_33.jpg" alt="Caulfield Racecourse" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> A$25
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Caulfield Racecourse</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Caulfield Racecourse, located in Melbourne, is a popular destination for horse racing enthusiasts and visitors. The spacious off-lead park features a lake, play areas, and sporting facilities. There are rumors of it becoming an on-leash park in the future, but for now, it&#x27;s a completely fenced-off gem where enjoy with your pup. Additionally, the racecourse hosts a monthly market with food stalls, fresh produce, and various other vendors.</p>
+                </div>
+            </div>
+
+            <!-- 34. Princes Pier -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_34.jpg" alt="Princes Pier" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Princes Pier</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Princes Pier, located in Port Melbourne, is a historic and photogenic landmark that stretches 560 meters into Port Phillip Bay. Originally built in 1915 to accommodate large cruise liners and serve as an arrival point for immigrants, it has since become a beloved spot for locals and tourists. The pier offers bay views, plenty of photo opportunities, and a rich sense of history.</p>
+                </div>
+            </div>
+
+            <!-- 35. Edinburgh Gardens -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_35.jpg" alt="Edinburgh Gardens" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Edinburgh Gardens</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Edinburgh Gardens is a vast 24-hectare park in North Fitzroy, offering an array of facilities for visitors to enjoy. The park features tennis courts, football pitches, a skate park, and designated off-leash areas for dogs. It&#x27;s a popular spot for picnics with its expansive lawns, shaded areas, and picnic and barbecue spots. Additionally, the gardens boast playgrounds, basketball courts, lawn bowls, and a heritage rotunda.</p>
+                </div>
+            </div>
+
+            <!-- 36. Victoria Park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_36.jpg" alt="Victoria Park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Victoria Park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled just north of the bustling city, Victoria Park is a cherished landmark that once served as the home ground for the Collingwood Football Club from 1892 until 1999. This historic site has transformed into a community hub where locals can enjoy various recreational activities. The park features spacious areas perfect for exercising, dog walking, or simply kicking around a footy with friends.</p>
+                </div>
+            </div>
+
+            <!-- 37. Collingwood Children&#x27;s Farm -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_37.jpg" alt="Collingwood Children&#x27;s Farm" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> A$20
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Collingwood Children&#x27;s Farm</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Located in the inner-city suburb of Abbotsford, Collingwood Children&#x27;s Farm is a beloved nonprofit working farm offering hands-on experiences with various friendly animals. Visitors can feed chickens, cuddle goats and guinea pigs, milk cows like Heather, and enjoy pony or tractor rides. The farm also features pigs, ducks, sheep, lambs, rabbits, donkeys like Mickie and ponies like Joe.</p>
+                </div>
+            </div>
+
+            <!-- 38. Quang Minh Buddhist Temple -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_38.jpg" alt="Quang Minh Buddhist Temple" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Quang Minh Buddhist Temple</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The art center in Footscray is an exceptional gallery that presents a wide variety of local talent. The artwork displayed is not only visually but also thought-provoking and emotionally engaging. It celebrates diversity by featuring works from Indigenous artists and individuals of different cultural backgrounds, showcasing both emerging and established artists alike.</p>
+                </div>
+            </div>
+
+            <!-- 39. Melbourne Zoo -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_39.jpg" alt="Melbourne Zoo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> A$55
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Melbourne Zoo</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Melbourne Zoo, established in 1862, is one of the world&#x27;s oldest zoos and a family-friendly destination. It houses over 320 animal species from around the world, totaling more than 5,000 individual creatures. Visitors can explore attractions such as the Reptile House, Butterfly House, Gorilla Rainforest, and Caterpillar Greenhouse. The award-winning Trail of the Elephants provides an opportunity to interact with these majestic animals in a recreated Asian village setting.</p>
+                </div>
+            </div>
+
+            <!-- 40. Melbourne Cricket Ground -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/melbourne_40.jpg" alt="Melbourne Cricket Ground" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> A$38
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Melbourne Cricket Ground</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Melbourne Cricket Ground (MCG) is an sports venue with a rich history dating back to 1853. It has been the main stadium for the 1956 Summer Olympics and is known as the home of Australian football. With a capacity of 100,000 people, it&#x27;s one of Melbourne&#x27;s top tourist destinations. The MCG offers daily tours that provide visitors with insights into its storied past and significance in Australian sports history.</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
+        <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+    </footer>    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const map = L.map('map').setView([-37.824955, 144.968303], 14);
+            L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                attribution: '&copy; Google Maps',
+                maxZoom: 20
+            }).addTo(map);
+            const locations = [{"name": "South Melbourne Market", "lat": -37.832011, "lng": 144.955939}, {"name": "Shrine of Remembrance", "lat": -37.830516, "lng": 144.973432}, {"name": "Royal Botanic Gardens Victoria - Melbourne Gardens", "lat": -37.830244, "lng": 144.98015}, {"name": "Royal Exhibition Building", "lat": -37.804689, "lng": 144.97165}, {"name": "Carlton Gardens", "lat": -37.805431, "lng": 144.971412}, {"name": "DFO South Wharf", "lat": -37.824617, "lng": 144.949931}, {"name": "Brighton Bathing Boxes", "lat": -37.917991, "lng": 144.986795}, {"name": "Melbourne Central", "lat": -37.810236, "lng": 144.962765}, {"name": "St Francis’ Church", "lat": -37.811657, "lng": 144.962396}, {"name": "Chinatown Melbourne", "lat": -37.812006, "lng": 144.966804}, {"name": "Her Majesty's Theatre", "lat": -37.810926, "lng": 144.969601}, {"name": "Queen Victoria Market", "lat": -37.80758, "lng": 144.956785}, {"name": "Flagstaff Gardens", "lat": -37.810558, "lng": 144.95452}, {"name": "Melbourne Skydeck", "lat": -37.821334, "lng": 144.964698}, {"name": "Hamer Hall", "lat": -37.820145, "lng": 144.967995}, {"name": "Flinders Street", "lat": -37.818271, "lng": 144.967062}, {"name": "St Paul's Cathedral, Melbourne", "lat": -37.817029, "lng": 144.967687}, {"name": "Regent Theatre", "lat": -37.815899, "lng": 144.967911}, {"name": "Melbourne Town Hall", "lat": -37.815086, "lng": 144.966565}, {"name": "Forum Melbourne", "lat": -37.816627, "lng": 144.969576}, {"name": "Melbourne Star Observation Wheel", "lat": -37.8118, "lng": 144.937437}, {"name": "Sidney Myer Music Bowl", "lat": -37.824038, "lng": 144.973522}, {"name": "Cooks' Cottage", "lat": -37.814501, "lng": 144.979448}, {"name": "Fitzroy Gardens", "lat": -37.812721, "lng": 144.980068}, {"name": "Treasury Gardens", "lat": -37.814333, "lng": 144.975984}, {"name": "SEA LIFE Melbourne Aquarium", "lat": -37.820627, "lng": 144.95822}, {"name": "Rialto", "lat": -37.818274, "lng": 144.957646}, {"name": "St Kilda Botanical Gardens", "lat": -37.87086, "lng": 144.983954}, {"name": "Palais Theatre", "lat": -37.867583, "lng": 144.976035}, {"name": "St Kilda Pier", "lat": -37.864754, "lng": 144.965916}, {"name": "Rippon Lea Estate", "lat": -37.878604, "lng": 144.997848}, {"name": "Point Ormond Lookout", "lat": -37.881955, "lng": 144.976231}, {"name": "Caulfield Racecourse", "lat": -37.877592, "lng": 145.038412}, {"name": "Princes Pier", "lat": -37.841012, "lng": 144.926952}, {"name": "Edinburgh Gardens", "lat": -37.787369, "lng": 144.983}, {"name": "Victoria Park", "lat": -37.798367, "lng": 144.996424}, {"name": "Collingwood Children's Farm", "lat": -37.802605, "lng": 145.005305}, {"name": "Quang Minh Buddhist Temple", "lat": -37.774237, "lng": 144.851035}, {"name": "Melbourne Zoo", "lat": -37.784135, "lng": 144.951547}, {"name": "Melbourne Cricket Ground", "lat": -37.819967, "lng": 144.983449}];
+            const customIcon = L.icon({
+                iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32],
+            });
+            const destinationCenter = [-37.824955, 144.968303];
+            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.093036, "maxCenterLng": 0.117268};
+            const markers = [];
+            locations.forEach(loc => {
+                markers.push(
+                    L.marker([loc.lat, loc.lng], {icon: customIcon}).addTo(map)
+                        .bindPopup(`<strong class="font-sans text-base text-gray-900">${loc.name}</strong>`)
+                );
+            });
+            const group = new L.featureGroup(markers);
+            let bounds = group.getBounds();
+            const ne = bounds.getNorthEast();
+            const sw = bounds.getSouthWest();
+            const latSpan = ne.lat - sw.lat;
+            const lngSpan = ne.lng - sw.lng;
+            const maxSpan = Math.max(latSpan, lngSpan);
+            const isDegenerate = latSpan < 1e-9 && lngSpan < 1e-9;
+            const markerCenterLat = (ne.lat + sw.lat) / 2;
+            const markerCenterLng = (ne.lng + sw.lng) / 2;
+            if (isDegenerate) {
+                const frameSpan = mapContext.compactRegion ? 0.026 : 0.045;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - frameSpan / 2, destinationCenter[1] - frameSpan / 2],
+                    [destinationCenter[0] + frameSpan / 2, destinationCenter[1] + frameSpan / 2]
+                );
+            } else if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                const expand = maxSpan < 0.12 ? 1.15 : 1.1;
+                const halfLat = latSpan / 2 * expand;
+                const halfLng = lngSpan / 2 * expand;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                const latReach = Math.max(mapContext.maxCenterLat, latSpan / 2) * 1.45;
+                const lngReach = Math.max(mapContext.maxCenterLng, lngSpan / 2) * 1.45;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - latReach, destinationCenter[1] - lngReach],
+                    [destinationCenter[0] + latReach, destinationCenter[1] + lngReach]
+                );
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                const halfLat = latSpan / 2 * 1.1;
+                const halfLng = lngSpan / 2 * 1.1;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                const frameSpan = Math.max(maxSpan * 4, 0.006);
+                bounds = L.latLngBounds(
+                    [markerCenterLat - frameSpan / 2, markerCenterLng - frameSpan / 2],
+                    [markerCenterLat + frameSpan / 2, markerCenterLng + frameSpan / 2]
+                );
+            }
+            const fitOptions = {};
+            if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                fitOptions.padding = maxSpan < 0.12
+                    ? [24, 24]
+                    : (maxSpan < 0.5 ? [24, 24] : [28, 28]);
+                fitOptions.maxZoom = maxSpan < 0.12
+                    ? 14
+                    : (maxSpan < 0.5 ? 10 : 9);
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                fitOptions.padding = [40, 40];
+                fitOptions.maxZoom = 8;
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                fitOptions.padding = [24, 24];
+            } else if (mapContext.denseUrban) {
+                fitOptions.padding = [18, 18];
+            } else if (mapContext.spreadUrban) {
+                fitOptions.padding = [20, 20];
+            } else if (locations.length >= 3 && maxSpan >= 0.02) {
+                fitOptions.padding = maxSpan >= 0.08 ? [20, 20] : [30, 30];
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                fitOptions.padding = [12, 12];
+                fitOptions.maxZoom = 16;
+            } else if (isDegenerate || locations.length === 1) {
+                fitOptions.padding = mapContext.compactRegion ? [16, 16] : [36, 36];
+                if (isDegenerate || maxSpan < 0.015) {
+                    fitOptions.maxZoom = mapContext.compactRegion ? 15 : 14;
+                }
+            } else {
+                fitOptions.padding = [50, 50];
+            }
+            map.fitBounds(bounds, fitOptions);
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                } else {
+                    scrollTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                }
+            });
+            scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        });
+    </script>
+
+    <button id="scrollTopBtn" class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-12 h-12 bg-neon-cyan text-deepblue-950 rounded-full shadow-[0_0_20px_rgba(0,240,255,0.4)] opacity-0 pointer-events-none transition-all duration-300 translate-y-4 hover:bg-white hover:scale-110" aria-label="Scroll to top">
+        <i class="ph ph-arrow-up text-xl font-bold"></i>
+    </button>
+</body>
+</html>

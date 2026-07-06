@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brasília Guide | Global Explorer Guides</title>
+    <link rel="stylesheet" href="../../assets/tailwind.css">
+    <link rel="stylesheet" href="../../assets/outfit.css">
+    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
+    <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
+    <link rel="stylesheet" href="../../assets/homepage-activation.css">
+    <link rel="stylesheet" href="../../assets/destination-activation.css">
+    <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
+    <script src="../../assets/leaflet/leaflet.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #060B19; }
+        ::-webkit-scrollbar-thumb { background: #1E336B; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0070FF; }
+        .leaflet-popup-content-wrapper { background-color: #fff; color: #333; border-radius: 8px; box-shadow: 0 3px 14px rgba(0,0,0,0.4); }
+        .leaflet-popup-tip { background-color: #fff; }
+    </style>
+</head>
+<body class="bg-deepblue-950 text-slate-200 font-sans min-h-screen relative overflow-x-hidden">
+    <div class="absolute top-0 left-0 w-full h-[450px] md:h-[500px] z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50" style="background-image: url('images/brasilia_hero.jpg')"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-deepblue-950/10 via-deepblue-950/60 to-deepblue-950"></div>
+    </div>
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon-purple/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neon-cyan/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <main class="container mx-auto px-4 py-8 md:py-16 relative z-20 max-w-5xl">
+        <nav class="mb-12 animate-fade-in-down flex flex-wrap items-center gap-4">
+            <a href="../../index.html" class="flex items-center justify-center w-11 h-11 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0" title="Back to Home">
+                <i class="ph ph-house text-xl group-hover:scale-110 transition-transform"></i>
+            </a>
+            <a href="brazil.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0">
+                <i class="ph ph-arrow-left text-lg group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-medium text-sm">Back to Brazil</span>
+            </a>
+            <div class="ml-auto flex items-center gap-3 bg-deepblue-900/40 border border-deepblue-700/50 rounded-full px-4 py-2 backdrop-blur-sm shadow-inner shrink-0">
+                <img src="../../assets/flags/w40/br.png" alt="Brazil flag" class="w-6 h-auto rounded-[2px] shadow-sm">
+                <div class="flex items-center gap-2 text-sm font-medium tracking-wide">
+                    <span class="text-slate-200 uppercase text-xs tracking-wider font-bold">Brazil</span>
+                    <span class="text-deepblue-500 text-xs">&rsaquo;</span>
+                    <span class="text-neon-cyan text-xs">Brasília</span>
+                </div>
+            </div>
+        </nav>
+
+        <header class="mb-16 animate-fade-in-down animation-delay-100 text-center">
+            <button
+                type="button"
+                id="destination-active-toggle"
+                class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
+                data-iso2="BR"
+                data-slug="brasilia"
+                data-active="false"
+                data-interactive="true"
+                aria-label="Toggle Brasília visibility on Brazil guide"
+                aria-pressed="false"
+            >
+                <i class="ph ph-map-pin text-4xl text-slate-500 pointer-events-none" aria-hidden="true"></i>
+            </button>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple pb-4">
+                Explore Brasília
+            </h1>
+            <div class="bg-deepblue-900/40 border border-deepblue-800 rounded-3xl p-8 md:p-10 text-left backdrop-blur-sm mt-10">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                    <i class="ph ph-scroll text-neon-cyan"></i> A Brief History
+                </h2>
+                <p class="text-lg text-slate-400 font-light leading-relaxed">Brasília was inaugurated in 1960 as a planned federal capital designed by Lúcio Costa and Oscar Niemeyer on the central plateau. Monumental axes, cathedral curves, and residential superquadras record mid-twentieth-century modernist nation-building. Pilotis ministries and lake districts spread Niemeyer&#x27;s curves across the cerrado capital&#x27;s planned sectors.</p>
+            </div>
+        </header>
+
+        <section class="mb-16 animate-fade-in-down" style="animation-delay: 0.2s;">
+            <h2 class="text-3xl font-bold text-white mb-6">Attractions Map</h2>
+            <div id="map" class="h-[400px] w-full rounded-3xl border border-deepblue-700 shadow-2xl z-10 relative"></div>
+        </section>
+
+        <section class="flex flex-col gap-6 pb-20 animate-fade-in-down" style="animation-delay: 0.3s;">
+            <h2 class="text-3xl font-bold text-white mb-2">Top Sights & Activities</h2>
+            
+            <!-- 1. Pontão Lago Sul -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/brasilia_1.jpg" alt="Pontão Lago Sul" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Pontão Lago Sul</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Pontão Lago Sul is a popular hangout spot along Lake Paranoa in Brasilia, known for its palm-lined walking paths, cafes, and views of the JK Bridge. It&#x27;s a favorite among locals and tourists alike, offering a variety of dining options such as Same Same, Gran Bier, Sallva, Manzua, Fausto e Manoel, Izzi Wine Garden, and the new addition Chard.</p>
+                </div>
+            </div>
+
+            <!-- 2. ParkShopping -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/brasilia_2.jpg" alt="ParkShopping" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">ParkShopping</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">ParkShopping is listed among principal sites for Brasília within Brazil. Municipal and regional heritage listings document its place in the historic centre and travellers routes through Brasília. ParkShopping is listed among principal sites for Brasília within Brazil.</p>
+                </div>
+            </div>
+
+            <!-- 3. Zoológico de Brasília -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/brasilia_3.jpg" alt="Zoológico de Brasília" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> R$10
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Zoológico de Brasília</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Zoológico de Brasília, also known as Brasilia Zoo, has been open since 1957 and is home to over 800 animals from 185 different species. The zoo covers a vast area of 139.75 hectares and offers various attractions such as the Natural Sciences Museum, a Butterfly Zoo, picnic areas, camping grounds, playgrounds, artificial lakes, and snack bars. Visitors can enjoy observing a variety of birds, monkeys, capybaras roaming freely around the zoo.</p>
+                </div>
+            </div>
+
+            <!-- 4. Juscelino Kubitschek Bridge -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/brasilia_4.jpg" alt="Juscelino Kubitschek Bridge" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Juscelino Kubitschek Bridge</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Juscelino Kubitschek Bridge, also known as the President Bridge or JK Bridge, is a remarkable architectural feat located in Brasilia, Brazil. Spanning Lake Paranoa, this bridge features three intertwined arches that support the roadway and stand at over 60 meters in height. Designed by architect Alexandre Chan as part of a project to revitalize the area and improve traffic congestion, it has become an landmark in the city.</p>
+                </div>
+            </div>
+
+            <!-- 5. Don Bosco Chapel -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/brasilia_5.jpg" alt="Don Bosco Chapel" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Don Bosco Chapel</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Don Bosco Chapel, also known as Ermida Dom Bosco, is a small pyramid-shaped chapel made of white marble located in a park with views of Paranoa Lake. The serene atmosphere and the sounds of nature make it an ideal place for reflection and leisurely walks. Visitors can enjoy picnics, take in the beautiful landscape, and capture sunset photos by the lake.</p>
+                </div>
+            </div>
+
+            <!-- 6. Mosteiro de São Bento de Brasília -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/brasilia_6.jpg" alt="Mosteiro de São Bento de Brasília" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Mosteiro de São Bento de Brasília</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Mosteiro de São Bento de Brasília is a serene complex located near Lake Paranoa, surrounded by native Cerrado forest. The area&#x27;s rich fauna and flora provide an ideal setting for contemplation and meditation, with sunsets adding to the tranquil atmosphere. Visitors can attend Gregorian chant masses on Sundays and special Saint Benedict masses on the 11th of each month, where water, salt, and objects are blessed.</p>
+                </div>
+            </div>
+
+            <!-- 7. Palácio da Alvorada -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/brasilia_7.jpg" alt="Palácio da Alvorada" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Palácio da Alvorada</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Alvorada Palace, designed by renowned architect Oscar Niemeyer in 1958, serves as the official residence of Brazilian Presidents. Situated by the Paranoa Lake and listed among National Historic Heritage Sites, it showcases contemporary Brazilian architecture and reflects the country&#x27;s cultural and technical progress. The palace&#x27;s striking design with dramatic curves and majestic white stone presents a utopian vision of the future.</p>
+                </div>
+            </div>
+
+            <!-- 8. Catedral Metropolitana Nossa Senhora Aparecida -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/brasilia_8.jpg" alt="Catedral Metropolitana Nossa Senhora Aparecida" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Catedral Metropolitana Nossa Senhora Aparecida</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Cathedral of Brasília, designed by Niemeyer in 1970, is a modern Roman Catholic church that stands as impressive structures in Brazil&#x27;s capital city. Situated between the ministries and downtown rodoviaria, it commemorates the inauguration of Brasília with its unique design resembling an inverted chalice and crown of thorns. The sunken nave creates an unusual layout where most of the interior floor is below ground level.</p>
+                </div>
+            </div>
+
+            <!-- 9. Palácio Itamaraty -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/brasilia_9.jpg" alt="Palácio Itamaraty" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Palácio Itamaraty</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Palácio Itamaraty, also known as the Ministry of External Relations, is a remarkable building designed by Oscar Niemeyer. Completed in 1970, it features a striking architecture with symmetrical arches that stand above a reflecting pool and landscaped gardens by Roberto Burle Marx. This futuristic ministry building is part of Niemeyer&#x27;s works in Brasilia, along with other notable structures like Palácio do Planalto and Brasilia Cathedral.</p>
+                </div>
+            </div>
+
+            <!-- 10. Congresso Nacional -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/brasilia_10.jpg" alt="Congresso Nacional" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Congresso Nacional</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The National Congress in Brasilia is a modern complex designed by the renowned architect Oscar Niemeyer. It houses Brazil&#x27;s legislature and offers tours and exhibits for visitors. The building consists of a flat-based structure with two tall buildings, one for the Chamber of Deputies and the other for the Senate, featuring distinctive architectural elements.</p>
+                </div>
+            </div>
+
+            <!-- 11. Praça dos Três Poderes -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/brasilia_11.jpg" alt="Praça dos Três Poderes" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Praça dos Três Poderes</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Three Powers Plaza, designed by Niemeyer and Costa, is a significant civic space in Brasilia. It features monumental public buildings along an east-west axis and serves as the focal point of the city&#x27;s design. The square is adorned with striking sculptures and hosts various monuments, museums, and federal buildings. Named after the three branches of government it houses—the executive, legislative, and judicial—the plaza is home to the Presidential Palace, Congress, and Supreme Court.</p>
+                </div>
+            </div>
+
+            <!-- 12. Palácio do Planalto -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/brasilia_12.jpg" alt="Palácio do Planalto" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Palácio do Planalto</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Palácio do Planalto, located in Brasilia, Brazil, is an elegant modernist building designed by Oscar Niemeyer and serves as the official workplace of the country&#x27;s president. The structure dates back to 1958 and features stylish curved columns fronted by a large pool. Situated at Praca dos Tres Poderes (Three Powers Square), it is part of a complex that includes four additional buildings.</p>
+                </div>
+            </div>
+
+            <!-- 13. Estadio Nacional de Brasília Mané Garrincha -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/brasilia_13.jpg" alt="Estadio Nacional de Brasília Mané Garrincha" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Estadio Nacional de Brasília Mané Garrincha</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Arena BRB Mané Garrincha is a stadium that stands as a tribute to the legendary Brazilian footballer, Mané Garrincha. This expansive venue boasts modern and eco-friendly architecture, making it impressive sports complexes in Brazil. Not only does it host thrilling football matches, but it also serves as a concert space for both national and international artists.</p>
+                </div>
+            </div>
+
+            <!-- 14. Brasília Choro Club -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/brasilia_14.jpg" alt="Brasília Choro Club" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Brasília Choro Club</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Brasília Choro Club is a spacious restaurant that offers live music by chorinho bands while serving appetizers and beverages. The atmosphere is relaxed and laid back, with seating at tables rather than theater style. The place hosts various themed nights featuring talented Brazilian singers and offers a nice evening out suitable for all ages in casual dress. On Saturdays, it&#x27;s an excellent spot to enjoy Feijoada at a good price, accompanied by great music and service.</p>
+                </div>
+            </div>
+
+            <!-- 15. Feira da Torre de TV -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/brasilia_15.jpg" alt="Feira da Torre de TV" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Feira da Torre de TV</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled at the base of the TV Tower, the Feira da Torre de TV is a hub of creativity and culture that showcases the of Brazilian craftsmanship. This expansive market features an array of handmade goods, from intricate jewelry to stylish clothing and unique home decor. As you stroll through its neatly arranged stalls, also encounter tempting food stands offering mouthwatering traditional Brazilian dishes.</p>
+                </div>
+            </div>
+
+            <!-- 16. Torre de TV de Brasília -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/brasilia_16.jpg" alt="Torre de TV de Brasília" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Torre de TV de Brasília</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Torre de TV de Brasília is listed among principal sites for Brasília within Brazil. Municipal and regional heritage listings document its place in the historic centre and travellers routes through Brasília. Torre de TV de Brasília is listed among principal sites for Brasília within Brazil.</p>
+                </div>
+            </div>
+
+            <!-- 17. Parque Urbano Nicolândia -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/brasilia_17.jpg" alt="Parque Urbano Nicolândia" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> R$5
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Parque Urbano Nicolândia</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nicolândia Parque Urbano is a amusement park located within the Sarah Kubitschek City Park in Brasilia. It offers a variety of thrilling rides including roller coasters, carousels, and the Ferris Wheel of Brasilia, providing panoramic views of the city. The park ensures safety and care for visitors using their new machines and offers affordable passes through coupons. Visitors of all ages can enjoy the attractions, making it an ideal destination for families with children.</p>
+                </div>
+            </div>
+
+            <!-- 18. Santuário São João Bosco -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/brasilia_18.jpg" alt="Santuário São João Bosco" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Santuário São João Bosco</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Santuário São João Bosco is a unique church dedicated to the 19th-century Italian priest, with an interior defined by striking blue Murano glass windows and a grand chandelier. The building, located on the 15th parallel, was designed by architect Vasconcelos Naves and features tall pointed arches framing stained glass windows in various shades of blue.</p>
+                </div>
+            </div>
+
+            <!-- 19. Igrejinha Nossa Senhora de Fátima -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/brasilia_19.jpg" alt="Igrejinha Nossa Senhora de Fátima" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Igrejinha Nossa Senhora de Fátima</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Our Lady of Fatima Church is a modern Catholic church in Brasilia, consecrated in 1958. It features a charming triangular roof covered with unique ceramic tiles designed by Athos Bulcao. Situated in a peaceful residential park surrounded by large trees, the church offers a serene atmosphere for prayer and reflection. As the first church built in Brasilia, it holds historical significance and is a favorite among locals and visitors alike.</p>
+                </div>
+            </div>
+
+            <!-- 20. Temple of Good Will -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/brasilia_20.jpg" alt="Temple of Good Will" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Temple of Good Will</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Temple of Good Will, also known as Templo da Boa Vontade, is a modern religious complex in Brasilia. It is considered one of the city&#x27;s 7 wonders and attracts visitors interested in art, culture, and religious tourism. The temple features diverse environments representing various religions and philosophies, showcasing art pieces such as paintings, sculptures, and cultural objects promoting peace and reflection on life.</p>
+                </div>
+            </div>
+
+            <!-- 21. Temple Shin Buddhist Pure Land - Brasilia -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/brasilia_21.jpg" alt="Temple Shin Buddhist Pure Land - Brasilia" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Temple Shin Buddhist Pure Land - Brasilia</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Temple Shin Buddhist Pure Land in Brasilia is a serene and welcoming Zen Buddhist temple that has been open to everyone since its inauguration in 1973. The annual festival at the temple features Japanese food, dance, and other cultural activities. Visitors can enjoy a peaceful atmosphere and participate in various activities such as kung fu, judo, tai chi, and meditation. The temple also offers a massage clinic for those seeking relaxation.</p>
+                </div>
+            </div>
+
+            <!-- 22. Torre de TV Digital de Brasília -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/brasilia_22.jpg" alt="Torre de TV Digital de Brasília" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Torre de TV Digital de Brasília</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Torre de TV Digital, also known as the Digital TV Tower, is a striking telecommunications tower in Brasilia, Brazil. Designed by renowned architect Lucio Costa and completed in 2012, it stands at an impressive height of 180 meters. Visitors can enjoy panoramic views of the city from its observation platforms. The tower&#x27;s futuristic design offers a unique backdrop for inspired photoshoots and provides an opportunity to appreciate the architectural planning of Brasilia.</p>
+                </div>
+            </div>
+
+            <!-- 23. Santuário da Mãe e Rainha Três Vezes Admirável de Schoenstatt -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/brasilia_23.jpg" alt="Santuário da Mãe e Rainha Três Vezes Admirável de Schoenstatt" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Santuário da Mãe e Rainha Três Vezes Admirável de Schoenstatt</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Santuário da Mãe e Rainha Três Vezes Admirável de Schoenstatt is a beautiful Catholic church located near the Digital TV Tower, offering splendid views and a peaceful atmosphere. The parklike surroundings provide a serene setting for contemplation and prayer, with regular masses held on-site. Visitors can also explore the well-maintained gardens and shop for religious souvenirs. The sanctuary offers a tranquil escape in the Brazilian cerrado, with clean and organized facilities.</p>
+                </div>
+            </div>
+
+            <!-- 24. Prainha North Lake -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/brasilia_24.jpg" alt="Prainha North Lake" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Prainha North Lake</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Prainha North Lake is listed among principal sites for Brasília within Brazil. Municipal and regional heritage listings document its place in the historic centre and travellers routes through Brasília. Prainha North Lake is listed among principal sites for Brasília within Brazil.</p>
+                </div>
+            </div>
+
+            <!-- 25. Praça dos Cristais -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/brasilia_25.jpg" alt="Praça dos Cristais" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Praça dos Cristais</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Praça dos Cristais is a 32-acre triangular plaza in Brasilia, designed by artist Roberto Burle Marx and his assistant Haruyoshi Ono. It was inaugurated in 1970 and is also known as Praca Civica. Located in the Setor Militar Urbano, it features sculptures, reflecting pools, pathways, and ample space for picnics and leisure activities.</p>
+                </div>
+            </div>
+
+            <!-- 26. Praça do Cruzeiro -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/brasilia_26.jpg" alt="Praça do Cruzeiro" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Praça do Cruzeiro</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Praça do Cruzeiro is listed among principal sites for Brasília within Brazil. Municipal and regional heritage listings document its place in the historic centre and travellers routes through Brasília. Praça do Cruzeiro is listed among principal sites for Brasília within Brazil.</p>
+                </div>
+            </div>
+
+            <!-- 27. Memorial JK -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/brasilia_27.jpg" alt="Memorial JK" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> R$10
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Memorial JK</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Memorial JK is a museum in Brasilia designed by Oscar Niemeyer, dedicated to the former Brazilian president Juscelino Kubitschek. The memorial was inaugurated in 1981 and features a 28-meter statue of Juscelino, along with exhibits showcasing his life and legacy. Visitors can explore the Mortuary Chamber, where Juscelino&#x27;s remains are housed, as well as personal objects and presidential memorabilia.</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
+        <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+    </footer>    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const map = L.map('map').setView([-15.793377, -47.878846], 14);
+            L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                attribution: '&copy; Google Maps',
+                maxZoom: 20
+            }).addTo(map);
+            const locations = [{"name": "Pontão Lago Sul", "lat": -15.826346, "lng": -47.873441}, {"name": "ParkShopping", "lat": -15.8338103, "lng": -47.9548795}, {"name": "Zoológico de Brasília", "lat": -15.844633, "lng": -47.943321}, {"name": "Juscelino Kubitschek Bridge", "lat": -15.822856, "lng": -47.83}, {"name": "Don Bosco Chapel", "lat": -15.798306, "lng": -47.809526}, {"name": "Mosteiro de São Bento de Brasília", "lat": -15.797794, "lng": -47.801672}, {"name": "Palácio da Alvorada", "lat": -15.792617, "lng": -47.82213}, {"name": "Catedral Metropolitana Nossa Senhora Aparecida", "lat": -15.798296, "lng": -47.875547}, {"name": "Palácio Itamaraty", "lat": -15.800679, "lng": -47.867296}, {"name": "Congresso Nacional", "lat": -15.799712, "lng": -47.864163}, {"name": "Praça dos Três Poderes", "lat": -15.800669, "lng": -47.861281}, {"name": "Palácio do Planalto", "lat": -15.799049, "lng": -47.860769}, {"name": "Estadio Nacional de Brasília Mané Garrincha", "lat": -15.78356, "lng": -47.899245}, {"name": "Brasília Choro Club", "lat": -15.789233, "lng": -47.899409}, {"name": "Feira da Torre de TV", "lat": -15.789847, "lng": -47.894733}, {"name": "Torre de TV de Brasília", "lat": -15.7906131, "lng": -47.8931665}, {"name": "Parque Urbano Nicolândia", "lat": -15.794445, "lng": -47.898601}, {"name": "Santuário São João Bosco", "lat": -15.800623, "lng": -47.894741}, {"name": "Igrejinha Nossa Senhora de Fátima", "lat": -15.813984, "lng": -47.903724}, {"name": "Temple of Good Will", "lat": -15.824204, "lng": -47.929425}, {"name": "Temple Shin Buddhist Pure Land - Brasilia", "lat": -15.829637, "lng": -47.925139}, {"name": "Torre de TV Digital de Brasília", "lat": -15.699221, "lng": -47.829573}, {"name": "Santuário da Mãe e Rainha Três Vezes Admirável de Schoenstatt", "lat": -15.703321, "lng": -47.824708}, {"name": "Prainha North Lake", "lat": -15.7467228, "lng": -47.8225383}, {"name": "Praça dos Cristais", "lat": -15.773179, "lng": -47.921202}, {"name": "Praça do Cruzeiro", "lat": -15.7836181, "lng": -47.9152548}, {"name": "Memorial JK", "lat": -15.784206, "lng": -47.913354}];
+            const customIcon = L.icon({
+                iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32],
+            });
+            const destinationCenter = [-15.793377, -47.878846];
+            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.094156, "maxCenterLng": 0.077174};
+            const markers = [];
+            locations.forEach(loc => {
+                markers.push(
+                    L.marker([loc.lat, loc.lng], {icon: customIcon}).addTo(map)
+                        .bindPopup(`<strong class="font-sans text-base text-gray-900">${loc.name}</strong>`)
+                );
+            });
+            const group = new L.featureGroup(markers);
+            let bounds = group.getBounds();
+            const ne = bounds.getNorthEast();
+            const sw = bounds.getSouthWest();
+            const latSpan = ne.lat - sw.lat;
+            const lngSpan = ne.lng - sw.lng;
+            const maxSpan = Math.max(latSpan, lngSpan);
+            const isDegenerate = latSpan < 1e-9 && lngSpan < 1e-9;
+            const markerCenterLat = (ne.lat + sw.lat) / 2;
+            const markerCenterLng = (ne.lng + sw.lng) / 2;
+            if (isDegenerate) {
+                const frameSpan = mapContext.compactRegion ? 0.026 : 0.045;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - frameSpan / 2, destinationCenter[1] - frameSpan / 2],
+                    [destinationCenter[0] + frameSpan / 2, destinationCenter[1] + frameSpan / 2]
+                );
+            } else if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                const expand = maxSpan < 0.12 ? 1.15 : 1.1;
+                const halfLat = latSpan / 2 * expand;
+                const halfLng = lngSpan / 2 * expand;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                const latReach = Math.max(mapContext.maxCenterLat, latSpan / 2) * 1.45;
+                const lngReach = Math.max(mapContext.maxCenterLng, lngSpan / 2) * 1.45;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - latReach, destinationCenter[1] - lngReach],
+                    [destinationCenter[0] + latReach, destinationCenter[1] + lngReach]
+                );
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                const halfLat = latSpan / 2 * 1.1;
+                const halfLng = lngSpan / 2 * 1.1;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                const frameSpan = Math.max(maxSpan * 4, 0.006);
+                bounds = L.latLngBounds(
+                    [markerCenterLat - frameSpan / 2, markerCenterLng - frameSpan / 2],
+                    [markerCenterLat + frameSpan / 2, markerCenterLng + frameSpan / 2]
+                );
+            }
+            const fitOptions = {};
+            if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                fitOptions.padding = maxSpan < 0.12
+                    ? [24, 24]
+                    : (maxSpan < 0.5 ? [24, 24] : [28, 28]);
+                fitOptions.maxZoom = maxSpan < 0.12
+                    ? 14
+                    : (maxSpan < 0.5 ? 10 : 9);
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                fitOptions.padding = [40, 40];
+                fitOptions.maxZoom = 8;
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                fitOptions.padding = [24, 24];
+            } else if (mapContext.denseUrban) {
+                fitOptions.padding = [18, 18];
+            } else if (mapContext.spreadUrban) {
+                fitOptions.padding = [20, 20];
+            } else if (locations.length >= 3 && maxSpan >= 0.02) {
+                fitOptions.padding = maxSpan >= 0.08 ? [20, 20] : [30, 30];
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                fitOptions.padding = [12, 12];
+                fitOptions.maxZoom = 16;
+            } else if (isDegenerate || locations.length === 1) {
+                fitOptions.padding = mapContext.compactRegion ? [16, 16] : [36, 36];
+                if (isDegenerate || maxSpan < 0.015) {
+                    fitOptions.maxZoom = mapContext.compactRegion ? 15 : 14;
+                }
+            } else {
+                fitOptions.padding = [50, 50];
+            }
+            map.fitBounds(bounds, fitOptions);
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                } else {
+                    scrollTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                }
+            });
+            scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        });
+    </script>
+
+    <button id="scrollTopBtn" class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-12 h-12 bg-neon-cyan text-deepblue-950 rounded-full shadow-[0_0_20px_rgba(0,240,255,0.4)] opacity-0 pointer-events-none transition-all duration-300 translate-y-4 hover:bg-white hover:scale-110" aria-label="Scroll to top">
+        <i class="ph ph-arrow-up text-xl font-bold"></i>
+    </button>
+</body>
+</html>

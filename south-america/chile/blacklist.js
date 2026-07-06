@@ -3,4 +3,6 @@
 
 const blacklistText = `
 Santiago
+
+Valparaíso
 `;

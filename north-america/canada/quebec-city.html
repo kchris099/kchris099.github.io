@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quebec City Guide | Global Explorer Guides</title>
+    <link rel="stylesheet" href="../../assets/tailwind.css">
+    <link rel="stylesheet" href="../../assets/outfit.css">
+    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
+    <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
+    <link rel="stylesheet" href="../../assets/homepage-activation.css">
+    <link rel="stylesheet" href="../../assets/destination-activation.css">
+    <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
+    <script src="../../assets/leaflet/leaflet.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #060B19; }
+        ::-webkit-scrollbar-thumb { background: #1E336B; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0070FF; }
+        .leaflet-popup-content-wrapper { background-color: #fff; color: #333; border-radius: 8px; box-shadow: 0 3px 14px rgba(0,0,0,0.4); }
+        .leaflet-popup-tip { background-color: #fff; }
+    </style>
+</head>
+<body class="bg-deepblue-950 text-slate-200 font-sans min-h-screen relative overflow-x-hidden">
+    <div class="absolute top-0 left-0 w-full h-[450px] md:h-[500px] z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50" style="background-image: url('images/quebec-city_hero.jpg')"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-deepblue-950/10 via-deepblue-950/60 to-deepblue-950"></div>
+    </div>
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon-purple/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neon-cyan/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <main class="container mx-auto px-4 py-8 md:py-16 relative z-20 max-w-5xl">
+        <nav class="mb-12 animate-fade-in-down flex flex-wrap items-center gap-4">
+            <a href="../../index.html" class="flex items-center justify-center w-11 h-11 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0" title="Back to Home">
+                <i class="ph ph-house text-xl group-hover:scale-110 transition-transform"></i>
+            </a>
+            <a href="canada.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0">
+                <i class="ph ph-arrow-left text-lg group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-medium text-sm">Back to Canada</span>
+            </a>
+            <div class="ml-auto flex items-center gap-3 bg-deepblue-900/40 border border-deepblue-700/50 rounded-full px-4 py-2 backdrop-blur-sm shadow-inner shrink-0">
+                <img src="../../assets/flags/w40/ca.png" alt="Canada flag" class="w-6 h-auto rounded-[2px] shadow-sm">
+                <div class="flex items-center gap-2 text-sm font-medium tracking-wide">
+                    <span class="text-slate-200 uppercase text-xs tracking-wider font-bold">Canada</span>
+                    <span class="text-deepblue-500 text-xs">&rsaquo;</span>
+                    <span class="text-neon-cyan text-xs">Quebec City</span>
+                </div>
+            </div>
+        </nav>
+
+        <header class="mb-16 animate-fade-in-down animation-delay-100 text-center">
+            <button
+                type="button"
+                id="destination-active-toggle"
+                class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
+                data-iso2="CA"
+                data-slug="quebec-city"
+                data-active="false"
+                data-interactive="true"
+                aria-label="Toggle Quebec City visibility on Canada guide"
+                aria-pressed="false"
+            >
+                <i class="ph ph-map-pin text-4xl text-slate-500 pointer-events-none" aria-hidden="true"></i>
+            </button>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple pb-4">
+                Explore Quebec City
+            </h1>
+            <div class="bg-deepblue-900/40 border border-deepblue-800 rounded-3xl p-8 md:p-10 text-left backdrop-blur-sm mt-10">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                    <i class="ph ph-scroll text-neon-cyan"></i> A Brief History
+                </h2>
+                <p class="text-lg text-slate-400 font-light leading-relaxed">Quebec City was founded by Champlain in 1608 as a French fur-trading post on the St. Lawrence narrows. Ramparts, citadel, and Lower Town stone warehouses record New France, British conquest, and francophone cultural continuity in North America. Plains of Abraham parkland and St Lawrence promenades extend French ramparts above the narrows. Walking routes through the historic centre help visitors relate these monuments to wider patterns of settlement and civic life in Canada.</p>
+            </div>
+        </header>
+
+        <section class="mb-16 animate-fade-in-down" style="animation-delay: 0.2s;">
+            <h2 class="text-3xl font-bold text-white mb-6">Attractions Map</h2>
+            <div id="map" class="h-[400px] w-full rounded-3xl border border-deepblue-700 shadow-2xl z-10 relative"></div>
+        </section>
+
+        <section class="flex flex-col gap-6 pb-20 animate-fade-in-down" style="animation-delay: 0.3s;">
+            <h2 class="text-3xl font-bold text-white mb-2">Top Sights & Activities</h2>
+            
+            <!-- 1. Promenade Samuel-De Champlain -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quebec-city_1.jpg" alt="Promenade Samuel-De Champlain" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Promenade Samuel-De Champlain</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Promenade Samuel-De Champlain is a picturesque 2.7-mile park along the St. Lawrence River, offering unobstructed views of the river and a perfect spot for picnics and sunset watching. The park features play areas for kids, sports facilities, and four distinct sections: wetlands with waterslide access, a lookout point, sports fields, and a cultural focal point. It&#x27;s an ideal place for walking, running or cycling by the water&#x27;s edge.</p>
+                </div>
+            </div>
+
+            <!-- 2. Fairmont Le Château Frontenac -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quebec-city_2.jpg" alt="Fairmont Le Château Frontenac" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Fairmont Le Château Frontenac</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Fairmont Le Château Frontenac is a historic and luxurious hotel located on Cap Diamant, offering views of the St. Lawrence River and Old Quebec. This landmark, opened in 1893 by the Canadian Pacific Railway, has been a popular choice for luxury travelers and notable figures throughout history. Following a $75 million renovation in 2014, the hotel now boasts 611 contemporary rooms adorned with chic furnishings and elegant color schemes.</p>
+                </div>
+            </div>
+
+            <!-- 3. Place d&#x27;Armes -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quebec-city_3.jpg" alt="Place d&#x27;Armes" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Place d&#x27;Armes</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Place d&#x27;Armes is a leafy plaza In Quebec City&#x27;s old town. It features charming flower beds, grand buildings, and a striking neo-Gothic monument with a fountain. The square offers great views of the Chateau Frontenac and is an ideal spot for capturing leading lines towards the hotel. Visitors can explore nearby attractions such as Notre Dame de Quebec Basilica and Hotel-de-Ville, or indulge in delicious meals and treats on Rue Saint-Jean.</p>
+                </div>
+            </div>
+
+            <!-- 4. Notre-Dame de Québec Basilica-Cathedral -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quebec-city_4.jpg" alt="Notre-Dame de Québec Basilica-Cathedral" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> C$10
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Notre-Dame de Québec Basilica-Cathedral</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Notre-Dame de Québec Basilica-Cathedral is listed among principal sites for Quebec City within Canada. Municipal and regional heritage listings document its place in the historic centre and travellers routes through Quebec City. Notre-Dame de Québec Basilica-Cathedral is listed among principal sites for Quebec City within Canada.</p>
+                </div>
+            </div>
+
+            <!-- 5. Dufferin Terrace -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quebec-city_5.jpg" alt="Dufferin Terrace" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Dufferin Terrace</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Dufferin Terrace, also known as Terrasse Dufferin, is a historic wooden boardwalk built in 1859 that offers views of the Saint Lawrence River, Chateau Frontenac, and the Citadel of Quebec. It is a popular spot for both locals and tourists to enjoy leisurely strolls while taking in panoramic city views. In the winter, visitors can experience the famous Terrasse Dufferin Slides toboggan run during the Quebec Winter Carnival.</p>
+                </div>
+            </div>
+
+            <!-- 6. Place Royale -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quebec-city_6.jpg" alt="Place Royale" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Place Royale</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Place Royale in Quebec City, Canada is a charming cobblestoned square surrounded by cafes, shops, and a 17th-century stone church. This historic landmark dates back to the early 17th century and is an integral part of Old Quebec. It was the site where Samuel de Champlain founded the city in 1608. The area is filled with restaurants, coffee shops, and unique places to visit that are rich in history and character.</p>
+                </div>
+            </div>
+
+            <!-- 7. Montmorency Park National Historic Site -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quebec-city_7.jpg" alt="Montmorency Park National Historic Site" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Montmorency Park National Historic Site</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Montmorency Park National Historic Site is a picturesque green space nestled between Upper and Lower Town in Quebec City. Once home to the Parliaments of Lower Canada, Canada East, and Quebec, the park now stands as a national historic site with century-old trees, walkways, and statues that tell the story of its political and military significance. Visitors can explore the remnants of defensive walls along the southeastern edge while enjoying panoramic views of Lower Town and the river.</p>
+                </div>
+            </div>
+
+            <!-- 8. The Battlefields Park -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quebec-city_8.jpg" alt="The Battlefields Park" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">The Battlefields Park</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Battlefields Park, also known as Parc des Champs-de-Bataille, spans 267 acres and was the site of a significant battle between French and British forces in 1759. The park features public meadows, trees, and monuments commemorating the historic clash. Today, it serves as a popular public park with open green spaces used for various events and concerts. Visitors can enjoy picnics, recreational areas, and views of the St.</p>
+                </div>
+            </div>
+
+            <!-- 9. Plains of Abraham -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quebec-city_9.jpg" alt="Plains of Abraham" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Plains of Abraham</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Plains of Abraham is a historic park in Quebec, Canada, known for its pivotal role in the Seven Years&#x27; War. This urban park was the site of the famous Battle of Quebec in 1759, where British forces defeated the French. The park features gardens, an ice rink, and Martello Towers with family-friendly activities. Visitors can explore the Museum of the Plains of Abraham to learn about Canada&#x27;s history through multimedia displays.</p>
+                </div>
+            </div>
+
+            <!-- 10. Musée national des beaux-arts du Québec -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quebec-city_10.jpg" alt="Musée national des beaux-arts du Québec" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> C$22
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Musée national des beaux-arts du Québec</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Musée national des beaux-arts du Québec is listed among principal sites for Quebec City within Canada. Municipal and regional heritage listings document its place in the historic centre and travellers routes through Quebec City. Musée national des beaux-arts du Québec is listed among principal sites for Quebec City within Canada.</p>
+                </div>
+            </div>
+
+            <!-- 11. Joan of Arc Garden -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quebec-city_11.jpg" alt="Joan of Arc Garden" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Joan of Arc Garden</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Joan of Arc Garden, established in 1938, is a beautifully landscaped park that combines classical French and English flower-garden styles. Located on the Plains of Abraham, a significant site for the 1759 battle between British and French forces, this lush urban park offers a perfect setting for picnics and also features historical attractions such as the Quebec Martello Towers.</p>
+                </div>
+            </div>
+
+            <!-- 12. Videotron Centre -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quebec-city_12.jpg" alt="Videotron Centre" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Videotron Centre</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Videotron Centre is a modern indoor complex in Quebec City that hosts ice hockey games and major musical performances throughout the year. Although the city no longer has an NHL team since the departure of the Quebec Nordiques, visitors can still catch exciting hockey action with the minor league team Remparts de Quebec playing at this venue. The facility offers easy access, ample restrooms, and convenient food and drink vendors.</p>
+                </div>
+            </div>
+
+            <!-- 13. Pierre-Dugua-De-Mons Terrace -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quebec-city_13.jpg" alt="Pierre-Dugua-De-Mons Terrace" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Pierre-Dugua-De-Mons Terrace</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Pierre-Dugua-De-Mons Terrace, located in Quebec City, is a picturesque park lookout offering views of the city, Chateau Frontenac, Dufferin Terrace, and the St. Lawrence River. Named after Pierre Dugua de Mons, a key figure in Quebec&#x27;s founding, this terrace provides a panoramic view that is perfect for landscape photography and sunset watching.</p>
+                </div>
+            </div>
+
+            <!-- 14. The Citadelle of Québec -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quebec-city_14.jpg" alt="The Citadelle of Québec" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> C$22
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">The Citadelle of Québec</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Citadelle of Québec is a historic complex that includes an active fort, a museum, and the traditional Changing of the Guard ceremony. However, during certain times of the year, this ceremony is replaced by a musical performance by the Royal 22nd Regiment Band. The citadel has been an important part of Quebec&#x27;s history since it was rebuilt by the British in the 19th century.</p>
+                </div>
+            </div>
+
+            <!-- 15. Place des Canotiers -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quebec-city_15.jpg" alt="Place des Canotiers" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Place des Canotiers</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled along the picturesque St. Lawrence River, Place des Canotiers is a beautifully landscaped plaza that invites visitors to unwind and soak in the views of Old Quebec City. This public square features lush lawns, charming walkways, and a delightful fountain with water jets perfect for cooling off during warm summer days. The area is particularly enchanting in the fall when the foliage transforms into a tapestry of colors.</p>
+                </div>
+            </div>
+
+            <!-- 16. Site Traditionnel Huron Onhoüa Chetek8e -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quebec-city_16.jpg" alt="Site Traditionnel Huron Onhoüa Chetek8e" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> C$20
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Site Traditionnel Huron Onhoüa Chetek8e</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">At the Site Traditionnel Huron Onhoüa Chetek8e, visitors are warmly greeted by a guide dressed in traditional attire, ready to take you on an immersive journey through a beautifully reconstructed Huron-Wendat village. Here, explore significant structures like a giant teepee and longhouse, as well as tools such as the smokehouse and drying racks used for meat preservation.</p>
+                </div>
+            </div>
+
+            <!-- 17. St. Louis Gate -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quebec-city_17.jpg" alt="St. Louis Gate" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">St. Louis Gate</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">St. Louis Gate is a significant entry point in the fortified walls that enclose Quebec City&#x27;s Old Town, separating it from the rest of the city. It offers a glimpse into history and provides access to the only walled city north of Mexico. The gate is located near attractions such as statues of famous personalities and a war monument, making it an part of exploring old Quebec. Visitors can also enjoy beautiful nighttime views and climb up on the wall to admire the surrounding cityscape.</p>
+                </div>
+            </div>
+
+            <!-- 18. Parliament Building -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quebec-city_18.jpg" alt="Parliament Building" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Parliament Building</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Parliament Building, located in Quebec City&#x27;s St. Jean Baptiste district, is a Second Empire-style structure surrounded by beautiful gardens. Dating back to the late 19th century, it serves as an important center of politics and offers free guided tours of its well-preserved interior with impressive architecture. The grounds are adorned with numerous monuments and 26 bronze statues that pay homage to key figures in Quebec&#x27;s political history.</p>
+                </div>
+            </div>
+
+            <!-- 19. Observatoire de la Capitale -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quebec-city_19.jpg" alt="Observatoire de la Capitale" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> C$18
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Observatoire de la Capitale</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Observatoire de la Capitale, located on the 31st floor of the Marie-Guyart Building, offers a 360-degree view of Quebec City. As the city&#x27;s tallest skyscraper at 132m, it provides an unparalleled vantage point to admire historic landmarks such as Old Quebec and Cap Diamant, as well as scenic features like the St. Lawrence River and the Louise Basin marina.</p>
+                </div>
+            </div>
+
+            <!-- 20. Théâtre Capitole -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/quebec-city_20.jpg" alt="Théâtre Capitole" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Théâtre Capitole</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Théâtre Capitole is a historic performing-arts center located just outside the Old Town of Quebec. The classic Beaux-Arts building offers live music, plays, musicals, and more in a setting reminiscent of the old west. Visitors have praised the venue for its spacious and comfortable seating, with even balcony seats providing fantastic views of performances.</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
+        <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+    </footer>    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const map = L.map('map').setView([46.811058, -71.222377], 14);
+            L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                attribution: '&copy; Google Maps',
+                maxZoom: 20
+            }).addTo(map);
+            const locations = [{"name": "Promenade Samuel-De Champlain", "lat": 46.769225, "lng": -71.253842}, {"name": "Fairmont Le Château Frontenac", "lat": 46.812009, "lng": -71.205218}, {"name": "Place d'Armes", "lat": 46.812757, "lng": -71.205654}, {"name": "Notre-Dame de Québec Basilica-Cathedral", "lat": 46.8137772, "lng": -71.20605619999999}, {"name": "Dufferin Terrace", "lat": 46.811445, "lng": -71.204304}, {"name": "Place Royale", "lat": 46.813106, "lng": -71.202752}, {"name": "Montmorency Park National Historic Site", "lat": 46.813534, "lng": -71.204009}, {"name": "The Battlefields Park", "lat": 46.801501, "lng": -71.217397}, {"name": "Plains of Abraham", "lat": 46.800408, "lng": -71.220291}, {"name": "Musée national des beaux-arts du Québec", "lat": 46.80105469999999, "lng": -71.2251363}, {"name": "Joan of Arc Garden", "lat": 46.804059, "lng": -71.217678}, {"name": "Videotron Centre", "lat": 46.828948, "lng": -71.248341}, {"name": "Pierre-Dugua-De-Mons Terrace", "lat": 46.8096, "lng": -71.205577}, {"name": "The Citadelle of Québec", "lat": 46.8078, "lng": -71.206899}, {"name": "Place des Canotiers", "lat": 46.814349, "lng": -71.201242}, {"name": "Site Traditionnel Huron Onhoüa Chetek8e", "lat": 46.868628, "lng": -71.365894}, {"name": "St. Louis Gate", "lat": 46.809469, "lng": -71.211337}, {"name": "Parliament Building", "lat": 46.808706, "lng": -71.214179}, {"name": "Observatoire de la Capitale", "lat": 46.80797, "lng": -71.217834}, {"name": "Théâtre Capitole", "lat": 46.812805, "lng": -71.213904}];
+            const customIcon = L.icon({
+                iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32],
+            });
+            const destinationCenter = [46.811058, -71.222377];
+            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.05757, "maxCenterLng": 0.143517};
+            const markers = [];
+            locations.forEach(loc => {
+                markers.push(
+                    L.marker([loc.lat, loc.lng], {icon: customIcon}).addTo(map)
+                        .bindPopup(`<strong class="font-sans text-base text-gray-900">${loc.name}</strong>`)
+                );
+            });
+            const group = new L.featureGroup(markers);
+            let bounds = group.getBounds();
+            const ne = bounds.getNorthEast();
+            const sw = bounds.getSouthWest();
+            const latSpan = ne.lat - sw.lat;
+            const lngSpan = ne.lng - sw.lng;
+            const maxSpan = Math.max(latSpan, lngSpan);
+            const isDegenerate = latSpan < 1e-9 && lngSpan < 1e-9;
+            const markerCenterLat = (ne.lat + sw.lat) / 2;
+            const markerCenterLng = (ne.lng + sw.lng) / 2;
+            if (isDegenerate) {
+                const frameSpan = mapContext.compactRegion ? 0.026 : 0.045;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - frameSpan / 2, destinationCenter[1] - frameSpan / 2],
+                    [destinationCenter[0] + frameSpan / 2, destinationCenter[1] + frameSpan / 2]
+                );
+            } else if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                const expand = maxSpan < 0.12 ? 1.15 : 1.1;
+                const halfLat = latSpan / 2 * expand;
+                const halfLng = lngSpan / 2 * expand;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                const latReach = Math.max(mapContext.maxCenterLat, latSpan / 2) * 1.45;
+                const lngReach = Math.max(mapContext.maxCenterLng, lngSpan / 2) * 1.45;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - latReach, destinationCenter[1] - lngReach],
+                    [destinationCenter[0] + latReach, destinationCenter[1] + lngReach]
+                );
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                const halfLat = latSpan / 2 * 1.1;
+                const halfLng = lngSpan / 2 * 1.1;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                const frameSpan = Math.max(maxSpan * 4, 0.006);
+                bounds = L.latLngBounds(
+                    [markerCenterLat - frameSpan / 2, markerCenterLng - frameSpan / 2],
+                    [markerCenterLat + frameSpan / 2, markerCenterLng + frameSpan / 2]
+                );
+            }
+            const fitOptions = {};
+            if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                fitOptions.padding = maxSpan < 0.12
+                    ? [24, 24]
+                    : (maxSpan < 0.5 ? [24, 24] : [28, 28]);
+                fitOptions.maxZoom = maxSpan < 0.12
+                    ? 14
+                    : (maxSpan < 0.5 ? 10 : 9);
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                fitOptions.padding = [40, 40];
+                fitOptions.maxZoom = 8;
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                fitOptions.padding = [24, 24];
+            } else if (mapContext.denseUrban) {
+                fitOptions.padding = [18, 18];
+            } else if (mapContext.spreadUrban) {
+                fitOptions.padding = [20, 20];
+            } else if (locations.length >= 3 && maxSpan >= 0.02) {
+                fitOptions.padding = maxSpan >= 0.08 ? [20, 20] : [30, 30];
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                fitOptions.padding = [12, 12];
+                fitOptions.maxZoom = 16;
+            } else if (isDegenerate || locations.length === 1) {
+                fitOptions.padding = mapContext.compactRegion ? [16, 16] : [36, 36];
+                if (isDegenerate || maxSpan < 0.015) {
+                    fitOptions.maxZoom = mapContext.compactRegion ? 15 : 14;
+                }
+            } else {
+                fitOptions.padding = [50, 50];
+            }
+            map.fitBounds(bounds, fitOptions);
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                } else {
+                    scrollTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                }
+            });
+            scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        });
+    </script>
+
+    <button id="scrollTopBtn" class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-12 h-12 bg-neon-cyan text-deepblue-950 rounded-full shadow-[0_0_20px_rgba(0,240,255,0.4)] opacity-0 pointer-events-none transition-all duration-300 translate-y-4 hover:bg-white hover:scale-110" aria-label="Scroll to top">
+        <i class="ph ph-arrow-up text-xl font-bold"></i>
+    </button>
+</body>
+</html>

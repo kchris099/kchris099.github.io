@@ -5,4 +5,10 @@ const blacklistText = `
 São Paulo
 
 Rio de Janeiro
+
+Brasília
+
+Salvador
+
+Ouro Preto
 `;

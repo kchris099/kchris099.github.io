@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Varanasi Guide | Global Explorer Guides</title>
+    <link rel="stylesheet" href="../../assets/tailwind.css">
+    <link rel="stylesheet" href="../../assets/outfit.css">
+    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
+    <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
+    <link rel="stylesheet" href="../../assets/homepage-activation.css">
+    <link rel="stylesheet" href="../../assets/destination-activation.css">
+    <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
+    <script src="../../assets/leaflet/leaflet.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #060B19; }
+        ::-webkit-scrollbar-thumb { background: #1E336B; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0070FF; }
+        .leaflet-popup-content-wrapper { background-color: #fff; color: #333; border-radius: 8px; box-shadow: 0 3px 14px rgba(0,0,0,0.4); }
+        .leaflet-popup-tip { background-color: #fff; }
+    </style>
+</head>
+<body class="bg-deepblue-950 text-slate-200 font-sans min-h-screen relative overflow-x-hidden">
+    <div class="absolute top-0 left-0 w-full h-[450px] md:h-[500px] z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50" style="background-image: url('images/varanasi_hero.jpg')"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-deepblue-950/10 via-deepblue-950/60 to-deepblue-950"></div>
+    </div>
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon-purple/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neon-cyan/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <main class="container mx-auto px-4 py-8 md:py-16 relative z-20 max-w-5xl">
+        <nav class="mb-12 animate-fade-in-down flex flex-wrap items-center gap-4">
+            <a href="../../index.html" class="flex items-center justify-center w-11 h-11 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0" title="Back to Home">
+                <i class="ph ph-house text-xl group-hover:scale-110 transition-transform"></i>
+            </a>
+            <a href="india.html" class="inline-flex items-center gap-2 px-5 py-2.5 bg-deepblue-900/80 border border-deepblue-700 hover:border-neon-cyan/50 hover:bg-deepblue-800 text-slate-300 hover:text-white rounded-full transition-all group backdrop-blur-sm shadow-lg shrink-0">
+                <i class="ph ph-arrow-left text-lg group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-medium text-sm">Back to India</span>
+            </a>
+            <div class="ml-auto flex items-center gap-3 bg-deepblue-900/40 border border-deepblue-700/50 rounded-full px-4 py-2 backdrop-blur-sm shadow-inner shrink-0">
+                <img src="../../assets/flags/w40/in.png" alt="India flag" class="w-6 h-auto rounded-[2px] shadow-sm">
+                <div class="flex items-center gap-2 text-sm font-medium tracking-wide">
+                    <span class="text-slate-200 uppercase text-xs tracking-wider font-bold">India</span>
+                    <span class="text-deepblue-500 text-xs">&rsaquo;</span>
+                    <span class="text-neon-cyan text-xs">Varanasi</span>
+                </div>
+            </div>
+        </nav>
+
+        <header class="mb-16 animate-fade-in-down animation-delay-100 text-center">
+            <button
+                type="button"
+                id="destination-active-toggle"
+                class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
+                data-iso2="IN"
+                data-slug="varanasi"
+                data-active="false"
+                data-interactive="true"
+                aria-label="Toggle Varanasi visibility on India guide"
+                aria-pressed="false"
+            >
+                <i class="ph ph-map-pin text-4xl text-slate-500 pointer-events-none" aria-hidden="true"></i>
+            </button>
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-purple pb-4">
+                Explore Varanasi
+            </h1>
+            <div class="bg-deepblue-900/40 border border-deepblue-800 rounded-3xl p-8 md:p-10 text-left backdrop-blur-sm mt-10">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                    <i class="ph ph-scroll text-neon-cyan"></i> A Brief History
+                </h2>
+                <p class="text-lg text-slate-400 font-light leading-relaxed">Varanasi, also called Kashi, is among the oldest continuously inhabited cities on the Ganges. Ghats, Shiva temples, and cremation grounds draw Hindu pilgrims, while narrow lanes preserve weaver workshops and medieval neighbourhood shrines that anchor sacred geography in North India. Evening aarti ceremonies and silk-weaver lanes extend sacred Ganges geography through the old city core.</p>
+            </div>
+        </header>
+
+        <section class="mb-16 animate-fade-in-down" style="animation-delay: 0.2s;">
+            <h2 class="text-3xl font-bold text-white mb-6">Attractions Map</h2>
+            <div id="map" class="h-[400px] w-full rounded-3xl border border-deepblue-700 shadow-2xl z-10 relative"></div>
+        </section>
+
+        <section class="flex flex-col gap-6 pb-20 animate-fade-in-down" style="animation-delay: 0.3s;">
+            <h2 class="text-3xl font-bold text-white mb-2">Top Sights & Activities</h2>
+            
+            <!-- 1. Shri Kashi Vishwanath Temple -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/varanasi_1.jpg" alt="Shri Kashi Vishwanath Temple" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Shri Kashi Vishwanath Temple</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Shri Kashi Vishwanath Temple is listed among principal sites for Varanasi within India. Municipal and regional heritage listings document its place in the historic centre and travellers routes through Varanasi. Shri Kashi Vishwanath Temple is listed among principal sites for Varanasi within India.</p>
+                </div>
+            </div>
+
+            <!-- 2. Shree Annapurna Mandir -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/varanasi_2.jpg" alt="Shree Annapurna Mandir" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Shree Annapurna Mandir</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Shree Annapurna Mandir, also known as Annapurna Devi Mandir, is a renowned Hindu temple located near the Kashi Vishwanath Temple in Varanasi, Uttar Pradesh. Constructed in 1729 AD by Maratha Peshwa Baji Rao, this temple holds significant religious importance and is dedicated to Goddess Annapurna Devi, the deity of nourishment.</p>
+                </div>
+            </div>
+
+            <!-- 3. Manikarnika Ghat -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/varanasi_3.jpg" alt="Manikarnika Ghat" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Manikarnika Ghat</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Manikarnika Ghat, also known as Manikarnika Mahashamshan Ghat, is one of the oldest and most ghats in Varanasi. It holds great religious and historical significance as it is the primary site for traditional Hindu cremations. This ghat serves as a reminder of the fragility of life and the ultimate truth of mortality.</p>
+                </div>
+            </div>
+
+            <!-- 4. Nepali Temple -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/varanasi_4.jpg" alt="Nepali Temple" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Nepali Temple</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Nepali Temple, also known as the Kathwala Temple, is a serene sanctuary in Varanasi that reflects the deep cultural ties between India and Nepal. Built in the 19th century by an exiled Nepalese king, this terracotta temple is dedicated to Lord Shiva and features pagoda-style architecture reminiscent of Nepal. The intricate wooden carvings depicting Hindu deities adorn its terraces and stone walls, showcasing a blend of Hindu and Buddhist design elements.</p>
+                </div>
+            </div>
+
+            <!-- 5. Dhamek -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/varanasi_5.jpg" alt="Dhamek" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ₹300
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Dhamek</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Dhamekh Stupa, situated in Sarnath near Varanasi, India, is a significant ancient Buddhist monument dating back to 500 CE. Originally built by Emperor Ashoka in the 3rd century BCE, it has undergone various renovations over time. The stupa stands at 43 meters tall and features intricate carvings depicting birds and scripts from the Gupta period. This cylindrical structure is believed to mark the location where Buddha delivered his first sermon after attaining enlightenment.</p>
+                </div>
+            </div>
+
+            <!-- 6. Ashoka Pilar, Sarnath,(Varanasi) -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/varanasi_6.jpg" alt="Ashoka Pilar, Sarnath,(Varanasi)" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ₹300
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Ashoka Pilar, Sarnath,(Varanasi)</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Ashoka Pillar, located in the Sarnath Deer Park just 10km north of Varanasi, is a significant historical site and a popular tourist attraction. This 17m tall pillar, built by Emperor Ashoka, is housed in a glass enclosure and features sandstone remains. The pillar bears an engraving of four lions back to back, which is the official symbol of India.</p>
+                </div>
+            </div>
+
+            <!-- 7. Archaeological Buddhist Remains of Sarnath -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/varanasi_7.jpg" alt="Archaeological Buddhist Remains of Sarnath" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ₹300
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Archaeological Buddhist Remains of Sarnath</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Archaeological Buddhist Remains of Sarnath is listed among principal sites for Varanasi within India. Municipal and regional heritage listings document its place in the historic centre and travellers routes through Varanasi. Archaeological Buddhist Remains of Sarnath is listed among principal sites for Varanasi within India.</p>
+                </div>
+            </div>
+
+            <!-- 8. Chaukhandi Stupa Sarnath Varanasi -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/varanasi_8.jpg" alt="Chaukhandi Stupa Sarnath Varanasi" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ₹300
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Chaukhandi Stupa Sarnath Varanasi</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Chaukhandi Stupa, a significant historical Buddhist monument, is a terraced structure dating back to the Gupta period. This impressive site showcases a sizable mound with a brick base and an octagonal tower. Alongside other attractions in Sarnath such as the Mulagandha Kuti Vihar and the Sarnath Archaeological Museum, it offers visitors a unique insight into Buddhism&#x27;s ancient history.</p>
+                </div>
+            </div>
+
+            <!-- 9. Assi Ghat, (Varanasi) -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/varanasi_9.jpg" alt="Assi Ghat, (Varanasi)" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Assi Ghat, (Varanasi)</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Assi Ghat Varanasi is a significant riverfront gathering place where religious festivals, performances, and yoga classes take place. It is ghats in the area and holds cultural importance as it marks the meeting point of River Assi with the Ganges. Pilgrims visit to bathe in its waters and worship a Shiva lingam beneath a pipal tree. The ghat comes alive in the evenings with hawkers and entertainers.</p>
+                </div>
+            </div>
+
+            <!-- 10. Chet Singh Ghat, (Varanasi) -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/varanasi_10.jpg" alt="Chet Singh Ghat, (Varanasi)" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Chet Singh Ghat, (Varanasi)</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Chet Singh Ghat, located along the banks of River Ganga in Varanasi, is a historical and relatively less crowded ghat. It features an 18th-century fortress-style palace known as the Palace of Raja Chet Singh, which lends a fairy tale vibe to the surroundings. The ghat offers a clean and serene environment for visitors to enjoy, with its terrace overlooking the river and stairs leading down to the water.</p>
+                </div>
+            </div>
+
+            <!-- 11. Shri Satyanarayan Tulsi Manas Temple, (Varanasi) -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/varanasi_11.jpg" alt="Shri Satyanarayan Tulsi Manas Temple, (Varanasi)" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Shri Satyanarayan Tulsi Manas Temple, (Varanasi)</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Shri Satyanarayan Tulsi Manas Mandir in Varanasi is a grand Hindu temple made of white marble, featuring beautiful gardens and detailed engravings. It&#x27;s situated in the Tulsi Ghat area and pays homage to Lord Rama. The temple is known for its peaceful ambiance and elaborate marble carvings depicting stories from Ramcharitmanas, a renowned Hindu epic poem.</p>
+                </div>
+            </div>
+
+            <!-- 12. Shri Sankat Mochan Hanuman Temple, (Varanasi) -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/varanasi_12.jpg" alt="Shri Sankat Mochan Hanuman Temple, (Varanasi)" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Shri Sankat Mochan Hanuman Temple, (Varanasi)</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Sankat Mochan Hanuman Mandir, located on the serene banks of River Assi in Varanasi, is a sacred temple dedicated to Lord Hanuman. Established by Saint Sri Goswami Tulsidas in the early 1500s after a divine vision, it is believed that worshipping here can relieve devotees from various troubles and appease those suffering from shani dosh.</p>
+                </div>
+            </div>
+
+            <!-- 13. Dashashwamedh Ghat -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/varanasi_13.jpg" alt="Dashashwamedh Ghat" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Dashashwamedh Ghat</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Dashashwamedh Ghat is listed among principal sites for Varanasi within India. Municipal and regional heritage listings document its place in the historic centre and travellers routes through Varanasi. Dashashwamedh Ghat is listed among principal sites for Varanasi within India.</p>
+                </div>
+            </div>
+
+            <!-- 14. Dr. Rajendra Prasad Ghat, (Varanasi) -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/varanasi_14.jpg" alt="Dr. Rajendra Prasad Ghat, (Varanasi)" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Dr. Rajendra Prasad Ghat, (Varanasi)</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Rajendra Prasad Ghat, located next to the renowned Dashashwamedh Ghat in Varanasi, is a charming spot known for its religious ceremonies and historical significance. It offers a serene and clean environment, making it a must-visit for travelers seeking an authentic experience in India&#x27;s spiritual center. The ghat provides a picturesque view of the blue waters adorned with Lord Shiva paintings and is popular for evening Ganga Aarti, attracting crowds from around the world.</p>
+                </div>
+            </div>
+
+            <!-- 15. Man Singh Observatory -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/varanasi_15.jpg" alt="Man Singh Observatory" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ₹300
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Man Singh Observatory</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">The Man Singh Observatory, also known as Jantar Mantar, is a historic 1700s observatory located at the Manmandir Ghat in Varanasi. Built by Raja Man Singh, it features a collection of astronomical instruments used to measure time, track celestial bodies&#x27; movement, and predict eclipses. The observatory stands as a tribute to India&#x27;s astronomical genius and offers a unique glimpse into the city&#x27;s rich cultural and architectural heritage.</p>
+                </div>
+            </div>
+
+            <!-- 16. Shri Kashi Vishwanath Temple, BHU Campus, Varanasi -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/varanasi_16.jpg" alt="Shri Kashi Vishwanath Temple, BHU Campus, Varanasi" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Shri Kashi Vishwanath Temple, BHU Campus, Varanasi</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled within the serene campus of Banaras Hindu University, the Shri Kashi Vishwanath Temple, also known as the New Vishwanath Temple or Birla Temple, is a must-visit destination in Varanasi. This magnificent structure, crafted from pristine white marble, stands as a testament to architectural beauty and spiritual significance. Dedicated to Lord Shiva, it features an expansive courtyard and an impressive spire that draws both pilgrims and tourists alike.</p>
+                </div>
+            </div>
+
+            <!-- 17. Shri Kaal Bhairav Temple, (Varanasi) -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/varanasi_17.jpg" alt="Shri Kaal Bhairav Temple, (Varanasi)" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Shri Kaal Bhairav Temple, (Varanasi)</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled in the Vishweshwarganj area of Varanasi, Kaal Bhairav Temple is a captivating 17th-century Hindu shrine dedicated to Lord Bhairav Naath. Just a short distance from the renowned Kashi Vishwanath Mandir and Varanasi Junction, this temple stands as one of the oldest and most significant spiritual sites in Banaras.</p>
+                </div>
+            </div>
+
+            <!-- 18. Shri Mahamrityunjay Mahadev Temple, (Varanasi) -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/varanasi_18.jpg" alt="Shri Mahamrityunjay Mahadev Temple, (Varanasi)" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Shri Mahamrityunjay Mahadev Temple, (Varanasi)</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Mrityunjay Mahadev Temple is a renowned and culturally significant temple in Varanasi, housing shrines that are over a thousand years old. The temple is dedicated to Lord Shiva and features a shivalinga believed to have the power to heal chronic diseases. Located on the way from Daranagar to Kalabhairava Temple, the temple also boasts an ancient well with water that is said to possess healing properties for various ailments.</p>
+                </div>
+            </div>
+
+            <!-- 19. Namo Ghat -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/varanasi_19.jpg" alt="Namo Ghat" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Namo Ghat</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Namo Ghat is listed among principal sites for Varanasi within India. Municipal and regional heritage listings document its place in the historic centre and travellers routes through Varanasi. Namo Ghat is listed among principal sites for Varanasi within India.</p>
+                </div>
+            </div>
+
+            <!-- 20. Ramnagar Fort, (Varanasi) -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/varanasi_20.jpg" alt="Ramnagar Fort, (Varanasi)" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> ₹200
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Ramnagar Fort, (Varanasi)</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Ramnagar Fort Varanasi is a sandstone fort and royal residence that houses a museum featuring vintage cars, costumes, and an armory. The Mughal Era Fortification is a must-visit in the city of Varanasi. While there, visitors can also explore other historical sites such as Chunar Fort and the Bharat Kala Bhavan Museum.</p>
+                </div>
+            </div>
+
+            <!-- 21. Shri Batuk Bhairav Temple, (Varanasi) -->
+            <div class="bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-3xl overflow-hidden flex flex-col md:flex-row group hover:border-neon-cyan/50 hover:shadow-[0_0_30px_rgba(0,240,255,0.1)] transition-all duration-300">
+                <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
+                    <img src="images/varanasi_21.jpg" alt="Shri Batuk Bhairav Temple, (Varanasi)" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 bg-deepblue-950/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-deepblue-700 text-neon-cyan text-sm font-semibold flex items-center gap-1.5 shadow-lg">
+                        <i class="ph ph-ticket"></i> Free
+                    </div>
+                </div>
+                <div class="p-6 md:p-8 md:w-3/5 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-neon-cyan transition-colors">Shri Batuk Bhairav Temple, (Varanasi)</h3>
+                    <p class="text-slate-400 font-light leading-relaxed">Nestled just 2 kilometers from the bustling heart of Varanasi, the Shri Batuk Bhairav Temple stands as a significant spiritual haven for Aghoris and Tantriks. This ancient shrine is dedicated to Batuk Bhairav, an incarnation of Lord Shiva revered in his child form. The temple is steeped in local lore, believed to be a protective force against evil, with legends stating that Lord Shiva took on this form to safeguard devotees from malevolent entities.</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0 bg-transparent">
+        <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+    </footer>    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const map = L.map('map').setView([25.316111, 83.012338], 14);
+            L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                attribution: '&copy; Google Maps',
+                maxZoom: 20
+            }).addTo(map);
+            const locations = [{"name": "Shri Kashi Vishwanath Temple", "lat": 25.310853, "lng": 83.010678}, {"name": "Shree Annapurna Mandir", "lat": 25.310431, "lng": 83.010085}, {"name": "Manikarnika Ghat", "lat": 25.311074, "lng": 83.01414}, {"name": "Nepali Temple", "lat": 25.309953, "lng": 83.013076}, {"name": "Dhamek", "lat": 25.380902, "lng": 83.024517}, {"name": "Ashoka Pilar, Sarnath,(Varanasi)", "lat": 25.381491, "lng": 83.022723}, {"name": "Archaeological Buddhist Remains of Sarnath", "lat": 25.3803205, "lng": 83.0226212}, {"name": "Chaukhandi Stupa Sarnath Varanasi", "lat": 25.37402, "lng": 83.023588}, {"name": "Assi Ghat, (Varanasi)", "lat": 25.289431, "lng": 83.006079}, {"name": "Chet Singh Ghat, (Varanasi)", "lat": 25.294418, "lng": 83.007272}, {"name": "Shri Satyanarayan Tulsi Manas Temple, (Varanasi)", "lat": 25.287183, "lng": 83.000359}, {"name": "Shri Sankat Mochan Hanuman Temple, (Varanasi)", "lat": 25.28278, "lng": 83.000174}, {"name": "Dashashwamedh Ghat", "lat": 25.306254, "lng": 83.010219}, {"name": "Dr. Rajendra Prasad Ghat, (Varanasi)", "lat": 25.306981, "lng": 83.010613}, {"name": "Man Singh Observatory", "lat": 25.30769, "lng": 83.01081}, {"name": "Shri Kashi Vishwanath Temple, BHU Campus, Varanasi", "lat": 25.265936, "lng": 82.987951}, {"name": "Shri Kaal Bhairav Temple, (Varanasi)", "lat": 25.317657, "lng": 83.015925}, {"name": "Shri Mahamrityunjay Mahadev Temple, (Varanasi)", "lat": 25.322232, "lng": 83.014701}, {"name": "Namo Ghat", "lat": 25.3251466, "lng": 83.0352671}, {"name": "Ramnagar Fort, (Varanasi)", "lat": 25.270313, "lng": 83.025267}, {"name": "Shri Batuk Bhairav Temple, (Varanasi)", "lat": 25.303273, "lng": 82.993033}];
+            const customIcon = L.icon({
+                iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32],
+            });
+            const destinationCenter = [25.316111, 83.012338];
+            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.06538, "maxCenterLng": 0.024387};
+            const markers = [];
+            locations.forEach(loc => {
+                markers.push(
+                    L.marker([loc.lat, loc.lng], {icon: customIcon}).addTo(map)
+                        .bindPopup(`<strong class="font-sans text-base text-gray-900">${loc.name}</strong>`)
+                );
+            });
+            const group = new L.featureGroup(markers);
+            let bounds = group.getBounds();
+            const ne = bounds.getNorthEast();
+            const sw = bounds.getSouthWest();
+            const latSpan = ne.lat - sw.lat;
+            const lngSpan = ne.lng - sw.lng;
+            const maxSpan = Math.max(latSpan, lngSpan);
+            const isDegenerate = latSpan < 1e-9 && lngSpan < 1e-9;
+            const markerCenterLat = (ne.lat + sw.lat) / 2;
+            const markerCenterLng = (ne.lng + sw.lng) / 2;
+            if (isDegenerate) {
+                const frameSpan = mapContext.compactRegion ? 0.026 : 0.045;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - frameSpan / 2, destinationCenter[1] - frameSpan / 2],
+                    [destinationCenter[0] + frameSpan / 2, destinationCenter[1] + frameSpan / 2]
+                );
+            } else if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                const expand = maxSpan < 0.12 ? 1.15 : 1.1;
+                const halfLat = latSpan / 2 * expand;
+                const halfLng = lngSpan / 2 * expand;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                const latReach = Math.max(mapContext.maxCenterLat, latSpan / 2) * 1.45;
+                const lngReach = Math.max(mapContext.maxCenterLng, lngSpan / 2) * 1.45;
+                bounds = L.latLngBounds(
+                    [destinationCenter[0] - latReach, destinationCenter[1] - lngReach],
+                    [destinationCenter[0] + latReach, destinationCenter[1] + lngReach]
+                );
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                const halfLat = latSpan / 2 * 1.1;
+                const halfLng = lngSpan / 2 * 1.1;
+                bounds = L.latLngBounds(
+                    [markerCenterLat - halfLat, markerCenterLng - halfLng],
+                    [markerCenterLat + halfLat, markerCenterLng + halfLng]
+                );
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                const frameSpan = Math.max(maxSpan * 4, 0.006);
+                bounds = L.latLngBounds(
+                    [markerCenterLat - frameSpan / 2, markerCenterLng - frameSpan / 2],
+                    [markerCenterLat + frameSpan / 2, markerCenterLng + frameSpan / 2]
+                );
+            }
+            const fitOptions = {};
+            if ((mapContext.nationalPark || mapContext.scenicCorridor) && locations.length >= 3) {
+                fitOptions.padding = maxSpan < 0.12
+                    ? [24, 24]
+                    : (maxSpan < 0.5 ? [24, 24] : [28, 28]);
+                fitOptions.maxZoom = maxSpan < 0.12
+                    ? 14
+                    : (maxSpan < 0.5 ? 10 : 9);
+            } else if (mapContext.largeRegion && locations.length >= 3) {
+                fitOptions.padding = [40, 40];
+                fitOptions.maxZoom = 8;
+            } else if (mapContext.islandCity && locations.length >= 3) {
+                fitOptions.padding = [24, 24];
+            } else if (mapContext.denseUrban) {
+                fitOptions.padding = [18, 18];
+            } else if (mapContext.spreadUrban) {
+                fitOptions.padding = [20, 20];
+            } else if (locations.length >= 3 && maxSpan >= 0.02) {
+                fitOptions.padding = maxSpan >= 0.08 ? [20, 20] : [30, 30];
+            } else if (locations.length === 2 && maxSpan < 0.02) {
+                fitOptions.padding = [12, 12];
+                fitOptions.maxZoom = 16;
+            } else if (isDegenerate || locations.length === 1) {
+                fitOptions.padding = mapContext.compactRegion ? [16, 16] : [36, 36];
+                if (isDegenerate || maxSpan < 0.015) {
+                    fitOptions.maxZoom = mapContext.compactRegion ? 15 : 14;
+                }
+            } else {
+                fitOptions.padding = [50, 50];
+            }
+            map.fitBounds(bounds, fitOptions);
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                } else {
+                    scrollTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                    scrollTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                }
+            });
+            scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        });
+    </script>
+
+    <button id="scrollTopBtn" class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-12 h-12 bg-neon-cyan text-deepblue-950 rounded-full shadow-[0_0_20px_rgba(0,240,255,0.4)] opacity-0 pointer-events-none transition-all duration-300 translate-y-4 hover:bg-white hover:scale-110" aria-label="Scroll to top">
+        <i class="ph ph-arrow-up text-xl font-bold"></i>
+    </button>
+</body>
+</html>

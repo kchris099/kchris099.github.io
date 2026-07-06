@@ -26,6 +26,4 @@ Valladolid
 Salamanca
 
 Santander
-
-Cordoba
 `;
