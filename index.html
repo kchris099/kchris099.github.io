@@ -6,42 +6,533 @@
     <title>Global Explorer | Travel Guides</title>
     
     <link rel="stylesheet" href="assets/tailwind.css">
-    <link rel="stylesheet" href="assets/outfit.css">
     <link rel="stylesheet" href="assets/phosphor-regular.css">
+    <link rel="stylesheet" href="assets/newindex-fonts.css">
 
-    
     <style>
-        ::-webkit-scrollbar {
-            width: 8px;
+        :root {
+            --tg-charcoal: #121417;
+            --tg-midnight: #1E2127;
+            --tg-amber: #E8B14F;
+            --tg-amber-hover: #F0BD5F;
+            --tg-teal: #4FBDBA;
+            --tg-off-white: #F8F9FA;
+            --tg-meta: #A0A4AB;
+            --tg-border: rgba(255, 255, 255, 0.08);
+            --ease-quiet: cubic-bezier(.22, 1, .36, 1);
+            --ease-emphasis: cubic-bezier(.16, 1, .3, 1);
         }
-        ::-webkit-scrollbar-track {
-            background: #060B19; 
+
+        * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; box-sizing: border-box; }
+        html { scroll-behavior: auto; background: var(--tg-charcoal); scrollbar-gutter: stable both-edges; overflow-y: scroll; }
+        body {
+            margin: 0;
+            background: var(--tg-charcoal);
+            color: var(--tg-off-white);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
         }
-        ::-webkit-scrollbar-thumb {
-            background: #1E336B; 
-            border-radius: 4px;
+        .font-display { font-family: 'Fraunces', serif; font-feature-settings: "ss01"; }
+
+        .sr-only {
+            position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+            overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #0070FF; 
+
+        /* Layout */
+        .page-shell { max-width: 1400px; margin: 0 auto; padding: 0 1.5rem; }
+        @media (min-width: 1024px) { .page-shell { padding: 0 3rem; } }
+
+        /* Glass */
+        .glass-card {
+            background: rgba(30, 33, 39, 0.45);
+            backdrop-filter: blur(20px) saturate(140%);
+            -webkit-backdrop-filter: blur(20px) saturate(140%);
+            border: 1px solid var(--tg-border);
         }
-        .jvm-tooltip {
-            background-color: #0B132B !important;
-            border: 1px solid #1E336B !important;
-            border-radius: 8px !important;
-            padding: 10px 14px !important;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5) !important;
-            font-family: 'Outfit', sans-serif !important;
+        .frosted-panel {
+            background: rgba(30, 33, 39, 0.42);
+            backdrop-filter: blur(20px) saturate(140%);
+            -webkit-backdrop-filter: blur(20px) saturate(140%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.38);
+        }
+        .header-glass {
+            width: 100%;
+            transition: background-color 500ms var(--ease-quiet), backdrop-filter 500ms var(--ease-quiet), border-color 500ms var(--ease-quiet);
+            background-color: transparent;
+            border-bottom: 1px solid transparent;
+        }
+        .header-glass.scrolled {
+            background-color: rgba(18, 20, 23, 0.7);
+            backdrop-filter: blur(24px) saturate(140%);
+            -webkit-backdrop-filter: blur(24px) saturate(140%);
+            border-bottom-color: rgba(255, 255, 255, 0.06);
+        }
+        .header-glass__inner {
+            padding-top: 1.25rem;
+            padding-bottom: 1.25rem;
+            min-height: 4.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+        .header-glass__nav {
+            display: none;
+            align-items: center;
+            gap: 2.5rem;
+            font-size: 0.875rem;
+        }
+        @media (min-width: 768px) {
+            .header-glass__nav { display: flex; }
+        }
+
+        /* Buttons */
+        .btn-amber {
+            display: inline-flex; align-items: center; justify-content: center;
+            background: var(--tg-amber); color: var(--tg-charcoal);
+            border: none; cursor: pointer; font-weight: 600;
+            transition: transform 350ms var(--ease-quiet), background-color 350ms var(--ease-quiet), box-shadow 350ms var(--ease-quiet);
+        }
+        .btn-amber:hover {
+            background: var(--tg-amber-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px -8px rgba(232, 177, 79, 0.4);
+        }
+
+        /* Hero */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            min-height: 680px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: visible;
+            z-index: 30;
+            isolation: isolate;
+        }
+        .hero__media {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            z-index: 0;
+        }
+        .hero__bg {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            object-fit: cover;
+        }
+        .hero__overlay-top {
+            position: absolute; inset: 0;
+            background: linear-gradient(to bottom, rgba(18, 20, 23, 0.72) 0%, transparent 42%, transparent 100%);
+        }
+        .hero__overlay-bottom {
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, var(--tg-charcoal) 0%, rgba(18, 20, 23, 0.82) 18%, rgba(18, 20, 23, 0.45) 42%, transparent 72%);
+        }
+        .hero__overlay-blend {
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, var(--tg-charcoal) 0%, rgba(18, 20, 23, 0.4) 35%, rgba(18, 20, 23, 0.3) 100%);
+        }
+        .hero__content {
+            position: relative; z-index: 2;
+            text-align: center;
+            padding: 7rem 1.5rem 6rem;
+            max-width: 56rem;
+            width: 100%;
+        }
+        .hero-line {
+            opacity: 0; transform: translateY(50px);
+            transition: opacity 1300ms var(--ease-emphasis), transform 1300ms var(--ease-emphasis);
+        }
+        .hero.is-in .hero-line { opacity: 1; transform: none; }
+        .hero.is-in .hero-line:nth-child(1) { transition-delay: 150ms; }
+        .hero.is-in .hero-line:nth-child(2) { transition-delay: 350ms; }
+        .hero.is-in .hero-line:nth-child(3) { transition-delay: 550ms; }
+        .hero.is-in .hero-line:nth-child(4) { transition-delay: 750ms; }
+        .hero.is-in .hero-line:nth-child(5) { transition-delay: 950ms; }
+        .hero__eyebrow {
+            display: block; color: var(--tg-meta);
+            font-size: 0.6875rem; letter-spacing: 0.35em; text-transform: uppercase; margin-bottom: 2rem;
+        }
+        @media (min-width: 768px) { .hero__eyebrow { font-size: 0.75rem; } }
+        .hero__title {
+            font-family: 'Fraunces', serif;
+            font-weight: 300; font-size: clamp(2.75rem, 8vw, 6.5rem);
+            line-height: 1.02; letter-spacing: -0.02em; margin: 0;
+        }
+        .hero__title em { color: var(--tg-amber); font-style: italic; font-weight: 300; }
+        .hero__subtitle {
+            margin: 2rem auto 0; max-width: 36rem;
+            color: var(--tg-meta); font-size: 1rem; line-height: 1.7;
+        }
+        @media (min-width: 768px) { .hero__subtitle { font-size: 1.125rem; } }
+
+        /* Search */
+        .search-wrap {
+            position: relative;
+            margin-top: 3rem;
+            width: 100%;
+            max-width: 42rem;
+            margin-inline: auto;
+            z-index: 30;
+        }
+        .search-bar {
+            display: flex; align-items: center; gap: 0.25rem;
+            border-radius: 9999px; padding: 0.5rem 0.75rem 0.5rem 0.5rem;
+        }
+        .search-bar__icon {
+            padding-left: 1rem; font-size: 1.25rem; color: var(--tg-meta); flex-shrink: 0;
+        }
+        .search-bar__input {
+            flex: 1; min-width: 0; background: transparent; border: none;
+            color: var(--tg-off-white); font-size: 0.9375rem; padding: 0.75rem 1rem 0.75rem 0.25rem;
+            font-family: inherit; line-height: 1.5;
+        }
+        .search-bar__input::placeholder { color: var(--tg-meta); }
+        .search-bar__input:focus { outline: none; }
+        .search-results {
+            position: absolute; top: calc(100% + 0.5rem); left: 0; right: 0;
+            border-radius: 1rem;
+            max-height: 20rem; overflow-y: auto; z-index: 1000;
+        }
+
+        /* Hero stats */
+        .hero-stats {
+            display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+            gap: 2rem; margin-top: 2.5rem;
+        }
+        .hero-stat__value { font-family: 'Fraunces', serif; font-size: 2rem; font-weight: 300; line-height: 1; }
+        .hero-stat__value--amber { color: var(--tg-amber); }
+        .hero-stat__value--teal { color: var(--tg-teal); }
+        .hero-stat__label { color: var(--tg-meta); font-size: 0.8125rem; margin-top: 0.35rem; }
+        .hero-stat-divider { width: 1px; height: 2.5rem; background: var(--tg-border); display: none; }
+        @media (min-width: 640px) { .hero-stat-divider { display: block; } }
+
+        /* Sections */
+        .section { padding: 5rem 0; border-top: 1px solid rgba(255,255,255,0.05); scroll-margin-top: 5rem; position: relative; z-index: 1; }
+        @media (min-width: 1024px) { .section { padding: 7rem 0; } }
+        .section--charcoal { background: var(--tg-charcoal); }
+        .section--midnight { background: var(--tg-midnight); }
+        .section--after-hero {
+            border-top: none;
+            padding-top: 4rem;
+            margin-top: -2px;
+        }
+        @media (min-width: 1024px) { .section--after-hero { padding-top: 5rem; } }
+        .section--charcoal + .section.section--charcoal {
+            border-top-color: transparent;
+            padding-top: 3rem;
+        }
+        @media (min-width: 1024px) {
+            .section--charcoal + .section.section--charcoal { padding-top: 4rem; }
+        }
+        #continents {
+            position: relative;
+            z-index: 20;
+            overflow: visible;
+        }
+        #map {
+            position: relative;
+            z-index: 1;
+            padding-bottom: 5rem;
+        }
+        @media (min-width: 1024px) {
+            #map { padding-bottom: 6rem; }
+        }
+        #map::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 140px;
             pointer-events: none;
-            z-index: 9999 !important;
+            background: linear-gradient(to bottom, transparent, var(--tg-charcoal));
+            z-index: 2;
+        }
+        .section--charcoal + .section.topo-bg {
+            border-top: none;
+            padding-top: 2.5rem;
+            margin-top: -2px;
+        }
+        @media (min-width: 1024px) {
+            .section--charcoal + .section.topo-bg { padding-top: 3.5rem; }
+        }
+        .section__eyebrow {
+            display: block; color: var(--tg-meta);
+            font-size: 0.6875rem; letter-spacing: 0.3em; text-transform: uppercase;
+        }
+        .section__title {
+            font-family: 'Fraunces', serif; font-weight: 300;
+            font-size: clamp(2rem, 5vw, 3.75rem);
+            line-height: 1.05; letter-spacing: -0.02em; margin: 1.25rem 0 0;
+        }
+        .section__title em { color: var(--tg-amber); font-style: italic; font-weight: 300; }
+        .section__lead { color: var(--tg-meta); margin-top: 1rem; max-width: 32rem; line-height: 1.7; }
+
+        /* Topo background */
+        .topo-bg { background-color: var(--tg-charcoal); position: relative; }
+        .topo-bg::before {
+            content: ''; position: absolute; inset: 0; pointer-events: none;
+            background-image:
+                radial-gradient(ellipse at 15% 20%, rgba(232, 177, 79, 0.04) 0%, transparent 45%),
+                radial-gradient(ellipse at 85% 80%, rgba(79, 189, 186, 0.035) 0%, transparent 45%),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1000' height='1000' viewBox='0 0 1000 1000'%3E%3Cg fill='none' stroke='%23F8F9FA' stroke-width='0.6' opacity='0.07'%3E%3Cpath d='M-100,500 Q200,380 500,500 T1100,500'/%3E%3Cpath d='M-100,470 Q200,350 500,470 T1100,470'/%3E%3Cpath d='M-100,440 Q200,320 500,440 T1100,440'/%3E%3Cpath d='M-100,530 Q200,410 500,530 T1100,530'/%3E%3Cpath d='M-100,560 Q200,440 500,560 T1100,560'/%3E%3C/g%3E%3C/svg%3E");
+            background-size: cover;
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.35) 10%, black 22%, black 100%);
+            mask-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.35) 10%, black 22%, black 100%);
+        }
+        .topo-bg > * { position: relative; z-index: 1; }
+
+        /* Map */
+        .map-panel {
+            border-radius: 1.5rem; overflow: hidden;
+            background: rgba(30, 33, 39, 0.55);
+            border: 1px solid var(--tg-border);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+            position: relative;
+        }
+        #world-map { width: 100%; height: 420px; z-index: 10; }
+        @media (min-width: 768px) { #world-map { height: 500px; } }
+        .map-legend {
+            position: absolute; bottom: 1.25rem; left: 1.25rem; z-index: 20;
+            background: rgba(18, 20, 23, 0.88);
+            border: 1px solid var(--tg-border);
+            backdrop-filter: blur(12px);
+            border-radius: 0.75rem; padding: 1rem;
+            min-width: 10rem; pointer-events: none;
+        }
+        .map-legend__dot {
+            width: 0.75rem; height: 0.75rem; border-radius: 50%;
+            background: var(--tg-amber);
+            box-shadow: 0 0 10px rgba(232, 177, 79, 0.5);
+        }
+        .map-legend__row {
+            display: flex; justify-content: space-between; gap: 1.5rem;
+            color: var(--tg-meta); font-size: 0.875rem; margin-top: 0.35rem;
+        }
+        .map-legend__row strong { color: var(--tg-off-white); }
+
+        /* Continent cards */
+        .continents-grid {
+            display: grid; grid-template-columns: 1fr; gap: 1rem;
+        }
+        @media (min-width: 768px) { .continents-grid { grid-template-columns: repeat(2, 1fr); gap: 1.25rem; } }
+        @media (min-width: 1024px) { .continents-grid { grid-template-columns: repeat(3, 1fr); } }
+
+        .continent-card {
+            position: relative;
+            border-radius: 9999px;
+            background: rgba(30, 33, 39, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: border-color 300ms var(--ease-quiet), color 300ms var(--ease-quiet);
+        }
+        .continent-card:hover,
+        .continent-card.is-expanded {
+            border-color: var(--tg-amber);
+        }
+        .continent-card.is-expanded { z-index: 120; }
+        .continent-card__toggle {
+            width: 100%; display: flex; align-items: center; justify-content: space-between;
+            gap: 1rem; padding: 1.1rem 1.5rem; background: transparent; border: none;
+            cursor: pointer; text-align: left; color: inherit; font-family: inherit;
+            border-radius: 9999px; min-height: 3.5rem;
+        }
+        .continent-card__toggle:focus-visible {
+            outline: 2px solid var(--tg-amber); outline-offset: 2px;
+        }
+        .continent-card__main { display: flex; align-items: center; gap: 1rem; min-width: 0; }
+        .continent-card__icon {
+            width: 2.75rem; height: 2.75rem; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--tg-charcoal); border: 1px solid var(--tg-border);
+            color: var(--tg-amber); font-size: 1.25rem; flex-shrink: 0;
+            transition: transform 400ms var(--ease-quiet);
+        }
+        .continent-card:hover .continent-card__icon { transform: scale(1.05); }
+        .continent-card__name {
+            font-size: 1.0625rem; font-weight: 600; color: var(--tg-off-white);
+            margin: 0; letter-spacing: 0.01em;
+            transition: color 300ms var(--ease-quiet);
+        }
+        .continent-card:hover .continent-card__name,
+        .continent-card.is-expanded .continent-card__name {
+            color: var(--tg-amber);
+        }
+        .continent-card__meta { font-size: 0.8125rem; color: var(--tg-meta); margin: 0.15rem 0 0; }
+        .dropdown-icon {
+            color: var(--tg-meta); font-size: 1.25rem;
+            transition: transform 300ms var(--ease-quiet), color 300ms var(--ease-quiet);
+        }
+        .continent-card:hover .dropdown-icon,
+        .continent-card.is-expanded .dropdown-icon {
+            color: var(--tg-amber);
+        }
+        .continent-card.is-expanded .dropdown-icon {
+            transform: rotate(180deg);
+        }
+
+        .continents-grid,
+        #continents .page-shell {
+            overflow: visible;
+        }
+
+        .continent-dropdown {
+            position: absolute; top: calc(100% + 8px); left: 0; width: 100%;
+            border-radius: 0.875rem;
+            z-index: 130;
+            opacity: 0; pointer-events: none;
+            transform: translateY(-8px);
+            transition: opacity 300ms var(--ease-quiet), transform 300ms var(--ease-quiet);
+        }
+        .continent-dropdown.is-open {
+            opacity: 1; pointer-events: auto; transform: translateY(0);
+        }
+        .continent-dropdown__list {
+            padding: 0.75rem 1.5rem; max-height: 300px; overflow-y: auto;
+            list-style: none; margin: 0;
+        }
+
+        /* Ethos stats */
+        .ethos-grid {
+            display: grid; gap: 3rem;
+        }
+        @media (min-width: 768px) {
+            .ethos-grid { grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+            .ethos-grid__sticky { position: sticky; top: 7rem; }
+        }
+        .stat-row { display: flex; gap: 2.5rem; margin-top: 2rem; flex-wrap: wrap; }
+        .stat-block__value {
+            font-family: 'Fraunces', serif; font-size: 2.25rem;
+            font-weight: 300; color: var(--tg-off-white); line-height: 1;
+        }
+        .stat-block__label {
+            font-size: 0.6875rem; color: var(--tg-meta);
+            text-transform: uppercase; letter-spacing: 0.2em; margin-top: 0.5rem;
+        }
+
+        /* Reveal */
+        .reveal {
+            opacity: 0; transform: translateY(40px);
+            transition: opacity 1100ms var(--ease-quiet), transform 1100ms var(--ease-quiet);
+        }
+        .reveal.is-in { opacity: 1; transform: none; }
+
+        /* Grain */
+        .grain::after {
+            content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0.04;
+            mix-blend-mode: overlay;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+
+        /* Scroll top */
+        #scrollTopBtn {
+            position: fixed; bottom: 2rem; right: 2rem; z-index: 50;
+            width: 3rem; height: 3rem; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--tg-amber); color: var(--tg-charcoal); border: none;
+            box-shadow: 0 4px 20px rgba(232, 177, 79, 0.35);
+            cursor: pointer; font-size: 1.25rem;
+            opacity: 0; pointer-events: none; transform: translateY(1rem);
+            transition: opacity 300ms, transform 300ms, background-color 300ms;
+        }
+        #scrollTopBtn.is-visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
+        #scrollTopBtn:hover { background: var(--tg-teal); }
+
+        /* Footer */
+        .site-footer {
+            background: var(--tg-midnight);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 2.5rem 0;
+        }
+        .site-footer__bar {
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+        @media (min-width: 768px) {
+            .site-footer__bar {
+                flex-direction: row;
+            }
+        }
+        .site-footer__brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--tg-off-white);
+            text-decoration: none;
+        }
+        .site-footer__brand-name {
+            font-family: 'Fraunces', serif;
+            font-size: 0.875rem;
+        }
+        .site-footer__copy {
+            margin: 0;
+            font-size: 0.75rem;
+            color: var(--tg-meta);
+            text-align: center;
+        }
+        @media (min-width: 768px) {
+            .site-footer__copy { text-align: right; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--tg-charcoal); }
+        ::-webkit-scrollbar-thumb { background: #2a2d33; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3a3d43; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+
+        /* Map lib overrides */
+        .jvm-tooltip {
+            background-color: var(--tg-midnight) !important;
+            border: 1px solid var(--tg-border) !important;
+            border-radius: 10px !important;
+            padding: 12px 16px !important;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55) !important;
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+            pointer-events: none; z-index: 9999 !important;
         }
         .jvm-zoom-btn {
-            background-color: #1E336B !important;
-            color: #fff !important;
-            border: 1px solid #00F0FF !important;
-            border-radius: 4px !important;
+            background-color: var(--tg-midnight) !important;
+            color: var(--tg-off-white) !important;
+            border: 1px solid var(--tg-border) !important;
+            border-radius: 6px !important;
         }
-        .jvm-zoom-btn:hover {
-            background-color: #0070FF !important;
+        .jvm-zoom-btn:hover { background-color: #2A2F38 !important; border-color: var(--tg-teal) !important; }
+
+        /* TGActivation overrides */
+        .country-status-link:hover { background-color: rgba(79, 189, 186, 0.12) !important; }
+        .country-status-link.text-slate-300:hover { color: var(--tg-teal) !important; }
+        .country-status-dot--toggleable:focus-visible { outline-color: var(--tg-teal) !important; }
+        #search-results-list a:hover { background-color: rgba(79, 189, 186, 0.1) !important; }
+        #search-results-list .group:hover .group-hover\:text-neon-cyan { color: var(--tg-teal) !important; }
+
+        .map-fallback {
+            min-height: 320px; display: flex; align-items: center; justify-content: center;
+            border: 1px dashed rgba(255,255,255,0.12); border-radius: 1rem;
+            background: rgba(18,20,23,0.5); text-align: center; padding: 1.5rem;
+        }
+        .map-fallback p { margin: 0; }
+        .map-fallback__title { font-size: 1.125rem; font-weight: 600; color: var(--tg-off-white); margin-bottom: 0.5rem; }
+        .map-fallback__text { color: var(--tg-meta); }
+
+        .search-empty { padding: 1rem 1.5rem; text-align: center; color: var(--tg-meta); }
+        .hidden { display: none !important; }
+        .nav-link { color: var(--tg-meta); text-decoration: none; transition: color 300ms var(--ease-quiet); }
+        .nav-link:hover { color: var(--tg-off-white); }
+
+        @media (prefers-reduced-motion: reduce) {
+            .reveal, .hero-line { opacity: 1 !important; transform: none !important; transition: none !important; }
+            html { scroll-behavior: auto; }
+            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
         }
     </style>
     <link rel="stylesheet" href="assets/jsvectormap.min.css" />
@@ -49,69 +540,177 @@
     <script src="assets/world.js"></script>
     <link rel="stylesheet" href="assets/homepage-activation.css">
     <script src="assets/homepage-activation.js"></script>
+    <script src="assets/lenis.min.js"></script>
+    <script src="assets/tg-smooth-scroll.js"></script>
 </head>
-<body class="bg-deepblue-950 text-slate-200 font-sans min-h-screen relative overflow-x-hidden">
-    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-neon-purple/20 rounded-full blur-[120px] pointer-events-none"></div>
-    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-neon-cyan/10 rounded-full blur-[120px] pointer-events-none"></div>
+<body>
+    <!-- Sticky header -->
+    <header id="site-header" class="header-glass fixed top-0 left-0 right-0 z-50">
+        <div class="page-shell header-glass__inner">
+            <a href="index.html" class="font-display" style="display:flex;align-items:center;gap:0.75rem;text-decoration:none;color:inherit;font-size:1.25rem;" aria-label="Global Explorer home">
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                    <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
+                    <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
+                    <circle cx="14" cy="14" r="2" fill="#E8B14F"/>
+                </svg>
+                Global Explorer
+            </a>
+            <nav class="header-glass__nav" aria-label="Primary">
+                <a href="#search" class="nav-link">Search</a>
+                <a href="#continents" class="nav-link">Region</a>
+                <a href="#map" class="nav-link">Atlas</a>
+                <a href="#ethos" class="nav-link">Mission</a>
+            </nav>
+        </div>
+    </header>
 
-    <main class="container mx-auto px-4 py-12 md:py-20 relative z-10 max-w-6xl">
-        <header class="text-center mb-16 animate-fade-in-down">
-            <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-neon-blue to-neon-purple pb-4">
-                Discover The World
+    <!-- Hero / Search -->
+    <section class="hero grain" id="search" aria-label="Search destinations">
+        <div class="hero__media" aria-hidden="true">
+            <img src="assets/images/hero-fjord-dawn.jpg"
+                 alt=""
+                 class="hero__bg" width="1920" height="1200">
+            <div class="hero__overlay-top"></div>
+            <div class="hero__overlay-bottom"></div>
+            <div class="hero__overlay-blend"></div>
+        </div>
+
+        <div class="hero__content">
+            <span class="hero-line hero__eyebrow">Travel Guides — 2026 Edition</span>
+            <h1 class="hero-line hero__title font-display">
+                The World<br><em>is Waiting</em>
             </h1>
-            <p class="text-lg md:text-xl text-slate-400 mb-10 max-w-2xl mx-auto font-light">
-                Your next adventure awaits. Search for a destination or browse by continent to find comprehensive, cutting-edge travel guides.
+            <p class="hero-line hero__subtitle">
+                Comprehensive travel guides for every corner of the globe.<br>
+                Search a destination, explore the map, or browse by continent.
             </p>
 
-            <div class="relative max-w-2xl mx-auto w-full">
-                <div class="relative flex items-center group">
-                    <i class="ph ph-magnifying-glass absolute left-5 z-10 text-2xl text-slate-400 group-focus-within:text-neon-cyan transition-colors pointer-events-none"></i>
-                    <input 
-                        type="text" 
-                        id="search-input"
-                        placeholder="Search for a country (e.g., Japan, Brazil)..." 
-                        class="relative z-0 w-full bg-deepblue-900/80 border border-deepblue-700/50 text-white rounded-full py-4 pl-14 pr-6 focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan shadow-lg shadow-deepblue-900/50 backdrop-blur-sm transition-all text-lg placeholder-slate-500"
-                    >
+            <div class="hero-line search-wrap">
+                <label for="search-input" class="sr-only">Search for a country</label>
+                <div class="glass-card search-bar">
+                    <i class="ph ph-magnifying-glass search-bar__icon" aria-hidden="true"></i>
+                    <input type="text" id="search-input" class="search-bar__input"
+                           placeholder="Search for a country"
+                           autocomplete="off">
                 </div>
-
-                <div id="search-results" class="absolute top-full mt-3 w-full bg-deepblue-900/95 border border-deepblue-700 rounded-2xl shadow-2xl backdrop-blur-md hidden z-50 overflow-hidden max-h-80 overflow-y-auto animate-fade-in">
-                    <ul id="search-results-list" class="flex flex-col py-2">
-                    </ul>
+                <div id="search-results" class="search-results frosted-panel hidden">
+                    <ul id="search-results-list" style="list-style:none;margin:0;padding:0.25rem 0;"></ul>
                 </div>
             </div>
-        </header>
 
-        <section id="continents-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        </section>
-
-        <section class="mt-24 pb-32">
-            <div class="text-center mb-10">
-                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Interactive Global Map</h2>
-                <p class="text-slate-400">Select an available country to explore its guides.</p>
+            <div class="hero-line hero-stats">
+                <div style="text-align:center;">
+                    <div class="hero-stat__value hero-stat__value--amber" id="hero-countries-count">37</div>
+                    <div class="hero-stat__label">Countries with guides</div>
+                </div>
+                <div class="hero-stat-divider" aria-hidden="true"></div>
+                <div style="text-align:center;">
+                    <div class="hero-stat__value hero-stat__value--teal" id="hero-destinations-count">119</div>
+                    <div class="hero-stat__label">Destinations to explore</div>
+                </div>
             </div>
-            <div class="bg-deepblue-900/40 border border-deepblue-800 rounded-3xl py-5 backdrop-blur-sm shadow-2xl relative overflow-hidden">
-                <div id="world-map" style="width: 100%; height: 500px; z-index: 10;"></div>
-                <div class="absolute bottom-6 left-6 bg-deepblue-950/80 border border-deepblue-700/50 backdrop-blur-md rounded-xl p-4 shadow-xl z-20 flex flex-col gap-2 pointer-events-none">
-                    <div class="flex items-center gap-2 mb-1">
-                        <div class="w-3 h-3 rounded-full bg-neon-cyan shadow-[0_0_8px_#00F0FF]"></div>
-                        <span class="text-white font-semibold text-sm">Guide Available</span>
+        </div>
+    </section>
+
+    <!-- Browse by Continent -->
+    <section id="continents" class="section section--charcoal section--after-hero" aria-label="Browse destinations by continent">
+        <div class="page-shell">
+            <div class="reveal" style="margin-bottom:2.5rem;">
+                <span class="section__eyebrow">Browse by Region</span>
+                <h2 class="section__title font-display">
+                    Six continents,<br><em>one atlas.</em>
+                </h2>
+                <p class="section__lead">Open a region to see every country. Active guides are highlighted — jump straight to your next adventure.</p>
+            </div>
+            <div id="continents-container" class="continents-grid"></div>
+        </div>
+    </section>
+
+    <!-- Interactive Map -->
+    <section id="map" class="section section--charcoal" aria-label="Interactive global map">
+        <div class="page-shell">
+            <div class="reveal" style="margin-bottom:2.5rem;">
+                <span class="section__eyebrow">Explore the Atlas</span>
+                <h2 class="section__title font-display">
+                    Interactive <em>global map.</em>
+                </h2>
+                <p class="section__lead">Click a highlighted country to open its travel guide. Zoom and pan to discover every destination on our radar.</p>
+            </div>
+            <div class="reveal map-panel">
+                <div id="world-map" role="img" aria-label="World map showing available travel guides"></div>
+                <div class="map-legend">
+                    <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.35rem;">
+                        <span class="map-legend__dot" aria-hidden="true"></span>
+                        <span style="font-size:0.875rem;font-weight:600;color:var(--tg-off-white);">Guide Available</span>
                     </div>
-                    <div class="text-slate-300 text-sm flex justify-between gap-6">
-                        <span>Countries:</span>
-                        <span id="legend-countries-count" class="font-bold text-white">37</span>
+                    <div class="map-legend__row"><span>Countries</span><strong id="legend-countries-count">37</strong></div>
+                    <div class="map-legend__row"><span>Destinations</span><strong id="legend-destinations-count">119</strong></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ethos / About -->
+    <section id="ethos" class="section topo-bg" aria-label="About Global Explorer">
+        <div class="page-shell">
+            <div class="ethos-grid">
+                <div class="ethos-grid__sticky reveal">
+                    <span class="section__eyebrow">Our Mission</span>
+                    <h2 class="section__title font-display">
+                        Built for travelers<br>who want <em>depth, not lists.</em>
+                    </h2>
+                    <p style="color:var(--tg-meta);margin-top:1.5rem;line-height:1.8;max-width:28rem;">
+                        Global Explorer brings together detailed country guides and destination pages — searchable, mappable, and organized by continent. Every guide is designed to help you plan with confidence.
+                    </p>
+                    <div class="stat-row">
+                        <div>
+                            <div class="stat-block__value" id="ethos-countries-count">37</div>
+                            <div class="stat-block__label">Active guides</div>
+                        </div>
+                        <div>
+                            <div class="stat-block__value" id="ethos-destinations-count">119</div>
+                            <div class="stat-block__label">Destinations</div>
+                        </div>
+                        <div>
+                            <div class="stat-block__value">6</div>
+                            <div class="stat-block__label">Continents</div>
+                        </div>
                     </div>
-                    <div class="text-slate-300 text-sm flex justify-between gap-6">
-                        <span>Destinations:</span>
-                        <span id="legend-destinations-count" class="font-bold text-white">119</span>
+                </div>
+                <div class="reveal" style="display:grid;gap:1rem;">
+                    <div class="glass-card" style="border-radius:1rem;padding:1.5rem;">
+                        <i class="ph ph-globe-hemisphere-west" style="font-size:2rem;color:var(--tg-amber);"></i>
+                        <h3 class="font-display" style="font-weight:300;font-size:1.5rem;margin:1rem 0 0.5rem;">Search anywhere</h3>
+                        <p style="color:var(--tg-meta);font-size:0.9375rem;line-height:1.7;margin:0;">Type any country name in the hero search bar. Active guides appear first, with instant navigation to the full guide.</p>
+                    </div>
+                    <div class="glass-card" style="border-radius:1rem;padding:1.5rem;">
+                        <i class="ph ph-map-trifold" style="font-size:2rem;color:var(--tg-amber);"></i>
+                        <h3 class="font-display" style="font-weight:300;font-size:1.5rem;margin:1rem 0 0.5rem;">Map your route</h3>
+                        <p style="color:var(--tg-meta);font-size:0.9375rem;line-height:1.7;margin:0;">The interactive world map highlights every country with a published guide. Click to dive in — zoom for microstates and island nations.</p>
+                    </div>
+                    <div class="glass-card" style="border-radius:1rem;padding:1.5rem;">
+                        <i class="ph ph-compass" style="font-size:2rem;color:var(--tg-amber);"></i>
+                        <h3 class="font-display" style="font-weight:300;font-size:1.5rem;margin:1rem 0 0.5rem;">Browse by continent</h3>
+                        <p style="color:var(--tg-meta);font-size:0.9375rem;line-height:1.7;margin:0;">Six region cards give you the full country index. Expand any continent to see flags, guide status, and one-click access.</p>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-    </main>
-
-    <footer class="border-t border-deepblue-800 py-8 text-center text-slate-500 relative z-0">
-        <p>&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+    <footer class="site-footer">
+        <div class="page-shell">
+            <div class="site-footer__bar">
+                <a href="index.html" class="site-footer__brand" aria-label="Global Explorer home">
+                    <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
+                    </svg>
+                    <span class="site-footer__brand-name font-display">Global Explorer</span>
+                </a>
+                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+            </div>
+        </div>
     </footer>
 
     <script>
@@ -602,10 +1201,94 @@
             return name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-');
         };
 
+        const NEWINDEX_MAP_REGION_STYLE = {
+            initial: {
+                fill: '#2A2F38',
+                fillOpacity: 1,
+                stroke: '#121417',
+                strokeWidth: 0.5,
+                strokeOpacity: 1,
+            },
+            hover: {
+                fill: '#4FBDBA',
+                fillOpacity: 1,
+            },
+            selected: {
+                fill: '#E8B14F',
+                fillOpacity: 1,
+                stroke: '#121417',
+                strokeWidth: 0.5,
+                strokeOpacity: 1,
+            },
+            selectedHover: {
+                fill: '#FFF4D6',
+                fillOpacity: 1,
+                stroke: '#121417',
+                strokeWidth: 0.5,
+                strokeOpacity: 1,
+            },
+        };
+
+        const NEWINDEX_MAP_MARKER_STYLE = {
+            active: {
+                initial: { fill: '#E8B14F', stroke: '#121417', strokeWidth: 1.5, r: 4 },
+                hover: { fill: '#F8F9FA', stroke: '#E8B14F', strokeWidth: 2, r: 6 },
+            },
+            inactive: {
+                initial: { fill: '#2A2F38', stroke: '#121417', strokeWidth: 1.5, r: 4 },
+                hover: { fill: '#4FBDBA', stroke: '#121417', strokeWidth: 1.5, r: 5 },
+            },
+        };
+
+        const applyNewIndexMapMarkerPalette = () => {
+            const originalBuild = TGActivation.buildMapMarkerPayloads.bind(TGActivation);
+            TGActivation.buildMapMarkerPayloads = (entries) => {
+                const list = entries || TGActivation.buildMapMarkerEntries();
+                const payloads = originalBuild(list);
+                return payloads.map((payload, index) => ({
+                    ...payload,
+                    style: list[index]?.active
+                        ? NEWINDEX_MAP_MARKER_STYLE.active
+                        : NEWINDEX_MAP_MARKER_STYLE.inactive,
+                }));
+            };
+            TGActivation.getMapMarkerDefaultStyle = () => NEWINDEX_MAP_MARKER_STYLE.active;
+        };
+
+        window.__tgNewIndexMapTheme = {
+            regionStyle: NEWINDEX_MAP_REGION_STYLE,
+            applyMarkerPalette: applyNewIndexMapMarkerPalette,
+        };
+
+        const syncHeroStats = () => {
+            const countries = document.getElementById('legend-countries-count');
+            const destinations = document.getElementById('legend-destinations-count');
+            const targets = [
+                ['hero-countries-count', countries],
+                ['hero-destinations-count', destinations],
+                ['ethos-countries-count', countries],
+                ['ethos-destinations-count', destinations],
+            ];
+            targets.forEach(([id, source]) => {
+                const el = document.getElementById(id);
+                if (el && source) el.textContent = source.textContent;
+            });
+        };
+
+        const closeAllContinentDropdowns = () => {
+            document.querySelectorAll('.continent-dropdown').forEach((el) => el.classList.remove('is-open'));
+            document.querySelectorAll('.continent-card').forEach((el) => {
+                el.classList.remove('is-expanded');
+                el.style.zIndex = '1';
+            });
+            document.querySelectorAll('.continent-card__toggle').forEach((el) => el.setAttribute('aria-expanded', 'false'));
+        };
+
         const initApp = () => {
             const container = document.getElementById('continents-container');
             
             TGActivation.updateLegendCounts();
+            syncHeroStats();
             
             Object.keys(travelData).forEach((continent, index) => {
                 const countries = TGActivation.sortCountriesForDisplay(travelData[continent], countryCodes);
@@ -619,33 +1302,30 @@
                 });
 
                 const card = document.createElement('div');
-                card.className = `bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-2xl relative transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,112,255,0.15)] hover:border-neon-blue/30 flex flex-col group animation-delay-${index * 100}`;
-                card.style.animation = `fadeInDown 0.6s ease-out ${(index * 0.1)}s both`;
-                card.style.zIndex = '1';
+                card.className = 'continent-card reveal';
                 
                 const header = document.createElement('button');
-                header.className = 'w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none focus:bg-deepblue-800/50 hover:bg-deepblue-800/30 transition-colors rounded-2xl relative z-10';
+                header.type = 'button';
+                header.setAttribute('aria-expanded', 'false');
+                header.className = 'continent-card__toggle';
                 header.innerHTML = `
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-deepblue-700 to-deepblue-800 border border-deepblue-700 flex items-center justify-center text-neon-cyan group-hover:scale-110 transition-transform">
-                            <i class="ph ${continentIcons[continent]} text-2xl"></i>
+                    <div class="continent-card__main">
+                        <div class="continent-card__icon">
+                            <i class="ph ${continentIcons[continent]}" aria-hidden="true"></i>
                         </div>
                         <div>
-                            <h2 class="text-xl font-bold text-white tracking-wide">${continent}</h2>
-                            <p class="text-sm text-slate-400 font-light">${TGActivation.countCountriesWithGuides(countries, countryCodes)} countries</p>
+                            <h3 class="continent-card__name">${continent}</h3>
+                            <p class="continent-card__meta">${TGActivation.countCountriesWithGuides(countries, countryCodes)} countries with guides</p>
                         </div>
                     </div>
-                    <i class="ph ph-caret-down text-xl text-slate-500 transition-transform duration-300 transform dropdown-icon"></i>
+                    <i class="ph ph-caret-down dropdown-icon" aria-hidden="true"></i>
                 `;
 
                 const body = document.createElement('div');
-                body.className = 'dropdown-content absolute top-[calc(100%+8px)] left-0 w-full bg-deepblue-950/95 border border-deepblue-700/80 backdrop-blur-xl rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.7)] transition-all duration-300 opacity-0 pointer-events-none translate-y-[-10px] z-50';
-                
-                const listContainer = document.createElement('div');
-                listContainer.className = 'px-6 py-4 max-h-[300px] overflow-y-auto custom-scrollbar';
+                body.className = 'continent-dropdown frosted-panel';
                 
                 const list = document.createElement('ul');
-                list.className = 'flex flex-col gap-y-1';
+                list.className = 'continent-dropdown__list custom-scrollbar';
                 list.dataset.continent = continent;
 
                 countries.forEach(country => {
@@ -655,25 +1335,17 @@
                     list.appendChild(listItem);
                 });
 
-                listContainer.appendChild(list);
-                body.appendChild(listContainer);
+                body.appendChild(list);
 
                 header.addEventListener('click', (e) => {
-                    e.stopPropagation(); // Prevent global document click from immediately closing it
-                    const isOpen = body.classList.contains('opacity-100');
-                    
-                    document.querySelectorAll('.dropdown-content').forEach(el => {
-                        el.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
-                        el.classList.add('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
-                        el.parentElement.style.zIndex = '1';
-                    });
-                    document.querySelectorAll('.dropdown-icon').forEach(el => el.classList.remove('rotate-180', 'text-neon-cyan'));
-
+                    e.stopPropagation();
+                    const isOpen = body.classList.contains('is-open');
+                    closeAllContinentDropdowns();
                     if (!isOpen) {
-                        body.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
-                        body.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
-                        header.querySelector('.dropdown-icon').classList.add('rotate-180', 'text-neon-cyan');
-                        card.style.zIndex = '50';
+                        body.classList.add('is-open');
+                        card.classList.add('is-expanded');
+                        header.setAttribute('aria-expanded', 'true');
+                        card.style.zIndex = '120';
                     }
                 });
 
@@ -686,14 +1358,7 @@
                 container.appendChild(card);
             });
 
-            document.addEventListener('click', () => {
-                document.querySelectorAll('.dropdown-content').forEach(el => {
-                    el.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
-                    el.classList.add('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
-                    el.parentElement.style.zIndex = '1';
-                });
-                document.querySelectorAll('.dropdown-icon').forEach(el => el.classList.remove('rotate-180', 'text-neon-cyan'));
-            });
+            document.addEventListener('click', closeAllContinentDropdowns);
 
             TGActivation.bindActivationControls(container, countryCodes);
             TGActivation.initSyncListener(countryCodes);
@@ -707,11 +1372,7 @@
             const renderResults = (results) => {
                 searchResultsList.innerHTML = '';
                 if (results.length === 0) {
-                    searchResultsList.innerHTML = `
-                        <li class="px-6 py-4 text-slate-400 text-center">
-                            No destinations found.
-                        </li>
-                    `;
+                    searchResultsList.innerHTML = '<li class="search-empty">No destinations found.</li>';
                 } else {
                     results.forEach(result => {
                         const li = document.createElement('li');
@@ -770,10 +1431,10 @@
             }
             mapRoot.dataset.fallbackRendered = 'true';
             mapRoot.innerHTML = `
-                <div class="h-full min-h-[320px] flex items-center justify-center rounded-2xl border border-dashed border-deepblue-700 bg-deepblue-950/50 text-center px-6">
+                <div class="map-fallback">
                     <div>
-                        <p class="text-lg font-semibold text-white mb-2">Interactive map is temporarily unavailable.</p>
-                        <p class="text-slate-400">Browse by continent above or use the search bar to open a guide.</p>
+                        <p class="map-fallback__title">Interactive map is temporarily unavailable.</p>
+                        <p class="map-fallback__text">Browse by region above or use the search bar to open a guide.</p>
                     </div>
                 </div>
             `;
@@ -785,6 +1446,7 @@
                 return;
             }
 
+            applyNewIndexMapMarkerPalette();
             const markerEntries = TGActivation.buildMapMarkerEntries();
 
             TGActivation.registerMap(new jsVectorMap({
@@ -793,25 +1455,7 @@
                 backgroundColor: 'transparent',
                 zoomOnScroll: true,
                 zoomButtons: true,
-                regionStyle: {
-                    initial: {
-                        fill: '#15234B',
-                        fillOpacity: 1,
-                        stroke: '#060B19',
-                        strokeWidth: 0.5,
-                        strokeOpacity: 1
-                    },
-                    hover: {
-                        fillOpacity: 1,
-                        fill: '#1E336B'
-                    },
-                    selected: {
-                        fill: '#00F0FF'
-                    },
-                    selectedHover: {
-                        fill: '#0070FF'
-                    }
-                },
+                regionStyle: NEWINDEX_MAP_REGION_STYLE,
                 selectedRegions: Object.keys(availableGuides),
                 markers: TGActivation.buildMapMarkerPayloads(markerEntries),
                 markerStyle: TGActivation.getMapMarkerDefaultStyle(),
@@ -859,6 +1503,12 @@
             }), markerEntries);
         };
 
+        const _origUpdateLegendCounts = TGActivation.updateLegendCounts.bind(TGActivation);
+        TGActivation.updateLegendCounts = function () {
+            _origUpdateLegendCounts();
+            syncHeroStats();
+        };
+
         let pageInitialized = false;
         const initializePage = () => {
             if (pageInitialized) {
@@ -872,16 +1522,18 @@
             const scrollTopBtn = document.getElementById('scrollTopBtn');
             window.addEventListener('scroll', () => {
                 if (window.scrollY > 300) {
-                    scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
-                    scrollTopBtn.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                    scrollTopBtn.classList.add('is-visible');
                 } else {
-                    scrollTopBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
-                    scrollTopBtn.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                    scrollTopBtn.classList.remove('is-visible');
                 }
             });
 
             scrollTopBtn.addEventListener('click', () => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                if (window.TGSmoothScroll) {
+                    window.TGSmoothScroll.scrollTo(0);
+                } else {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
             });
         };
 
@@ -989,6 +1641,29 @@
             const isCountryActive = (countryName) => TGActivation.isCountryVisuallyActive(countryName);
             const formatPath = (name) => name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
+            const syncHeroStatsFallback = () => {
+                const countries = document.getElementById('legend-countries-count');
+                const destinations = document.getElementById('legend-destinations-count');
+                [
+                    ['hero-countries-count', countries],
+                    ['hero-destinations-count', destinations],
+                    ['ethos-countries-count', countries],
+                    ['ethos-destinations-count', destinations],
+                ].forEach(([id, source]) => {
+                    const el = document.getElementById(id);
+                    if (el && source) el.textContent = source.textContent;
+                });
+            };
+
+            const closeAllContinentDropdownsFallback = () => {
+                document.querySelectorAll('.continent-dropdown').forEach((el) => el.classList.remove('is-open'));
+                document.querySelectorAll('.continent-card').forEach((el) => {
+                    el.classList.remove('is-expanded');
+                    el.style.zIndex = '1';
+                });
+                document.querySelectorAll('.continent-card__toggle').forEach((el) => el.setAttribute('aria-expanded', 'false'));
+            };
+
             const allCountries = [];
             Object.keys(travelData).forEach((continent) => {
                 const countries = TGActivation.sortCountriesForDisplay(travelData[continent], countryCodes);
@@ -1002,28 +1677,30 @@
                 });
 
                 const card = document.createElement('div');
-                card.className = 'bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-2xl relative transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,112,255,0.15)] hover:border-neon-blue/30 flex flex-col group';
+                card.className = 'continent-card reveal';
 
                 const header = document.createElement('button');
-                header.className = 'w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none focus:bg-deepblue-800/50 hover:bg-deepblue-800/30 transition-colors rounded-2xl relative z-10';
+                header.type = 'button';
+                header.setAttribute('aria-expanded', 'false');
+                header.className = 'continent-card__toggle';
                 header.innerHTML = `
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-deepblue-700 to-deepblue-800 border border-deepblue-700 flex items-center justify-center text-neon-cyan group-hover:scale-110 transition-transform">
-                            <i class="ph ${continentIcons[continent]} text-2xl"></i>
+                    <div class="continent-card__main">
+                        <div class="continent-card__icon">
+                            <i class="ph ${continentIcons[continent]}" aria-hidden="true"></i>
                         </div>
                         <div>
-                            <h2 class="text-xl font-bold text-white tracking-wide">${continent}</h2>
-                            <p class="text-sm text-slate-400 font-light">${TGActivation.countCountriesWithGuides(countries, countryCodes)} countries</p>
+                            <h3 class="continent-card__name">${continent}</h3>
+                            <p class="continent-card__meta">${TGActivation.countCountriesWithGuides(countries, countryCodes)} countries with guides</p>
                         </div>
                     </div>
-                    <i class="ph ph-caret-down text-xl text-slate-500 transition-transform duration-300 transform dropdown-icon"></i>
+                    <i class="ph ph-caret-down dropdown-icon" aria-hidden="true"></i>
                 `;
 
                 const body = document.createElement('div');
-                body.className = 'dropdown-content absolute top-[calc(100%+8px)] left-0 w-full bg-deepblue-950/95 border border-deepblue-700/80 backdrop-blur-xl rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.7)] transition-all duration-300 opacity-0 pointer-events-none translate-y-[-10px] z-50';
+                body.className = 'continent-dropdown frosted-panel';
 
                 const list = document.createElement('ul');
-                list.className = 'px-6 py-4 max-h-[300px] overflow-y-auto custom-scrollbar flex flex-col gap-y-1';
+                list.className = 'continent-dropdown__list custom-scrollbar';
                 list.dataset.continent = continent;
 
                 countries.forEach((country) => {
@@ -1036,18 +1713,13 @@
                 body.appendChild(list);
                 header.addEventListener('click', (event) => {
                     event.stopPropagation();
-                    const isOpen = body.classList.contains('opacity-100');
-                    document.querySelectorAll('.dropdown-content').forEach((element) => {
-                        element.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
-                        element.classList.add('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
-                        element.parentElement.style.zIndex = '1';
-                    });
-                    document.querySelectorAll('.dropdown-icon').forEach((element) => element.classList.remove('rotate-180', 'text-neon-cyan'));
+                    const isOpen = body.classList.contains('is-open');
+                    closeAllContinentDropdownsFallback();
                     if (!isOpen) {
-                        body.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
-                        body.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
-                        header.querySelector('.dropdown-icon').classList.add('rotate-180', 'text-neon-cyan');
-                        card.style.zIndex = '50';
+                        body.classList.add('is-open');
+                        card.classList.add('is-expanded');
+                        header.setAttribute('aria-expanded', 'true');
+                        card.style.zIndex = '120';
                     }
                 });
                 body.addEventListener('click', (event) => event.stopPropagation());
@@ -1057,24 +1729,18 @@
                 container.appendChild(card);
             });
 
-            document.addEventListener('click', () => {
-                document.querySelectorAll('.dropdown-content').forEach((element) => {
-                    element.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
-                    element.classList.add('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
-                    element.parentElement.style.zIndex = '1';
-                });
-                document.querySelectorAll('.dropdown-icon').forEach((element) => element.classList.remove('rotate-180', 'text-neon-cyan'));
-            });
+            document.addEventListener('click', closeAllContinentDropdownsFallback);
 
             TGActivation.bindActivationControls(container, countryCodes);
             TGActivation.initSyncListener(countryCodes);
 
             TGActivation.updateLegendCounts();
+            syncHeroStatsFallback();
 
             const renderResults = (results) => {
                 searchResultsList.innerHTML = '';
                 if (results.length === 0) {
-                    searchResultsList.innerHTML = '<li class="px-6 py-4 text-slate-400 text-center">No destinations found.</li>';
+                    searchResultsList.innerHTML = '<li class="search-empty">No destinations found.</li>';
                 } else {
                     results.forEach((result) => {
                         const li = document.createElement('li');
@@ -1119,10 +1785,10 @@
             const mapRoot = document.getElementById('world-map');
             if (typeof jsVectorMap === 'undefined') {
                 mapRoot.innerHTML = `
-                    <div class="h-full min-h-[320px] flex items-center justify-center rounded-2xl border border-dashed border-deepblue-700 bg-deepblue-950/50 text-center px-6">
+                    <div class="map-fallback">
                         <div>
-                            <p class="text-lg font-semibold text-white mb-2">Interactive map is temporarily unavailable.</p>
-                            <p class="text-slate-400">Browse by continent above or use the search bar to open a guide.</p>
+                            <p class="map-fallback__title">Interactive map is temporarily unavailable.</p>
+                            <p class="map-fallback__text">Browse by region above or use the search bar to open a guide.</p>
                         </div>
                     </div>
                 `;
@@ -1134,17 +1800,19 @@
                 TGActivation.getTooltipHtml(officialName, regionName, code, countryCodes)
             );
 
+            window.__tgNewIndexMapTheme?.applyMarkerPalette?.();
+
             TGActivation.registerMap(new jsVectorMap({
                 selector: '#world-map',
                 map: 'world',
                 backgroundColor: 'transparent',
                 zoomOnScroll: true,
                 zoomButtons: true,
-                regionStyle: {
-                    initial: { fill: '#15234B', fillOpacity: 1, stroke: '#060B19', strokeWidth: 0.5, strokeOpacity: 1 },
-                    hover: { fillOpacity: 1, fill: '#1E336B' },
-                    selected: { fill: '#00F0FF' },
-                    selectedHover: { fill: '#0070FF' }
+                regionStyle: window.__tgNewIndexMapTheme?.regionStyle || {
+                    initial: { fill: '#2A2F38', fillOpacity: 1, stroke: '#121417', strokeWidth: 0.5, strokeOpacity: 1 },
+                    hover: { fill: '#4FBDBA', fillOpacity: 1 },
+                    selected: { fill: '#E8B14F', fillOpacity: 1, stroke: '#121417', strokeWidth: 0.5, strokeOpacity: 1 },
+                    selectedHover: { fill: '#FFF4D6', fillOpacity: 1, stroke: '#121417', strokeWidth: 0.5, strokeOpacity: 1 },
                 },
                 selectedRegions: Object.keys(availableGuides),
                 markers: TGActivation.buildMapMarkerPayloads(markerEntries),
@@ -1191,8 +1859,48 @@
         })();
     </script>
 
-    <button id="scrollTopBtn" class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-12 h-12 bg-neon-cyan text-deepblue-950 rounded-full shadow-[0_0_20px_rgba(0,240,255,0.4)] opacity-0 pointer-events-none transition-all duration-300 translate-y-4 hover:bg-white hover:scale-110" aria-label="Scroll to top">
-        <i class="ph ph-arrow-up text-xl font-bold"></i>
+    <button id="scrollTopBtn" aria-label="Scroll to top">
+        <i class="ph ph-arrow-up" aria-hidden="true"></i>
     </button>
+
+    <script>
+        (function initPageChrome() {
+            const header = document.getElementById('site-header');
+            const hero = document.getElementById('search');
+
+            requestAnimationFrame(() => {
+                setTimeout(() => hero && hero.classList.add('is-in'), 100);
+            });
+
+            if ('IntersectionObserver' in window) {
+                const io = new IntersectionObserver((entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('is-in');
+                            io.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+                document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+            } else {
+                document.querySelectorAll('.reveal').forEach((el) => el.classList.add('is-in'));
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+                anchor.addEventListener('click', (event) => {
+                    if (window.TGSmoothScroll) {
+                        return;
+                    }
+                    const id = anchor.getAttribute('href');
+                    if (!id || id === '#' || id.length < 2) return;
+                    const target = document.querySelector(id);
+                    if (target) {
+                        event.preventDefault();
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        })();
+    </script>
 </body>
 </html>

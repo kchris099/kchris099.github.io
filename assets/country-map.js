@@ -48,62 +48,6 @@
         return [x, y];
     };
 
-    const MARKER_GLOW_FILTER_ACTIVE = "country-map-marker-glow-active";
-    const MARKER_GLOW_FILTER_INACTIVE = "country-map-marker-glow-inactive";
-
-    const appendMarkerGlowFilters = (defs) => {
-        const addFilter = (id, color, layers) => {
-            const filter = document.createElementNS(SVG_NS, "filter");
-            filter.setAttribute("id", id);
-            filter.setAttribute("filterUnits", "objectBoundingBox");
-            filter.setAttribute("primitiveUnits", "objectBoundingBox");
-            filter.setAttribute("x", "-1.25");
-            filter.setAttribute("y", "-1.25");
-            filter.setAttribute("width", "3.5");
-            filter.setAttribute("height", "3.5");
-            filter.setAttribute("color-interpolation-filters", "sRGB");
-
-            const mergeInputs = [];
-            layers.forEach(({ stdDev, opacity }, index) => {
-                const shadow = document.createElementNS(SVG_NS, "feDropShadow");
-                shadow.setAttribute("in", "SourceGraphic");
-                shadow.setAttribute("dx", "0");
-                shadow.setAttribute("dy", "0");
-                shadow.setAttribute("stdDeviation", String(stdDev));
-                shadow.setAttribute("flood-color", color);
-                shadow.setAttribute("flood-opacity", String(opacity));
-                shadow.setAttribute("result", `shadow${index}`);
-                filter.appendChild(shadow);
-                mergeInputs.push(`shadow${index}`);
-            });
-
-            const merge = document.createElementNS(SVG_NS, "feMerge");
-            mergeInputs.forEach((input) => {
-                const node = document.createElementNS(SVG_NS, "feMergeNode");
-                node.setAttribute("in", input);
-                merge.appendChild(node);
-            });
-            const sourceNode = document.createElementNS(SVG_NS, "feMergeNode");
-            sourceNode.setAttribute("in", "SourceGraphic");
-            merge.appendChild(sourceNode);
-            filter.appendChild(merge);
-            defs.appendChild(filter);
-        };
-
-        // Match .country-map-legend-dot box-shadow (10px + 20px blurs)
-        addFilter(MARKER_GLOW_FILTER_ACTIVE, "#22c55e", [
-            { stdDev: 0.42, opacity: 0.95 },
-            { stdDev: 0.83, opacity: 0.55 },
-        ]);
-        addFilter(MARKER_GLOW_FILTER_INACTIVE, "#ef4444", [
-            { stdDev: 0.42, opacity: 0.9 },
-            { stdDev: 0.83, opacity: 0.5 },
-        ]);
-    };
-
-    const markerGlowFilterUrl = (active) =>
-        `url(#${active ? MARKER_GLOW_FILTER_ACTIVE : MARKER_GLOW_FILTER_INACTIVE})`;
-
     const normalizeCountryCode = (code) => String(code || "").toUpperCase();
 
     const getCountryGuideByCode = (code) => {
@@ -191,6 +135,9 @@
             this.markerTouchQuery = null;
             this.boundMarkerTouchChange = null;
             this.insetResizeObserver = null;
+            this.panelResizeObserver = null;
+            this.baseViewBox = null;
+            this.baseAlign = "xMaxYMid meet";
             this.zoomState = { scale: 1, x: 0, y: 0 };
             this.defaultZoomState = { scale: 1, x: 0, y: 0 };
             this.zoomControls = null;
@@ -347,12 +294,6 @@
             return Boolean(plane && plane !== "main" && String(plane).startsWith("inset:"));
         }
 
-        applyMarkerGlowFilter(dot, active) {
-            if (dot) {
-                dot.setAttribute("filter", markerGlowFilterUrl(active));
-            }
-        }
-
         setMarkerRadius(marker, meta, focused = false) {
             const dot = marker?.querySelector(".country-map-marker__dot");
             const hit = marker?.querySelector(".country-map-marker__hit");
@@ -398,6 +339,90 @@
             return true;
         }
 
+        parseViewBox(viewBox) {
+            const [x, y, w, h] = String(viewBox || "0 0 0 0").split(/\s+/).map(Number);
+            return { x, y, w, h };
+        }
+
+        formatViewBox({ x, y, w, h }) {
+            return `${x} ${y} ${w} ${h}`;
+        }
+
+        applyViewBox(viewBoxParts) {
+            if (!this.svg) {
+                return;
+            }
+            const viewBox = this.formatViewBox(viewBoxParts);
+            this.svg.setAttribute("viewBox", viewBox);
+            const canvas = this.svg.querySelector(".country-map-canvas");
+            if (canvas) {
+                canvas.setAttribute("x", String(viewBoxParts.x));
+                canvas.setAttribute("y", String(viewBoxParts.y));
+                canvas.setAttribute("width", String(viewBoxParts.w));
+                canvas.setAttribute("height", String(viewBoxParts.h));
+            }
+        }
+
+        formatPreserveAspectRatio(align) {
+            const value = String(align || "xMaxYMid meet");
+            return /\s(meet|slice)$/i.test(value) ? value : `${value} meet`;
+        }
+
+        fitViewBoxToPanel() {
+            const mapRoot = this.root?.querySelector(".country-map-root");
+            if (!mapRoot || !this.svg || !this.baseViewBox) {
+                return;
+            }
+            const rect = mapRoot.getBoundingClientRect();
+            if (rect.width <= 0 || rect.height <= 0) {
+                return;
+            }
+
+            const base = this.baseViewBox;
+            const baseAlign = this.formatPreserveAspectRatio(this.baseAlign);
+            const [, parMode = "meet"] = baseAlign.match(/\s(meet|slice)$/i) || [];
+            const baseAnchor = baseAlign.split(/\s+/)[0] || "xMaxYMid";
+            const neededW = rect.width * (base.h / rect.height);
+
+            if (neededW <= base.w + 0.5) {
+                this.svg.setAttribute("preserveAspectRatio", baseAlign);
+                this.applyViewBox(base);
+                return;
+            }
+
+            const extraW = neededW - base.w;
+            // Japan: extend viewBox east + xMinYMid (insets fill the right column).
+            // Other countries: extend west + keep xMaxYMid so mainland stays flush right
+            // without a visible gap on wide panels (zoom unchanged).
+            const useJapanWideFit = this.options.mapId === "japan";
+            const fitted = useJapanWideFit
+                ? { x: base.x, y: base.y, w: neededW, h: base.h }
+                : { x: base.x - extraW, y: base.y, w: neededW, h: base.h };
+            const panelAlign = useJapanWideFit
+                ? (baseAnchor.startsWith("xMax") ? `xMinYMid ${parMode}` : baseAlign)
+                : baseAlign;
+            this.svg.setAttribute("preserveAspectRatio", panelAlign);
+            this.applyViewBox(fitted);
+        }
+
+        setupPanelResizeObserver() {
+            if (this.panelResizeObserver) {
+                this.panelResizeObserver.disconnect();
+                this.panelResizeObserver = null;
+            }
+            const target = this.root;
+            if (!target || typeof ResizeObserver === "undefined") {
+                return;
+            }
+            this.panelResizeObserver = new ResizeObserver(() => {
+                this.fitViewBoxToPanel();
+                if (!this.isMobileInsetLayout()) {
+                    this.syncInsetScreenTransform();
+                }
+            });
+            this.panelResizeObserver.observe(target);
+        }
+
         resolveDefaultZoomState() {
             const view = this.mapData?.main?.defaultView;
             if (!view) {
@@ -421,18 +446,22 @@
 
         resolveCountryGuide(country) {
             const guide = getCountryGuideByCode(country.code);
-            const url = guide?.url || null;
+            const bakedUrl = country.url || null;
+            const url = guide?.url || bakedUrl || null;
             const hasGuide = Boolean(url);
             const activation = window.TGActivation;
             const active = activation
                 ? activation.isCodeVisuallyActive(country.code)
-                : Boolean(guide);
+                : Boolean(
+                      window.TGCountryActiveCodes?.has(normalizeCountryCode(country.code)),
+                  );
             return {
                 url,
                 hasGuide,
                 active,
                 continent:
                     guide?.continent ||
+                    country.continent ||
                     (country.continent && country.continent !== "Unknown"
                         ? country.continent
                         : ""),
@@ -669,7 +698,6 @@
             svg.setAttribute("aria-label", "Island and territory regions");
 
             const defs = document.createElementNS(SVG_NS, "defs");
-            appendMarkerGlowFilters(defs);
             svg.appendChild(defs);
 
             const drawerGroup = document.createElementNS(SVG_NS, "g");
@@ -780,7 +808,7 @@
             this.syncInsetMarkerMount(mobile);
             this.syncAllMarkerGeometry();
             if (!mobile) {
-                this.syncInsetScreenScale();
+                this.syncInsetScreenTransform();
             }
         }
 
@@ -852,8 +880,19 @@
                 `${this.options.countryName} regional map with destination guides`,
             );
 
+            const vbParts = viewBox.split(/\s+/).map(Number);
+            if (vbParts.length === 4) {
+                const [vbX, vbY, vbW, vbH] = vbParts;
+                const canvas = document.createElementNS(SVG_NS, "rect");
+                canvas.setAttribute("x", String(vbX));
+                canvas.setAttribute("y", String(vbY));
+                canvas.setAttribute("width", String(vbW));
+                canvas.setAttribute("height", String(vbH));
+                canvas.setAttribute("class", "country-map-canvas");
+                svg.appendChild(canvas);
+            }
+
             const defs = document.createElementNS(SVG_NS, "defs");
-            appendMarkerGlowFilters(defs);
             svg.appendChild(defs);
 
             const regionsLayer = document.createElementNS(SVG_NS, "g");
@@ -951,9 +990,13 @@
 
             document.addEventListener("keydown", this.boundKeyDown);
             this.applyRegionActiveState();
+            this.baseAlign = this.mapData.align || "xMaxYMid meet";
+            this.baseViewBox = this.parseViewBox(this.mapData.viewBox);
             this.applyZoomTransform();
-            this.syncInsetScreenScale();
+            this.fitViewBoxToPanel();
+            this.syncInsetScreenTransform();
             this.setupInsetResizeObserver();
+            this.setupPanelResizeObserver();
             this.setupInsetMobileListener();
             this.setupMarkerTouchListener();
             this.syncInsetMobileState();
@@ -975,13 +1018,33 @@
             this.insetResizeObserver = new ResizeObserver(() => {
                 this.syncInsetMobileState();
                 if (!this.isMobileInsetLayout()) {
-                    this.syncInsetScreenScale();
+                    this.fitViewBoxToPanel();
+                    this.syncInsetScreenTransform();
                 }
             });
             this.insetResizeObserver.observe(target);
         }
 
-        syncInsetScreenScale() {
+        getInsetScreenOffset() {
+            const insets = this.mapData.insets || [];
+            if (!insets.length || !this.svg) {
+                return { dx: 0, dy: 0 };
+            }
+
+            const viewBox = this.parseViewBox(this.svg.getAttribute("viewBox") || this.mapData.viewBox);
+            const margin = 12;
+            const bottomInset = insets.reduce((lowest, inset) =>
+                inset.frame.y > lowest.frame.y ? inset : lowest,
+            );
+            const targetX = viewBox.x + viewBox.w - margin - bottomInset.frame.width;
+            const targetY = viewBox.y + viewBox.h - margin - bottomInset.frame.height;
+            return {
+                dx: targetX - bottomInset.frame.x,
+                dy: targetY - bottomInset.frame.y,
+            };
+        }
+
+        syncInsetScreenTransform() {
             if (!this.svg || !this.insetScreenGroup || this.isMobileInsetLayout()) {
                 return;
             }
@@ -991,33 +1054,38 @@
                 return;
             }
 
+            const { dx, dy } = this.getInsetScreenOffset();
             const rect = this.svg.getBoundingClientRect();
-            if (rect.width <= 0 || rect.height <= 0) {
-                return;
+            const viewBox = this.svg.getAttribute("viewBox") || this.mapData.viewBox;
+            const [, , vbW, vbH] = viewBox.split(/\s+/).map(Number);
+            const parts = [];
+
+            if (Math.abs(dx) > 0.001 || Math.abs(dy) > 0.001) {
+                parts.push(`translate(${dx} ${dy})`);
             }
 
-            const [, , vbW, vbH] = this.mapData.viewBox.split(/\s+/).map(Number);
-            const meetScale = Math.min(rect.width / vbW, rect.height / vbH);
-            if (meetScale <= 0) {
-                return;
+            if (rect.width > 0 && rect.height > 0 && vbW > 0 && vbH > 0) {
+                const meetScale = Math.min(rect.width / vbW, rect.height / vbH);
+                if (meetScale > 0) {
+                    const counterScale = 1 / meetScale;
+                    if (Math.abs(counterScale - 1) >= 0.001) {
+                        const frames = insets.map((inset) => inset.frame);
+                        const pivotX = frames[0].x + frames[0].width / 2;
+                        const minY = Math.min(...frames.map((frame) => frame.y));
+                        const maxY = Math.max(...frames.map((frame) => frame.y + frame.height));
+                        const pivotY = (minY + maxY) / 2;
+                        parts.push(
+                            `translate(${pivotX} ${pivotY}) scale(${counterScale}) translate(${-pivotX} ${-pivotY})`,
+                        );
+                    }
+                }
             }
 
-            const counterScale = 1 / meetScale;
-            if (Math.abs(counterScale - 1) < 0.001) {
+            if (parts.length) {
+                this.insetScreenGroup.setAttribute("transform", parts.join(" "));
+            } else {
                 this.insetScreenGroup.removeAttribute("transform");
-                return;
             }
-
-            const frames = insets.map((inset) => inset.frame);
-            const pivotX = frames[0].x + frames[0].width / 2;
-            const minY = Math.min(...frames.map((frame) => frame.y));
-            const maxY = Math.max(...frames.map((frame) => frame.y + frame.height));
-            const pivotY = (minY + maxY) / 2;
-
-            this.insetScreenGroup.setAttribute(
-                "transform",
-                `translate(${pivotX} ${pivotY}) scale(${counterScale}) translate(${-pivotX} ${-pivotY})`,
-            );
         }
 
         getLegendRoot() {
@@ -1473,7 +1541,6 @@
             dot.setAttribute("cx", String(x));
             dot.setAttribute("cy", String(y));
             dot.setAttribute("r", String(radius));
-            this.applyMarkerGlowFilter(dot, meta.active);
 
             group.appendChild(hit);
             group.appendChild(dot);
@@ -1666,10 +1733,21 @@
             }
 
             this.shell.querySelectorAll(".country-map-neighbor[data-country-code]").forEach((path) => {
+                const code = path.dataset.countryCode;
                 const isTarget = path.dataset.countryCode === hoveredCountry;
+                const country = this.neighborByCode.get(code);
+                const hasGuide = country ? this.resolveCountryGuide(country).hasGuide : false;
                 path.classList.toggle(
                     "country-map-neighbor--highlighted",
                     Boolean(hoveredCountry && isTarget),
+                );
+                path.classList.toggle(
+                    "country-map-neighbor--highlighted-preview",
+                    Boolean(hoveredCountry && isTarget && hasGuide),
+                );
+                path.classList.toggle(
+                    "country-map-neighbor--highlighted-static",
+                    Boolean(hoveredCountry && isTarget && !hasGuide),
                 );
             });
 
@@ -1845,7 +1923,8 @@
                     );
                     return;
                 }
-                const [, , vbW, vbH] = this.mapData.viewBox.split(/\s+/).map(Number);
+                const viewBox = this.svg.getAttribute("viewBox") || this.mapData.viewBox;
+            const [, , vbW, vbH] = viewBox.split(/\s+/).map(Number);
                 this.placeOverlay(
                     point[0] * (rect.width / vbW),
                     point[1] * (rect.height / vbH),
@@ -1925,7 +2004,6 @@
                 if (meta) {
                     marker.classList.toggle("country-map-marker--active", meta.active);
                     marker.classList.toggle("country-map-marker--inactive", !meta.active);
-                    this.applyMarkerGlowFilter(marker.querySelector(".country-map-marker__dot"), meta.active);
                 }
             });
             this.applyShellState();
@@ -1959,6 +2037,10 @@
             if (this.insetResizeObserver) {
                 this.insetResizeObserver.disconnect();
                 this.insetResizeObserver = null;
+            }
+            if (this.panelResizeObserver) {
+                this.panelResizeObserver.disconnect();
+                this.panelResizeObserver = null;
             }
             if (mapInstance === this) {
                 mapInstance = null;

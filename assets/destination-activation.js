@@ -10,6 +10,32 @@
 
     const normalizeCode = (code) => String(code || "").toUpperCase();
 
+    const isAtlasTheme = () => document.body?.classList?.contains("tg-theme");
+
+    const closeAllRegionDropdowns = () => {
+        if (isAtlasTheme()) {
+            document.querySelectorAll(".continent-dropdown").forEach((el) => {
+                el.classList.remove("is-open");
+                el.parentElement?.classList.remove("is-expanded");
+                if (el.parentElement) {
+                    el.parentElement.style.zIndex = "1";
+                }
+            });
+            document.querySelectorAll(".continent-card__toggle").forEach((el) => {
+                el.setAttribute("aria-expanded", "false");
+            });
+        } else {
+            document.querySelectorAll(".dropdown-content").forEach((el) => {
+                el.classList.remove("opacity-100", "pointer-events-auto", "translate-y-0");
+                el.classList.add("opacity-0", "pointer-events-none", "translate-y-[-10px]");
+                el.parentElement.style.zIndex = "1";
+            });
+        }
+        document.querySelectorAll(".dropdown-icon").forEach((el) =>
+            el.classList.remove("rotate-180", "text-neon-yellow"),
+        );
+    };
+
     const isLikelyDevServer = () =>
         location.protocol !== "file:" && location.port === String(DEV_PORT);
 
@@ -202,6 +228,11 @@
             return destinations.filter((dest) => this.hasGuide(dest)).length;
         },
 
+        formatRegionGuideCount(count) {
+            const label = count === 0 || count === 1 ? "guide" : "guides";
+            return `${count} ${label}`;
+        },
+
         findRegionCard(region) {
             const container = document.getElementById(config.containerId || "regions-container");
             if (!container) {
@@ -262,6 +293,40 @@
             `;
         },
 
+        renderAtlasDestinationListItem(name) {
+            const active = this.isActive(name);
+            const url = this.guideUrl(name);
+            const statusDot = this.renderStatusDot(name);
+            const tone = active
+                ? "text-slate-300 hover:text-neon-cyan"
+                : "text-slate-500 hover:text-slate-300";
+            const iconClass = active
+                ? "ph ph-map-pin text-xl text-deepblue-500 group-hover/link:text-neon-cyan transition-colors"
+                : "ph ph-map-pin text-xl opacity-50 text-deepblue-500";
+
+            if (this.hasGuide(name)) {
+                return `
+                    <div class="country-status-row" data-destination-name="${name}">
+                        <a href="${url}" class="country-status-link ${tone} group/link">
+                            <i class="${iconClass}"></i>
+                            <span class="font-medium truncate">${name}</span>
+                        </a>
+                        ${statusDot}
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="country-status-row" data-destination-name="${name}">
+                    <div class="country-status-label text-slate-500 cursor-not-allowed">
+                        <i class="ph ph-map-pin text-xl opacity-50 text-deepblue-500"></i>
+                        <span class="font-medium truncate">${name}</span>
+                    </div>
+                    ${statusDot}
+                </div>
+            `;
+        },
+
         renderDestinationListItem(name) {
             const active = this.isActive(name);
             const url = this.guideUrl(name);
@@ -298,12 +363,51 @@
 
         renderDropdownList(region, destinations) {
             const sorted = this.sortDestinationsForDisplay(destinations);
+            const itemClass = isAtlasTheme() ? "country-status-item" : "destination-status-item border-b border-deepblue-800/30 last:border-0";
+            const renderItem = isAtlasTheme()
+                ? (dest) => this.renderAtlasDestinationListItem(dest)
+                : (dest) => this.renderDestinationListItem(dest);
             return sorted
-                .map(
-                    (dest) =>
-                        `<li class="destination-status-item border-b border-deepblue-800/30 last:border-0">${this.renderDestinationListItem(dest)}</li>`,
-                )
+                .map((dest) => `<li class="${itemClass}">${renderItem(dest)}</li>`)
                 .join("");
+        },
+
+        renderAtlasDirectCard(region, destinations, index) {
+            const dest = destinations[0];
+            const icon = config.regionIcons[region] || "ph-map-pin";
+            const guideCount = this.countListedGuides(destinations);
+            const url = this.guideUrl(dest) || "#";
+            const statusDot = this.renderStatusDot(dest);
+
+            const card = document.createElement("div");
+            card.className = "continent-card continent-card--direct";
+            card.dataset.destinationName = dest;
+            card.dataset.region = region;
+            card.style.zIndex = "1";
+
+            const link = document.createElement("a");
+            link.href = url;
+            link.className = "continent-card__toggle continent-card__link";
+            link.innerHTML = `
+                <div class="continent-card__main">
+                    <div class="continent-card__icon">
+                        <i class="ph ${icon}" aria-hidden="true"></i>
+                    </div>
+                    <div>
+                        <h3 class="continent-card__name">${region}</h3>
+                        <p class="continent-card__meta region-active-count">${this.formatRegionGuideCount(guideCount)}</p>
+                    </div>
+                </div>
+                <i class="ph ph-arrow-right continent-card__direct-arrow" aria-hidden="true"></i>
+            `;
+            if (!this.hasGuide(dest)) {
+                link.classList.add("continent-card__link--disabled");
+                link.addEventListener("click", (event) => event.preventDefault());
+            }
+
+            card.appendChild(link);
+            card.insertAdjacentHTML("beforeend", statusDot);
+            return card;
         },
 
         renderDirectCard(region, destinations, index) {
@@ -366,6 +470,33 @@
             });
         },
 
+        renderAtlasRegionCard(region, guideCount, index) {
+            const icon = config.regionIcons[region] || "ph-map-pin";
+            const card = document.createElement("div");
+            card.className = "continent-card";
+            card.dataset.region = region;
+            card.style.zIndex = "1";
+
+            const header = document.createElement("button");
+            header.type = "button";
+            header.setAttribute("aria-expanded", "false");
+            header.className = "continent-card__toggle";
+            header.innerHTML = `
+                <div class="continent-card__main">
+                    <div class="continent-card__icon">
+                        <i class="ph ${icon}" aria-hidden="true"></i>
+                    </div>
+                    <div>
+                        <h3 class="continent-card__name">${region}</h3>
+                        <p class="continent-card__meta region-active-count">${this.formatRegionGuideCount(guideCount)}</p>
+                    </div>
+                </div>
+                <i class="ph ph-caret-down dropdown-icon" aria-hidden="true"></i>
+            `;
+
+            return { card, header };
+        },
+
         renderRegionsContainer() {
             const container = document.getElementById(config.containerId || "regions-container");
             if (!container) {
@@ -382,64 +513,80 @@
                     const guideCount = this.countListedGuides(destinations);
 
                     if (!config.hasRegions) {
-                        container.appendChild(this.renderDirectCard(region, destinations, index));
+                        if (isAtlasTheme()) {
+                            container.appendChild(this.renderAtlasDirectCard(region, destinations, index));
+                        } else {
+                            container.appendChild(this.renderDirectCard(region, destinations, index));
+                        }
                         return;
                     }
 
-                    const card = document.createElement("div");
-                    card.className =
-                        "bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-2xl relative transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,215,0,0.1)] hover:border-neon-yellow/30 flex flex-col group";
-                    card.dataset.region = region;
-                    card.style.animation = `fadeInDown 0.6s ease-out ${index * 0.1 + 0.3}s both`;
-                    card.style.zIndex = "1";
+                    const atlasTheme = isAtlasTheme();
+                    let card;
+                    let header;
 
-                    const headerClass =
-                        "w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none focus:bg-deepblue-800/50 hover:bg-deepblue-800/30 transition-colors rounded-2xl relative z-10";
-                    const icon = config.regionIcons[region] || "ph-map-pin";
-                    const innerHtml = `
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-deepblue-700 to-deepblue-800 border border-deepblue-700 flex items-center justify-center text-neon-yellow group-hover:scale-110 transition-transform shadow-inner">
-                                <i class="ph ${icon} text-2xl"></i>
-                            </div>
-                            <div>
-                                <h2 class="text-xl font-bold text-white tracking-wide">${region}</h2>
-                                <p class="text-sm text-slate-400 font-light region-active-count">${guideCount} guides</p>
-                            </div>
-                        </div>
-                        <i class="ph ph-caret-down text-xl text-slate-500 transition-transform duration-300 transform dropdown-icon"></i>
-                    `;
+                    if (atlasTheme) {
+                        ({ card, header } = this.renderAtlasRegionCard(region, guideCount, index));
+                    } else {
+                        card = document.createElement("div");
+                        card.className =
+                            "bg-deepblue-900/60 border border-deepblue-800 backdrop-blur-sm rounded-2xl relative transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,215,0,0.1)] hover:border-neon-yellow/30 flex flex-col group";
+                        card.dataset.region = region;
+                        card.style.animation = `fadeInDown 0.6s ease-out ${index * 0.1 + 0.3}s both`;
+                        card.style.zIndex = "1";
 
-                    const header = document.createElement("button");
-                    header.className = headerClass;
-                    header.innerHTML = innerHtml;
+                        const headerClass =
+                            "w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none focus:bg-deepblue-800/50 hover:bg-deepblue-800/30 transition-colors rounded-2xl relative z-10";
+                        const icon = config.regionIcons[region] || "ph-map-pin";
+                        const innerHtml = `
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-deepblue-700 to-deepblue-800 border border-deepblue-700 flex items-center justify-center text-neon-yellow group-hover:scale-110 transition-transform shadow-inner">
+                                    <i class="ph ${icon} text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h2 class="text-xl font-bold text-white tracking-wide">${region}</h2>
+                                    <p class="text-sm text-slate-400 font-light region-active-count">${this.formatRegionGuideCount(guideCount)}</p>
+                                </div>
+                            </div>
+                            <i class="ph ph-caret-down text-xl text-slate-500 transition-transform duration-300 transform dropdown-icon"></i>
+                        `;
+
+                        header = document.createElement("button");
+                        header.className = headerClass;
+                        header.innerHTML = innerHtml;
+                    }
 
                     const body = document.createElement("div");
-                    body.className =
-                        "dropdown-content absolute top-[calc(100%+8px)] left-0 w-full bg-deepblue-950/95 border border-deepblue-700/80 backdrop-blur-xl rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.7)] transition-all duration-300 opacity-0 pointer-events-none translate-y-[-10px] z-50";
+                    body.className = atlasTheme
+                        ? "continent-dropdown frosted-panel"
+                        : "dropdown-content absolute top-[calc(100%+8px)] left-0 w-full bg-deepblue-950/95 border border-deepblue-700/80 backdrop-blur-xl rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.7)] transition-all duration-300 opacity-0 pointer-events-none translate-y-[-10px] z-50";
 
                     const list = document.createElement("ul");
-                    list.className =
-                        "destination-dropdown-list flex flex-col gap-y-1 px-6 py-4 max-h-[350px] overflow-y-auto custom-scrollbar";
+                    list.className = atlasTheme
+                        ? "continent-dropdown__list destination-dropdown-list custom-scrollbar"
+                        : "destination-dropdown-list flex flex-col gap-y-1 px-6 py-4 max-h-[350px] overflow-y-auto custom-scrollbar";
                     list.innerHTML = this.renderDropdownList(region, config.countryData[region]);
 
                     body.appendChild(list);
 
                     header.addEventListener("click", (event) => {
                         event.stopPropagation();
-                        const isOpen = body.classList.contains("opacity-100");
-                        document.querySelectorAll(".dropdown-content").forEach((el) => {
-                            el.classList.remove("opacity-100", "pointer-events-auto", "translate-y-0");
-                            el.classList.add("opacity-0", "pointer-events-none", "translate-y-[-10px]");
-                            el.parentElement.style.zIndex = "1";
-                        });
-                        document.querySelectorAll(".dropdown-icon").forEach((el) =>
-                            el.classList.remove("rotate-180", "text-neon-yellow"),
-                        );
+                        const isOpen = atlasTheme
+                            ? body.classList.contains("is-open")
+                            : body.classList.contains("opacity-100");
+                        closeAllRegionDropdowns();
                         if (!isOpen) {
-                            body.classList.remove("opacity-0", "pointer-events-none", "translate-y-[-10px]");
-                            body.classList.add("opacity-100", "pointer-events-auto", "translate-y-0");
-                            header.querySelector(".dropdown-icon").classList.add("rotate-180", "text-neon-yellow");
-                            card.style.zIndex = "50";
+                            if (atlasTheme) {
+                                body.classList.add("is-open");
+                                card.classList.add("is-expanded");
+                                header.setAttribute("aria-expanded", "true");
+                                card.style.zIndex = "130";
+                            } else {
+                                body.classList.remove("opacity-0", "pointer-events-none", "translate-y-[-10px]");
+                                body.classList.add("opacity-100", "pointer-events-auto", "translate-y-0");
+                                card.style.zIndex = "50";
+                                header.querySelector(".dropdown-icon").classList.add("rotate-180", "text-neon-yellow");
+                            }
                         }
                     });
 
@@ -452,14 +599,7 @@
             if (!this._documentClickBound) {
                 this._documentClickBound = true;
                 document.addEventListener("click", () => {
-                    document.querySelectorAll(".dropdown-content").forEach((el) => {
-                        el.classList.remove("opacity-100", "pointer-events-auto", "translate-y-0");
-                        el.classList.add("opacity-0", "pointer-events-none", "translate-y-[-10px]");
-                        el.parentElement.style.zIndex = "1";
-                    });
-                    document.querySelectorAll(".dropdown-icon").forEach((el) =>
-                        el.classList.remove("rotate-180", "text-neon-yellow"),
-                    );
+                    closeAllRegionDropdowns();
                 });
             }
         },
@@ -474,18 +614,22 @@
             const countEl = card?.querySelector(".region-active-count");
             if (countEl) {
                 const guideCount = this.countListedGuides(config.countryData[region]);
-                countEl.textContent = `${guideCount} guides`;
+                countEl.textContent = this.formatRegionGuideCount(guideCount);
             }
         },
 
         refreshDirectCard(name) {
-            const card = document.querySelector(`.destination-direct-card[data-destination-name="${name}"]`);
+            const card = document.querySelector(
+                `.destination-direct-card[data-destination-name="${name}"], .continent-card--direct[data-destination-name="${name}"]`,
+            );
             if (!card) {
                 return;
             }
             const region = card.dataset.region || name;
             const index = Array.from(card.parentElement?.children || []).indexOf(card);
-            const newCard = this.renderDirectCard(region, [name], Math.max(index, 0));
+            const newCard = isAtlasTheme()
+                ? this.renderAtlasDirectCard(region, [name], Math.max(index, 0))
+                : this.renderDirectCard(region, [name], Math.max(index, 0));
             card.replaceWith(newCard);
         },
 
@@ -611,6 +755,18 @@
             });
         },
 
+        renderAtlasSearchResult(result) {
+            const active = this.isActive(result.name);
+            const hasGuide = this.hasGuide(result.name);
+            if (active) {
+                return `<a href="${result.url}" class="flex items-center justify-between px-6 py-3 hover:bg-deepblue-800/80 transition-colors group"><div class="flex flex-col items-start text-left"><span class="text-white font-medium group-hover:text-neon-cyan transition-colors">${result.name}</span><span class="text-xs text-slate-500">${result.region}</span></div><i class="ph ph-arrow-right text-slate-600 group-hover:text-neon-cyan group-hover:translate-x-1 transition-all"></i></a>`;
+            }
+            if (hasGuide) {
+                return `<a href="${result.url}" class="flex items-center justify-between px-6 py-3 hover:bg-deepblue-800/50 transition-colors group"><div class="flex flex-col items-start text-left"><span class="text-slate-500 font-medium group-hover:text-slate-300 transition-colors">${result.name}</span><span class="text-xs text-slate-600">${result.region}</span></div><i class="ph ph-arrow-right opacity-50 text-slate-600 group-hover:text-slate-400 group-hover:translate-x-1 transition-all"></i></a>`;
+            }
+            return `<div class="flex items-center justify-between px-6 py-3 cursor-not-allowed group"><div class="flex flex-col items-start text-left"><span class="text-slate-500 font-medium">${result.name}</span><span class="text-xs text-slate-600">${result.region}</span></div><i class="ph ph-arrow-right opacity-50 text-slate-600"></i></div>`;
+        },
+
         setupSearch() {
             const searchInput = document.getElementById("search-input");
             const searchResults = document.getElementById("search-results");
@@ -622,18 +778,19 @@
             const renderResults = (results) => {
                 searchResultsList.innerHTML = "";
                 if (results.length === 0) {
-                    searchResultsList.innerHTML =
-                        '<li class="px-6 py-4 text-slate-400 text-center">No guides found.</li>';
+                    searchResultsList.innerHTML = isAtlasTheme()
+                        ? '<li class="search-empty">No guides found.</li>'
+                        : '<li class="px-6 py-4 text-slate-400 text-center">No guides found.</li>';
                 } else {
                     results.forEach((result) => {
                         const item = document.createElement("li");
-                        if (this.isActive(result.name)) {
-                            item.innerHTML = `<a href="${result.url}" class="flex items-center justify-between px-6 py-3 hover:bg-deepblue-800/80 transition-colors group"><div class="flex flex-col"><span class="text-white font-medium group-hover:text-neon-cyan transition-colors">${result.name}</span><span class="text-xs text-slate-500">${result.region}</span></div><i class="ph ph-arrow-right text-slate-600 group-hover:text-neon-cyan group-hover:translate-x-1 transition-all"></i></a>`;
-                        } else if (this.hasGuide(result.name)) {
-                            item.innerHTML = `<a href="${result.url}" class="flex items-center justify-between px-6 py-3 hover:bg-deepblue-800/50 transition-colors group"><div class="flex flex-col"><span class="text-slate-500 font-medium group-hover:text-slate-300 transition-colors">${result.name}</span><span class="text-xs text-slate-600">${result.region}</span></div><i class="ph ph-arrow-right opacity-50 text-slate-600 group-hover:text-slate-400 group-hover:translate-x-1 transition-all"></i></a>`;
-                        } else {
-                            item.innerHTML = `<div class="flex items-center justify-between px-6 py-3 cursor-not-allowed group"><div class="flex flex-col"><span class="text-slate-500 font-medium">${result.name}</span><span class="text-xs text-slate-600">${result.region}</span></div><i class="ph ph-arrow-right opacity-50 text-slate-600"></i></div>`;
-                        }
+                        item.innerHTML = isAtlasTheme()
+                            ? this.renderAtlasSearchResult(result)
+                            : this.isActive(result.name)
+                              ? `<a href="${result.url}" class="flex items-center justify-between px-6 py-3 hover:bg-deepblue-800/80 transition-colors group"><div class="flex flex-col"><span class="text-white font-medium group-hover:text-neon-cyan transition-colors">${result.name}</span><span class="text-xs text-slate-500">${result.region}</span></div><i class="ph ph-arrow-right text-slate-600 group-hover:text-neon-cyan group-hover:translate-x-1 transition-all"></i></a>`
+                              : this.hasGuide(result.name)
+                                ? `<a href="${result.url}" class="flex items-center justify-between px-6 py-3 hover:bg-deepblue-800/50 transition-colors group"><div class="flex flex-col"><span class="text-slate-500 font-medium group-hover:text-slate-300 transition-colors">${result.name}</span><span class="text-xs text-slate-600">${result.region}</span></div><i class="ph ph-arrow-right opacity-50 text-slate-600 group-hover:text-slate-400 group-hover:translate-x-1 transition-all"></i></a>`
+                                : `<div class="flex items-center justify-between px-6 py-3 cursor-not-allowed group"><div class="flex flex-col"><span class="text-slate-500 font-medium">${result.name}</span><span class="text-xs text-slate-600">${result.region}</span></div><i class="ph ph-arrow-right opacity-50 text-slate-600"></i></div>`;
                         searchResultsList.appendChild(item);
                     });
                 }
