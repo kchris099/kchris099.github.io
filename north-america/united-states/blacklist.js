@@ -4,4 +4,76 @@
 const blacklistText = `Chicago, IL
 
 San Antonio, TX
+
+Anchorage, AK
+
+Sacramento, CA
+
+Tucson, AZ
+
+Albuquerque, NM
+
+Memphis, TN
+
+Spokane, WA
+
+Indianapolis, IN
+
+El Paso, TX
+
+Seattle, WA
+
+Portland, OR
+
+Los Angeles, CA
+
+San Diego, CA
+
+Boise, ID
+
+Salt Lake City, UT
+
+Denver, CO
+
+Phoenix, AZ
+
+Dallas, TX
+
+Austin, TX
+
+Houston, TX
+
+Kansas City, MO
+
+Minneapolis, MN
+
+St. Louis, MO
+
+New Orleans, LA
+
+Nashville, TN
+
+Cincinnati, OH
+
+Atlanta, GA
+
+Jacksonville, FL
+
+Tampa, FL
+
+Orlando, FL
+
+Charlotte, NC
+
+Miami, FL
+
+Columbus, OH
+
+Cleveland, OH
+
+Pittsburgh, PA
+
+Louisville, KY
+
+Oklahoma City, OK
 `;

@@ -3,4 +3,6 @@
 
 const blacklistText = `
 Antigua Guatemala
+
+Guatemala City
 `;

@@ -233,6 +233,17 @@
             return `${count} ${label}`;
         },
 
+        formatDirectDestinationSubline(name) {
+            const status = this.getDestinationStatus(name);
+            if (status === "inactive") {
+                return "Preview Destination &rarr;";
+            }
+            if (status === "unavailable") {
+                return "Guide unavailable";
+            }
+            return "Explore Destination &rarr;";
+        },
+
         findRegionCard(region) {
             const container = document.getElementById(config.containerId || "regions-container");
             if (!container) {
@@ -375,7 +386,6 @@
         renderAtlasDirectCard(region, destinations, index) {
             const dest = destinations[0];
             const icon = config.regionIcons[region] || "ph-map-pin";
-            const guideCount = this.countListedGuides(destinations);
             const url = this.guideUrl(dest) || "#";
             const statusDot = this.renderStatusDot(dest);
 
@@ -395,7 +405,7 @@
                     </div>
                     <div>
                         <h3 class="continent-card__name">${region}</h3>
-                        <p class="continent-card__meta region-active-count">${this.formatRegionGuideCount(guideCount)}</p>
+                        <p class="continent-card__meta">${this.formatDirectDestinationSubline(dest)}</p>
                     </div>
                 </div>
                 <i class="ph ph-arrow-right continent-card__direct-arrow" aria-hidden="true"></i>
@@ -432,7 +442,7 @@
                     </div>
                     <div>
                         <h2 class="${titleClass}">${region}</h2>
-                        <p class="${sublineClass}">Explore Destination &rarr;</p>
+                        <p class="${sublineClass}">${this.formatDirectDestinationSubline(dest)}</p>
                     </div>
                 </div>
             `;

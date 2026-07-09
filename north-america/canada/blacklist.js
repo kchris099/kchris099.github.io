@@ -7,4 +7,14 @@ Toronto
 Montreal
 
 Quebec City
+
+Winnipeg
+
+Vancouver
+
+Calgary
+
+Edmonton
+
+Ottawa
 `;
