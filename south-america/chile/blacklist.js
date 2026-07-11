@@ -5,4 +5,6 @@ const blacklistText = `
 Santiago
 
 Valparaíso
+
+Easter Island Rapa Nui
 `;

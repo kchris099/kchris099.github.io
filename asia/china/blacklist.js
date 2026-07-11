@@ -9,4 +9,10 @@ Macau
 Xi'an
 
 Luoyang
+
+Datong
+
+Hong Kong
+
+Shanghai
 `;

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zimbabwe | Global Explorer Guides</title>
+    <link rel="stylesheet" href="../../assets/tailwind.css">
+    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
+    <link rel="stylesheet" href="../../assets/newindex-fonts.css">
+    <link rel="stylesheet" href="../../assets/tg-theme.css">
+    <link rel="stylesheet" href="../../assets/tg-site-chrome.css">
+    <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
+    <link rel="stylesheet" href="../../assets/homepage-activation.css">
+    <link rel="stylesheet" href="../../assets/destination-activation.css">
+    <script src="../../assets/lenis.min.js"></script>
+    <script src="../../assets/tg-smooth-scroll.js"></script>
+</head>
+<body class="tg-theme">
+    <header id="site-header" class="header-glass fixed top-0 left-0 right-0 z-50">
+        <div class="page-shell header-glass__inner">
+            <a href="../../index.html" class="font-display" style="display:flex;align-items:center;gap:0.75rem;text-decoration:none;color:inherit;font-size:1.25rem;" aria-label="Global Explorer home">
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                    <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
+                    <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
+                    <circle cx="14" cy="14" r="2" fill="#E8B14F"/>
+                </svg>
+                Global Explorer
+            </a>
+            <nav class="header-glass__nav-mobile" aria-label="Mobile navigation">
+                <a href="../../index.html" class="header-glass__icon-link" aria-label="Home">
+                    <i class="ph ph-house" aria-hidden="true"></i>
+                </a>
+            </nav>
+            <nav class="header-glass__nav" aria-label="Primary">
+                <a href="../../index.html" class="nav-link">Home</a>
+                <a href="../../index.html#map" class="nav-link">Atlas</a>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <div class="page-shell tg-country-page">
+        <header class="tg-page-header">
+            <button
+                type="button"
+                id="country-active-toggle"
+                class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
+                data-iso2="ZW"
+                data-active="false"
+                data-interactive="true"
+                aria-label="Toggle Zimbabwe homepage visibility"
+                aria-pressed="false"
+            >
+                <img src="../../assets/flags/w80/zw.png" alt="" class="w-10 rounded-sm pointer-events-none" aria-hidden="true">
+            </button>
+            <span class="tg-page-header__eyebrow">Country Guide — Africa</span>
+            <h1 class="tg-page-title font-display"><em>Zimbabwe</em> Guide</h1>
+            <p class="tg-page-lead">Zimbabwe&#x27;s plateau supported the Rozvi Empire and Great Zimbabwe kingdom before British Rhodesian colonisation and independence in 1980. Victoria Falls&#x27; basalt chasm, the stone walls of Great Zimbabwe near Masvingo, and Harare&#x27;s broad-leafed avenues carry a Southern African republic whose currency, land, and tourism patterns have been reshaped by post-independence policy.</p>
+
+            <div class="search-wrap">
+                <label for="search-input" class="sr-only">Search for a city or area</label>
+                <div class="glass-card search-bar">
+                    <i class="ph ph-magnifying-glass search-bar__icon" aria-hidden="true"></i>
+                    <input id="search-input" type="text" class="search-bar__input" placeholder="Search for a city or area" autocomplete="off">
+                </div>
+                <div id="search-results" class="search-results frosted-panel hidden">
+                    <ul id="search-results-list" style="list-style:none;margin:0;padding:0.25rem 0;"></ul>
+                </div>
+            </div>
+        </header>
+
+        <section id="regions-container" class="continents-grid" aria-label="Zimbabwe regions"></section>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="page-shell">
+            <div class="site-footer__bar">
+                <a href="../../index.html" class="site-footer__brand" aria-label="Global Explorer home">
+                    <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
+                    </svg>
+                    <span class="site-footer__brand-name font-display">Global Explorer</span>
+                </a>
+                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+            </div>
+        </div>
+    </footer>
+
+    <button id="scrollTopBtn" aria-label="Scroll to top">
+        <i class="ph ph-arrow-up" aria-hidden="true"></i>
+    </button>
+
+    <script src="blacklist.js"></script>
+    <script src="../../assets/destination-activation.js"></script>    <script src="../../assets/tg-page-chrome.js"></script>
+
+    <script>
+        const zimbabweData = {"Victoria Falls": ["Victoria Falls"]};
+        const regionIcons = {};
+        const destinationPaths = {"Victoria Falls": "victoria-falls"};
+        const hasRegions = false;
+        const countryIso2 = "ZW";
+
+        const normalizeText = (text) => {
+            return text.toLowerCase()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .replace(/\u00e4/g, 'a').replace(/\u00f6/g, 'o').replace(/\u00fc/g, 'u').replace(/\u00df/g, 'ss');
+        };
+
+        let blacklist = new Set();
+
+        const formatPath = (name) => {
+            return name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+        };
+        const destinationUrl = (name) => `${destinationPaths[name] || formatPath(name)}.html`;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await TGDestinationActivation.init({
+                iso2: countryIso2,
+                countryData: zimbabweData,
+                regionIcons,
+                destinationPaths,
+                hasRegions,
+                blacklist,
+                normalizeText,
+                destinationUrl,
+            });
+
+            TGDestinationActivation.setupSearch();
+        });
+    </script>
+</body>
+</html>

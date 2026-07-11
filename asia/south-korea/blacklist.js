@@ -3,4 +3,20 @@
 
 const blacklistText = `
 Gyeongju
+
+Andong
+
+Busan
+
+Gangneung
+
+Jeju Island
+
+Jeonju
+
+Sokcho Seoraksan
+
+Tongyeong
+
+Yeosu
 `;

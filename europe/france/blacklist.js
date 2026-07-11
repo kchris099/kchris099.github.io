@@ -41,4 +41,14 @@ Strasbourg
 Carcassonne
 
 Saint-Émilion
+
+Aigues Mortes
+
+Annecy
+
+Colmar
+
+Ile de Re
+
+Sarlat
 `;

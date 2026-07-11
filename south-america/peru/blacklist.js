@@ -5,4 +5,8 @@ const blacklistText = `
 Lima
 
 Cusco
+
+Arequipa
+
+Trujillo
 `;

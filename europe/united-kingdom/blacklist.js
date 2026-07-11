@@ -19,4 +19,42 @@ Bath
 Saltaire
 
 Canterbury
+
+Aberdeen
+
+Birmingham
+
+Brighton
+
+Bristol
+
+Cambridge
+
+Chester
+
+Cotswolds
+
+Durham
+
+Isle Of Wight
+
+Lake District National Park
+
+Manchester
+
+Oxford
+
+Rye
+
+Snowdonia
+
+St Ives
+
+Stonehenge Salisbury
+
+Stratford Upon Avon
+
+Whitby
+
+York
 `;

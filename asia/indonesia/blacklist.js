@@ -9,4 +9,8 @@ Denpasar
 Yogyakarta
 
 Ubud
+
+Bandung
+
+Surabaya
 `;

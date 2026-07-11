@@ -16,4 +16,12 @@ Coimbra
 Guimarães
 
 Évora
+
+Aveiro
+
+Marvao
+
+Monsaraz
+
+Tavira
 `;

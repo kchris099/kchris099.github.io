@@ -3,4 +3,6 @@
 
 const blacklistText = `
 Jerusalem
+
+Tel Aviv
 `;

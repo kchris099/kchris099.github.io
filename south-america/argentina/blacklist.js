@@ -5,4 +5,14 @@ const blacklistText = `
 Buenos Aires
 
 Córdoba
+
+Bariloche
+
+El Calafate
+
+Iguazú
+
+Mendoza
+
+Ushuaia
 `;

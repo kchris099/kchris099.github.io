@@ -5,4 +5,12 @@ const blacklistText = `
 Christchurch
 
 Tongariro
+
+Auckland
+
+Queenstown
+
+Rotorua
+
+Wellington
 `;

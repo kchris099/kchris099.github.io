@@ -3,4 +3,8 @@
 
 const blacklistText = `
 Ljubljana
+
+Lake Bled
+
+Piran
 `;

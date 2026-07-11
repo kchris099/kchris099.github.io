@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/homepage-activation.css">
     <link rel="stylesheet" href="../../assets/destination-activation.css">
+    <link rel="stylesheet" href="../../assets/country-map.css">
     <script src="../../assets/lenis.min.js"></script>
     <script src="../../assets/tg-smooth-scroll.js"></script>
 </head>
@@ -69,6 +70,32 @@
         </header>
 
         <section id="regions-container" class="continents-grid" aria-label="India regions"></section>
+        <section class="country-map-section" aria-labelledby="country-map-heading">
+            <div class="tg-section__header">
+                <span class="tg-section__eyebrow">Interactive Map</span>
+                <h2 id="country-map-heading" class="tg-section__title font-display">Explore <em>India</em> by Region</h2>
+                <p class="tg-section__lead">Hover a region or destination to preview guides, then click a city to open its guide.</p>
+            </div>
+            <div class="map-panel country-map-panel">
+                <div id="country-map"></div>
+                <div class="map-legend country-map-legend">
+                    <div class="map-legend__row">
+                        <span class="map-legend__label">
+                            <span class="country-map-legend-dot country-map-legend-dot--active" aria-hidden="true"></span>
+                            Active:
+                        </span>
+                        <strong id="country-map-legend-active">0</strong>
+                    </div>
+                    <div class="map-legend__row">
+                        <span class="map-legend__label">
+                            <span class="country-map-legend-dot country-map-legend-dot--inactive" aria-hidden="true"></span>
+                            Inactive:
+                        </span>
+                        <strong id="country-map-legend-inactive">0</strong>
+                    </div>
+                </div>
+            </div>
+        </section>
         </div>
     </main>
 
@@ -92,13 +119,16 @@
     </button>
 
     <script src="blacklist.js"></script>
-    <script src="../../assets/destination-activation.js"></script>    <script src="../../assets/tg-page-chrome.js"></script>
+
+    <script src="../../assets/maps/india-data.js"></script>
+    <script src="../../assets/country-guides.js"></script>
+    <script src="../../assets/country-map.js"></script>    <script src="../../assets/destination-activation.js"></script>    <script src="../../assets/tg-page-chrome.js"></script>
 
     <script>
-        const indiaData = {"Agra": ["Agra"], "Ahmedabad": ["Ahmedabad"], "Delhi": ["Delhi"], "Jaipur": ["Jaipur"], "Mumbai": ["Mumbai"], "Varanasi": ["Varanasi"]};
-        const regionIcons = {};
-        const destinationPaths = {"Agra": "agra", "Ahmedabad": "ahmedabad", "Delhi": "delhi", "Jaipur": "jaipur", "Mumbai": "mumbai", "Varanasi": "varanasi"};
-        const hasRegions = false;
+        const indiaData = {"North India": ["Agra", "Amritsar", "Delhi", "Jaipur", "Jaisalmer", "Jodhpur", "Khajuraho", "Leh", "Pushkar", "Rishikesh", "Udaipur", "Varanasi"], "West India": ["Ahmedabad", "Mumbai"], "South India": ["Bangalore", "Chennai", "Hampi", "Hyderabad", "Mahabalipuram", "Munnar", "Mysore", "Pondicherry"], "East India": ["Bodh Gaya", "Kolkata"]};
+        const regionIcons = {"North India": "ph-mountains", "West India": "ph-sun", "South India": "ph-waves", "East India": "ph-anchor"};
+        const destinationPaths = {"Agra": "agra", "Amritsar": "amritsar", "Delhi": "delhi", "Jaipur": "jaipur", "Jaisalmer": "jaisalmer", "Jodhpur": "jodhpur", "Khajuraho": "khajuraho", "Leh": "leh", "Pushkar": "pushkar", "Rishikesh": "rishikesh", "Udaipur": "udaipur", "Varanasi": "varanasi", "Ahmedabad": "ahmedabad", "Mumbai": "mumbai", "Bangalore": "bangalore", "Chennai": "chennai", "Hampi": "hampi", "Hyderabad": "hyderabad", "Mahabalipuram": "mahabalipuram", "Munnar": "munnar", "Mysore": "mysore", "Pondicherry": "pondicherry", "Bodh Gaya": "bodh-gaya", "Kolkata": "kolkata"};
+        const hasRegions = true;
         const countryIso2 = "IN";
 
         const normalizeText = (text) => {
@@ -125,7 +155,20 @@
                 normalizeText,
                 destinationUrl,
             });
-
+            if (hasRegions) {
+                await TGCountryMap.init({
+                    selector: '#country-map',
+                    mapId: "india",
+                    countryName: "India",
+                    countryData: indiaData,
+                    destinationPaths,
+                    hasRegions,
+                    iso2: countryIso2,
+                    flagPath: "../../assets/flags/w40/in.png",
+                    assetsBase: "../../assets/",
+                    activation: TGDestinationActivation,
+                });
+            }
             TGDestinationActivation.setupSearch();
         });
     </script>

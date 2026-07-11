@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/homepage-activation.css">
     <link rel="stylesheet" href="../../assets/destination-activation.css">
+    <link rel="stylesheet" href="../../assets/country-map.css">
     <script src="../../assets/lenis.min.js"></script>
     <script src="../../assets/tg-smooth-scroll.js"></script>
 </head>
@@ -69,6 +70,32 @@
         </header>
 
         <section id="regions-container" class="continents-grid" aria-label="Poland regions"></section>
+        <section class="country-map-section" aria-labelledby="country-map-heading">
+            <div class="tg-section__header">
+                <span class="tg-section__eyebrow">Interactive Map</span>
+                <h2 id="country-map-heading" class="tg-section__title font-display">Explore <em>Poland</em> by Region</h2>
+                <p class="tg-section__lead">Hover a region or destination to preview guides, then click a city to open its guide.</p>
+            </div>
+            <div class="map-panel country-map-panel">
+                <div id="country-map"></div>
+                <div class="map-legend country-map-legend">
+                    <div class="map-legend__row">
+                        <span class="map-legend__label">
+                            <span class="country-map-legend-dot country-map-legend-dot--active" aria-hidden="true"></span>
+                            Active:
+                        </span>
+                        <strong id="country-map-legend-active">0</strong>
+                    </div>
+                    <div class="map-legend__row">
+                        <span class="map-legend__label">
+                            <span class="country-map-legend-dot country-map-legend-dot--inactive" aria-hidden="true"></span>
+                            Inactive:
+                        </span>
+                        <strong id="country-map-legend-inactive">0</strong>
+                    </div>
+                </div>
+            </div>
+        </section>
         </div>
     </main>
 
@@ -92,13 +119,16 @@
     </button>
 
     <script src="blacklist.js"></script>
-    <script src="../../assets/destination-activation.js"></script>    <script src="../../assets/tg-page-chrome.js"></script>
+
+    <script src="../../assets/maps/poland-data.js"></script>
+    <script src="../../assets/country-guides.js"></script>
+    <script src="../../assets/country-map.js"></script>    <script src="../../assets/destination-activation.js"></script>    <script src="../../assets/tg-page-chrome.js"></script>
 
     <script>
-        const polandData = {"Kraków": ["Kraków"], "Gdansk": ["Gdansk"], "Katowice": ["Katowice"], "Szczecin": ["Szczecin"], "Toruń": ["Toruń"], "Warsaw": ["Warsaw"], "Wrocław": ["Wrocław"]};
-        const regionIcons = {};
-        const destinationPaths = {"Kraków": "krakow", "Gdansk": "gdansk", "Katowice": "katowice", "Szczecin": "szczecin", "Toruń": "torun", "Warsaw": "warsaw", "Wrocław": "wroclaw"};
-        const hasRegions = false;
+        const polandData = {"Northern Poland": ["Gdansk", "Szczecin"], "Southern Poland": ["Katowice", "Kraków", "Zakopane"], "Central Poland": ["Lublin", "Łodz", "Poznan", "Toruń", "Warsaw"], "Western Poland": ["Wrocław"]};
+        const regionIcons = {"Northern Poland": "ph-anchor", "Southern Poland": "ph-mountains", "Central Poland": "ph-buildings", "Western Poland": "ph-wine"};
+        const destinationPaths = {"Gdansk": "gdansk", "Szczecin": "szczecin", "Katowice": "katowice", "Kraków": "krakow", "Zakopane": "zakopane", "Lublin": "lublin", "Łodz": "odz", "Poznan": "poznan", "Toruń": "torun", "Warsaw": "warsaw", "Wrocław": "wroclaw"};
+        const hasRegions = true;
         const countryIso2 = "PL";
 
         const normalizeText = (text) => {
@@ -125,7 +155,20 @@
                 normalizeText,
                 destinationUrl,
             });
-
+            if (hasRegions) {
+                await TGCountryMap.init({
+                    selector: '#country-map',
+                    mapId: "poland",
+                    countryName: "Poland",
+                    countryData: polandData,
+                    destinationPaths,
+                    hasRegions,
+                    iso2: countryIso2,
+                    flagPath: "../../assets/flags/w40/pl.png",
+                    assetsBase: "../../assets/",
+                    activation: TGDestinationActivation,
+                });
+            }
             TGDestinationActivation.setupSearch();
         });
     </script>

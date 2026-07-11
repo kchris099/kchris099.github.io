@@ -3,4 +3,14 @@
 
 const blacklistText = `
 Bern
+
+Geneva
+
+Interlaken
+
+Lausanne
+
+Lucerne
+
+Zurich
 `;

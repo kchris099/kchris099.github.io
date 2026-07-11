@@ -26,4 +26,14 @@ Valladolid
 Salamanca
 
 Santander
+
+Cabo De Gata
+
+Formentera
+
+Jerez De La Frontera
+
+Merida
+
+Tarragona
 `;

@@ -76,4 +76,50 @@ Pittsburgh, PA
 Louisville, KY
 
 Oklahoma City, OK
+
+Arches, UT
+
+Asheville, NC
+
+Big Sur, CA
+
+Bryce Canyon, UT
+
+Charleston, SC
+
+Death Valley, CA
+
+Grand Canyon, AZ
+
+Indianapolis
+
+Jacksonville
+
+Joshua Tree, CA
+
+Kansas City
+
+Key West, FL
+
+Miami
+
+Mount Rainier, WA
+
+Pittsburgh
+
+Portland, ME
+
+San Antonio
+
+Santa Fe, NM
+
+Savannah, GA
+
+Sedona, AZ
+
+Taos, NM
+
+Yosemite, CA
+
+Zion, UT
 `;

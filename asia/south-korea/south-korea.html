@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/homepage-activation.css">
     <link rel="stylesheet" href="../../assets/destination-activation.css">
+    <link rel="stylesheet" href="../../assets/country-map.css">
     <script src="../../assets/lenis.min.js"></script>
     <script src="../../assets/tg-smooth-scroll.js"></script>
 </head>
@@ -69,6 +70,32 @@
         </header>
 
         <section id="regions-container" class="continents-grid" aria-label="South Korea regions"></section>
+        <section class="country-map-section" aria-labelledby="country-map-heading">
+            <div class="tg-section__header">
+                <span class="tg-section__eyebrow">Interactive Map</span>
+                <h2 id="country-map-heading" class="tg-section__title font-display">Explore <em>South Korea</em> by Region</h2>
+                <p class="tg-section__lead">Hover a region or destination to preview guides, then click a city to open its guide.</p>
+            </div>
+            <div class="map-panel country-map-panel">
+                <div id="country-map"></div>
+                <div class="map-legend country-map-legend">
+                    <div class="map-legend__row">
+                        <span class="map-legend__label">
+                            <span class="country-map-legend-dot country-map-legend-dot--active" aria-hidden="true"></span>
+                            Active:
+                        </span>
+                        <strong id="country-map-legend-active">0</strong>
+                    </div>
+                    <div class="map-legend__row">
+                        <span class="map-legend__label">
+                            <span class="country-map-legend-dot country-map-legend-dot--inactive" aria-hidden="true"></span>
+                            Inactive:
+                        </span>
+                        <strong id="country-map-legend-inactive">0</strong>
+                    </div>
+                </div>
+            </div>
+        </section>
         </div>
     </main>
 
@@ -92,13 +119,16 @@
     </button>
 
     <script src="blacklist.js"></script>
-    <script src="../../assets/destination-activation.js"></script>    <script src="../../assets/tg-page-chrome.js"></script>
+
+    <script src="../../assets/maps/south-korea-data.js"></script>
+    <script src="../../assets/country-guides.js"></script>
+    <script src="../../assets/country-map.js"></script>    <script src="../../assets/destination-activation.js"></script>    <script src="../../assets/tg-page-chrome.js"></script>
 
     <script>
-        const southkoreaData = {"Seoul": ["Seoul"], "Gyeongju": ["Gyeongju"]};
-        const regionIcons = {};
-        const destinationPaths = {"Seoul": "seoul", "Gyeongju": "gyeongju"};
-        const hasRegions = false;
+        const southkoreaData = {"Gyeongsang": ["Andong", "Busan", "Gyeongju", "Tongyeong"], "Gangwon": ["Gangneung", "Sokcho Seoraksan"], "Jeju": ["Jeju Island"], "Jeolla": ["Jeonju", "Yeosu"], "Capital Region": ["Seoul"]};
+        const regionIcons = {"Gyeongsang": "ph-temple", "Gangwon": "ph-mountains", "Jeju": "ph-island", "Jeolla": "ph-bowl-food", "Capital Region": "ph-city"};
+        const destinationPaths = {"Andong": "andong", "Busan": "busan", "Gyeongju": "gyeongju", "Tongyeong": "tongyeong", "Gangneung": "gangneung", "Sokcho Seoraksan": "sokcho-seoraksan", "Jeju Island": "jeju-island", "Jeonju": "jeonju", "Yeosu": "yeosu", "Seoul": "seoul"};
+        const hasRegions = true;
         const countryIso2 = "KR";
 
         const normalizeText = (text) => {
@@ -125,7 +155,20 @@
                 normalizeText,
                 destinationUrl,
             });
-
+            if (hasRegions) {
+                await TGCountryMap.init({
+                    selector: '#country-map',
+                    mapId: "south-korea",
+                    countryName: "South Korea",
+                    countryData: southkoreaData,
+                    destinationPaths,
+                    hasRegions,
+                    iso2: countryIso2,
+                    flagPath: "../../assets/flags/w40/kr.png",
+                    assetsBase: "../../assets/",
+                    activation: TGDestinationActivation,
+                });
+            }
             TGDestinationActivation.setupSearch();
         });
     </script>

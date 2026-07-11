@@ -43,4 +43,24 @@ Montecatini Terme
 Noto
 
 Catania
+
+Amalfi Coast
+
+Cagliari
+
+Cinque Terre
+
+Ferrara
+
+Lecce
+
+Matera
+
+Orvieto
+
+Padua
+
+Parma
+
+Perugia
 `;

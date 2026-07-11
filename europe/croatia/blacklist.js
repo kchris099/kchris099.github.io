@@ -9,4 +9,10 @@ Rijeka
 Split
 
 Trogir
+
+Plitvice Lakes National Park
+
+Pula
+
+Zadar
 `;

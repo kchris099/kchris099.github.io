@@ -15,4 +15,28 @@ Morelia
 San Miguel de Allende
 
 Puebla
+
+Bacalar
+
+Cozumel
+
+Guadalajara
+
+Holbox
+
+Isla Mujeres
+
+Merida
+
+Palenque
+
+San Cristobal De Las Casas
+
+Sayulita
+
+Taxco
+
+Tepoztlan
+
+Tulum
 `;

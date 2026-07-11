@@ -3,4 +3,10 @@
 
 const blacklistText = `
 Rotterdam
+
+Haarlem
+
+Maastricht
+
+Utrecht
 `;

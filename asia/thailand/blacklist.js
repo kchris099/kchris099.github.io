@@ -2,4 +2,12 @@
 // You do not need to write code. Just type the city name normally between the backticks.
 
 const blacklistText = `Phuket
+
+Ayutthaya
+
+Chiang Mai
+
+Chiang Rai
+
+Koh Samui
 `;

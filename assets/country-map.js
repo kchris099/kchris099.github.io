@@ -398,6 +398,13 @@
             const fitted = useJapanWideFit
                 ? { x: base.x, y: base.y, w: neededW, h: base.h }
                 : { x: base.x - extraW, y: base.y, w: neededW, h: base.h };
+            const wideShift = Number(this.mapData?.widePanelShiftX) || 0;
+            const wideAlign = String(this.mapData?.widePanelAlign || "west");
+            if (!useJapanWideFit) {
+                fitted.x = wideAlign === "center"
+                    ? base.x - extraW / 2 + wideShift
+                    : base.x - extraW + wideShift;
+            }
             const panelAlign = useJapanWideFit
                 ? (baseAnchor.startsWith("xMax") ? `xMinYMid ${parMode}` : baseAlign)
                 : baseAlign;

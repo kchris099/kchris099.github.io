@@ -11,4 +11,20 @@ Brasília
 Salvador
 
 Ouro Preto
+
+Belo Horizonte
+
+Bonito
+
+Buzios
+
+Florianopolis
+
+Jericoacoara
+
+Manaus
+
+Paraty
+
+Recife
 `;

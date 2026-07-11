@@ -5,4 +5,24 @@ const blacklistText = `
 Thessaloniki
 
 Rhodes
+
+Chania
+
+Corfu
+
+Delphi
+
+Kefalonia
+
+Meteora
+
+Mykonos
+
+Nafplio
+
+Naxos
+
+Paros
+
+Santorini
 `;

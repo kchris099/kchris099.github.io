@@ -5,4 +5,26 @@ const blacklistText = `
 Sydney
 
 Melbourne
+
+Adelaide
+
+Brisbane
+
+Broome
+
+Cairns
+
+Canberra
+
+Darwin
+
+Gold Coast
+
+Hobart
+
+Kakadu
+
+Perth
+
+Uluru Ayers Rock
 `;

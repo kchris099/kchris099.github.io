@@ -5,4 +5,12 @@ const blacklistText = `
 Cape Town
 
 Johannesburg
+
+Cape Winelands Stellenbosch Franschhoek
+
+Garden Route
+
+Kgalagadi
+
+Kruger
 `;

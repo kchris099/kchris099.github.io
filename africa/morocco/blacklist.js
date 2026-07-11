@@ -9,4 +9,6 @@ Fez
 Marrakesh
 
 Rabat
+
+Tangier
 `;

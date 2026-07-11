@@ -5,4 +5,8 @@ const blacklistText = `
 Bucharest
 
 Sighișoara
+
+Cluj Napoca
+
+Sibiu
 `;

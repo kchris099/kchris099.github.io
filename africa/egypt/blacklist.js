@@ -7,4 +7,10 @@ Cairo
 Luxor
 
 Alexandria
+
+Aswan
+
+Sharm El Sheikh
+
+Siwa Oasis
 `;

@@ -69,6 +69,26 @@ Kiel
 Regensburg
 
 Bad Kissingen
+
+Bad Reichenhall
+
+Berchtesgaden
+
+Freiburg Im Breisgau
+
+Konstanz
+
+Luneburg
+
+Mittenwald
+
+Oberammergau
+
+Schwangau
+
+Schwerin
+
+Schwetzingen
 `;
 
 

@@ -8,4 +8,12 @@ Gdansk
 Katowice
 
 Toruń
+
+Lublin
+
+Łodz
+
+Poznan
+
+Zakopane
 `;

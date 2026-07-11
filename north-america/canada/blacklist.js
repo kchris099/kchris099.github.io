@@ -17,4 +17,16 @@ Calgary
 Edmonton
 
 Ottawa
+
+Banff
+
+Halifax
+
+Niagara Falls Ontario
+
+Saskatoon
+
+Victoria
+
+Whistler
 `;

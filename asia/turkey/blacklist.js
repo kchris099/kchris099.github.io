@@ -11,4 +11,12 @@ Ephesus
 Göreme
 
 Konya
+
+Ankara
+
+Antalya
+
+Izmir
+
+Trabzon
 `;
