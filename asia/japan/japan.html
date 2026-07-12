@@ -69,7 +69,7 @@
                     <i class="ph ph-magnifying-glass search-bar__icon" aria-hidden="true"></i>
                     <input id="search-input" type="text" class="search-bar__input" placeholder="Search for a city or area" autocomplete="off" role="combobox" aria-autocomplete="list" aria-controls="search-results-list" aria-expanded="false">
                 </div>
-                <div id="search-results" class="search-results frosted-panel hidden" aria-label="Search suggestions">
+                <div id="search-results" class="search-results frosted-panel hidden" data-lenis-prevent data-tg-scroll-surface aria-label="Search suggestions">
                     <ul id="search-results-list" role="listbox" style="list-style:none;margin:0;padding:0.25rem 0;"></ul>
                 </div>
             </div>
@@ -80,7 +80,7 @@
             <div class="tg-section__header">
                 <span class="tg-section__eyebrow">Interactive Map</span>
                 <h2 id="country-map-heading" class="tg-section__title font-display">Explore <em>Japan</em> by Region</h2>
-                <p class="tg-section__lead">Hover a region or destination to preview guides, then click a city to open its guide.</p>
+                <p class="tg-section__lead">Hover or focus to preview a destination. On touch, tap a marker for details, then open its guide.</p>
             </div>
             <div class="map-panel country-map-panel">
                 <div id="country-map" role="region" aria-label="Interactive map of Japan destinations"></div>
@@ -128,15 +128,14 @@
 
     <script defer src="../../assets/maps/japan-data.js"></script>
     <script defer src="../../assets/country-guides.js"></script>
-    <script defer src="../../assets/country-map.js"></script>
-    <script defer src="../../assets/destination-activation.js"></script>
+    <script defer src="../../assets/country-map.js"></script>    <script defer src="../../assets/destination-activation.js"></script>
     <script defer src="../../assets/dev-country-toggle.js"></script>
     <script defer src="../../assets/tg-page-chrome.js"></script>
 
     <script>
-        const japanData = {"Kyushu": ["Beppu", "Fukuoka", "Kagoshima", "Kumamoto", "Mount Aso", "Nagasaki"], "Hokkaido": ["Hakodate", "Sapporo"], "Kanto": ["Hakone", "Kamakura", "Mount Fuji", "Nikko", "Tokyo", "Yokohama"], "Chubu": ["Hakuba", "Kanazawa", "Matsumoto", "Takayama"], "Kansai": ["Himeji", "Kobe", "Kyoto", "Nara", "Osaka", "Uji"], "Honshu": ["Hiroshima"], "Shikoku": ["Matsuyama"], "Okinawa": ["Naha"], "Sanyo": ["Okayama"], "Tohoku": ["Sendai"]};
-        const regionIcons = {"Kyushu": "ph-mountains", "Hokkaido": "ph-snowflake", "Kanto": "ph-city", "Chubu": "ph-image", "Kansai": "ph-flower-lotus", "Honshu": "ph-waves", "Shikoku": "ph-island", "Okinawa": "ph-tree-palm", "Sanyo": "ph-train", "Tohoku": "ph-compass"};
-        const destinationPaths = {"Beppu": "beppu", "Fukuoka": "fukuoka", "Kagoshima": "kagoshima", "Kumamoto": "kumamoto", "Mount Aso": "mount-aso", "Nagasaki": "nagasaki", "Hakodate": "hakodate", "Sapporo": "sapporo", "Hakone": "hakone", "Kamakura": "kamakura", "Mount Fuji": "mount-fuji", "Nikko": "nikko", "Tokyo": "tokyo", "Yokohama": "yokohama", "Hakuba": "hakuba", "Kanazawa": "kanazawa", "Matsumoto": "matsumoto", "Takayama": "takayama", "Himeji": "himeji", "Kobe": "kobe", "Kyoto": "kyoto", "Nara": "nara", "Osaka": "osaka", "Uji": "uji", "Hiroshima": "hiroshima", "Matsuyama": "matsuyama", "Naha": "naha", "Okayama": "okayama", "Sendai": "sendai"};
+        const japanData = {"Kyushu": ["Beppu", "Fukuoka", "Kagoshima", "Kumamoto", "Mount Aso", "Nagasaki"], "Hokkaido": ["Hakodate", "Sapporo"], "Kanto": ["Hakone", "Kamakura", "Mount Fuji", "Nikko", "Tokyo", "Yokohama"], "Chubu": ["Hakuba", "Kanazawa", "Matsumoto", "Takayama"], "Kansai": ["Himeji", "Kobe", "Kyoto", "Nara", "Osaka", "Uji"], "Chugoku": ["Hiroshima", "Okayama"], "Shikoku": ["Matsuyama"], "Okinawa": ["Naha"], "Tohoku": ["Sendai"]};
+        const regionIcons = {"Kyushu": "ph-mountains", "Hokkaido": "ph-snowflake", "Kanto": "ph-city", "Chubu": "ph-image", "Kansai": "ph-flower-lotus", "Chugoku": "ph-waves", "Shikoku": "ph-island", "Okinawa": "ph-tree-palm", "Tohoku": "ph-compass"};
+        const destinationPaths = {"Beppu": "beppu", "Fukuoka": "fukuoka", "Kagoshima": "kagoshima", "Kumamoto": "kumamoto", "Mount Aso": "mount-aso", "Nagasaki": "nagasaki", "Hakodate": "hakodate", "Sapporo": "sapporo", "Hakone": "hakone", "Kamakura": "kamakura", "Mount Fuji": "mount-fuji", "Nikko": "nikko", "Tokyo": "tokyo", "Yokohama": "yokohama", "Hakuba": "hakuba", "Kanazawa": "kanazawa", "Matsumoto": "matsumoto", "Takayama": "takayama", "Himeji": "himeji", "Kobe": "kobe", "Kyoto": "kyoto", "Nara": "nara", "Osaka": "osaka", "Uji": "uji", "Hiroshima": "hiroshima", "Okayama": "okayama", "Matsuyama": "matsuyama", "Naha": "naha", "Sendai": "sendai"};
         const hasRegions = true;
         const countryIso2 = "JP";
 
@@ -176,6 +175,7 @@
                     flagPath: "../../assets/flags/w40/jp.png",
                     assetsBase: "../../assets/",
                     activation: TGDestinationActivation,
+                    modernMap: true,
                 });
             }
             TGDestinationActivation.setupSearch();

@@ -228,9 +228,28 @@
         .search-results {
             position: absolute; top: calc(100% + 0.5rem); left: 0; right: 0;
             border-radius: 1rem;
-            max-height: 20rem; overflow-y: auto; z-index: 1000;
+            max-height: 20rem; overflow-y: auto; overscroll-behavior: contain;
+            touch-action: pan-y; -webkit-overflow-scrolling: touch; scrollbar-gutter: stable;
+            z-index: 1000;
             text-align: left;
         }
+        #search-results-list { list-style: none; margin: 0; padding: 0.35rem 0; }
+        #search-results-list > li { margin: 0; padding: 0; }
+        .search-result {
+            width: 100%; min-height: 3.75rem; display: flex; align-items: center;
+            justify-content: space-between; gap: 1rem; padding: 0.7rem 1.25rem;
+            color: var(--tg-off-white); text-align: left; text-decoration: none;
+            transition: background-color 150ms ease, color 150ms ease;
+        }
+        a.search-result:hover, a.search-result:focus-visible { background: rgba(79,189,186,0.1); outline: none; }
+        a.search-result:focus-visible { box-shadow: inset 3px 0 0 var(--tg-teal); }
+        .search-result__content { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; }
+        .search-result__title { max-width: 100%; overflow: hidden; color: var(--tg-off-white); font-size: 0.9375rem; font-weight: 600; line-height: 1.35; text-overflow: ellipsis; white-space: nowrap; }
+        .search-result__meta { margin-top: 0.15rem; color: var(--tg-meta); font-size: 0.75rem; line-height: 1.35; }
+        .search-result__media { width: 1.5rem; height: 1.1rem; flex: 0 0 auto; object-fit: cover; border-radius: 2px; box-shadow: 0 1px 4px rgba(0,0,0,0.35); }
+        .search-result--inactive .search-result__title { color: #a7adb8; }
+        .search-result--inactive .search-result__media { opacity: 0.55; }
+        .search-result--unavailable { cursor: not-allowed; opacity: 0.58; }
 
         /* Hero stats */
         .hero-stats {
@@ -658,7 +677,7 @@
                            aria-autocomplete="list" aria-controls="search-results-list"
                            aria-expanded="false">
                 </div>
-                <div id="search-results" class="search-results frosted-panel hidden" aria-label="Search suggestions">
+                <div id="search-results" class="search-results frosted-panel hidden" data-lenis-prevent data-tg-scroll-surface aria-label="Search suggestions">
                     <ul id="search-results-list" role="listbox" style="list-style:none;margin:0;padding:0.25rem 0;"></ul>
                 </div>
             </div>
@@ -1501,6 +1520,7 @@
                 } else {
                     results.forEach(result => {
                         const li = document.createElement('li');
+                        li.setAttribute('role', 'option');
                         li.innerHTML = TGActivation.renderSearchResult(result, countryCodes);
                         searchResultsList.appendChild(li);
                     });
@@ -1548,6 +1568,29 @@
                 if (event.key === 'Escape') {
                     setSearchOpen(false);
                     searchInput.select();
+                } else if (event.key === 'ArrowDown') {
+                    const firstResult = searchResultsList.querySelector('a.search-result');
+                    if (firstResult) {
+                        event.preventDefault();
+                        firstResult.focus();
+                    }
+                }
+            });
+
+            searchResultsList.addEventListener('keydown', (event) => {
+                const links = [...searchResultsList.querySelectorAll('a.search-result')];
+                const index = links.indexOf(document.activeElement);
+                if (event.key === 'Escape') {
+                    event.preventDefault();
+                    setSearchOpen(false);
+                    searchInput.focus();
+                } else if (event.key === 'ArrowDown' && index >= 0) {
+                    event.preventDefault();
+                    links[Math.min(index + 1, links.length - 1)]?.focus();
+                } else if (event.key === 'ArrowUp' && index >= 0) {
+                    event.preventDefault();
+                    if (index === 0) searchInput.focus();
+                    else links[index - 1]?.focus();
                 }
             });
         };

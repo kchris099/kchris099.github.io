@@ -10,6 +10,12 @@
 
     const normalizeCode = (code) => String(code || "").toUpperCase();
 
+    const escapeHtml = (value) => String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+
     const isAtlasTheme = () => document.body?.classList?.contains("tg-theme");
 
     const closeAllRegionDropdowns = () => {
@@ -768,13 +774,13 @@
         renderAtlasSearchResult(result) {
             const active = this.isActive(result.name);
             const hasGuide = this.hasGuide(result.name);
-            if (active) {
-                return `<a href="${result.url}" class="flex items-center justify-between px-6 py-3 hover:bg-deepblue-800/80 transition-colors group"><div class="flex flex-col items-start text-left"><span class="text-white font-medium group-hover:text-neon-cyan transition-colors">${result.name}</span><span class="text-xs text-slate-500">${result.region}</span></div><i class="ph ph-arrow-right text-slate-600 group-hover:text-neon-cyan group-hover:translate-x-1 transition-all"></i></a>`;
-            }
+            const name = escapeHtml(result.name);
+            const region = escapeHtml(result.region);
+            const url = escapeHtml(result.url);
             if (hasGuide) {
-                return `<a href="${result.url}" class="flex items-center justify-between px-6 py-3 hover:bg-deepblue-800/50 transition-colors group"><div class="flex flex-col items-start text-left"><span class="text-slate-500 font-medium group-hover:text-slate-300 transition-colors">${result.name}</span><span class="text-xs text-slate-600">${result.region}</span></div><i class="ph ph-arrow-right opacity-50 text-slate-600 group-hover:text-slate-400 group-hover:translate-x-1 transition-all"></i></a>`;
+                return `<a href="${url}" class="search-result${active ? "" : " search-result--inactive"}"><span class="search-result__content"><span class="search-result__title">${name}</span><span class="search-result__meta">${region}</span></span><i class="ph ph-arrow-right search-result__icon" aria-hidden="true"></i></a>`;
             }
-            return `<div class="flex items-center justify-between px-6 py-3 cursor-not-allowed group"><div class="flex flex-col items-start text-left"><span class="text-slate-500 font-medium">${result.name}</span><span class="text-xs text-slate-600">${result.region}</span></div><i class="ph ph-arrow-right opacity-50 text-slate-600"></i></div>`;
+            return `<div class="search-result search-result--unavailable"><span class="search-result__content"><span class="search-result__title">${name}</span><span class="search-result__meta">${region}</span></span><i class="ph ph-clock search-result__icon" aria-hidden="true"></i></div>`;
         },
 
         setupSearch() {
@@ -799,13 +805,8 @@
                 } else {
                     results.forEach((result) => {
                         const item = document.createElement("li");
-                        item.innerHTML = isAtlasTheme()
-                            ? this.renderAtlasSearchResult(result)
-                            : this.isActive(result.name)
-                              ? `<a href="${result.url}" class="flex items-center justify-between px-6 py-3 hover:bg-deepblue-800/80 transition-colors group"><div class="flex flex-col"><span class="text-white font-medium group-hover:text-neon-cyan transition-colors">${result.name}</span><span class="text-xs text-slate-500">${result.region}</span></div><i class="ph ph-arrow-right text-slate-600 group-hover:text-neon-cyan group-hover:translate-x-1 transition-all"></i></a>`
-                              : this.hasGuide(result.name)
-                                ? `<a href="${result.url}" class="flex items-center justify-between px-6 py-3 hover:bg-deepblue-800/50 transition-colors group"><div class="flex flex-col"><span class="text-slate-500 font-medium group-hover:text-slate-300 transition-colors">${result.name}</span><span class="text-xs text-slate-600">${result.region}</span></div><i class="ph ph-arrow-right opacity-50 text-slate-600 group-hover:text-slate-400 group-hover:translate-x-1 transition-all"></i></a>`
-                                : `<div class="flex items-center justify-between px-6 py-3 cursor-not-allowed group"><div class="flex flex-col"><span class="text-slate-500 font-medium">${result.name}</span><span class="text-xs text-slate-600">${result.region}</span></div><i class="ph ph-arrow-right opacity-50 text-slate-600"></i></div>`;
+                        item.setAttribute("role", "option");
+                        item.innerHTML = this.renderAtlasSearchResult(result);
                         searchResultsList.appendChild(item);
                     });
                 }
@@ -848,6 +849,29 @@
                 if (event.key === "Escape") {
                     setSearchOpen(false);
                     searchInput.select();
+                } else if (event.key === "ArrowDown") {
+                    const firstResult = searchResultsList.querySelector("a.search-result");
+                    if (firstResult) {
+                        event.preventDefault();
+                        firstResult.focus();
+                    }
+                }
+            });
+
+            searchResultsList.addEventListener("keydown", (event) => {
+                const links = [...searchResultsList.querySelectorAll("a.search-result")];
+                const index = links.indexOf(document.activeElement);
+                if (event.key === "Escape") {
+                    event.preventDefault();
+                    setSearchOpen(false);
+                    searchInput.focus();
+                } else if (event.key === "ArrowDown" && index >= 0) {
+                    event.preventDefault();
+                    links[Math.min(index + 1, links.length - 1)]?.focus();
+                } else if (event.key === "ArrowUp" && index >= 0) {
+                    event.preventDefault();
+                    if (index === 0) searchInput.focus();
+                    else links[index - 1]?.focus();
                 }
             });
         },

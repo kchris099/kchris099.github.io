@@ -10,6 +10,11 @@
     const ZOOM_MAX = 8;
     const ZOOM_STEP = 1.35;
     const MOBILE_INSET_MAX_WIDTH = 767;
+    const MODERN_MARKER_RADIUS_MIN_PX = 6;
+    const MODERN_MARKER_RADIUS_MAX_PX = 14;
+    const MODERN_MARKER_HIT_RADIUS_PX = 24;
+    const MODERN_MARKER_SCALE_MIN = 0.85;
+    const MODERN_MARKER_SCALE_MAX = 1.15;
 
     const markerRadiusForLocations = (locations) => {
         const count = Number(locations) || 0;
@@ -105,7 +110,10 @@
 
     class CountryMap {
         constructor(options) {
-            this.options = options;
+            this.options = {
+                ...options,
+                modernMap: options.modernMap !== false,
+            };
             this.root = document.querySelector(options.selector);
             this.activation = options.activation || readActivation();
             this.mapData = null;
@@ -114,6 +122,7 @@
                 hoveredRegion: null,
                 hoveredDestination: null,
                 hoveredCountry: null,
+                selectedDestination: null,
             };
             this.neighborByCode = new Map();
             this.markerElements = new Map();
@@ -130,17 +139,20 @@
             this.insetDrawerMarkersLayer = null;
             this.insetToggle = null;
             this.insetDrawerOpen = false;
+            this.lastMobileLayout = null;
             this.insetMobileQuery = null;
             this.boundInsetMobileChange = null;
             this.markerTouchQuery = null;
             this.boundMarkerTouchChange = null;
             this.insetResizeObserver = null;
             this.panelResizeObserver = null;
+            this.renderObserver = null;
             this.baseViewBox = null;
             this.baseAlign = "xMaxYMid meet";
             this.zoomState = { scale: 1, x: 0, y: 0 };
             this.defaultZoomState = { scale: 1, x: 0, y: 0 };
             this.zoomControls = null;
+            this.selectionPanel = null;
             this.panState = null;
             this.activePointers = new Map();
             this.pinchSnapshot = null;
@@ -174,8 +186,28 @@
                 return false;
             }
 
-            this.render();
             mapInstance = this;
+            if (
+                this.options.modernMap &&
+                this.options.lazyRender !== false &&
+                typeof IntersectionObserver !== "undefined"
+            ) {
+                this.root.classList.add("country-map--pending");
+                this.root.setAttribute("aria-busy", "true");
+                this.renderObserver = new IntersectionObserver((entries) => {
+                    if (!entries.some((entry) => entry.isIntersecting)) {
+                        return;
+                    }
+                    this.renderObserver?.disconnect();
+                    this.renderObserver = null;
+                    this.root.classList.remove("country-map--pending");
+                    this.root.setAttribute("aria-busy", "false");
+                    this.render();
+                }, { rootMargin: "500px 0px" });
+                this.renderObserver.observe(this.root);
+                return true;
+            }
+            this.render();
             return true;
         }
 
@@ -236,6 +268,19 @@
         }
 
         getMarkerRadius(meta, focused = false, marker = null) {
+            if (this.options.modernMap) {
+                const count = Math.max(0, Math.min(MARKER_LOC_MAX, Number(meta.locations) || 0));
+                const progress = Math.sqrt(count / MARKER_LOC_MAX);
+                const cssRadius = MODERN_MARKER_RADIUS_MIN_PX +
+                    (MODERN_MARKER_RADIUS_MAX_PX - MODERN_MARKER_RADIUS_MIN_PX) * progress +
+                    (focused ? 2 : 0);
+                const configuredScale = Number(this.mapData?.markerRadiusScale) || 1;
+                const markerRadiusScale = Math.min(
+                    MODERN_MARKER_SCALE_MAX,
+                    Math.max(MODERN_MARKER_SCALE_MIN, configuredScale),
+                );
+                return (cssRadius * markerRadiusScale) / this.getOuterSvgScreenScale();
+            }
             const radius = markerRadiusForLocations(meta.locations);
             const base = focused ? radius * MARKER_RADIUS_FOCUS_SCALE : radius;
             const markerRadiusScale = Number(this.mapData?.markerRadiusScale) || 1;
@@ -257,6 +302,9 @@
 
         getMarkerHitRadius(meta, focused = false, marker = null) {
             const visualRadius = this.getMarkerRadius(meta, focused, marker);
+            if (this.options.modernMap && this.useExpandedMarkerHit()) {
+                return Math.max(visualRadius, MODERN_MARKER_HIT_RADIUS_PX / this.getOuterSvgScreenScale());
+            }
             if (!this.useExpandedMarkerHit()) {
                 return visualRadius;
             }
@@ -283,7 +331,7 @@
                 }
                 const screenX = scale * localX + x;
                 const screenY = scale * localY + y;
-                marker.querySelectorAll(".country-map-marker__dot, .country-map-marker__hit").forEach((node) => {
+                marker.querySelectorAll(".country-map-marker__halo, .country-map-marker__dot, .country-map-marker__hit").forEach((node) => {
                     node.setAttribute("cx", String(screenX));
                     node.setAttribute("cy", String(screenY));
                 });
@@ -296,11 +344,15 @@
 
         setMarkerRadius(marker, meta, focused = false) {
             const dot = marker?.querySelector(".country-map-marker__dot");
+            const halo = marker?.querySelector(".country-map-marker__halo");
             const hit = marker?.querySelector(".country-map-marker__hit");
             const visualRadius = this.getMarkerRadius(meta, focused, marker);
             const hitRadius = this.getMarkerHitRadius(meta, focused, marker);
             if (dot) {
                 dot.setAttribute("r", String(visualRadius));
+            }
+            if (halo) {
+                halo.setAttribute("r", String(visualRadius * 1.65));
             }
             if (hit) {
                 hit.setAttribute("r", String(hitRadius));
@@ -378,8 +430,12 @@
                 return;
             }
 
-            const base = this.baseViewBox;
-            const baseAlign = this.formatPreserveAspectRatio(this.baseAlign);
+            const base = this.getResponsiveBaseViewBox();
+            this.baseViewBox = base;
+            const responsiveAlign = this.options.modernMap && this.isMobileInsetLayout()
+                ? "xMidYMid meet"
+                : this.baseAlign;
+            const baseAlign = this.formatPreserveAspectRatio(responsiveAlign);
             const [, parMode = "meet"] = baseAlign.match(/\s(meet|slice)$/i) || [];
             const baseAnchor = baseAlign.split(/\s+/)[0] || "xMaxYMid";
             const neededW = rect.width * (base.h / rect.height);
@@ -417,12 +473,17 @@
                 this.panelResizeObserver.disconnect();
                 this.panelResizeObserver = null;
             }
+            if (this.renderObserver) {
+                this.renderObserver.disconnect();
+                this.renderObserver = null;
+            }
             const target = this.root;
             if (!target || typeof ResizeObserver === "undefined") {
                 return;
             }
             this.panelResizeObserver = new ResizeObserver(() => {
                 this.fitViewBoxToPanel();
+                this.syncAllMarkerGeometry();
                 if (!this.isMobileInsetLayout()) {
                     this.syncInsetScreenTransform();
                 }
@@ -431,6 +492,9 @@
         }
 
         resolveDefaultZoomState() {
+            if (this.options.modernMap && this.isMobileInsetLayout()) {
+                return { scale: 1, x: 0, y: 0 };
+            }
             const view = this.mapData?.main?.defaultView;
             if (!view) {
                 return { scale: 1, x: 0, y: 0 };
@@ -439,6 +503,34 @@
                 scale: Number(view.scale) || 1,
                 x: Number(view.x) || 0,
                 y: Number(view.y) || 0,
+            };
+        }
+
+        getOuterSvgScreenScale() {
+            const matrix = this.svg?.getScreenCTM?.();
+            if (matrix?.a) {
+                return Math.abs(matrix.a);
+            }
+            const rect = this.root?.getBoundingClientRect?.();
+            const viewBox = this.svg?.viewBox?.baseVal;
+            if (rect?.width && viewBox?.width) {
+                return rect.width / viewBox.width;
+            }
+            return 1;
+        }
+
+        getResponsiveBaseViewBox() {
+            if (!this.options.modernMap || !this.isMobileInsetLayout()) {
+                return this.parseViewBox(this.mapData.viewBox);
+            }
+            const frame = this.mapData.main.frame;
+            const padX = 16;
+            const padY = 12;
+            return {
+                x: frame.x - padX,
+                y: frame.y - padY,
+                w: frame.width + padX * 2,
+                h: frame.height + padY * 2,
             };
         }
 
@@ -619,11 +711,25 @@
             path.setAttribute("data-region", regionName);
             path.setAttribute("fill-rule", "evenodd");
             path.setAttribute("tabindex", "0");
-            path.setAttribute("role", "button");
+            path.setAttribute("role", this.options.modernMap ? "group" : "button");
             path.setAttribute("aria-label", `${regionName} region`);
             path.addEventListener("mousedown", (event) => {
                 event.preventDefault();
             });
+            if (this.options.modernMap) {
+                path.addEventListener("focus", () => {
+                    this.state.hoveredRegion = regionName;
+                    this.applyShellState();
+                    this.showRegionOverlay(regionName);
+                });
+                path.addEventListener("blur", () => {
+                    if (this.state.hoveredRegion === regionName) {
+                        this.state.hoveredRegion = null;
+                        this.applyShellState();
+                        this.hideOverlay();
+                    }
+                });
+            }
             return path;
         }
 
@@ -797,6 +903,13 @@
             }
 
             const mobile = this.isMobileInsetLayout();
+            if (this.options.modernMap && this.lastMobileLayout !== null && mobile !== this.lastMobileLayout) {
+                this.defaultZoomState = this.resolveDefaultZoomState();
+                this.zoomState = { ...this.defaultZoomState };
+                this.applyZoomTransform();
+                this.fitViewBoxToPanel();
+            }
+            this.lastMobileLayout = mobile;
             if (this.insetScreenGroup) {
                 this.insetScreenGroup.classList.toggle(
                     "country-map-insets-screen--mobile-hidden",
@@ -869,6 +982,7 @@
 
             const mapRoot = document.createElement("div");
             mapRoot.className = "country-map-root";
+            mapRoot.classList.toggle("country-map-root--modern", Boolean(this.options.modernMap));
             const strokeWidthScale = Number(this.mapData?.strokeWidthScale) || 1;
             mapRoot.style.setProperty("--country-map-region-stroke", String(3.5 * strokeWidthScale));
             mapRoot.style.setProperty("--country-map-neighbor-stroke", String(2.5 * strokeWidthScale));
@@ -967,6 +1081,7 @@
             this.overlay.setAttribute("aria-hidden", "true");
 
             this.zoomControls = this.createZoomControls();
+            this.selectionPanel = this.createSelectionPanel();
             const insetDrawer = this.createInsetDrawer();
             const insetToggle = this.createInsetToggle();
 
@@ -980,6 +1095,9 @@
                 this.shell.appendChild(insetDrawer);
             }
             this.shell.appendChild(mapRoot);
+            if (this.selectionPanel) {
+                this.shell.appendChild(this.selectionPanel);
+            }
             this.root.innerHTML = "";
             this.root.appendChild(this.shell);
 
@@ -998,7 +1116,7 @@
             document.addEventListener("keydown", this.boundKeyDown);
             this.applyRegionActiveState();
             this.baseAlign = this.mapData.align || "xMaxYMid meet";
-            this.baseViewBox = this.parseViewBox(this.mapData.viewBox);
+            this.baseViewBox = this.getResponsiveBaseViewBox();
             this.applyZoomTransform();
             this.fitViewBoxToPanel();
             this.syncInsetScreenTransform();
@@ -1007,6 +1125,7 @@
             this.setupInsetMobileListener();
             this.setupMarkerTouchListener();
             this.syncInsetMobileState();
+            this.syncAllMarkerGeometry();
             this.updateLegendCounts();
         }
 
@@ -1130,11 +1249,69 @@
         createZoomControls() {
             const controls = document.createElement("div");
             controls.className = "country-map-zoom-controls";
+            controls.classList.toggle("country-map-zoom-controls--modern", Boolean(this.options.modernMap));
             controls.innerHTML = `
                 <button type="button" class="country-map-zoom-btn country-map-zoom-btn--in" aria-label="Zoom in">+</button>
                 <button type="button" class="country-map-zoom-btn country-map-zoom-btn--out" aria-label="Zoom out">&minus;</button>
+                ${this.options.modernMap ? '<button type="button" class="country-map-zoom-btn country-map-zoom-btn--reset" aria-label="Reset map view"><span aria-hidden="true">&#8634;</span></button>' : ''}
             `;
             return controls;
+        }
+
+        createSelectionPanel() {
+            if (!this.options.modernMap) {
+                return null;
+            }
+            const panel = document.createElement("aside");
+            panel.className = "country-map-selection";
+            panel.hidden = true;
+            panel.setAttribute("aria-live", "polite");
+            panel.setAttribute("aria-label", "Selected destination");
+            panel.addEventListener("click", (event) => {
+                if (event.target.closest(".country-map-selection__close")) {
+                    this.clearSelectedDestination();
+                }
+            });
+            return panel;
+        }
+
+        selectDestination(meta) {
+            if (!meta || !this.selectionPanel) {
+                return;
+            }
+            this.state.selectedDestination = meta.name;
+            this.markerElements.forEach((marker, name) => {
+                marker.classList.toggle("country-map-marker--selected", name === meta.name);
+                this.setMarkerRadius(marker, this.getMarkerMeta(name), name === meta.name);
+            });
+            this.selectionPanel.innerHTML = `
+                <button type="button" class="country-map-selection__close" aria-label="Close destination details">&times;</button>
+                <div class="country-map-selection__eyebrow">${escapeHtml(meta.region || this.options.countryName)}</div>
+                <div class="country-map-selection__body">
+                    <div>
+                        <strong class="country-map-selection__title">${escapeHtml(meta.name)}</strong>
+                        <span class="country-map-selection__meta">${meta.locations} guide location${meta.locations === 1 ? "" : "s"}</span>
+                    </div>
+                    ${meta.url ? `<a class="country-map-selection__cta" href="${escapeHtml(meta.url)}">Open guide <span aria-hidden="true">&rarr;</span></a>` : ""}
+                </div>
+            `;
+            this.selectionPanel.hidden = false;
+            this.hideOverlay();
+        }
+
+        clearSelectedDestination() {
+            this.state.selectedDestination = null;
+            this.markerElements.forEach((marker, name) => {
+                marker.classList.remove("country-map-marker--selected");
+                const meta = this.getMarkerMeta(name);
+                if (meta) {
+                    this.setMarkerRadius(marker, meta, false);
+                }
+            });
+            if (this.selectionPanel) {
+                this.selectionPanel.hidden = true;
+                this.selectionPanel.innerHTML = "";
+            }
         }
 
         applyZoomTransform() {
@@ -1151,6 +1328,12 @@
                 mapRoot.classList.toggle("country-map-root--zoomed", this.isZoomedIn());
             }
             this.syncMainMarkerPositions();
+            if (this.options.modernMap) {
+                const zoomIn = this.zoomControls?.querySelector(".country-map-zoom-btn--in");
+                const zoomOut = this.zoomControls?.querySelector(".country-map-zoom-btn--out");
+                if (zoomIn) zoomIn.disabled = scale >= ZOOM_MAX - 0.001;
+                if (zoomOut) zoomOut.disabled = !this.isZoomedIn();
+            }
             this.syncOverlayPosition();
         }
 
@@ -1417,11 +1600,18 @@
             }
             const marker = event.target.closest?.(".country-map-marker[data-destination]");
             if (!marker) {
+                if (this.options.modernMap) {
+                    this.clearSelectedDestination();
+                }
                 return;
             }
             const meta = this.getMarkerMeta(marker.dataset.destination);
             if (meta) {
-                this.navigateToMarkerMeta(meta);
+                if (this.options.modernMap) {
+                    this.selectDestination(meta);
+                } else {
+                    this.navigateToMarkerMeta(meta);
+                }
             }
         }
 
@@ -1453,6 +1643,7 @@
 
             const zoomIn = this.zoomControls.querySelector(".country-map-zoom-btn--in");
             const zoomOut = this.zoomControls.querySelector(".country-map-zoom-btn--out");
+            const reset = this.zoomControls.querySelector(".country-map-zoom-btn--reset");
 
             zoomIn?.addEventListener("click", (event) => {
                 event.preventDefault();
@@ -1466,6 +1657,13 @@
                 event.stopPropagation();
                 const center = this.getMapCenterClientPoint(mapRoot);
                 this.zoomByFactor(1 / ZOOM_STEP, center.x, center.y);
+            });
+
+            reset?.addEventListener("click", (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                this.zoomState = { ...this.defaultZoomState };
+                this.applyZoomTransform();
             });
 
             mapRoot.addEventListener(
@@ -1543,6 +1741,15 @@
             hit.setAttribute("cy", String(y));
             hit.setAttribute("r", String(hitRadius));
 
+            let halo = null;
+            if (this.options.modernMap) {
+                halo = document.createElementNS(SVG_NS, "circle");
+                halo.setAttribute("class", "country-map-marker__halo");
+                halo.setAttribute("cx", String(x));
+                halo.setAttribute("cy", String(y));
+                halo.setAttribute("r", String(radius * 1.65));
+            }
+
             const dot = document.createElementNS(SVG_NS, "circle");
             dot.setAttribute("class", "country-map-marker__dot");
             dot.setAttribute("cx", String(x));
@@ -1550,6 +1757,9 @@
             dot.setAttribute("r", String(radius));
 
             group.appendChild(hit);
+            if (halo) {
+                group.appendChild(halo);
+            }
             group.appendChild(dot);
 
             const activateMarker = (domEvent) => {
@@ -1575,6 +1785,26 @@
                     }
                 }
             });
+            if (this.options.modernMap) {
+                group.addEventListener("focus", () => {
+                    this.state.hoveredDestination = meta.name;
+                    this.state.hoveredRegion = meta.region || null;
+                    group.classList.add("country-map-marker--focused");
+                    this.setMarkerRadius(group, meta, true);
+                    this.applyShellState();
+                    this.showDestinationOverlay(meta);
+                });
+                group.addEventListener("blur", () => {
+                    if (this.state.hoveredDestination === meta.name) {
+                        this.state.hoveredDestination = null;
+                        this.state.hoveredRegion = null;
+                        group.classList.remove("country-map-marker--focused");
+                        this.setMarkerRadius(group, meta, false);
+                        this.applyShellState();
+                        this.hideOverlay();
+                    }
+                });
+            }
 
             this.markerElements.set(meta.name, group);
             return group;
@@ -1618,6 +1848,10 @@
         handleMarkerOver(event) {
             const marker = event.target.closest(".country-map-marker[data-destination]");
             if (!marker) {
+                return;
+            }
+            if (this.options.modernMap && this.useExpandedMarkerHit() && this.state.selectedDestination) {
+                this.hideOverlay();
                 return;
             }
             const name = marker.dataset.destination;
@@ -1820,6 +2054,10 @@
             if (!this.overlay) {
                 return;
             }
+            if (this.options.modernMap && this.useExpandedMarkerHit() && this.state.selectedDestination) {
+                this.hideOverlay();
+                return;
+            }
             this.overlay.innerHTML = this.buildDestinationTooltipHtml(meta);
             this.overlay.classList.add("country-map-overlay--visible");
             this.overlay.setAttribute("aria-hidden", "false");
@@ -1986,6 +2224,10 @@
             if (event.key !== "Escape") {
                 return;
             }
+            if (this.state.selectedDestination) {
+                this.clearSelectedDestination();
+                return;
+            }
             if (this.insetDrawerOpen) {
                 this.setInsetDrawerOpen(false);
                 return;
@@ -2048,6 +2290,10 @@
             if (this.panelResizeObserver) {
                 this.panelResizeObserver.disconnect();
                 this.panelResizeObserver = null;
+            }
+            if (this.renderObserver) {
+                this.renderObserver.disconnect();
+                this.renderObserver = null;
             }
             if (mapInstance === this) {
                 mapInstance = null;

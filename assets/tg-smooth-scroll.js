@@ -19,6 +19,8 @@
         ".continent-dropdown__list",
         ".custom-scrollbar",
         ".country-map-inset-drawer__panel",
+        ".search-results",
+        "[data-tg-scroll-surface]",
     ].join(", ");
 
     const isExempt = (node) =>
@@ -31,6 +33,33 @@
         touchMultiplier: 1.5,
         prevent: (node) => isExempt(node),
     });
+
+    // Chrome's middle-button autoscroll drives the window natively. If Lenis is
+    // still active, its animation frame can keep restoring the previous target
+    // (most noticeably at the bottom of the page) until the easing completes.
+    // Yield to native scrolling after a middle click, then resume Lenis before
+    // the next regular input reaches its own event listeners.
+    let isNativeAutoScrolling = false;
+
+    const resumeSmoothScroll = () => {
+        if (!isNativeAutoScrolling) {
+            return;
+        }
+        isNativeAutoScrolling = false;
+        lenis.start();
+    };
+
+    window.addEventListener("mousedown", (event) => {
+        if (event.button === 1) {
+            isNativeAutoScrolling = true;
+            lenis.stop();
+            return;
+        }
+        resumeSmoothScroll();
+    }, { capture: true });
+    window.addEventListener("wheel", resumeSmoothScroll, { capture: true, passive: true });
+    window.addEventListener("touchstart", resumeSmoothScroll, { capture: true, passive: true });
+    window.addEventListener("keydown", resumeSmoothScroll, { capture: true });
 
     function raf(time) {
         lenis.raf(time);

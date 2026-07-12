@@ -10,6 +10,12 @@
 
     const normalizeCode = (code) => String(code || "").toUpperCase();
 
+    const escapeHtml = (value) => String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+
     const findGuideByCountryName = (countryName) => {
         const guides = Object.values(readTG().allCountryGuides || {});
         return guides.find((guide) => guide.name === countryName) || null;
@@ -346,33 +352,14 @@
             const active = this.isCountryVisuallyActive(result.name);
             const url = this.getCountryPageUrl(result.name);
             const code = (countryCodes || {})[result.name] || "xx";
+            const name = escapeHtml(result.name);
+            const continent = escapeHtml(result.continent);
 
             if (url) {
-                const titleClass = active
-                    ? "text-white font-medium group-hover:text-neon-cyan transition-colors"
-                    : "text-slate-500 font-medium group-hover:text-slate-300 transition-colors";
-                const subtitleClass = active ? "text-xs text-slate-500" : "text-xs text-slate-600";
-                const imageClass = active ? "w-6 rounded-sm shadow-sm" : "w-6 rounded-sm shadow-sm opacity-50";
-                return `
-                    <a href="${url}" class="flex items-center justify-between px-6 py-3 hover:bg-deepblue-800/80 transition-colors group">
-                        <div class="flex flex-col items-start text-left">
-                            <span class="${titleClass}">${result.name}</span>
-                            <span class="${subtitleClass}">${result.continent}</span>
-                        </div>
-                        <img src="assets/flags/w20/${code}.png" alt="flag" class="${imageClass}">
-                    </a>
-                `;
+                return `<a href="${escapeHtml(url)}" class="search-result${active ? "" : " search-result--inactive"}"><span class="search-result__content"><span class="search-result__title">${name}</span><span class="search-result__meta">${continent}</span></span><img src="assets/flags/w20/${escapeHtml(code)}.png" alt="" class="search-result__media"></a>`;
             }
 
-            return `
-                <div class="flex items-center justify-between px-6 py-3 cursor-not-allowed group">
-                    <div class="flex flex-col items-start text-left">
-                        <span class="text-slate-500 font-medium">${result.name}</span>
-                        <span class="text-xs text-slate-600">${result.continent}</span>
-                    </div>
-                    <img src="assets/flags/w20/${code}.png" alt="flag" class="w-6 rounded-sm shadow-sm opacity-50">
-                </div>
-            `;
+            return `<div class="search-result search-result--unavailable"><span class="search-result__content"><span class="search-result__title">${name}</span><span class="search-result__meta">${continent}</span></span><img src="assets/flags/w20/${escapeHtml(code)}.png" alt="" class="search-result__media"></div>`;
         },
 
         getTooltipHtml(officialName, regionName, code, countryCodes) {
