@@ -162,6 +162,8 @@
             this.boundPointerMove = this.handlePointerMove.bind(this);
             this.boundPointerUp = this.handlePointerUp.bind(this);
             this.boundPointerCancel = this.handlePointerCancel.bind(this);
+            this.boundTouchMove = this.handleTouchMove.bind(this);
+            this.boundNativeGesture = this.handleNativeGesture.bind(this);
             this.boundRegionOver = this.handleRegionOver.bind(this);
             this.boundRegionOut = this.handleRegionOut.bind(this);
             this.boundMarkerOver = this.handleMarkerOver.bind(this);
@@ -1492,6 +1494,10 @@
             this.activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
 
             if (this.activePointers.size === 2) {
+                // Claim the pinch before the browser can promote it to page zoom.
+                // `touch-action` handles standards-compliant browsers; this
+                // preventDefault is also needed by older mobile Safari versions.
+                event.preventDefault();
                 const mapRoot = event.currentTarget;
                 if (
                     this.panState?.pointerId &&
@@ -1629,11 +1635,28 @@
             }
         }
 
+        handleTouchMove(event) {
+            if (event.touches.length > 1) {
+                event.preventDefault();
+            }
+        }
+
+        handleNativeGesture(event) {
+            event.preventDefault();
+        }
+
         setupPointerInteractions(mapRoot) {
             mapRoot.addEventListener("pointerdown", this.boundPointerDown);
             mapRoot.addEventListener("pointermove", this.boundPointerMove, { passive: false });
             mapRoot.addEventListener("pointerup", this.boundPointerUp);
             mapRoot.addEventListener("pointercancel", this.boundPointerCancel);
+            // Keep one-finger vertical page scrolling, but reserve two-finger
+            // movement for the country map. Safari's gesture events are a
+            // fallback for versions that do not fully honor touch-action.
+            mapRoot.addEventListener("touchmove", this.boundTouchMove, { passive: false });
+            mapRoot.addEventListener("gesturestart", this.boundNativeGesture, { passive: false });
+            mapRoot.addEventListener("gesturechange", this.boundNativeGesture, { passive: false });
+            mapRoot.addEventListener("gestureend", this.boundNativeGesture, { passive: false });
         }
 
         setupZoom(mapRoot) {
