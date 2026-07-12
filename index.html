@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Search detailed travel guides, browse destinations by region, and explore the world through an interactive atlas.">
+    <meta name="theme-color" content="#121417">
     <title>Global Explorer | Travel Guides</title>
     
     <link rel="stylesheet" href="assets/tailwind.css">
@@ -19,6 +21,9 @@
             --tg-off-white: #F8F9FA;
             --tg-meta: #A0A4AB;
             --tg-border: rgba(255, 255, 255, 0.08);
+            --tg-border-strong: rgba(255, 255, 255, 0.15);
+            --tg-surface: rgba(30, 33, 39, 0.72);
+            --tg-shadow: 0 24px 80px rgba(0, 0, 0, 0.34);
             --ease-quiet: cubic-bezier(.22, 1, .36, 1);
             --ease-emphasis: cubic-bezier(.16, 1, .3, 1);
         }
@@ -33,6 +38,8 @@
             line-height: 1.6;
             overflow-x: hidden;
         }
+        ::selection { background: rgba(232, 177, 79, 0.3); color: var(--tg-off-white); }
+        :where(a, button, input):focus-visible { outline: 2px solid var(--tg-amber); outline-offset: 3px; }
         .font-display { font-family: 'Fraunces', serif; font-feature-settings: "ss01"; }
 
         .sr-only {
@@ -46,10 +53,11 @@
 
         /* Glass */
         .glass-card {
-            background: rgba(30, 33, 39, 0.45);
+            background: rgba(30, 33, 39, 0.62);
             backdrop-filter: blur(20px) saturate(140%);
             -webkit-backdrop-filter: blur(20px) saturate(140%);
-            border: 1px solid var(--tg-border);
+            border: 1px solid var(--tg-border-strong);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 20px 60px rgba(0,0,0,0.2);
         }
         .frosted-panel {
             background: rgba(30, 33, 39, 0.42);
@@ -79,11 +87,26 @@
             justify-content: space-between;
             gap: 1rem;
         }
+        .site-brand { transition: transform 300ms var(--ease-quiet); }
+        .site-brand:hover { transform: translateY(-1px); }
+        .site-brand__mark {
+            display: grid; place-items: center; width: 2.25rem; height: 2.25rem;
+            border: 1px solid rgba(232,177,79,0.25); border-radius: 50%;
+            background: rgba(18,20,23,0.32); box-shadow: inset 0 0 18px rgba(232,177,79,0.08);
+        }
         .header-glass__nav {
             display: none;
             align-items: center;
             gap: 2.5rem;
             font-size: 0.875rem;
+            padding: 0.35rem;
+            border: 1px solid transparent;
+            border-radius: 999px;
+            transition: background-color 400ms var(--ease-quiet), border-color 400ms var(--ease-quiet);
+        }
+        .header-glass.scrolled .header-glass__nav {
+            background: rgba(255,255,255,0.025);
+            border-color: rgba(255,255,255,0.06);
         }
         @media (min-width: 768px) {
             .header-glass__nav { display: flex; }
@@ -106,7 +129,7 @@
         .hero {
             position: relative;
             min-height: 100vh;
-            min-height: 680px;
+            min-height: 100svh;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -123,6 +146,9 @@
         .hero__bg {
             position: absolute; inset: 0; width: 100%; height: 100%;
             object-fit: cover;
+            object-position: center 44%;
+            filter: saturate(0.9) contrast(1.04);
+            transform: scale(1.015);
         }
         .hero__overlay-top {
             position: absolute; inset: 0;
@@ -182,6 +208,12 @@
         .search-bar {
             display: flex; align-items: center; gap: 0.25rem;
             border-radius: 9999px; padding: 0.5rem 0.75rem 0.5rem 0.5rem;
+            transition: border-color 300ms var(--ease-quiet), box-shadow 300ms var(--ease-quiet), background-color 300ms var(--ease-quiet);
+        }
+        .search-bar:focus-within {
+            border-color: rgba(232,177,79,0.7);
+            background: rgba(30,33,39,0.78);
+            box-shadow: 0 0 0 4px rgba(232,177,79,0.1), var(--tg-shadow);
         }
         .search-bar__icon {
             padding-left: 1rem; font-size: 1.25rem; color: var(--tg-meta); flex-shrink: 0;
@@ -197,6 +229,7 @@
             position: absolute; top: calc(100% + 0.5rem); left: 0; right: 0;
             border-radius: 1rem;
             max-height: 20rem; overflow-y: auto; z-index: 1000;
+            text-align: left;
         }
 
         /* Hero stats */
@@ -292,7 +325,7 @@
             border-radius: 1.5rem; overflow: hidden;
             background: rgba(30, 33, 39, 0.55);
             border: 1px solid var(--tg-border);
-            box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+            box-shadow: var(--tg-shadow), inset 0 1px 0 rgba(255,255,255,0.04);
             position: relative;
         }
         #world-map { width: 100%; height: 420px; z-index: 10; }
@@ -328,11 +361,15 @@
             border-radius: 9999px;
             background: rgba(30, 33, 39, 0.5);
             border: 1px solid rgba(255, 255, 255, 0.15);
-            transition: border-color 300ms var(--ease-quiet), color 300ms var(--ease-quiet);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.025);
+            transition: border-color 300ms var(--ease-quiet), background-color 300ms var(--ease-quiet), transform 300ms var(--ease-quiet), box-shadow 300ms var(--ease-quiet);
         }
         .continent-card:hover,
         .continent-card.is-expanded {
             border-color: var(--tg-amber);
+            background: rgba(38, 41, 48, 0.78);
+            transform: translateY(-2px);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.2);
         }
         .continent-card.is-expanded { z-index: 120; }
         .continent-card__toggle {
@@ -413,6 +450,14 @@
             font-size: 0.6875rem; color: var(--tg-meta);
             text-transform: uppercase; letter-spacing: 0.2em; margin-top: 0.5rem;
         }
+        .ethos-grid .glass-card {
+            transition: transform 350ms var(--ease-quiet), border-color 350ms var(--ease-quiet), background-color 350ms var(--ease-quiet);
+        }
+        .ethos-grid .glass-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(232,177,79,0.35);
+            background: rgba(35,38,44,0.78);
+        }
 
         /* Reveal */
         .reveal {
@@ -441,6 +486,7 @@
         }
         #scrollTopBtn.is-visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
         #scrollTopBtn:hover { background: var(--tg-teal); }
+        #scrollTopBtn:focus-visible { outline-color: var(--tg-off-white); }
 
         /* Footer */
         .site-footer {
@@ -526,8 +572,26 @@
 
         .search-empty { padding: 1rem 1.5rem; text-align: center; color: var(--tg-meta); }
         .hidden { display: none !important; }
-        .nav-link { color: var(--tg-meta); text-decoration: none; transition: color 300ms var(--ease-quiet); }
-        .nav-link:hover { color: var(--tg-off-white); }
+        .nav-link {
+            color: var(--tg-meta); text-decoration: none; padding: 0.45rem 0.85rem;
+            border-radius: 999px;
+            transition: color 300ms var(--ease-quiet), background-color 300ms var(--ease-quiet);
+        }
+        .nav-link:hover, .nav-link[aria-current="location"] {
+            color: var(--tg-off-white); background: rgba(255,255,255,0.055);
+        }
+
+        @supports (content-visibility: auto) {
+            #map, #ethos { content-visibility: auto; contain-intrinsic-size: auto 760px; }
+        }
+
+        @media (max-width: 639px) {
+            .hero__content { padding-inline: 1rem; }
+            .hero__subtitle br { display: none; }
+            .hero-stats { gap: 1.25rem; }
+            .map-legend { left: 0.75rem; bottom: 0.75rem; padding: 0.75rem; }
+            #scrollTopBtn { right: 1rem; bottom: 1rem; }
+        }
 
         @media (prefers-reduced-motion: reduce) {
             .reveal, .hero-line { opacity: 1 !important; transform: none !important; transition: none !important; }
@@ -536,23 +600,20 @@
         }
     </style>
     <link rel="stylesheet" href="assets/jsvectormap.min.css" />
-    <script src="assets/jsvectormap.min.js"></script>
-    <script src="assets/world.js"></script>
     <link rel="stylesheet" href="assets/homepage-activation.css">
-    <script src="assets/homepage-activation.js"></script>
-    <script src="assets/lenis.min.js"></script>
-    <script src="assets/tg-smooth-scroll.js"></script>
 </head>
 <body>
     <!-- Sticky header -->
     <header id="site-header" class="header-glass fixed top-0 left-0 right-0 z-50">
         <div class="page-shell header-glass__inner">
-            <a href="index.html" class="font-display" style="display:flex;align-items:center;gap:0.75rem;text-decoration:none;color:inherit;font-size:1.25rem;" aria-label="Global Explorer home">
-                <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                    <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                    <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
-                    <circle cx="14" cy="14" r="2" fill="#E8B14F"/>
-                </svg>
+            <a href="index.html" class="font-display site-brand" style="display:flex;align-items:center;gap:0.75rem;text-decoration:none;color:inherit;font-size:1.25rem;" aria-label="Global Explorer home">
+                <span class="site-brand__mark" aria-hidden="true">
+                    <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
+                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="#E8B14F"/>
+                    </svg>
+                </span>
                 Global Explorer
             </a>
             <nav class="header-glass__nav" aria-label="Primary">
@@ -564,12 +625,14 @@
         </div>
     </header>
 
+    <main>
     <!-- Hero / Search -->
     <section class="hero grain" id="search" aria-label="Search destinations">
         <div class="hero__media" aria-hidden="true">
-            <img src="assets/images/hero-fjord-dawn.jpg"
+            <img src="assets/images/hero-fjord-dawn.avif"
                  alt=""
-                 class="hero__bg" width="1920" height="1200">
+                 class="hero__bg" width="1920" height="1200"
+                 fetchpriority="high" decoding="async">
             <div class="hero__overlay-top"></div>
             <div class="hero__overlay-bottom"></div>
             <div class="hero__overlay-blend"></div>
@@ -591,10 +654,12 @@
                     <i class="ph ph-magnifying-glass search-bar__icon" aria-hidden="true"></i>
                     <input type="text" id="search-input" class="search-bar__input"
                            placeholder="Search for a country"
-                           autocomplete="off">
+                           autocomplete="off" role="combobox"
+                           aria-autocomplete="list" aria-controls="search-results-list"
+                           aria-expanded="false">
                 </div>
-                <div id="search-results" class="search-results frosted-panel hidden">
-                    <ul id="search-results-list" style="list-style:none;margin:0;padding:0.25rem 0;"></ul>
+                <div id="search-results" class="search-results frosted-panel hidden" aria-label="Search suggestions">
+                    <ul id="search-results-list" role="listbox" style="list-style:none;margin:0;padding:0.25rem 0;"></ul>
                 </div>
             </div>
 
@@ -697,6 +762,7 @@
             </div>
         </div>
     </section>
+    </main>
 
     <footer class="site-footer">
         <div class="page-shell">
@@ -713,6 +779,15 @@
         </div>
     </footer>
 
+    <button id="scrollTopBtn" type="button" aria-label="Scroll to top">
+        <i class="ph ph-arrow-up" aria-hidden="true"></i>
+    </button>
+
+    <script src="assets/jsvectormap.min.js"></script>
+    <script src="assets/world.js"></script>
+    <script src="assets/homepage-activation.js"></script>
+    <script src="assets/lenis.min.js"></script>
+    <script src="assets/tg-smooth-scroll.js"></script>
     <script>
         const travelData = {
             "Africa": [
@@ -1246,10 +1321,6 @@
         const isCountryActive = (countryName) => TGActivation.isCountryVisuallyActive(countryName);
 
         let allCountries = [];
-        const formatPath = (name) => {
-            return name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-');
-        };
-
         const NEWINDEX_MAP_REGION_STYLE = {
             initial: {
                 fill: '#2A2F38',
@@ -1418,6 +1489,11 @@
             const searchResults = document.getElementById('search-results');
             const searchResultsList = document.getElementById('search-results-list');
 
+            const setSearchOpen = (isOpen) => {
+                searchResults.classList.toggle('hidden', !isOpen);
+                searchInput.setAttribute('aria-expanded', String(isOpen));
+            };
+
             const renderResults = (results) => {
                 searchResultsList.innerHTML = '';
                 if (results.length === 0) {
@@ -1429,14 +1505,14 @@
                         searchResultsList.appendChild(li);
                     });
                 }
-                searchResults.classList.remove('hidden');
+                setSearchOpen(true);
             };
 
             searchInput.addEventListener('input', (e) => {
                 const query = e.target.value.toLowerCase().trim();
                 
                 if (query.length === 0) {
-                    searchResults.classList.add('hidden');
+                    setSearchOpen(false);
                     return;
                 }
 
@@ -1458,13 +1534,20 @@
 
             document.addEventListener('click', (e) => {
                 if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
-                    searchResults.classList.add('hidden');
+                    setSearchOpen(false);
                 }
             });
 
             searchInput.addEventListener('focus', () => {
                 if (searchInput.value.trim().length > 0) {
-                    searchResults.classList.remove('hidden');
+                    setSearchOpen(true);
+                }
+            });
+
+            searchInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    setSearchOpen(false);
+                    searchInput.select();
                 }
             });
         };
@@ -1568,349 +1651,32 @@
             setupSearch();
             setupMap();
             
-            const scrollTopBtn = document.getElementById('scrollTopBtn');
-            window.addEventListener('scroll', () => {
-                if (window.scrollY > 300) {
-                    scrollTopBtn.classList.add('is-visible');
-                } else {
-                    scrollTopBtn.classList.remove('is-visible');
-                }
-            });
+            if (!window.TGSmoothScroll) {
+                const scrollTopBtn = document.getElementById('scrollTopBtn');
+                const siteHeader = document.getElementById('site-header');
+                let chromeUpdateQueued = false;
+                const updatePageChrome = () => {
+                    siteHeader?.classList.toggle('scrolled', window.scrollY > 24);
+                    scrollTopBtn?.classList.toggle('is-visible', window.scrollY > 300);
+                    chromeUpdateQueued = false;
+                };
+                window.addEventListener('scroll', () => {
+                    if (!chromeUpdateQueued) {
+                        chromeUpdateQueued = true;
+                        requestAnimationFrame(updatePageChrome);
+                    }
+                }, { passive: true });
+                updatePageChrome();
 
-            scrollTopBtn.addEventListener('click', () => {
-                if (window.TGSmoothScroll) {
-                    window.TGSmoothScroll.scrollTo(0);
-                } else {
+                scrollTopBtn?.addEventListener('click', () => {
                     window.scrollTo({ top: 0, behavior: 'smooth' });
-                }
-            });
+                });
+            }
         };
 
         initializePage();
     </script>
 
-    <script>
-        (() => {
-            const container = document.getElementById('continents-container');
-            if (!container || container.children.length > 0) {
-                return;
-            }
-
-            const source = Array.from(document.scripts)
-                .map((script) => script.textContent || '')
-                .find((text) => text.includes('const travelData = {') && text.includes('const availableGuides = {'));
-
-            if (!source) {
-                return;
-            }
-
-            const parseLiteral = (name) => {
-                const token = `const ${name} = `;
-                const start = source.indexOf(token);
-                if (start === -1) {
-                    throw new Error(`Could not find ${name} in homepage source.`);
-                }
-
-                let index = start + token.length;
-                while (/\s/.test(source[index])) {
-                    index += 1;
-                }
-
-                const opener = source[index];
-                const closer = opener === '{' ? '}' : opener === '[' ? ']' : null;
-                if (!closer) {
-                    throw new Error(`Unsupported literal opener for ${name}: ${opener}`);
-                }
-
-                let depth = 0;
-                let inSingle = false;
-                let inDouble = false;
-                let inTemplate = false;
-                let escaped = false;
-
-                for (let i = index; i < source.length; i += 1) {
-                    const char = source[i];
-                    if (escaped) {
-                        escaped = false;
-                        continue;
-                    }
-                    if (char === '\\') {
-                        escaped = true;
-                        continue;
-                    }
-                    if (!inDouble && !inTemplate && char === "'") {
-                        inSingle = !inSingle;
-                        continue;
-                    }
-                    if (!inSingle && !inTemplate && char === '"') {
-                        inDouble = !inDouble;
-                        continue;
-                    }
-                    if (!inSingle && !inDouble && char === '`') {
-                        inTemplate = !inTemplate;
-                        continue;
-                    }
-                    if (inSingle || inDouble || inTemplate) {
-                        continue;
-                    }
-                    if (char === opener) {
-                        depth += 1;
-                    } else if (char === closer) {
-                        depth -= 1;
-                        if (depth === 0) {
-                            return source.slice(index, i + 1);
-                        }
-                    }
-                }
-
-                throw new Error(`Unclosed literal for ${name}.`);
-            };
-
-            const travelData = Function(`return (${parseLiteral('travelData')});`)();
-            const continentIcons = Function(`return (${parseLiteral('continentIcons')});`)();
-            const countryCodes = Function(`return (${parseLiteral('countryCodes')});`)();
-            const availableGuides = Function(`return (${parseLiteral('availableGuides')});`)();
-            const allCountryGuides = Function(`return (${parseLiteral('allCountryGuides')});`)();
-            const countryDestinationCounts = Function(`return (${parseLiteral('countryDestinationCounts')});`)();
-            const mapCountryMarkers = Function(`return (${parseLiteral('mapCountryMarkers')});`)();
-            const searchInput = document.getElementById('search-input');
-            const searchResults = document.getElementById('search-results');
-            const searchResultsList = document.getElementById('search-results-list');
-
-            window.TG = {
-                travelData,
-                continentIcons,
-                countryCodes,
-                availableGuides,
-                allCountryGuides,
-                mapCountryMarkers,
-                countryDestinationCounts,
-            };
-
-            const isCountryActive = (countryName) => TGActivation.isCountryVisuallyActive(countryName);
-            const formatPath = (name) => name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-');
-
-            const syncHeroStatsFallback = () => {
-                const countries = document.getElementById('legend-countries-count');
-                const destinations = document.getElementById('legend-destinations-count');
-                [
-                    ['hero-countries-count', countries],
-                    ['hero-destinations-count', destinations],
-                    ['ethos-countries-count', countries],
-                    ['ethos-destinations-count', destinations],
-                ].forEach(([id, source]) => {
-                    const el = document.getElementById(id);
-                    if (el && source) el.textContent = source.textContent;
-                });
-            };
-
-            const closeAllContinentDropdownsFallback = () => {
-                document.querySelectorAll('.continent-dropdown').forEach((el) => el.classList.remove('is-open'));
-                document.querySelectorAll('.continent-card').forEach((el) => {
-                    el.classList.remove('is-expanded');
-                    el.style.zIndex = '1';
-                });
-                document.querySelectorAll('.continent-card__toggle').forEach((el) => el.setAttribute('aria-expanded', 'false'));
-            };
-
-            const allCountries = [];
-            Object.keys(travelData).forEach((continent) => {
-                const countries = TGActivation.sortCountriesForDisplay(travelData[continent], countryCodes);
-
-                countries.forEach((country) => {
-                    allCountries.push({
-                        name: country,
-                        continent,
-                        url: TGActivation.getCountryPageUrl(country) || '#',
-                    });
-                });
-
-                const card = document.createElement('div');
-                card.className = 'continent-card reveal';
-
-                const header = document.createElement('button');
-                header.type = 'button';
-                header.setAttribute('aria-expanded', 'false');
-                header.className = 'continent-card__toggle';
-                header.innerHTML = `
-                    <div class="continent-card__main">
-                        <div class="continent-card__icon">
-                            <i class="ph ${continentIcons[continent]}" aria-hidden="true"></i>
-                        </div>
-                        <div>
-                            <h3 class="continent-card__name">${continent}</h3>
-                            <p class="continent-card__meta">${TGActivation.countCountriesWithGuides(countries, countryCodes)} countries with guides</p>
-                        </div>
-                    </div>
-                    <i class="ph ph-caret-down dropdown-icon" aria-hidden="true"></i>
-                `;
-
-                const body = document.createElement('div');
-                body.className = 'continent-dropdown frosted-panel';
-
-                const list = document.createElement('ul');
-                list.className = 'continent-dropdown__list custom-scrollbar';
-                list.dataset.continent = continent;
-
-                countries.forEach((country) => {
-                    const li = document.createElement('li');
-                    li.className = 'country-status-item';
-                    li.innerHTML = TGActivation.renderCountryListItem(country, continent, countryCodes);
-                    list.appendChild(li);
-                });
-
-                body.appendChild(list);
-                header.addEventListener('click', (event) => {
-                    event.stopPropagation();
-                    const isOpen = body.classList.contains('is-open');
-                    closeAllContinentDropdownsFallback();
-                    if (!isOpen) {
-                        body.classList.add('is-open');
-                        card.classList.add('is-expanded');
-                        header.setAttribute('aria-expanded', 'true');
-                        card.style.zIndex = '120';
-                    }
-                });
-                body.addEventListener('click', (event) => event.stopPropagation());
-
-                card.appendChild(header);
-                card.appendChild(body);
-                container.appendChild(card);
-            });
-
-            document.addEventListener('click', closeAllContinentDropdownsFallback);
-
-            TGActivation.bindActivationControls(container, countryCodes);
-            TGActivation.initSyncListener(countryCodes);
-
-            TGActivation.updateLegendCounts();
-            syncHeroStatsFallback();
-
-            const renderResults = (results) => {
-                searchResultsList.innerHTML = '';
-                if (results.length === 0) {
-                    searchResultsList.innerHTML = '<li class="search-empty">No destinations found.</li>';
-                } else {
-                    results.forEach((result) => {
-                        const li = document.createElement('li');
-                        li.innerHTML = TGActivation.renderSearchResult(result, countryCodes);
-                        searchResultsList.appendChild(li);
-                    });
-                }
-                searchResults.classList.remove('hidden');
-            };
-
-            searchInput.addEventListener('input', (event) => {
-                const query = event.target.value.toLowerCase().trim();
-                if (!query) {
-                    searchResults.classList.add('hidden');
-                    return;
-                }
-                const filtered = allCountries
-                    .filter((country) => country.name.toLowerCase().includes(query))
-                    .sort((a, b) => {
-                        const aActive = isCountryActive(a.name);
-                        const bActive = isCountryActive(b.name);
-                        if (aActive && !bActive) return -1;
-                        if (!aActive && bActive) return 1;
-                        return a.name.localeCompare(b.name);
-                    })
-                    .slice(0, 8);
-                renderResults(filtered);
-            });
-
-            document.addEventListener('click', (event) => {
-                if (!searchInput.contains(event.target) && !searchResults.contains(event.target)) {
-                    searchResults.classList.add('hidden');
-                }
-            });
-
-            searchInput.addEventListener('focus', () => {
-                if (searchInput.value.trim()) {
-                    searchResults.classList.remove('hidden');
-                }
-            });
-
-            const mapRoot = document.getElementById('world-map');
-            if (typeof jsVectorMap === 'undefined') {
-                mapRoot.innerHTML = `
-                    <div class="map-fallback">
-                        <div>
-                            <p class="map-fallback__title">Interactive map is temporarily unavailable.</p>
-                            <p class="map-fallback__text">Browse by region above or use the search bar to open a guide.</p>
-                        </div>
-                    </div>
-                `;
-                return;
-            }
-
-            const markerEntries = TGActivation.buildMapMarkerEntries();
-            const getTooltipHtml = (officialName, regionName, code) => (
-                TGActivation.getTooltipHtml(officialName, regionName, code, countryCodes)
-            );
-
-            window.__tgNewIndexMapTheme?.applyMarkerPalette?.();
-
-            TGActivation.registerMap(new jsVectorMap({
-                selector: '#world-map',
-                map: 'world',
-                backgroundColor: 'transparent',
-                zoomOnScroll: true,
-                zoomButtons: true,
-                regionStyle: window.__tgNewIndexMapTheme?.regionStyle || {
-                    initial: { fill: '#2A2F38', fillOpacity: 1, stroke: '#121417', strokeWidth: 0.5, strokeOpacity: 1 },
-                    hover: { fill: '#4FBDBA', fillOpacity: 1 },
-                    selected: { fill: '#E8B14F', fillOpacity: 1, stroke: '#121417', strokeWidth: 0.5, strokeOpacity: 1 },
-                    selectedHover: { fill: '#FFF4D6', fillOpacity: 1, stroke: '#121417', strokeWidth: 0.5, strokeOpacity: 1 },
-                },
-                selectedRegions: Object.keys(availableGuides),
-                markers: TGActivation.buildMapMarkerPayloads(markerEntries),
-                markerStyle: TGActivation.getMapMarkerDefaultStyle(),
-                onMarkerTooltipShow(event, tooltip, index) {
-                    const entry = TGActivation.getMapMarkerEntry(index);
-                    if (!entry) return;
-                    tooltip.text(
-                        getTooltipHtml(entry.name, TGActivation.resolveRegionName(entry.name, travelData), entry.code),
-                        true,
-                    );
-                },
-                onMarkerClick(event, index) {
-                    const entry = TGActivation.getMapMarkerEntry(index);
-                    const guide = entry ? allCountryGuides[entry.code] : null;
-                    if (guide) {
-                        window.location.href = guide.url;
-                    }
-                },
-                onRegionTooltipShow(event, tooltip, code) {
-                    let officialName = tooltip.text();
-                    for (const [name, countryCode] of Object.entries(countryCodes)) {
-                        if (countryCode.toLowerCase() === code.toLowerCase()) {
-                            officialName = name;
-                            break;
-                        }
-                    }
-                    let regionName = 'Unknown Region';
-                    for (const [continent, countries] of Object.entries(travelData)) {
-                        if (countries.includes(officialName)) {
-                            regionName = continent;
-                            break;
-                        }
-                    }
-                    tooltip.text(getTooltipHtml(officialName, regionName, code), true);
-                },
-                onRegionClick(event, code) {
-                    const guide = allCountryGuides[code];
-                    if (guide) {
-                        window.location.href = guide.url;
-                    }
-                }
-            }), markerEntries);
-        })();
-    </script>
-
-    <button id="scrollTopBtn" aria-label="Scroll to top">
-        <i class="ph ph-arrow-up" aria-hidden="true"></i>
-    </button>
 
     <script>
         (function initPageChrome() {
@@ -1931,6 +1697,24 @@
                     });
                 }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
                 document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+
+                const navLinks = new Map(
+                    Array.from(document.querySelectorAll('.nav-link[href^="#"]'))
+                        .map((link) => [link.getAttribute('href').slice(1), link])
+                );
+                const sectionObserver = new IntersectionObserver((entries) => {
+                    entries.forEach((entry) => {
+                        if (!entry.isIntersecting) return;
+                        navLinks.forEach((link, id) => {
+                            if (id === entry.target.id) link.setAttribute('aria-current', 'location');
+                            else link.removeAttribute('aria-current');
+                        });
+                    });
+                }, { rootMargin: '-35% 0px -55% 0px', threshold: 0 });
+                navLinks.forEach((link, id) => {
+                    const section = document.getElementById(id);
+                    if (section) sectionObserver.observe(section);
+                });
             } else {
                 document.querySelectorAll('.reveal').forEach((el) => el.classList.add('is-in'));
             }

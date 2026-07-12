@@ -785,6 +785,11 @@
                 return;
             }
 
+            const setSearchOpen = (isOpen) => {
+                searchResults.classList.toggle("hidden", !isOpen);
+                searchInput.setAttribute("aria-expanded", String(isOpen));
+            };
+
             const renderResults = (results) => {
                 searchResultsList.innerHTML = "";
                 if (results.length === 0) {
@@ -804,13 +809,13 @@
                         searchResultsList.appendChild(item);
                     });
                 }
-                searchResults.classList.remove("hidden");
+                setSearchOpen(true);
             };
 
             searchInput.addEventListener("input", (event) => {
                 const query = config.normalizeText(event.target.value.trim());
                 if (!query) {
-                    searchResults.classList.add("hidden");
+                    setSearchOpen(false);
                     return;
                 }
                 let filtered = allDestinations.filter((dest) =>
@@ -829,13 +834,20 @@
 
             document.addEventListener("click", (event) => {
                 if (!searchInput.contains(event.target) && !searchResults.contains(event.target)) {
-                    searchResults.classList.add("hidden");
+                    setSearchOpen(false);
                 }
             });
 
             searchInput.addEventListener("focus", () => {
                 if (searchInput.value.trim()) {
-                    searchResults.classList.remove("hidden");
+                    setSearchOpen(true);
+                }
+            });
+
+            searchInput.addEventListener("keydown", (event) => {
+                if (event.key === "Escape") {
+                    setSearchOpen(false);
+                    searchInput.select();
                 }
             });
         },
