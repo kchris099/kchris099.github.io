@@ -349,6 +349,23 @@
         }
         #world-map { width: 100%; height: 420px; z-index: 10; }
         @media (min-width: 768px) { #world-map { height: 500px; } }
+        .world-map-zoom-controls {
+            position: absolute; top: 0.75rem; left: 0.75rem; z-index: 30;
+            display: flex; flex-direction: column; gap: 1px; padding: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px;
+            background: rgba(18, 20, 23, 0.9);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.28);
+            backdrop-filter: blur(12px);
+        }
+        .world-map-zoom-btn {
+            width: 44px; height: 44px; padding: 0; border: 0; border-radius: 8px;
+            background: transparent; color: var(--tg-off-white); cursor: pointer;
+            font: 700 18px/42px 'Plus Jakarta Sans', sans-serif;
+            text-align: center; user-select: none;
+        }
+        .world-map-zoom-btn:hover { background: #2a2f38; color: var(--tg-teal); }
+        .world-map-zoom-btn:focus-visible { outline: 2px solid var(--tg-teal); outline-offset: 1px; }
+        .world-map-zoom-btn:disabled { opacity: 0.35; cursor: default; }
         .map-legend {
             position: absolute; bottom: 1.25rem; left: 1.25rem; z-index: 20;
             background: rgba(18, 20, 23, 0.88);
@@ -721,6 +738,11 @@
                 <p class="section__lead">Click a highlighted country to open its travel guide. Zoom and pan to discover every destination on our radar.</p>
             </div>
             <div class="reveal map-panel">
+                <div class="world-map-zoom-controls" aria-label="World map zoom controls">
+                    <button type="button" class="world-map-zoom-btn" id="world-map-zoom-in" aria-label="Zoom in">+</button>
+                    <button type="button" class="world-map-zoom-btn" id="world-map-zoom-out" aria-label="Zoom out">&minus;</button>
+                    <button type="button" class="world-map-zoom-btn" id="world-map-zoom-reset" aria-label="Reset map view"><span aria-hidden="true">&#8634;</span></button>
+                </div>
                 <div id="world-map" role="img" aria-label="World map showing available travel guides"></div>
                 <div class="map-legend">
                     <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.35rem;">
@@ -1615,6 +1637,48 @@
             `;
         };
 
+        let worldMapInstance = null;
+
+        const syncWorldMapZoomControls = () => {
+            if (!worldMapInstance) return;
+            const minScale = worldMapInstance._baseScale;
+            const maxScale = worldMapInstance.params.zoomMax * minScale;
+            const atMinimum = worldMapInstance.scale <= minScale + 0.001;
+            const zoomIn = document.getElementById('world-map-zoom-in');
+            const zoomOut = document.getElementById('world-map-zoom-out');
+            const reset = document.getElementById('world-map-zoom-reset');
+            if (zoomIn) zoomIn.disabled = worldMapInstance.scale >= maxScale - 0.001;
+            if (zoomOut) zoomOut.disabled = atMinimum;
+            if (reset) reset.disabled = atMinimum;
+        };
+
+        const setupWorldMapZoomControls = () => {
+            if (!worldMapInstance) return;
+            const zoomIn = document.getElementById('world-map-zoom-in');
+            const zoomOut = document.getElementById('world-map-zoom-out');
+            const reset = document.getElementById('world-map-zoom-reset');
+            const zoomBy = (factor) => {
+                worldMapInstance._setScale(
+                    worldMapInstance.scale * factor,
+                    worldMapInstance._width / 2,
+                    worldMapInstance._height / 2,
+                    false,
+                    worldMapInstance.params.zoomAnimate,
+                );
+                syncWorldMapZoomControls();
+            };
+            zoomIn?.addEventListener('click', () => zoomBy(worldMapInstance.params.zoomStep));
+            zoomOut?.addEventListener('click', () => zoomBy(1 / worldMapInstance.params.zoomStep));
+            reset?.addEventListener('click', () => {
+                worldMapInstance.scale = worldMapInstance._baseScale;
+                worldMapInstance.transX = worldMapInstance._baseTransX;
+                worldMapInstance.transY = worldMapInstance._baseTransY;
+                worldMapInstance._applyTransform();
+                syncWorldMapZoomControls();
+            });
+            syncWorldMapZoomControls();
+        };
+
         const setupMap = () => {
             if (typeof jsVectorMap === 'undefined') {
                 renderMapFallback();
@@ -1624,12 +1688,12 @@
             applyNewIndexMapMarkerPalette();
             const markerEntries = TGActivation.buildMapMarkerEntries();
 
-            TGActivation.registerMap(new jsVectorMap({
+            worldMapInstance = new jsVectorMap({
                 selector: '#world-map',
                 map: 'world',
                 backgroundColor: 'transparent',
                 zoomOnScroll: true,
-                zoomButtons: true,
+                zoomButtons: false,
                 regionStyle: NEWINDEX_MAP_REGION_STYLE,
                 selectedRegions: Object.keys(availableGuides),
                 markers: TGActivation.buildMapMarkerPayloads(markerEntries),
@@ -1674,8 +1738,13 @@
                     if (guide) {
                         window.location.href = guide.url;
                     }
+                },
+                onViewportChange() {
+                    syncWorldMapZoomControls();
                 }
-            }), markerEntries);
+            });
+            TGActivation.registerMap(worldMapInstance, markerEntries);
+            setupWorldMapZoomControls();
         };
 
         const _origUpdateLegendCounts = TGActivation.updateLegendCounts.bind(TGActivation);

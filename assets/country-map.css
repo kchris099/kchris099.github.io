@@ -21,7 +21,6 @@ body.tg-theme .country-map-section {
     border: 1px solid #1e336b;
     border-radius: 1.5rem;
     padding: 0;
-    backdrop-filter: blur(4px);
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45);
     position: relative;
     overflow: hidden;
@@ -66,6 +65,24 @@ body.tg-theme .country-map-section {
     contain: layout style paint;
 }
 
+.country-map-base-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.country-map-root--canvas-base .country-map-viewport .country-map-region,
+.country-map-root--canvas-base .country-map-viewport .country-map-neighbor {
+    fill: transparent !important;
+    stroke: transparent !important;
+}
+
+.country-map-root--canvas-base .country-map-canvas {
+    fill: transparent !important;
+}
+
 .country-map-canvas {
     fill: rgba(11, 19, 43, 0.4);
     /* Keep the empty area around the country inside the map's hit surface. */
@@ -82,6 +99,7 @@ body.tg-theme .country-map-canvas {
     stroke-width: var(--country-map-region-stroke, 3.5);
     stroke-linejoin: round;
     stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
     cursor: pointer;
     transition: none;
     outline: none;
@@ -114,6 +132,7 @@ body.tg-theme .country-map-canvas {
     stroke-width: var(--country-map-neighbor-stroke, 2.5);
     stroke-linejoin: round;
     stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
     cursor: pointer;
     outline: none;
 }
@@ -195,25 +214,39 @@ body.tg-theme .country-map-canvas {
     touch-action: none;
 }
 
-.country-map-root--modern .country-map-marker__dot {
+.country-map-root--modern .country-map-marker__dot,
+.country-map-shell--modern .country-map-inset-drawer .country-map-marker__dot {
     stroke: rgba(18, 20, 23, 0.9);
     stroke-width: 2;
     vector-effect: non-scaling-stroke;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.45));
     transition: fill 160ms ease;
 }
 
-.country-map-root--modern .country-map-marker__halo {
+.country-map-root--modern .country-map-marker--selected .country-map-marker__dot,
+.country-map-root--modern .country-map-marker:hover .country-map-marker__dot,
+.country-map-root--modern .country-map-marker:focus-visible .country-map-marker__dot,
+.country-map-shell--modern .country-map-inset-drawer .country-map-marker--selected .country-map-marker__dot,
+.country-map-shell--modern .country-map-inset-drawer .country-map-marker:hover .country-map-marker__dot,
+.country-map-shell--modern .country-map-inset-drawer .country-map-marker:focus-visible .country-map-marker__dot {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.45));
+}
+
+.country-map-root--modern .country-map-marker__halo,
+.country-map-shell--modern .country-map-inset-drawer .country-map-marker__halo {
     vector-effect: non-scaling-stroke;
 }
 
 .country-map-root--modern .country-map-marker--selected .country-map-marker__halo,
 .country-map-root--modern .country-map-marker:hover .country-map-marker__halo,
-.country-map-root--modern .country-map-marker:focus-visible .country-map-marker__halo {
+.country-map-root--modern .country-map-marker:focus-visible .country-map-marker__halo,
+.country-map-shell--modern .country-map-inset-drawer .country-map-marker--selected .country-map-marker__halo,
+.country-map-shell--modern .country-map-inset-drawer .country-map-marker:hover .country-map-marker__halo,
+.country-map-shell--modern .country-map-inset-drawer .country-map-marker:focus-visible .country-map-marker__halo {
     opacity: 1;
 }
 
-.country-map-root--modern .country-map-marker--selected .country-map-marker__halo {
+.country-map-root--modern .country-map-marker--selected .country-map-marker__halo,
+.country-map-shell--modern .country-map-inset-drawer .country-map-marker--selected .country-map-marker__halo {
     fill: rgba(79, 189, 186, 0.18);
     stroke: #4fbdbA;
     stroke-width: 2;
@@ -323,8 +356,8 @@ body.tg-theme .country-map-canvas {
 }
 
 .country-map-zoom-controls--modern {
-    top: 12px;
-    left: 12px;
+    top: 0.75rem;
+    left: 0.75rem;
     display: flex;
     flex-direction: column;
     gap: 1px;
@@ -345,6 +378,13 @@ body.tg-theme .country-map-canvas {
     border: 0;
     border-radius: 8px;
     background: transparent;
+    color: var(--tg-off-white, #f8f9fa);
+    font: 700 18px/42px "Plus Jakarta Sans", sans-serif;
+}
+
+.country-map-zoom-controls--modern .country-map-zoom-btn:hover {
+    background: #2a2f38;
+    color: var(--tg-teal, #4fbdba);
 }
 
 .country-map-zoom-controls--modern .country-map-zoom-btn:focus-visible {
@@ -359,7 +399,7 @@ body.tg-theme .country-map-canvas {
 
 .country-map-selection {
     position: absolute;
-    z-index: 34;
+    z-index: 40;
     left: 50%;
     bottom: 14px;
     width: min(440px, calc(100% - 28px));
@@ -482,6 +522,21 @@ body.tg-theme .country-map-canvas {
     user-select: none;
     font-family: "Outfit", sans-serif;
     box-shadow: -4px 0 12px rgba(0, 0, 0, 0.35);
+    transition: right 0.22s ease, background-color 0.16s ease, color 0.16s ease;
+}
+
+.country-map-inset-toggle[aria-expanded="true"] {
+    right: min(268px, calc(100% - 10px));
+    z-index: 36;
+}
+
+.country-map-inset-toggle[aria-expanded="true"],
+.country-map-inset-toggle[aria-expanded="true"]:hover,
+.country-map-inset-toggle[aria-expanded="true"]:active {
+    background-color: rgba(11, 19, 43, 0.92);
+    color: #cbd5e1;
+    border-color: #1e336b;
+    border-right: none;
 }
 
 .country-map-inset-toggle:hover {
@@ -512,19 +567,32 @@ body.tg-theme .country-map-canvas {
 
 .country-map-inset-drawer__panel {
     position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: min(280px, 72vw);
+    top: 10px;
+    right: 10px;
+    bottom: 10px;
+    /* 240px inset tile + 8px SVG padding per side + panel borders. */
+    width: min(258px, calc(100% - 20px));
     display: flex;
     flex-direction: column;
     background: rgba(11, 19, 43, 0.97);
-    border-left: 1px solid #1e336b;
+    border: 1px solid #1e336b;
+    border-radius: 16px;
     box-shadow: -12px 0 32px rgba(0, 0, 0, 0.45);
-    transform: translateX(100%);
+    overflow: hidden;
+    transform: translateX(calc(100% + 12px));
     transition: transform 0.22s ease;
     pointer-events: auto;
     touch-action: manipulation;
+}
+
+.country-map-inset-drawer__header {
+    min-height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 6px 8px 6px 16px;
+    border-bottom: 1px solid rgba(30, 51, 107, 0.65);
 }
 
 .country-map-inset-drawer--open {
@@ -542,14 +610,36 @@ body.tg-theme .country-map-canvas {
 
 .country-map-inset-drawer__title {
     flex-shrink: 0;
-    padding: 12px 14px 8px;
+    padding: 0;
     font-family: "Outfit", sans-serif;
     font-size: 13px;
     font-weight: 600;
     letter-spacing: 0.02em;
     text-transform: uppercase;
     color: #94a3b8;
-    border-bottom: 1px solid rgba(30, 51, 107, 0.65);
+}
+
+.country-map-inset-drawer__close {
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: #cbd5e1;
+    font: 400 24px/40px "Plus Jakarta Sans", sans-serif;
+    cursor: pointer;
+}
+
+.country-map-inset-drawer__close:hover {
+    background: #2a2f38;
+    color: #4fbdba;
+}
+
+.country-map-inset-drawer__close:focus-visible {
+    outline: 2px solid #4fbdba;
+    outline-offset: 1px;
 }
 
 .country-map-inset-drawer__svg {
@@ -558,6 +648,9 @@ body.tg-theme .country-map-canvas {
     width: 100%;
     display: block;
     user-select: none;
+    background:
+        radial-gradient(circle at 50% 35%, rgba(79, 189, 186, 0.06), transparent 48%),
+        rgba(18, 20, 23, 0.35);
 }
 
 .country-map-fallback {

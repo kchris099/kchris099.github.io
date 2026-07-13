@@ -1,11 +1,7 @@
 (function () {
     const SVG_NS = "http://www.w3.org/2000/svg";
-    const MARKER_RADIUS_BASE = 6;
-    const MARKER_RADIUS_FOCUS_SCALE = 1.2;
-    const MARKER_HIT_RADIUS_MIN = 22;
     const TOUCH_PAN_THRESHOLD = 10;
     const GESTURE_SUPPRESS_MS = 350;
-    const MARKER_LOC_BASE = 10;
     const MARKER_LOC_MAX = 40;
     const ZOOM_MAX = 8;
     const ZOOM_STEP = 1.35;
@@ -15,18 +11,6 @@
     const MODERN_MARKER_HIT_RADIUS_PX = 24;
     const MODERN_MARKER_SCALE_MIN = 0.85;
     const MODERN_MARKER_SCALE_MAX = 1.15;
-
-    const markerRadiusForLocations = (locations) => {
-        const count = Number(locations) || 0;
-        if (count >= MARKER_LOC_MAX) {
-            return MARKER_RADIUS_BASE * 2;
-        }
-        if (count <= MARKER_LOC_BASE) {
-            return MARKER_RADIUS_BASE;
-        }
-        const t = (count - MARKER_LOC_BASE) / (MARKER_LOC_MAX - MARKER_LOC_BASE);
-        return MARKER_RADIUS_BASE * (1 + t);
-    };
 
     let mapInstance = null;
 
@@ -86,34 +70,9 @@
         return response.json();
     };
 
-    const normalizeMapData = (mapData) => {
-        if (mapData.main) {
-            return mapData;
-        }
-        return {
-            viewBox: mapData.viewBox,
-            main: {
-                frame: { x: 0, y: 0, width: 800, height: 500 },
-                bounds: mapData.bounds,
-                regions: Object.fromEntries(
-                    Object.entries(mapData.regions || {}).map(([name, value]) => [
-                        name,
-                        typeof value === "string" ? value : value.path,
-                    ]),
-                ),
-            },
-            insets: [],
-            neighbors: mapData.neighbors || [],
-            destinations: mapData.destinations || {},
-        };
-    };
-
     class CountryMap {
         constructor(options) {
-            this.options = {
-                ...options,
-                modernMap: options.modernMap !== false,
-            };
+            this.options = options;
             this.root = document.querySelector(options.selector);
             this.activation = options.activation || readActivation();
             this.mapData = null;
@@ -125,13 +84,26 @@
                 selectedDestination: null,
             };
             this.neighborByCode = new Map();
+            this.destinationRegionByName = new Map();
+            Object.entries(options.countryData || {}).forEach(([region, destinations]) => {
+                destinations.forEach((name) => this.destinationRegionByName.set(name, region));
+            });
             this.markerElements = new Map();
+            this.regionElements = [];
+            this.neighborElements = [];
             this.overlay = null;
             this.overlayFrame = null;
+            this.pendingOverlayPoint = null;
+            this.transformFrame = null;
+            this.layoutFrame = null;
+            this.baseCanvas = null;
+            this.baseCanvasContext = null;
+            this.baseCanvasFrame = null;
+            this.baseCanvasPaths = [];
+            this.baseCanvasStyle = null;
             this.lastPointer = null;
             this.svg = null;
             this.viewport = null;
-            this.mainMarkersLayer = null;
             this.insetMarkersLayer = null;
             this.insetScreenGroup = null;
             this.insetDrawer = null;
@@ -144,10 +116,8 @@
             this.boundInsetMobileChange = null;
             this.markerTouchQuery = null;
             this.boundMarkerTouchChange = null;
-            this.insetResizeObserver = null;
             this.panelResizeObserver = null;
             this.renderObserver = null;
-            this.baseViewBox = null;
             this.baseAlign = "xMaxYMid meet";
             this.zoomState = { scale: 1, x: 0, y: 0 };
             this.defaultZoomState = { scale: 1, x: 0, y: 0 };
@@ -179,7 +149,10 @@
             }
 
             try {
-                this.mapData = normalizeMapData(await resolveMapData(this.options));
+                this.mapData = await resolveMapData(this.options);
+                if (!this.mapData?.main?.frame || !this.mapData?.main?.regions) {
+                    throw new Error("unsupported country map payload");
+                }
                 this.defaultZoomState = this.resolveDefaultZoomState();
                 this.zoomState = { ...this.defaultZoomState };
             } catch (error) {
@@ -190,7 +163,6 @@
 
             mapInstance = this;
             if (
-                this.options.modernMap &&
                 this.options.lazyRender !== false &&
                 typeof IntersectionObserver !== "undefined"
             ) {
@@ -229,12 +201,7 @@
         }
 
         findRegionForDestination(name) {
-            for (const [region, destinations] of Object.entries(this.options.countryData)) {
-                if (destinations.includes(name)) {
-                    return region;
-                }
-            }
-            return null;
+            return this.destinationRegionByName.get(name) || null;
         }
 
         regionHasActiveGuides(regionName) {
@@ -269,27 +236,19 @@
             return { bounds: inset.bounds, frame: inset.frame, pad: 8 };
         }
 
-        getMarkerRadius(meta, focused = false, marker = null) {
-            if (this.options.modernMap) {
-                const count = Math.max(0, Math.min(MARKER_LOC_MAX, Number(meta.locations) || 0));
-                const progress = Math.sqrt(count / MARKER_LOC_MAX);
-                const cssRadius = MODERN_MARKER_RADIUS_MIN_PX +
-                    (MODERN_MARKER_RADIUS_MAX_PX - MODERN_MARKER_RADIUS_MIN_PX) * progress +
-                    (focused ? 2 : 0);
-                const configuredScale = Number(this.mapData?.markerRadiusScale) || 1;
-                const markerRadiusScale = Math.min(
-                    MODERN_MARKER_SCALE_MAX,
-                    Math.max(MODERN_MARKER_SCALE_MIN, configuredScale),
-                );
-                return (cssRadius * markerRadiusScale) / this.getOuterSvgScreenScale();
-            }
-            const radius = markerRadiusForLocations(meta.locations);
-            const base = focused ? radius * MARKER_RADIUS_FOCUS_SCALE : radius;
-            const markerRadiusScale = Number(this.mapData?.markerRadiusScale) || 1;
-            if (marker?.dataset.coordSpace === "root") {
-                return base * (this.defaultZoomState.scale || 1) * markerRadiusScale;
-            }
-            return base * markerRadiusScale;
+        getMarkerRadius(meta, focused = false, marker = null, screenScale = null) {
+            const count = Math.max(0, Math.min(MARKER_LOC_MAX, Number(meta.locations) || 0));
+            const progress = Math.sqrt(count / MARKER_LOC_MAX);
+            const cssRadius = MODERN_MARKER_RADIUS_MIN_PX +
+                (MODERN_MARKER_RADIUS_MAX_PX - MODERN_MARKER_RADIUS_MIN_PX) * progress +
+                (focused ? 2 : 0);
+            const configuredScale = Number(this.mapData?.markerRadiusScale) || 1;
+            const markerRadiusScale = Math.min(
+                MODERN_MARKER_SCALE_MAX,
+                Math.max(MODERN_MARKER_SCALE_MIN, configuredScale),
+            );
+            return (cssRadius * markerRadiusScale) /
+                (screenScale || this.getMarkerScreenScale(marker));
         }
 
         useExpandedMarkerHit() {
@@ -302,15 +261,13 @@
             );
         }
 
-        getMarkerHitRadius(meta, focused = false, marker = null) {
-            const visualRadius = this.getMarkerRadius(meta, focused, marker);
-            if (this.options.modernMap && this.useExpandedMarkerHit()) {
-                return Math.max(visualRadius, MODERN_MARKER_HIT_RADIUS_PX / this.getOuterSvgScreenScale());
-            }
-            if (!this.useExpandedMarkerHit()) {
-                return visualRadius;
-            }
-            return Math.max(visualRadius, MARKER_HIT_RADIUS_MIN);
+        getMarkerHitRadius(meta, focused = false, marker = null, visualRadius = null, screenScale = null) {
+            const resolvedScale = screenScale || this.getMarkerScreenScale(marker);
+            const resolvedRadius = visualRadius ??
+                this.getMarkerRadius(meta, focused, marker, resolvedScale);
+            return this.useExpandedMarkerHit()
+                ? Math.max(resolvedRadius, MODERN_MARKER_HIT_RADIUS_PX / resolvedScale)
+                : resolvedRadius;
         }
 
         getPanMoveThreshold() {
@@ -344,12 +301,19 @@
             return Boolean(plane && plane !== "main" && String(plane).startsWith("inset:"));
         }
 
-        setMarkerRadius(marker, meta, focused = false) {
+        setMarkerRadius(marker, meta, focused = false, screenScale = null) {
             const dot = marker?.querySelector(".country-map-marker__dot");
             const halo = marker?.querySelector(".country-map-marker__halo");
             const hit = marker?.querySelector(".country-map-marker__hit");
-            const visualRadius = this.getMarkerRadius(meta, focused, marker);
-            const hitRadius = this.getMarkerHitRadius(meta, focused, marker);
+            const resolvedScale = screenScale || this.getMarkerScreenScale(marker);
+            const visualRadius = this.getMarkerRadius(meta, focused, marker, resolvedScale);
+            const hitRadius = this.getMarkerHitRadius(
+                meta,
+                focused,
+                marker,
+                visualRadius,
+                resolvedScale,
+            );
             if (dot) {
                 dot.setAttribute("r", String(visualRadius));
             }
@@ -362,13 +326,18 @@
         }
 
         syncAllMarkerGeometry() {
+            const screenScales = new Map();
             this.markerElements.forEach((marker, name) => {
                 const meta = this.getMarkerMeta(name);
                 if (!meta) {
                     return;
                 }
                 const focused = marker.classList.contains("country-map-marker--focused");
-                this.setMarkerRadius(marker, meta, focused);
+                const coordSpace = marker.dataset.coordSpace || "root";
+                if (!screenScales.has(coordSpace)) {
+                    screenScales.set(coordSpace, this.getMarkerScreenScale(marker));
+                }
+                this.setMarkerRadius(marker, meta, focused, screenScales.get(coordSpace));
             });
         }
 
@@ -424,7 +393,7 @@
 
         fitViewBoxToPanel() {
             const mapRoot = this.root?.querySelector(".country-map-root");
-            if (!mapRoot || !this.svg || !this.baseViewBox) {
+            if (!mapRoot || !this.svg) {
                 return;
             }
             const rect = mapRoot.getBoundingClientRect();
@@ -433,14 +402,39 @@
             }
 
             const base = this.getResponsiveBaseViewBox();
-            this.baseViewBox = base;
-            const responsiveAlign = this.options.modernMap && this.isMobileInsetLayout()
+            const responsiveAlign = this.isMobileInsetLayout()
                 ? "xMidYMid meet"
                 : this.baseAlign;
             const baseAlign = this.formatPreserveAspectRatio(responsiveAlign);
             const [, parMode = "meet"] = baseAlign.match(/\s(meet|slice)$/i) || [];
             const baseAnchor = baseAlign.split(/\s+/)[0] || "xMaxYMid";
             const neededW = rect.width * (base.h / rect.height);
+            const mainFrame = this.mapData?.main?.frame;
+            const regionsLayer = this.svg.querySelector(".country-map-regions");
+            let geometryBounds = null;
+            try {
+                geometryBounds = regionsLayer?.getBBox?.() || null;
+            } catch (_error) {
+                geometryBounds = null;
+            }
+            const hasGeometryBounds = geometryBounds && geometryBounds.width > 0;
+            const geometryCenterX = hasGeometryBounds
+                ? geometryBounds.x + geometryBounds.width / 2
+                : mainFrame
+                    ? Number(mainFrame.x) + Number(mainFrame.width) / 2
+                    : base.x + base.w / 2;
+            const targetCenterX = geometryCenterX * this.zoomState.scale + this.zoomState.x;
+            const wideDesktopNudgePx = (
+                !this.isMobileInsetLayout() && window.innerWidth >= 1800
+            ) ? Number(this.mapData?.wideDesktopNudgePx) || 0 : 0;
+            const wideDesktopNudgeX = wideDesktopNudgePx * (neededW / rect.width);
+
+            if (!this.isMobileInsetLayout() && neededW < base.w - 0.5) {
+                const centeredCropX = targetCenterX - neededW / 2 - wideDesktopNudgeX;
+                this.svg.setAttribute("preserveAspectRatio", baseAlign);
+                this.applyViewBox({ x: centeredCropX, y: base.y, w: neededW, h: base.h });
+                return;
+            }
 
             if (neededW <= base.w + 0.5) {
                 this.svg.setAttribute("preserveAspectRatio", baseAlign);
@@ -448,21 +442,19 @@
                 return;
             }
 
-            const extraW = neededW - base.w;
             // Japan: extend viewBox east + xMinYMid (insets fill the right column).
-            // Other countries: extend west + keep xMaxYMid so mainland stays flush right
-            // without a visible gap on wide panels (zoom unchanged).
+            // Other countries: center their transformed target geometry. This is
+            // especially important on 1920px+ panels, where edge-anchoring left
+            // France, Italy, Portugal, and Spain with uneven empty space.
             const useJapanWideFit = this.options.mapId === "japan";
             const fitted = useJapanWideFit
                 ? { x: base.x, y: base.y, w: neededW, h: base.h }
-                : { x: base.x - extraW, y: base.y, w: neededW, h: base.h };
-            const wideShift = Number(this.mapData?.widePanelShiftX) || 0;
-            const wideAlign = String(this.mapData?.widePanelAlign || "west");
-            if (!useJapanWideFit) {
-                fitted.x = wideAlign === "center"
-                    ? base.x - extraW / 2 + wideShift
-                    : base.x - extraW + wideShift;
-            }
+                : {
+                    x: targetCenterX - neededW / 2 - wideDesktopNudgeX,
+                    y: base.y,
+                    w: neededW,
+                    h: base.h,
+                };
             const panelAlign = useJapanWideFit
                 ? (baseAnchor.startsWith("xMax") ? `xMinYMid ${parMode}` : baseAlign)
                 : baseAlign;
@@ -484,18 +476,37 @@
                 return;
             }
             this.panelResizeObserver = new ResizeObserver(() => {
+                this.schedulePanelLayout();
+            });
+            this.panelResizeObserver.observe(target);
+        }
+
+        schedulePanelLayout() {
+            if (this.layoutFrame) {
+                return;
+            }
+            this.layoutFrame = window.requestAnimationFrame(() => {
+                this.layoutFrame = null;
+                this.syncInsetMobileState(true);
                 this.fitViewBoxToPanel();
                 this.syncAllMarkerGeometry();
                 if (!this.isMobileInsetLayout()) {
                     this.syncInsetScreenTransform();
                 }
+                this.scheduleBaseCanvasRender();
             });
-            this.panelResizeObserver.observe(target);
         }
 
         resolveDefaultZoomState() {
-            if (this.options.modernMap && this.isMobileInsetLayout()) {
-                return { scale: 1, x: 0, y: 0 };
+            if (this.isMobileInsetLayout()) {
+                const mobileView = this.mapData?.main?.mobileDefaultView;
+                return mobileView
+                    ? {
+                        scale: Number(mobileView.scale) || 1,
+                        x: Number(mobileView.x) || 0,
+                        y: Number(mobileView.y) || 0,
+                    }
+                    : { scale: 1, x: 0, y: 0 };
             }
             const view = this.mapData?.main?.defaultView;
             if (!view) {
@@ -521,8 +532,18 @@
             return 1;
         }
 
+        getMarkerScreenScale(marker) {
+            if (marker?.dataset.coordSpace === "inset-drawer") {
+                const matrix = marker.ownerSVGElement?.getScreenCTM?.();
+                if (matrix?.a) {
+                    return Math.abs(matrix.a);
+                }
+            }
+            return this.getOuterSvgScreenScale();
+        }
+
         getResponsiveBaseViewBox() {
-            if (!this.options.modernMap || !this.isMobileInsetLayout()) {
+            if (!this.isMobileInsetLayout()) {
                 return this.parseViewBox(this.mapData.viewBox);
             }
             const frame = this.mapData.main.frame;
@@ -663,6 +684,7 @@
             path.setAttribute("class", "country-map-neighbor");
             path.dataset.countryCode = country.code;
             const { url, hasGuide } = this.resolveCountryGuide(country);
+            path.dataset.hasGuide = hasGuide ? "true" : "false";
             if (hasGuide) {
                 path.setAttribute("role", "button");
                 path.setAttribute("aria-label", `${country.name} country`);
@@ -713,25 +735,23 @@
             path.setAttribute("data-region", regionName);
             path.setAttribute("fill-rule", "evenodd");
             path.setAttribute("tabindex", "0");
-            path.setAttribute("role", this.options.modernMap ? "group" : "button");
+            path.setAttribute("role", "group");
             path.setAttribute("aria-label", `${regionName} region`);
             path.addEventListener("mousedown", (event) => {
                 event.preventDefault();
             });
-            if (this.options.modernMap) {
-                path.addEventListener("focus", () => {
-                    this.state.hoveredRegion = regionName;
+            path.addEventListener("focus", () => {
+                this.state.hoveredRegion = regionName;
+                this.applyShellState();
+                this.showRegionOverlay(regionName);
+            });
+            path.addEventListener("blur", () => {
+                if (this.state.hoveredRegion === regionName) {
+                    this.state.hoveredRegion = null;
                     this.applyShellState();
-                    this.showRegionOverlay(regionName);
-                });
-                path.addEventListener("blur", () => {
-                    if (this.state.hoveredRegion === regionName) {
-                        this.state.hoveredRegion = null;
-                        this.applyShellState();
-                        this.hideOverlay();
-                    }
-                });
-            }
+                    this.hideOverlay();
+                }
+            });
             return path;
         }
 
@@ -805,6 +825,17 @@
             title.className = "country-map-inset-drawer__title";
             title.textContent = "Additional regions";
 
+            const header = document.createElement("div");
+            header.className = "country-map-inset-drawer__header";
+            const close = document.createElement("button");
+            close.type = "button";
+            close.className = "country-map-inset-drawer__close";
+            close.setAttribute("aria-label", "Close additional regions");
+            close.innerHTML = '<span aria-hidden="true">&times;</span>';
+            close.addEventListener("click", () => this.setInsetDrawerOpen(false));
+            header.appendChild(title);
+            header.appendChild(close);
+
             const svg = document.createElementNS(SVG_NS, "svg");
             svg.setAttribute("class", "country-map-inset-drawer__svg");
             svg.setAttribute("viewBox", this.computeInsetViewBox());
@@ -822,7 +853,7 @@
             drawerGroup.appendChild(this.insetDrawerMarkersLayer);
             svg.appendChild(drawerGroup);
 
-            panel.appendChild(title);
+            panel.appendChild(header);
             panel.appendChild(svg);
             drawer.appendChild(backdrop);
             drawer.appendChild(panel);
@@ -899,17 +930,16 @@
             }
         }
 
-        syncInsetMobileState() {
+        syncInsetMobileState(deferLayoutWork = false) {
             if (!this.hasMapInsets()) {
                 return;
             }
 
             const mobile = this.isMobileInsetLayout();
-            if (this.options.modernMap && this.lastMobileLayout !== null && mobile !== this.lastMobileLayout) {
+            if (this.lastMobileLayout !== null && mobile !== this.lastMobileLayout) {
                 this.defaultZoomState = this.resolveDefaultZoomState();
                 this.zoomState = { ...this.defaultZoomState };
                 this.applyZoomTransform();
-                this.fitViewBoxToPanel();
             }
             this.lastMobileLayout = mobile;
             if (this.insetScreenGroup) {
@@ -928,6 +958,9 @@
                 this.setInsetDrawerOpen(false);
             }
             this.syncInsetMarkerMount(mobile);
+            if (deferLayoutWork) {
+                return;
+            }
             this.syncAllMarkerGeometry();
             if (!mobile) {
                 this.syncInsetScreenTransform();
@@ -939,7 +972,7 @@
                 return;
             }
             this.insetMobileQuery = window.matchMedia(`(max-width: ${MOBILE_INSET_MAX_WIDTH}px)`);
-            this.boundInsetMobileChange = () => this.syncInsetMobileState();
+            this.boundInsetMobileChange = () => this.schedulePanelLayout();
             if (typeof this.insetMobileQuery.addEventListener === "function") {
                 this.insetMobileQuery.addEventListener("change", this.boundInsetMobileChange);
             } else if (typeof this.insetMobileQuery.addListener === "function") {
@@ -980,14 +1013,14 @@
             const { viewBox, main, insets } = this.mapData;
 
             this.shell = document.createElement("div");
-            this.shell.className = "country-map-shell";
+            this.shell.className = "country-map-shell country-map-shell--modern";
 
             const mapRoot = document.createElement("div");
-            mapRoot.className = "country-map-root";
-            mapRoot.classList.toggle("country-map-root--modern", Boolean(this.options.modernMap));
-            const strokeWidthScale = Number(this.mapData?.strokeWidthScale) || 1;
-            mapRoot.style.setProperty("--country-map-region-stroke", String(3.5 * strokeWidthScale));
-            mapRoot.style.setProperty("--country-map-neighbor-stroke", String(2.5 * strokeWidthScale));
+            mapRoot.className = "country-map-root country-map-root--modern";
+            // Germany's previous desktop rendering is the visual reference.
+            // Keep the same apparent weight regardless of a map's default zoom.
+            mapRoot.style.setProperty("--country-map-region-stroke", "3.2053");
+            mapRoot.style.setProperty("--country-map-neighbor-stroke", "2.2895");
 
             const svg = document.createElementNS(SVG_NS, "svg");
             svg.setAttribute("viewBox", viewBox);
@@ -1035,7 +1068,6 @@
             Object.entries(main.regions).forEach(([regionName, pathData]) => {
                 regionsLayer.appendChild(this.createRegionPath(regionName, pathData));
             });
-
             const insetsLayer = this.buildInsetsLayer();
 
             const mainMarkersLayer = document.createElementNS(SVG_NS, "g");
@@ -1057,8 +1089,6 @@
                     mainMarkersLayer.appendChild(marker);
                 }
             });
-
-            this.mainMarkersLayer = mainMarkersLayer;
 
             this.viewport = document.createElementNS(SVG_NS, "g");
             this.viewport.setAttribute("class", "country-map-viewport");
@@ -1102,6 +1132,11 @@
             }
             this.root.innerHTML = "";
             this.root.appendChild(this.shell);
+            // Cache the final mounted collections once. This includes both the
+            // desktop inset paths and their mobile-drawer counterparts.
+            this.neighborElements = [...this.shell.querySelectorAll(".country-map-neighbor")];
+            this.regionElements = [...this.shell.querySelectorAll(".country-map-region")];
+            this.setupBaseCanvas(mapRoot, neighborsLayer, regionsLayer);
 
             this.setupZoom(mapRoot);
             this.setupPointerInteractions(mapRoot);
@@ -1118,39 +1153,14 @@
             document.addEventListener("keydown", this.boundKeyDown);
             this.applyRegionActiveState();
             this.baseAlign = this.mapData.align || "xMaxYMid meet";
-            this.baseViewBox = this.getResponsiveBaseViewBox();
             this.applyZoomTransform();
             this.fitViewBoxToPanel();
             this.syncInsetScreenTransform();
-            this.setupInsetResizeObserver();
             this.setupPanelResizeObserver();
             this.setupInsetMobileListener();
             this.setupMarkerTouchListener();
             this.syncInsetMobileState();
-            this.syncAllMarkerGeometry();
             this.updateLegendCounts();
-        }
-
-        setupInsetResizeObserver() {
-            if (this.insetResizeObserver) {
-                this.insetResizeObserver.disconnect();
-                this.insetResizeObserver = null;
-            }
-            if (!this.insetScreenGroup || !(this.mapData.insets || []).length) {
-                return;
-            }
-            const target = this.root;
-            if (!target || typeof ResizeObserver === "undefined") {
-                return;
-            }
-            this.insetResizeObserver = new ResizeObserver(() => {
-                this.syncInsetMobileState();
-                if (!this.isMobileInsetLayout()) {
-                    this.fitViewBoxToPanel();
-                    this.syncInsetScreenTransform();
-                }
-            });
-            this.insetResizeObserver.observe(target);
         }
 
         getInsetScreenOffset() {
@@ -1250,20 +1260,16 @@
 
         createZoomControls() {
             const controls = document.createElement("div");
-            controls.className = "country-map-zoom-controls";
-            controls.classList.toggle("country-map-zoom-controls--modern", Boolean(this.options.modernMap));
+            controls.className = "country-map-zoom-controls country-map-zoom-controls--modern";
             controls.innerHTML = `
                 <button type="button" class="country-map-zoom-btn country-map-zoom-btn--in" aria-label="Zoom in">+</button>
                 <button type="button" class="country-map-zoom-btn country-map-zoom-btn--out" aria-label="Zoom out">&minus;</button>
-                ${this.options.modernMap ? '<button type="button" class="country-map-zoom-btn country-map-zoom-btn--reset" aria-label="Reset map view"><span aria-hidden="true">&#8634;</span></button>' : ''}
+                <button type="button" class="country-map-zoom-btn country-map-zoom-btn--reset" aria-label="Reset map view"><span aria-hidden="true">&#8634;</span></button>
             `;
             return controls;
         }
 
         createSelectionPanel() {
-            if (!this.options.modernMap) {
-                return null;
-            }
             const panel = document.createElement("aside");
             panel.className = "country-map-selection";
             panel.hidden = true;
@@ -1330,13 +1336,191 @@
                 mapRoot.classList.toggle("country-map-root--zoomed", this.isZoomedIn());
             }
             this.syncMainMarkerPositions();
-            if (this.options.modernMap) {
-                const zoomIn = this.zoomControls?.querySelector(".country-map-zoom-btn--in");
-                const zoomOut = this.zoomControls?.querySelector(".country-map-zoom-btn--out");
-                if (zoomIn) zoomIn.disabled = scale >= ZOOM_MAX - 0.001;
-                if (zoomOut) zoomOut.disabled = !this.isZoomedIn();
-            }
+            const zoomIn = this.zoomControls?.querySelector(".country-map-zoom-btn--in");
+            const zoomOut = this.zoomControls?.querySelector(".country-map-zoom-btn--out");
+            const reset = this.zoomControls?.querySelector(".country-map-zoom-btn--reset");
+            if (zoomIn) zoomIn.disabled = scale >= ZOOM_MAX - 0.001;
+            if (zoomOut) zoomOut.disabled = !this.isZoomedIn();
+            if (reset) reset.disabled = !this.isZoomedIn();
+            this.scheduleBaseCanvasRender();
             this.syncOverlayPosition();
+        }
+
+        setupBaseCanvas(mapRoot, neighborsLayer, regionsLayer) {
+            if (typeof window.Path2D === "undefined") {
+                return;
+            }
+            const canvas = document.createElement("canvas");
+            canvas.className = "country-map-base-canvas";
+            canvas.setAttribute("aria-hidden", "true");
+            const context = canvas.getContext("2d", { alpha: true });
+            if (!context) {
+                return;
+            }
+            this.baseCanvas = canvas;
+            this.baseCanvasContext = context;
+            this.baseCanvasPaths = [
+                ...neighborsLayer.querySelectorAll(".country-map-neighbor"),
+                ...regionsLayer.querySelectorAll(".country-map-region"),
+            ].map((element) => ({
+                element,
+                path: new Path2D(element.getAttribute("d") || ""),
+                type: element.classList.contains("country-map-neighbor") ? "neighbor" : "region",
+            }));
+            this.baseCanvasStyle = this.readBaseCanvasStyle(mapRoot);
+            mapRoot.classList.add("country-map-root--canvas-base");
+            mapRoot.insertBefore(canvas, this.svg);
+        }
+
+        scheduleBaseCanvasRender() {
+            if (!this.baseCanvas || this.baseCanvasFrame) {
+                return;
+            }
+            this.baseCanvasFrame = window.requestAnimationFrame(() => {
+                this.baseCanvasFrame = null;
+                this.renderBaseCanvas();
+            });
+        }
+
+        getBaseCanvasStyle(entry, palette) {
+            const element = entry.element;
+            if (entry.type === "region") {
+                if (element.classList.contains("country-map-region--highlighted")) {
+                    return {
+                        fill: element.classList.contains("country-map-region--active")
+                            ? palette.regionActiveHighlight
+                            : palette.regionHighlight,
+                        stroke: palette.stroke,
+                    };
+                }
+                return {
+                    fill: element.classList.contains("country-map-region--active")
+                        ? palette.regionActive
+                        : palette.region,
+                    stroke: palette.stroke,
+                };
+            }
+            if (element.classList.contains("country-map-neighbor--highlighted-preview")) {
+                return { fill: palette.neighborPreview, stroke: palette.stroke };
+            }
+            if (element.classList.contains("country-map-neighbor--highlighted-static")) {
+                return { fill: palette.neighborStatic, stroke: palette.stroke };
+            }
+            if (element.classList.contains("country-map-neighbor--highlighted")) {
+                return { fill: palette.neighborHighlight, stroke: palette.stroke };
+            }
+            return { fill: palette.neighbor, stroke: palette.stroke };
+        }
+
+        readBaseCanvasStyle(mapRoot) {
+            const rootStyle = getComputedStyle(mapRoot);
+            const themed = document.body.classList.contains("tg-theme");
+            return {
+                palette: themed
+                    ? {
+                        region: "#2a2f38",
+                        regionActive: rootStyle.getPropertyValue("--tg-amber").trim() || "#e8b14f",
+                        regionHighlight: "#3a4049",
+                        regionActiveHighlight: rootStyle.getPropertyValue("--tg-amber-soft").trim() || "#fff4d6",
+                        neighbor: "#23272e",
+                        neighborPreview: rootStyle.getPropertyValue("--tg-teal").trim() || "#4fbdba",
+                        neighborStatic: "#3a4049",
+                        neighborHighlight: "#1e336b",
+                        stroke: rootStyle.getPropertyValue("--tg-charcoal").trim() || "#121417",
+                    }
+                    : {
+                        region: "#15234b",
+                        regionActive: "#00f0ff",
+                        regionHighlight: "#1e336b",
+                        regionActiveHighlight: "#0070ff",
+                        neighbor: "#15234b",
+                        neighborPreview: "#4fbdba",
+                        neighborStatic: "#3a4049",
+                        neighborHighlight: "#1e336b",
+                        stroke: "#060b19",
+                    },
+                regionStroke: Number(rootStyle.getPropertyValue("--country-map-region-stroke")) || 3.5,
+                neighborStroke: Number(rootStyle.getPropertyValue("--country-map-neighbor-stroke")) || 2.5,
+            };
+        }
+
+        renderBaseCanvas() {
+            const canvas = this.baseCanvas;
+            const context = this.baseCanvasContext;
+            const mapRoot = this.root?.querySelector(".country-map-root");
+            const viewBox = this.svg?.viewBox?.baseVal;
+            if (!canvas || !context || !mapRoot || !viewBox?.width || !viewBox?.height) {
+                return;
+            }
+            const rect = mapRoot.getBoundingClientRect();
+            if (rect.width <= 0 || rect.height <= 0) {
+                return;
+            }
+            const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+            const width = Math.max(1, Math.round(rect.width * pixelRatio));
+            const height = Math.max(1, Math.round(rect.height * pixelRatio));
+            if (canvas.width !== width || canvas.height !== height) {
+                canvas.width = width;
+                canvas.height = height;
+            }
+            context.setTransform(1, 0, 0, 1, 0, 0);
+            context.clearRect(0, 0, width, height);
+
+            const screenScale = Math.min(rect.width / viewBox.width, rect.height / viewBox.height);
+            const renderedWidth = viewBox.width * screenScale;
+            const renderedHeight = viewBox.height * screenScale;
+            const align = this.svg.getAttribute("preserveAspectRatio") || "xMaxYMid meet";
+            const offsetX = align.startsWith("xMin")
+                ? 0
+                : align.startsWith("xMid")
+                    ? (rect.width - renderedWidth) / 2
+                    : rect.width - renderedWidth;
+            const offsetY = align.includes("YMin")
+                ? 0
+                : align.includes("YMax")
+                    ? rect.height - renderedHeight
+                    : (rect.height - renderedHeight) / 2;
+            const { scale, x, y } = this.zoomState;
+            context.setTransform(
+                pixelRatio * screenScale * scale,
+                0,
+                0,
+                pixelRatio * screenScale * scale,
+                pixelRatio * (offsetX + (x - viewBox.x) * screenScale),
+                pixelRatio * (offsetY + (y - viewBox.y) * screenScale),
+            );
+            context.lineJoin = "round";
+            context.lineCap = "round";
+            const { palette, regionStroke, neighborStroke } =
+                this.baseCanvasStyle || this.readBaseCanvasStyle(mapRoot);
+            for (const entry of this.baseCanvasPaths) {
+                const style = this.getBaseCanvasStyle(entry, palette);
+                context.fillStyle = style.fill;
+                context.strokeStyle = style.stroke;
+                const fixedScreenWidth = entry.type === "region" ? regionStroke : neighborStroke;
+                context.lineWidth = fixedScreenWidth / (screenScale * scale);
+                context.fill(entry.path, "evenodd");
+                context.stroke(entry.path);
+            }
+        }
+
+        scheduleZoomTransform() {
+            if (this.transformFrame) {
+                return;
+            }
+            this.transformFrame = window.requestAnimationFrame(() => {
+                this.transformFrame = null;
+                this.applyZoomTransform();
+            });
+        }
+
+        flushZoomTransform() {
+            if (!this.transformFrame) {
+                return;
+            }
+            window.cancelAnimationFrame(this.transformFrame);
+            this.transformFrame = null;
+            this.applyZoomTransform();
         }
 
         clientToSvg(clientX, clientY) {
@@ -1573,10 +1757,14 @@
             this.zoomState.x = this.panState.startX + delta.x;
             this.zoomState.y = this.panState.startY + delta.y;
             this.clampPanState();
-            this.applyZoomTransform();
+            // Pointer streams can outpace the display refresh rate. Coalescing
+            // pan updates prevents repeatedly tessellating complex coastlines
+            // for frames the browser can never present.
+            this.scheduleZoomTransform();
         }
 
         handlePointerUp(event) {
+            this.flushZoomTransform();
             const endingPinch = this.pinchSnapshot;
             const panMoved = Boolean(this.panState?.moved);
             const isTap = this.consumePointerTap(event);
@@ -1606,22 +1794,17 @@
             }
             const marker = event.target.closest?.(".country-map-marker[data-destination]");
             if (!marker) {
-                if (this.options.modernMap) {
-                    this.clearSelectedDestination();
-                }
+                this.clearSelectedDestination();
                 return;
             }
             const meta = this.getMarkerMeta(marker.dataset.destination);
             if (meta) {
-                if (this.options.modernMap) {
-                    this.selectDestination(meta);
-                } else {
-                    this.navigateToMarkerMeta(meta);
-                }
+                this.selectDestination(meta);
             }
         }
 
         handlePointerCancel(event) {
+            this.flushZoomTransform();
             this.pointerStarts.delete(event.pointerId);
             this.activePointers.delete(event.pointerId);
             if (this.activePointers.size < 2) {
@@ -1755,8 +1938,15 @@
                 `${meta.name}, ${meta.locations} guide locations${meta.active ? "" : " (hidden)"}`,
             );
 
-            const radius = this.getMarkerRadius(meta, false, group);
-            const hitRadius = this.getMarkerHitRadius(meta, false, group);
+            const screenScale = this.getMarkerScreenScale(group);
+            const radius = this.getMarkerRadius(meta, false, group, screenScale);
+            const hitRadius = this.getMarkerHitRadius(
+                meta,
+                false,
+                group,
+                radius,
+                screenScale,
+            );
 
             const hit = document.createElementNS(SVG_NS, "circle");
             hit.setAttribute("class", "country-map-marker__hit");
@@ -1764,14 +1954,11 @@
             hit.setAttribute("cy", String(y));
             hit.setAttribute("r", String(hitRadius));
 
-            let halo = null;
-            if (this.options.modernMap) {
-                halo = document.createElementNS(SVG_NS, "circle");
-                halo.setAttribute("class", "country-map-marker__halo");
-                halo.setAttribute("cx", String(x));
-                halo.setAttribute("cy", String(y));
-                halo.setAttribute("r", String(radius * 1.65));
-            }
+            const halo = document.createElementNS(SVG_NS, "circle");
+            halo.setAttribute("class", "country-map-marker__halo");
+            halo.setAttribute("cx", String(x));
+            halo.setAttribute("cy", String(y));
+            halo.setAttribute("r", String(radius * 1.65));
 
             const dot = document.createElementNS(SVG_NS, "circle");
             dot.setAttribute("class", "country-map-marker__dot");
@@ -1780,9 +1967,7 @@
             dot.setAttribute("r", String(radius));
 
             group.appendChild(hit);
-            if (halo) {
-                group.appendChild(halo);
-            }
+            group.appendChild(halo);
             group.appendChild(dot);
 
             const activateMarker = (domEvent) => {
@@ -1792,6 +1977,15 @@
             };
 
             group.addEventListener("click", (domEvent) => {
+                if (
+                    group.dataset.coordSpace === "inset-drawer" &&
+                    this.isMobileInsetLayout()
+                ) {
+                    domEvent.preventDefault();
+                    domEvent.stopPropagation();
+                    this.selectDestination(meta);
+                    return;
+                }
                 if (domEvent.pointerType === "touch") {
                     return;
                 }
@@ -1803,31 +1997,36 @@
             group.addEventListener("keydown", (event) => {
                 if (event.key === "Enter" || event.key === " ") {
                     event.preventDefault();
+                    if (
+                        group.dataset.coordSpace === "inset-drawer" &&
+                        this.isMobileInsetLayout()
+                    ) {
+                        this.selectDestination(meta);
+                        return;
+                    }
                     if (meta.url) {
                         window.location.href = meta.url;
                     }
                 }
             });
-            if (this.options.modernMap) {
-                group.addEventListener("focus", () => {
-                    this.state.hoveredDestination = meta.name;
-                    this.state.hoveredRegion = meta.region || null;
-                    group.classList.add("country-map-marker--focused");
-                    this.setMarkerRadius(group, meta, true);
+            group.addEventListener("focus", () => {
+                this.state.hoveredDestination = meta.name;
+                this.state.hoveredRegion = meta.region || null;
+                group.classList.add("country-map-marker--focused");
+                this.setMarkerRadius(group, meta, true);
+                this.applyShellState();
+                this.showDestinationOverlay(meta);
+            });
+            group.addEventListener("blur", () => {
+                if (this.state.hoveredDestination === meta.name) {
+                    this.state.hoveredDestination = null;
+                    this.state.hoveredRegion = null;
+                    group.classList.remove("country-map-marker--focused");
+                    this.setMarkerRadius(group, meta, false);
                     this.applyShellState();
-                    this.showDestinationOverlay(meta);
-                });
-                group.addEventListener("blur", () => {
-                    if (this.state.hoveredDestination === meta.name) {
-                        this.state.hoveredDestination = null;
-                        this.state.hoveredRegion = null;
-                        group.classList.remove("country-map-marker--focused");
-                        this.setMarkerRadius(group, meta, false);
-                        this.applyShellState();
-                        this.hideOverlay();
-                    }
-                });
-            }
+                    this.hideOverlay();
+                }
+            });
 
             this.markerElements.set(meta.name, group);
             return group;
@@ -1873,7 +2072,7 @@
             if (!marker) {
                 return;
             }
-            if (this.options.modernMap && this.useExpandedMarkerHit() && this.state.selectedDestination) {
+            if (this.useExpandedMarkerHit() && this.state.selectedDestination) {
                 this.hideOverlay();
                 return;
             }
@@ -1962,13 +2161,14 @@
             if (!this.shell) {
                 return;
             }
-            this.shell.querySelectorAll(".country-map-region[data-region]").forEach((path) => {
+            this.regionElements.forEach((path) => {
                 const regionName = path.dataset.region;
                 path.classList.toggle(
                     "country-map-region--active",
                     this.regionHasActiveGuides(regionName),
                 );
             });
+            this.scheduleBaseCanvasRender();
         }
 
         applyShellState() {
@@ -1996,11 +2196,9 @@
                 this.shell.removeAttribute("data-hover-country");
             }
 
-            this.shell.querySelectorAll(".country-map-neighbor[data-country-code]").forEach((path) => {
-                const code = path.dataset.countryCode;
+            this.neighborElements.forEach((path) => {
                 const isTarget = path.dataset.countryCode === hoveredCountry;
-                const country = this.neighborByCode.get(code);
-                const hasGuide = country ? this.resolveCountryGuide(country).hasGuide : false;
+                const hasGuide = path.dataset.hasGuide === "true";
                 path.classList.toggle(
                     "country-map-neighbor--highlighted",
                     Boolean(hoveredCountry && isTarget),
@@ -2015,7 +2213,7 @@
                 );
             });
 
-            this.shell.querySelectorAll(".country-map-region[data-region]").forEach((path) => {
+            this.regionElements.forEach((path) => {
                 const isTarget = path.dataset.region === activeRegion;
                 path.classList.toggle(
                     "country-map-region--highlighted",
@@ -2038,6 +2236,7 @@
                     Boolean(inActiveRegion && !hoveredDestination && !isActiveMarker),
                 );
             });
+            this.scheduleBaseCanvasRender();
         }
 
         showCountryOverlay(country, clientX, clientY) {
@@ -2077,7 +2276,7 @@
             if (!this.overlay) {
                 return;
             }
-            if (this.options.modernMap && this.useExpandedMarkerHit() && this.state.selectedDestination) {
+            if (this.useExpandedMarkerHit() && this.state.selectedDestination) {
                 this.hideOverlay();
                 return;
             }
@@ -2207,22 +2406,22 @@
             if (!this.overlay?.classList.contains("country-map-overlay--visible")) {
                 return;
             }
-            if (this.state.hoveredCountry) {
-                if (this.overlayFrame) {
-                    return;
-                }
-                this.overlayFrame = window.requestAnimationFrame(() => {
-                    this.overlayFrame = null;
-                    this.placeOverlayFromClient(clientX, clientY);
-                });
-                return;
-            }
+            this.pendingOverlayPoint = { x: clientX, y: clientY };
             if (this.overlayFrame) {
                 return;
             }
             this.overlayFrame = window.requestAnimationFrame(() => {
                 this.overlayFrame = null;
-                this.positionOverlay(clientX, clientY);
+                const point = this.pendingOverlayPoint;
+                this.pendingOverlayPoint = null;
+                if (!point) {
+                    return;
+                }
+                if (this.state.hoveredCountry) {
+                    this.placeOverlayFromClient(point.x, point.y);
+                } else {
+                    this.positionOverlay(point.x, point.y);
+                }
             });
         }
 
@@ -2232,6 +2431,7 @@
             }
             this.overlay.classList.remove("country-map-overlay--visible");
             this.overlay.setAttribute("aria-hidden", "true");
+            this.pendingOverlayPoint = null;
         }
 
         positionOverlay(clientX, clientY) {
@@ -2270,6 +2470,10 @@
         }
 
         refresh() {
+            const mapRoot = this.root?.querySelector(".country-map-root");
+            if (this.baseCanvas && mapRoot) {
+                this.baseCanvasStyle = this.readBaseCanvasStyle(mapRoot);
+            }
             this.applyRegionActiveState();
             this.shell?.querySelectorAll(".country-map-marker[data-destination]").forEach((marker) => {
                 const meta = this.getMarkerMeta(marker.dataset.destination);
@@ -2292,6 +2496,23 @@
 
         destroy() {
             document.removeEventListener("keydown", this.boundKeyDown);
+            if (this.transformFrame) {
+                window.cancelAnimationFrame(this.transformFrame);
+                this.transformFrame = null;
+            }
+            if (this.baseCanvasFrame) {
+                window.cancelAnimationFrame(this.baseCanvasFrame);
+                this.baseCanvasFrame = null;
+            }
+            if (this.overlayFrame) {
+                window.cancelAnimationFrame(this.overlayFrame);
+                this.overlayFrame = null;
+            }
+            if (this.layoutFrame) {
+                window.cancelAnimationFrame(this.layoutFrame);
+                this.layoutFrame = null;
+            }
+            this.pendingOverlayPoint = null;
             if (this.insetMobileQuery && this.boundInsetMobileChange) {
                 if (typeof this.insetMobileQuery.removeEventListener === "function") {
                     this.insetMobileQuery.removeEventListener("change", this.boundInsetMobileChange);
@@ -2305,10 +2526,6 @@
                 } else if (typeof this.markerTouchQuery.removeListener === "function") {
                     this.markerTouchQuery.removeListener(this.boundMarkerTouchChange);
                 }
-            }
-            if (this.insetResizeObserver) {
-                this.insetResizeObserver.disconnect();
-                this.insetResizeObserver = null;
             }
             if (this.panelResizeObserver) {
                 this.panelResizeObserver.disconnect();
@@ -2326,6 +2543,7 @@
 
     window.TGCountryMap = {
         async init(options) {
+            mapInstance?.destroy();
             const instance = new CountryMap(options);
             const ready = await instance.init();
             return ready ? instance : null;
