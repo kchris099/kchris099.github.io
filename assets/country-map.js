@@ -60,10 +60,10 @@
         if (registry[options.mapId]) {
             return registry[options.mapId];
         }
-        const mapUrl =
-            options.mapDataUrl ||
-            `${options.assetsBase || "../../assets/"}maps/${options.mapId}.json`;
-        const response = await fetch(mapUrl, { cache: "force-cache" });
+        if (!options.mapDataUrl) {
+            throw new Error(`map registry missing (${options.mapId})`);
+        }
+        const response = await fetch(options.mapDataUrl, { cache: "force-cache" });
         if (!response.ok) {
             throw new Error(`map fetch failed (${response.status})`);
         }
