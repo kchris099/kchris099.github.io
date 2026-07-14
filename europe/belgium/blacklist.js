@@ -5,4 +5,6 @@ const blacklistText = `
 Bruges
 
 Ghent
+
+Dinant
 `;

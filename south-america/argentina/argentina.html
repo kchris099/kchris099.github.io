@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/homepage-activation.css">
     <link rel="stylesheet" href="../../assets/destination-activation.css">
+    <link rel="stylesheet" href="../../assets/country-map.css">
     <link rel="stylesheet" href="../../assets/tg-modern-polish.css">
     <script defer src="../../assets/lenis.min.js"></script>
     <script defer src="../../assets/tg-smooth-scroll.js"></script>
@@ -49,12 +50,12 @@
             <button
                 type="button"
                 id="country-active-toggle"
-                class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
+                class="country-active-toggle country-active-toggle--active country-active-toggle--readonly"
                 data-iso2="AR"
-                data-active="false"
+                data-active="true"
                 data-interactive="true"
                 aria-label="Toggle Argentina homepage visibility"
-                aria-pressed="false"
+                aria-pressed="true"
             >
                 <img src="../../assets/flags/w80/ar.png" alt="" class="w-10 rounded-sm pointer-events-none" aria-hidden="true">
             </button>
@@ -68,13 +69,39 @@
                     <i class="ph ph-magnifying-glass search-bar__icon" aria-hidden="true"></i>
                     <input id="search-input" type="text" class="search-bar__input" placeholder="Search for a city or area" autocomplete="off" role="combobox" aria-autocomplete="list" aria-controls="search-results-list" aria-expanded="false">
                 </div>
-                <div id="search-results" class="search-results frosted-panel hidden" aria-label="Search suggestions">
+                <div id="search-results" class="search-results frosted-panel hidden" data-lenis-prevent data-tg-scroll-surface aria-label="Search suggestions">
                     <ul id="search-results-list" role="listbox" style="list-style:none;margin:0;padding:0.25rem 0;"></ul>
                 </div>
             </div>
         </header>
 
         <section id="regions-container" class="continents-grid" aria-label="Argentina regions"></section>
+        <section class="country-map-section" aria-labelledby="country-map-heading">
+            <div class="tg-section__header">
+                <span class="tg-section__eyebrow">Interactive Map</span>
+                <h2 id="country-map-heading" class="tg-section__title font-display">Explore <em>Argentina</em> by Region</h2>
+                <p class="tg-section__lead">Hover or focus to preview a destination. On touch, tap a marker for details, then open its guide.</p>
+            </div>
+            <div class="map-panel country-map-panel">
+                <div id="country-map" role="region" aria-label="Interactive map of Argentina destinations"></div>
+                <div class="map-legend country-map-legend">
+                    <div class="map-legend__row">
+                        <span class="map-legend__label">
+                            <span class="country-map-legend-dot country-map-legend-dot--active" aria-hidden="true"></span>
+                            Active:
+                        </span>
+                        <strong id="country-map-legend-active">0</strong>
+                    </div>
+                    <div class="map-legend__row">
+                        <span class="map-legend__label">
+                            <span class="country-map-legend-dot country-map-legend-dot--inactive" aria-hidden="true"></span>
+                            Inactive:
+                        </span>
+                        <strong id="country-map-legend-inactive">0</strong>
+                    </div>
+                </div>
+            </div>
+        </section>
         </div>
     </main>
 
@@ -98,15 +125,18 @@
     </button>
 
     <script defer src="blacklist.js"></script>
-    <script defer src="../../assets/destination-activation.js"></script>
+
+    <script defer src="../../assets/maps/argentina-data.js"></script>
+    <script defer src="../../assets/country-guides.js"></script>
+    <script defer src="../../assets/country-map.js"></script>    <script defer src="../../assets/destination-activation.js"></script>
     <script defer src="../../assets/dev-country-toggle.js"></script>
     <script defer src="../../assets/tg-page-chrome.js"></script>
 
     <script>
-        const argentinaData = {"Buenos Aires": ["Buenos Aires"], "Bariloche": ["Bariloche"], "Córdoba": ["Córdoba"], "El Calafate": ["El Calafate"], "Iguazú": ["Iguazú"], "Mendoza": ["Mendoza"], "Ushuaia": ["Ushuaia"]};
-        const regionIcons = {};
-        const destinationPaths = {"Buenos Aires": "buenos-aires", "Bariloche": "bariloche", "Córdoba": "cordoba", "El Calafate": "el-calafate", "Iguazú": "iguazu", "Mendoza": "mendoza", "Ushuaia": "ushuaia"};
-        const hasRegions = false;
+        const argentinaData = {"Buenos Aires & Pampas": ["Buenos Aires", "Córdoba"], "Northeast Argentina": ["Iguazú"], "Northwest Argentina": ["Salta"], "Cuyo": ["Mendoza"], "Patagonia": ["Bariloche", "El Calafate", "Ushuaia"]};
+        const regionIcons = {"Buenos Aires & Pampas": "ph-buildings", "Northeast Argentina": "ph-tree-evergreen", "Northwest Argentina": "ph-compass", "Cuyo": "ph-sun", "Patagonia": "ph-mountains"};
+        const destinationPaths = {"Buenos Aires": "buenos-aires", "Córdoba": "cordoba", "Iguazú": "iguazu", "Salta": "salta", "Mendoza": "mendoza", "Bariloche": "bariloche", "El Calafate": "el-calafate", "Ushuaia": "ushuaia"};
+        const hasRegions = true;
         const countryIso2 = "AR";
 
         const normalizeText = (text) => {
@@ -133,7 +163,20 @@
                 normalizeText,
                 destinationUrl,
             });
-
+            if (hasRegions) {
+                await TGCountryMap.init({
+                    selector: '#country-map',
+                    mapId: "argentina",
+                    countryName: "Argentina",
+                    countryData: argentinaData,
+                    destinationPaths,
+                    hasRegions,
+                    iso2: countryIso2,
+                    flagPath: "../../assets/flags/w40/ar.png",
+                    assetsBase: "../../assets/",
+                    activation: TGDestinationActivation,
+                });
+            }
             TGDestinationActivation.setupSearch();
         });
     </script>

@@ -5,4 +5,6 @@ const blacklistText = `
 Ohrid
 
 Skopje
+
+Bitola
 `;

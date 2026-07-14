@@ -36,4 +36,8 @@ Jerez De La Frontera
 Merida
 
 Tarragona
+
+Segovia
+
+Ávila
 `;

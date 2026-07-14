@@ -15,4 +15,6 @@ Plitvice Lakes National Park
 Pula
 
 Zadar
+
+Šibenik
 `;

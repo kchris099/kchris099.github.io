@@ -15,4 +15,6 @@ Iguazú
 Mendoza
 
 Ushuaia
+
+Salta
 `;

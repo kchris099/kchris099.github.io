@@ -51,4 +51,8 @@ Colmar
 Ile de Re
 
 Sarlat
+
+Arles
+
+Nîmes
 `;

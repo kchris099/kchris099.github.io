@@ -15,4 +15,8 @@ Datong
 Hong Kong
 
 Shanghai
+
+Lhasa
+
+Dali
 `;

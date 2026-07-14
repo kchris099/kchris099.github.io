@@ -5,4 +5,6 @@ const blacklistText = `
 Antigua Guatemala
 
 Guatemala City
+
+Tikal
 `;

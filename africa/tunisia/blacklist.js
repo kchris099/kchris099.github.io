@@ -5,4 +5,6 @@ const blacklistText = `
 Tunis
 
 Kairouan
+
+El Jem
 `;

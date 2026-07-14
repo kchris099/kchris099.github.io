@@ -27,4 +27,6 @@ Kakadu
 Perth
 
 Uluru Ayers Rock
+
+Blue Mountains
 `;

@@ -5,4 +5,6 @@ const blacklistText = `
 kutaisi
 
 tbilisi
+
+Batumi
 `;

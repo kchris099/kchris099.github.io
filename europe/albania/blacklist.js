@@ -5,4 +5,6 @@ const blacklistText = `
 Tiranë
 
 Berat
+
+Butrint
 `;

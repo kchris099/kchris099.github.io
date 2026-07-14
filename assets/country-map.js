@@ -110,6 +110,7 @@
             this.insetDrawerGroup = null;
             this.insetDrawerMarkersLayer = null;
             this.insetToggle = null;
+            this.insetDrawerSvg = null;
             this.insetDrawerOpen = false;
             this.lastMobileLayout = null;
             this.insetMobileQuery = null;
@@ -774,8 +775,25 @@
             return window.matchMedia(`(max-width: ${MOBILE_INSET_MAX_WIDTH}px)`).matches;
         }
 
-        computeInsetViewBox(pad = 8) {
-            const frames = (this.mapData.insets || []).map((inset) => inset.frame);
+        getInsetFrame(inset, mobile = false) {
+            if (!mobile) {
+                return inset.frame;
+            }
+            const index = (this.mapData.insets || []).findIndex((entry) => entry.id === inset.id);
+            const column = Math.floor(index / 2);
+            const row = index % 2;
+            return {
+                x: 8 + column * (inset.frame.width + 4),
+                y: 8 + row * (inset.frame.height + 4),
+                width: inset.frame.width,
+                height: inset.frame.height,
+            };
+        }
+
+        computeInsetViewBox(pad = 8, mobile = false) {
+            const frames = (this.mapData.insets || []).map((inset) =>
+                this.getInsetFrame(inset, mobile),
+            );
             const minX = Math.min(...frames.map((frame) => frame.x)) - pad;
             const minY = Math.min(...frames.map((frame) => frame.y)) - pad;
             const maxX = Math.max(...frames.map((frame) => frame.x + frame.width)) + pad;
@@ -783,13 +801,16 @@
             return `${minX} ${minY} ${maxX - minX} ${maxY - minY}`;
         }
 
-        buildInsetsLayer() {
+        buildInsetsLayer(coordSpace = "inset") {
             const insetsLayer = document.createElementNS(SVG_NS, "g");
             insetsLayer.setAttribute("class", "country-map-insets");
             insetsLayer.addEventListener("mouseover", this.boundRegionOver);
             insetsLayer.addEventListener("mouseout", this.boundRegionOut);
             (this.mapData.insets || []).forEach((inset) => {
-                insetsLayer.appendChild(this.renderInset(inset));
+                const mobileFrame = coordSpace === "inset-drawer"
+                    ? this.getInsetFrame(inset, true)
+                    : inset.frame;
+                insetsLayer.appendChild(this.renderInset(inset, mobileFrame));
             });
             return insetsLayer;
         }
@@ -799,13 +820,18 @@
             layer.setAttribute("class", "country-map-markers country-map-markers--inset");
             layer.addEventListener("mouseover", this.boundMarkerOver);
             layer.addEventListener("mouseout", this.boundMarkerOut);
+            const mobile = coordSpace === "inset-drawer";
             Object.keys(this.mapData.destinations).forEach((name) => {
                 const meta = this.getMarkerMeta(name);
                 if (!meta || !meta.hasGuide || !this.isInsetPlane(meta.plane)) {
                     return;
                 }
                 const plane = this.resolveDestinationPlane(meta);
-                const [x, y] = projectPoint(meta.lat, meta.lng, plane.bounds, plane.frame, plane.pad);
+                const inset = (this.mapData.insets || []).find((entry) =>
+                    `inset:${entry.id}` === meta.plane,
+                );
+                const frame = inset ? this.getInsetFrame(inset, mobile) : plane.frame;
+                const [x, y] = projectPoint(meta.lat, meta.lng, plane.bounds, frame, plane.pad);
                 layer.appendChild(this.createMarker(meta, x, y, coordSpace));
             });
             return layer;
@@ -846,7 +872,7 @@
 
             const svg = document.createElementNS(SVG_NS, "svg");
             svg.setAttribute("class", "country-map-inset-drawer__svg");
-            svg.setAttribute("viewBox", this.computeInsetViewBox());
+            svg.setAttribute("viewBox", this.computeInsetViewBox(8, true));
             svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
             svg.setAttribute("role", "img");
             svg.setAttribute("aria-label", "Island and territory regions");
@@ -856,7 +882,7 @@
 
             const drawerGroup = document.createElementNS(SVG_NS, "g");
             drawerGroup.setAttribute("class", "country-map-inset-drawer__content");
-            drawerGroup.appendChild(this.buildInsetsLayer());
+            drawerGroup.appendChild(this.buildInsetsLayer("inset-drawer"));
             this.insetDrawerMarkersLayer = this.buildInsetMarkersLayer("inset-drawer");
             drawerGroup.appendChild(this.insetDrawerMarkersLayer);
             svg.appendChild(drawerGroup);
@@ -868,6 +894,7 @@
 
             this.insetDrawer = drawer;
             this.insetDrawerGroup = drawerGroup;
+            this.insetDrawerSvg = svg;
             return drawer;
         }
 
@@ -988,28 +1015,33 @@
             }
         }
 
-        renderInset(inset) {
+        renderInset(inset, insetFrame = inset.frame) {
             const group = document.createElementNS(SVG_NS, "g");
             group.classList.add("country-map-inset");
             group.dataset.insetId = inset.id;
 
             const frame = document.createElementNS(SVG_NS, "rect");
-            frame.setAttribute("x", String(inset.frame.x));
-            frame.setAttribute("y", String(inset.frame.y));
-            frame.setAttribute("width", String(inset.frame.width));
-            frame.setAttribute("height", String(inset.frame.height));
+            frame.setAttribute("x", String(insetFrame.x));
+            frame.setAttribute("y", String(insetFrame.y));
+            frame.setAttribute("width", String(insetFrame.width));
+            frame.setAttribute("height", String(insetFrame.height));
             frame.setAttribute("class", "country-map-inset__frame");
             frame.setAttribute("rx", "6");
 
             const label = document.createElementNS(SVG_NS, "text");
             label.setAttribute("class", "country-map-inset__label");
-            label.setAttribute("x", String(inset.frame.x + inset.frame.width / 2));
-            label.setAttribute("y", String(inset.frame.y + 18));
+            label.setAttribute("x", String(insetFrame.x + insetFrame.width / 2));
+            label.setAttribute("y", String(insetFrame.y + 18));
             label.setAttribute("text-anchor", "middle");
             label.textContent = inset.label;
 
             const path = this.createRegionPath(inset.region, inset.path);
             path.setAttribute("fill-rule", "nonzero");
+            const dx = insetFrame.x - inset.frame.x;
+            const dy = insetFrame.y - inset.frame.y;
+            if (dx || dy) {
+                path.setAttribute("transform", `translate(${dx} ${dy})`);
+            }
 
             group.appendChild(frame);
             group.appendChild(path);
@@ -1022,6 +1054,18 @@
 
             this.shell = document.createElement("div");
             this.shell.className = "country-map-shell country-map-shell--modern";
+            if (insets?.length) {
+                const mobileInsetColumns = Math.max(1, Math.ceil(insets.length / 2));
+                const mobileInsetPanelWidth = mobileInsetColumns * 258;
+                this.shell.style.setProperty(
+                    "--country-map-inset-panel-width",
+                    `${mobileInsetPanelWidth}px`,
+                );
+                this.shell.style.setProperty(
+                    "--country-map-inset-toggle-right",
+                    `${mobileInsetPanelWidth + 10}px`,
+                );
+            }
 
             const mapRoot = document.createElement("div");
             mapRoot.className = "country-map-root country-map-root--modern";

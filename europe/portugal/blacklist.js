@@ -24,4 +24,6 @@ Marvao
 Monsaraz
 
 Tavira
+
+Tomar
 `;

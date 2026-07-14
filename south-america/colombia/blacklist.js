@@ -5,4 +5,6 @@ const blacklistText = `
 Bogotá
 
 Cartagena
+
+Medellín
 `;

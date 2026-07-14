@@ -7,4 +7,8 @@ Kota Kinabalu
 George Town
 
 Melaka
+
+Ipoh
+
+Kuching
 `;

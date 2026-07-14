@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/homepage-activation.css">
     <link rel="stylesheet" href="../../assets/destination-activation.css">
+    <link rel="stylesheet" href="../../assets/country-map.css">
     <link rel="stylesheet" href="../../assets/tg-modern-polish.css">
     <script defer src="../../assets/lenis.min.js"></script>
     <script defer src="../../assets/tg-smooth-scroll.js"></script>
@@ -60,7 +61,7 @@
             </button>
             <span class="tg-page-header__eyebrow">Country Guide — Europe</span>
             <h1 class="tg-page-title font-display"><em>Croatia</em> Guide</h1>
-            <p class="tg-page-lead">Croatia&#x27;s recorded history begins with Illyrian tribal kingdoms along the Adriatic and continues through Roman Pannonia and the medieval Croatian kingdom, when Emperor Diocletian built his retirement palace in 305 CE at Split and 7th-century dukes consolidated the coastal cities. Habsburg rule over four centuries shaped coastal Austro-Hungarian cities such as Rijeka, while the post-1918 Yugoslav federation ended with Croatian independence in 1991 and the EU accession of 2013. Travellers read that record at Roman Split, Renaissance Dubrovnik walls, Habsburg Zagreb Upper Town, and the Plitvice Lakes cascade inland.</p>
+            <p class="tg-page-lead">Croatia&#x27;s recorded history begins with Illyrian communities along the Adriatic and continues through Roman Dalmatia, the medieval Croatian kingdom, and centuries of Venetian and Habsburg influence. Diocletian&#x27;s palace at Split, Dubrovnik&#x27;s walls, and Zagreb&#x27;s Austro-Hungarian streets preserve that layered past, while the islands, karst lakes, and northern plains give the country a varied travel landscape.</p>
 
             <div class="search-wrap">
                 <label for="search-input" class="sr-only">Search for a city or area</label>
@@ -68,13 +69,39 @@
                     <i class="ph ph-magnifying-glass search-bar__icon" aria-hidden="true"></i>
                     <input id="search-input" type="text" class="search-bar__input" placeholder="Search for a city or area" autocomplete="off" role="combobox" aria-autocomplete="list" aria-controls="search-results-list" aria-expanded="false">
                 </div>
-                <div id="search-results" class="search-results frosted-panel hidden" aria-label="Search suggestions">
+                <div id="search-results" class="search-results frosted-panel hidden" data-lenis-prevent data-tg-scroll-surface aria-label="Search suggestions">
                     <ul id="search-results-list" role="listbox" style="list-style:none;margin:0;padding:0.25rem 0;"></ul>
                 </div>
             </div>
         </header>
 
         <section id="regions-container" class="continents-grid" aria-label="Croatia regions"></section>
+        <section class="country-map-section" aria-labelledby="country-map-heading">
+            <div class="tg-section__header">
+                <span class="tg-section__eyebrow">Interactive Map</span>
+                <h2 id="country-map-heading" class="tg-section__title font-display">Explore <em>Croatia</em> by Region</h2>
+                <p class="tg-section__lead">Hover or focus to preview a destination. On touch, tap a marker for details, then open its guide.</p>
+            </div>
+            <div class="map-panel country-map-panel">
+                <div id="country-map" role="region" aria-label="Interactive map of Croatia destinations"></div>
+                <div class="map-legend country-map-legend">
+                    <div class="map-legend__row">
+                        <span class="map-legend__label">
+                            <span class="country-map-legend-dot country-map-legend-dot--active" aria-hidden="true"></span>
+                            Active:
+                        </span>
+                        <strong id="country-map-legend-active">0</strong>
+                    </div>
+                    <div class="map-legend__row">
+                        <span class="map-legend__label">
+                            <span class="country-map-legend-dot country-map-legend-dot--inactive" aria-hidden="true"></span>
+                            Inactive:
+                        </span>
+                        <strong id="country-map-legend-inactive">0</strong>
+                    </div>
+                </div>
+            </div>
+        </section>
         </div>
     </main>
 
@@ -98,15 +125,18 @@
     </button>
 
     <script defer src="blacklist.js"></script>
-    <script defer src="../../assets/destination-activation.js"></script>
+
+    <script defer src="../../assets/maps/croatia-data.js"></script>
+    <script defer src="../../assets/country-guides.js"></script>
+    <script defer src="../../assets/country-map.js"></script>    <script defer src="../../assets/destination-activation.js"></script>
     <script defer src="../../assets/dev-country-toggle.js"></script>
     <script defer src="../../assets/tg-page-chrome.js"></script>
 
     <script>
-        const croatiaData = {"Dubrovnik": ["Dubrovnik"], "Plitvice Lakes National Park": ["Plitvice Lakes National Park"], "Pula": ["Pula"], "Rijeka": ["Rijeka"], "Split": ["Split"], "Trogir": ["Trogir"], "Zadar": ["Zadar"], "Zagreb": ["Zagreb"]};
-        const regionIcons = {};
-        const destinationPaths = {"Dubrovnik": "dubrovnik", "Plitvice Lakes National Park": "plitvice-lakes-national-park", "Pula": "pula", "Rijeka": "rijeka", "Split": "split", "Trogir": "trogir", "Zadar": "zadar", "Zagreb": "zagreb"};
-        const hasRegions = false;
+        const croatiaData = {"Northern Croatia": ["Zagreb"], "Central Croatia": ["Plitvice Lakes National Park"], "Istria": ["Pula"], "Kvarner": ["Rijeka"], "Dalmatia": ["Dubrovnik", "Šibenik", "Split", "Trogir", "Zadar"]};
+        const regionIcons = {"Northern Croatia": "ph-buildings", "Central Croatia": "ph-tree-evergreen", "Istria": "ph-sun", "Kvarner": "ph-waves", "Dalmatia": "ph-anchor"};
+        const destinationPaths = {"Zagreb": "zagreb", "Plitvice Lakes National Park": "plitvice-lakes-national-park", "Pula": "pula", "Rijeka": "rijeka", "Dubrovnik": "dubrovnik", "Šibenik": "sibenik", "Split": "split", "Trogir": "trogir", "Zadar": "zadar"};
+        const hasRegions = true;
         const countryIso2 = "HR";
 
         const normalizeText = (text) => {
@@ -133,7 +163,20 @@
                 normalizeText,
                 destinationUrl,
             });
-
+            if (hasRegions) {
+                await TGCountryMap.init({
+                    selector: '#country-map',
+                    mapId: "croatia",
+                    countryName: "Croatia",
+                    countryData: croatiaData,
+                    destinationPaths,
+                    hasRegions,
+                    iso2: countryIso2,
+                    flagPath: "../../assets/flags/w40/hr.png",
+                    assetsBase: "../../assets/",
+                    activation: TGDestinationActivation,
+                });
+            }
             TGDestinationActivation.setupSearch();
         });
     </script>

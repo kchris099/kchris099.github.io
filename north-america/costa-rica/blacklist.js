@@ -5,4 +5,6 @@ const blacklistText = `
 Arenal La Fortuna
 
 San Jose
+
+Monteverde
 `;

@@ -104,6 +104,7 @@
         "UZ": { name: "Uzbekistan", url: "asia/uzbekistan/uzbekistan.html", continent: "Asia" },
         "VA": { name: "Vatican City", url: "europe/vatican-city/vatican-city.html", continent: "Europe" },
         "VN": { name: "Vietnam", url: "asia/vietnam/vietnam.html", continent: "Asia" },
+        "XK": { name: "Kosovo", url: "europe/kosovo/kosovo.html", continent: "Europe" },
         "ZA": { name: "South Africa", url: "africa/south-africa/south-africa.html", continent: "Africa" },
         "ZW": { name: "Zimbabwe", url: "africa/zimbabwe/zimbabwe.html", continent: "Africa" },
     };

@@ -5,4 +5,6 @@ const blacklistText = `
 Quito
 
 Galápagos
+
+Cuenca
 `;

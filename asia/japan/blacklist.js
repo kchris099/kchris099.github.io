@@ -30,4 +30,10 @@ Sapporo
 Sendai
 
 Takayama
+
+Ise
+
+Koyasan
+
+Nagoya
 `;

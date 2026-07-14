@@ -63,4 +63,8 @@ Padua
 Parma
 
 Perugia
+
+Trieste
+
+Ravenna
 `;

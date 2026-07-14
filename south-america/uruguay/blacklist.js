@@ -3,4 +3,6 @@
 
 const blacklistText = `
 Montevideo
+
+Colonia del Sacramento
 `;

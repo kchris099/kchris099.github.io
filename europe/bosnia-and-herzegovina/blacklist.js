@@ -5,4 +5,6 @@ const blacklistText = `
 Sarajevo
 
 Mostar
+
+Jajce
 `;

@@ -122,4 +122,16 @@ Taos, NM
 Yosemite, CA
 
 Zion, UT
+
+Monument Valley, AZ/UT, UT
+
+Richmond, VA
+
+Great Smoky Mountains, NC
+
+Santa Barbara, CA
+
+San Juan, PR
+
+San Francisco, CA
 `;

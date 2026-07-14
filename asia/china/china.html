@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/homepage-activation.css">
     <link rel="stylesheet" href="../../assets/destination-activation.css">
+    <link rel="stylesheet" href="../../assets/country-map.css">
     <link rel="stylesheet" href="../../assets/tg-modern-polish.css">
     <script defer src="../../assets/lenis.min.js"></script>
     <script defer src="../../assets/tg-smooth-scroll.js"></script>
@@ -49,18 +50,18 @@
             <button
                 type="button"
                 id="country-active-toggle"
-                class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
+                class="country-active-toggle country-active-toggle--active country-active-toggle--readonly"
                 data-iso2="CN"
-                data-active="false"
+                data-active="true"
                 data-interactive="true"
                 aria-label="Toggle China homepage visibility"
-                aria-pressed="false"
+                aria-pressed="true"
             >
                 <img src="../../assets/flags/w80/cn.png" alt="" class="w-10 rounded-sm pointer-events-none" aria-hidden="true">
             </button>
             <span class="tg-page-header__eyebrow">Country Guide — Asia</span>
             <h1 class="tg-page-title font-display"><em>China</em> Guide</h1>
-            <p class="tg-page-lead">China&#x27;s recorded history begins with the Shang dynasty oracle bones of c. 1600 BCE and continues through Zhou, Qin, Han, Tang, Song, Yuan, Ming, and Qing imperial cycles that built the Great Wall, the Grand Canal, and the imperial examination system. The 1911 Xinhai revolution ended two millennia of monarchy, replaced in 1949 by the People&#x27;s Republic following the Sino-Japanese war and civil conflict. Travellers read that layered imperial past at the Great Wall, the Forbidden City in Beijing, the Yungang and Longmen grottoes, and the Confucian temples at Qufu.</p>
+            <p class="tg-page-lead">China&#x27;s recorded history stretches across three millennia of imperial capitals, treaty-port trade, and 20th-century republican and socialist state-building. Ming city walls, Tang grid streets, Bund facades, and restored temple districts in Beijing and Xi&#x27;an show how dynastic reform and maritime commerce shaped East Asia&#x27;s most populous civilization.</p>
 
             <div class="search-wrap">
                 <label for="search-input" class="sr-only">Search for a city or area</label>
@@ -68,13 +69,39 @@
                     <i class="ph ph-magnifying-glass search-bar__icon" aria-hidden="true"></i>
                     <input id="search-input" type="text" class="search-bar__input" placeholder="Search for a city or area" autocomplete="off" role="combobox" aria-autocomplete="list" aria-controls="search-results-list" aria-expanded="false">
                 </div>
-                <div id="search-results" class="search-results frosted-panel hidden" aria-label="Search suggestions">
+                <div id="search-results" class="search-results frosted-panel hidden" data-lenis-prevent data-tg-scroll-surface aria-label="Search suggestions">
                     <ul id="search-results-list" role="listbox" style="list-style:none;margin:0;padding:0.25rem 0;"></ul>
                 </div>
             </div>
         </header>
 
         <section id="regions-container" class="continents-grid" aria-label="China regions"></section>
+        <section class="country-map-section" aria-labelledby="country-map-heading">
+            <div class="tg-section__header">
+                <span class="tg-section__eyebrow">Interactive Map</span>
+                <h2 id="country-map-heading" class="tg-section__title font-display">Explore <em>China</em> by Region</h2>
+                <p class="tg-section__lead">Hover or focus to preview a destination. On touch, tap a marker for details, then open its guide.</p>
+            </div>
+            <div class="map-panel country-map-panel">
+                <div id="country-map" role="region" aria-label="Interactive map of China destinations"></div>
+                <div class="map-legend country-map-legend">
+                    <div class="map-legend__row">
+                        <span class="map-legend__label">
+                            <span class="country-map-legend-dot country-map-legend-dot--active" aria-hidden="true"></span>
+                            Active:
+                        </span>
+                        <strong id="country-map-legend-active">0</strong>
+                    </div>
+                    <div class="map-legend__row">
+                        <span class="map-legend__label">
+                            <span class="country-map-legend-dot country-map-legend-dot--inactive" aria-hidden="true"></span>
+                            Inactive:
+                        </span>
+                        <strong id="country-map-legend-inactive">0</strong>
+                    </div>
+                </div>
+            </div>
+        </section>
         </div>
     </main>
 
@@ -98,15 +125,18 @@
     </button>
 
     <script defer src="blacklist.js"></script>
-    <script defer src="../../assets/destination-activation.js"></script>
+
+    <script defer src="../../assets/maps/china-data.js?v=c3cb1b92c9b8"></script>
+    <script defer src="../../assets/country-guides.js"></script>
+    <script defer src="../../assets/country-map.js"></script>    <script defer src="../../assets/destination-activation.js"></script>
     <script defer src="../../assets/dev-country-toggle.js"></script>
     <script defer src="../../assets/tg-page-chrome.js"></script>
 
     <script>
-        const chinaData = {"Beijing": ["Beijing"], "Datong": ["Datong"], "Hong Kong": ["Hong Kong"], "Luoyang": ["Luoyang"], "Macau": ["Macau"], "Shanghai": ["Shanghai"], "Xi'an": ["Xi'an"]};
-        const regionIcons = {};
-        const destinationPaths = {"Beijing": "beijing", "Datong": "datong", "Hong Kong": "hong-kong", "Luoyang": "luoyang", "Macau": "macau", "Shanghai": "shanghai", "Xi'an": "xi-an"};
-        const hasRegions = false;
+        const chinaData = {"North China": ["Beijing", "Datong"], "Central China": ["Luoyang"], "Northwest China": ["Xi'an"], "East China": ["Shanghai"], "South China": ["Hong Kong", "Macau"], "Southwest China": ["Dali", "Lhasa"]};
+        const regionIcons = {"North China": "ph-buildings", "Central China": "ph-castle-turret", "Northwest China": "ph-compass", "East China": "ph-bank", "South China": "ph-waves", "Southwest China": "ph-tree-evergreen"};
+        const destinationPaths = {"Beijing": "beijing", "Datong": "datong", "Luoyang": "luoyang", "Xi'an": "xi-an", "Shanghai": "shanghai", "Hong Kong": "hong-kong", "Macau": "macau", "Dali": "dali", "Lhasa": "lhasa"};
+        const hasRegions = true;
         const countryIso2 = "CN";
 
         const normalizeText = (text) => {
@@ -123,6 +153,30 @@
         const destinationUrl = (name) => `${destinationPaths[name] || formatPath(name)}.html`;
 
         document.addEventListener('DOMContentLoaded', async () => {
+            const chinaMapData = window.TGCountryMapRegistry?.china;
+            if (chinaMapData?.neighbors) {
+                const kazakhstan = chinaMapData.neighbors.find(
+                    (neighbor) => neighbor.code === "KZ"
+                );
+                const baykonur = chinaMapData.neighbors.find(
+                    (neighbor) => neighbor.name === "Baykonur Cosmodrome"
+                );
+                if (kazakhstan && baykonur) {
+                    // The source country polygon encodes Baikonur as a hole.
+                    // Remove that hole before excluding the non-country feature.
+                    const holeStart = kazakhstan.path.indexOf(" M-60.37,142.58");
+                    const holeEnd = holeStart >= 0
+                        ? kazakhstan.path.indexOf("Z", holeStart) + 1
+                        : -1;
+                    if (holeEnd > holeStart) {
+                        kazakhstan.path =
+                            kazakhstan.path.slice(0, holeStart) + kazakhstan.path.slice(holeEnd);
+                    }
+                }
+                chinaMapData.neighbors = chinaMapData.neighbors.filter(
+                    (neighbor) => String(neighbor.code) !== "-99"
+                );
+            }
             await TGDestinationActivation.init({
                 iso2: countryIso2,
                 countryData: chinaData,
@@ -133,7 +187,20 @@
                 normalizeText,
                 destinationUrl,
             });
-
+            if (hasRegions) {
+                await TGCountryMap.init({
+                    selector: '#country-map',
+                    mapId: "china",
+                    countryName: "China",
+                    countryData: chinaData,
+                    destinationPaths,
+                    hasRegions,
+                    iso2: countryIso2,
+                    flagPath: "../../assets/flags/w40/cn.png",
+                    assetsBase: "../../assets/",
+                    activation: TGDestinationActivation,
+                });
+            }
             TGDestinationActivation.setupSearch();
         });
     </script>

@@ -9,4 +9,6 @@ Ostrava
 Telč
 
 Kutna Hora
+
+Olomouc
 `;

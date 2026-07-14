@@ -7,4 +7,6 @@ Oslo
 Bergen
 
 Stavanger
+
+Geirangerfjord
 `;

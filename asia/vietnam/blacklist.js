@@ -11,4 +11,6 @@ Hội An
 Da Nang
 
 Sapa
+
+Ha Long Bay
 `;

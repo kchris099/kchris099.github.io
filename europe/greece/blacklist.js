@@ -25,4 +25,6 @@ Naxos
 Paros
 
 Santorini
+
+Corinth
 `;

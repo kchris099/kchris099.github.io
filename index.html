@@ -825,6 +825,23 @@
     </button>
 
     <script src="assets/jsvectormap.min.js"></script>
+    <script>
+        // The bundled world map predates Kosovo's separate region entry.
+        // Add only Kosovo while the map is registered; all existing regions
+        // remain unchanged.
+        (() => {
+            const registerMap = jsVectorMap.addMap;
+            jsVectorMap.addMap = (name, mapData) => {
+                if (name === 'world') {
+                    mapData.paths.XK = {
+                        path: 'M471.10,172.24L471.13,171.98L471.20,171.76L471,171.45L471.02,171.32L471.13,171.22L471.40,171.36L471.51,171.07L472.14,170.85L472.19,170.75L472.07,170.55L472.09,170.43L472.27,170.32L472.35,170.16L472.44,170.17L472.61,169.81L472.62,169.71L472.50,169.60L472.46,169.31L472.94,169.02L473.11,169.22L473.05,169.24L473.05,169.43L473.47,169.76L473.69,169.79L473.83,170.24L473.98,170.21L474.04,170.60L474.11,170.71L474.48,170.89L474.41,171.35L474.88,171.46L475.04,171.67L475.31,171.63L475.40,171.78L475.30,171.89L475.26,172.22L475.01,172.68L475.01,172.96L474.75,173.16L474.87,173.59L474.55,173.59L474.51,173.62L474.54,173.73L474.38,173.69L474.20,174.03L474.21,174.29L474.05,174.26L473.87,173.94L473.70,173.82L473.46,174.06L472.91,174.32L472.81,174.73L472.83,175.12L472.65,175.40L472.56,175.27L472.45,175.38L472.37,175.27L472.35,175.14L472.45,174.87L472.32,174.15L472.20,173.75L471.78,173.27L471.54,173.26L471.42,172.92L471.44,172.78L471.28,172.41L471.10,172.24Z',
+                        name: 'Kosovo',
+                    };
+                }
+                registerMap.call(jsVectorMap, name, mapData);
+            };
+        })();
+    </script>
     <script src="assets/world.js"></script>
     <script src="assets/homepage-activation.js"></script>
     <script src="assets/lenis.min.js"></script>
@@ -1120,6 +1137,7 @@
             "US": { name: "United States", url: "north-america/united-states/united-states.html" },
             "VA": { name: "Vatican City", url: "europe/vatican-city/vatican-city.html" },
             "VN": { name: "Vietnam", url: "asia/vietnam/vietnam.html" },
+
         };
 
         const allCountryGuides = {
@@ -1227,6 +1245,7 @@
             "UZ": { name: "Uzbekistan", url: "asia/uzbekistan/uzbekistan.html" },
             "VA": { name: "Vatican City", url: "europe/vatican-city/vatican-city.html" },
             "VN": { name: "Vietnam", url: "asia/vietnam/vietnam.html" },
+            "XK": { name: "Kosovo", url: "europe/kosovo/kosovo.html" },
             "ZA": { name: "South Africa", url: "africa/south-africa/south-africa.html" },
             "ZW": { name: "Zimbabwe", url: "africa/zimbabwe/zimbabwe.html" },
         };
@@ -1331,11 +1350,12 @@
             "TZ": 0,
             "UA": 0,
             "UG": 0,
-            "US": 11,
+            "US": 12,
             "UY": 0,
             "UZ": 0,
             "VA": 1,
             "VN": 1,
+            "XK": 0,
             "ZA": 0,
             "ZW": 0,
         
@@ -1639,6 +1659,69 @@
 
         let worldMapInstance = null;
 
+        const WORLD_MAP_DRAG_THRESHOLD = 4;
+        const worldMapDragState = {
+            active: false,
+            moved: false,
+            suppressClick: false,
+            startX: 0,
+            startY: 0,
+        };
+
+        const setupWorldMapDragClickGuard = () => {
+            const mapRoot = document.getElementById('world-map');
+            if (!mapRoot || mapRoot.dataset.dragClickGuard === 'true') {
+                return;
+            }
+
+            mapRoot.dataset.dragClickGuard = 'true';
+            mapRoot.addEventListener('mousedown', (event) => {
+                if (event.button !== 0) {
+                    return;
+                }
+
+                worldMapDragState.active = true;
+                worldMapDragState.moved = false;
+                worldMapDragState.suppressClick = false;
+                worldMapDragState.startX = event.clientX;
+                worldMapDragState.startY = event.clientY;
+            });
+
+            window.addEventListener('mousemove', (event) => {
+                if (!worldMapDragState.active || worldMapDragState.moved) {
+                    return;
+                }
+
+                const movedX = event.clientX - worldMapDragState.startX;
+                const movedY = event.clientY - worldMapDragState.startY;
+                worldMapDragState.moved = Math.hypot(movedX, movedY) >= WORLD_MAP_DRAG_THRESHOLD;
+            });
+
+            window.addEventListener('mouseup', () => {
+                if (!worldMapDragState.active) {
+                    return;
+                }
+
+                worldMapDragState.suppressClick = worldMapDragState.moved;
+                worldMapDragState.active = false;
+                window.setTimeout(() => {
+                    worldMapDragState.suppressClick = false;
+                }, 0);
+            });
+
+            window.addEventListener('blur', () => {
+                worldMapDragState.active = false;
+                worldMapDragState.moved = false;
+                worldMapDragState.suppressClick = false;
+            });
+        };
+
+        const isWorldMapDragClick = () => {
+            const shouldSuppress = worldMapDragState.suppressClick;
+            worldMapDragState.suppressClick = false;
+            return shouldSuppress;
+        };
+
         const syncWorldMapZoomControls = () => {
             if (!worldMapInstance) return;
             const minScale = worldMapInstance._baseScale;
@@ -1687,6 +1770,7 @@
 
             applyNewIndexMapMarkerPalette();
             const markerEntries = TGActivation.buildMapMarkerEntries();
+            setupWorldMapDragClickGuard();
 
             worldMapInstance = new jsVectorMap({
                 selector: '#world-map',
@@ -1707,6 +1791,10 @@
                     tooltip.text(getTooltipHtml(entry.name, regionName, entry.code), true);
                 },
                 onMarkerClick(event, index) {
+                    if (isWorldMapDragClick()) {
+                        return;
+                    }
+
                     const entry = TGActivation.getMapMarkerEntry(index);
                     const guide = entry ? allCountryGuides[entry.code] : null;
                     if (guide) {
@@ -1734,6 +1822,10 @@
                     tooltip.text(getTooltipHtml(officialName, regionName, code), true);
                 },
                 onRegionClick(event, code) {
+                    if (isWorldMapDragClick()) {
+                        return;
+                    }
+
                     const guide = allCountryGuides[code];
                     if (guide) {
                         window.location.href = guide.url;

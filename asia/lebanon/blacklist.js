@@ -3,4 +3,6 @@
 
 const blacklistText = `
 beirut
+
+Byblos
 `;

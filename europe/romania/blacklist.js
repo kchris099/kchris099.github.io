@@ -9,4 +9,8 @@ Sighișoara
 Cluj Napoca
 
 Sibiu
+
+Brașov
+
+Sinaia
 `;

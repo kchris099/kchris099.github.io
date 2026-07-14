@@ -13,4 +13,6 @@ Ubud
 Bandung
 
 Surabaya
+
+Borobudur
 `;

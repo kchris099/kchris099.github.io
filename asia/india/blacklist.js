@@ -49,4 +49,18 @@ Pushkar
 Rishikesh
 
 Udaipur
+
+Fatehpur Sikri
+
+Darjeeling
+
+Bhubaneswar
+
+Madurai
+
+Kochi
+
+Nalanda
+
+Sanchi
 `;

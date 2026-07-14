@@ -10,4 +10,8 @@ Chiang Mai
 Chiang Rai
 
 Koh Samui
+
+Kanchanaburi
+
+Sukhothai
 `;

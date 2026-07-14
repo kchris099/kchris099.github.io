@@ -39,4 +39,12 @@ Taxco
 Tepoztlan
 
 Tulum
+
+Chichén Itzá
+
+Campeche
+
+Querétaro
+
+Teotihuacán
 `;

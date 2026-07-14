@@ -16,4 +16,6 @@ Lublin
 Poznan
 
 Zakopane
+
+Zamość
 `;
