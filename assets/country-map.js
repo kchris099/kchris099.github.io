@@ -428,9 +428,13 @@
                 !this.isMobileInsetLayout() && window.innerWidth >= 1800
             ) ? Number(this.mapData?.wideDesktopNudgePx) || 0 : 0;
             const wideDesktopNudgeX = wideDesktopNudgePx * (neededW / rect.width);
+            const viewBoxNudgePx = !this.isMobileInsetLayout()
+                ? Number(this.mapData?.viewBoxNudgePx) || 0
+                : 0;
+            const viewBoxNudgeX = viewBoxNudgePx * (neededW / rect.width);
 
             if (!this.isMobileInsetLayout() && neededW < base.w - 0.5) {
-                const centeredCropX = targetCenterX - neededW / 2 - wideDesktopNudgeX;
+                const centeredCropX = targetCenterX - neededW / 2 - wideDesktopNudgeX - viewBoxNudgeX;
                 this.svg.setAttribute("preserveAspectRatio", baseAlign);
                 this.applyViewBox({ x: centeredCropX, y: base.y, w: neededW, h: base.h });
                 return;
@@ -438,7 +442,11 @@
 
             if (neededW <= base.w + 0.5) {
                 this.svg.setAttribute("preserveAspectRatio", baseAlign);
-                this.applyViewBox(base);
+                this.applyViewBox(
+                    viewBoxNudgeX
+                        ? { ...base, x: base.x - viewBoxNudgeX }
+                        : base,
+                );
                 return;
             }
 
@@ -450,7 +458,7 @@
             const fitted = useJapanWideFit
                 ? { x: base.x, y: base.y, w: neededW, h: base.h }
                 : {
-                    x: targetCenterX - neededW / 2 - wideDesktopNudgeX,
+                    x: targetCenterX - neededW / 2 - wideDesktopNudgeX - viewBoxNudgeX,
                     y: base.y,
                     w: neededW,
                     h: base.h,
