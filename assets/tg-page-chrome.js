@@ -100,16 +100,23 @@
     let frame = 0;
 
     const fitTitle = (title) => {
-        title.style.setProperty("--hero-title-scale", "1");
         const available = title.clientWidth;
         const needed = title.scrollWidth;
         if (!available || !needed) {
             return;
         }
-        const scale = Math.min(1, available / needed);
+        const next = Math.min(1, available / needed);
+        const current = Number.parseFloat(
+            title.style.getPropertyValue("--hero-title-scale") || "1",
+        );
+        // Skip tiny adjustments — CSS char-fit handles first paint; this is
+        // only a safety net for resize / odd metrics.
+        if (Math.abs(next - current) < 0.008) {
+            return;
+        }
         title.style.setProperty(
             "--hero-title-scale",
-            scale < 0.999 ? scale.toFixed(4) : "1",
+            next < 0.999 ? next.toFixed(4) : "1",
         );
     };
 
@@ -127,7 +134,8 @@
         });
     };
 
-    fitAll();
+    // First paint is sized by CSS (--hero-title-chars). Only re-fit on
+    // viewport/font changes so load does not flash a transform scale.
 
     if (document.fonts?.ready) {
         document.fonts.ready.then(scheduleFit).catch(() => {});

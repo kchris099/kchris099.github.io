@@ -173,7 +173,11 @@ body.tg-country-v2 .site-brand {
     text-decoration: none;
     transition: color 180ms ease;
 }
-body.tg-country-v2 .site-brand:hover { color: var(--brass) !important; transform: none; }
+body.tg-country-v2 .site-brand:hover,
+body.tg-theme.tg-modern.tg-country-v2 .site-brand:hover {
+    color: var(--brass) !important;
+    transform: none !important;
+}
 body.tg-country-v2 .site-brand__mark {
     width: 2rem;
     height: 2rem;
@@ -330,6 +334,8 @@ body.tg-country-v2 .hero__content {
     grid-template-rows: auto 1fr auto auto;
     column-gap: clamp(.75rem, 1.6vw, 1.5rem);
     row-gap: clamp(1.25rem, 2.4vh, 2rem);
+    container-type: inline-size;
+    container-name: country-hero;
 }
 body.tg-country-v2 .hero__route {
     grid-column: 5 / 10;
@@ -396,7 +402,14 @@ body.tg-country-v2 .hero__title {
     max-width: 100%;
     color: var(--paper);
     font-family: var(--font-display);
-    font-size: clamp(6rem, 17vw, 16rem);
+    /* Size from char count so long names (e.g. Bosnia) fit on first paint —
+       no opacity hide and no post-load JS shrink flash. */
+    --hero-title-chars: 10;
+    --hero-title-char-size: 0.45;
+    font-size: min(
+        clamp(6rem, 17vw, 16rem),
+        calc(100cqi / (var(--hero-title-chars) * var(--hero-title-char-size)))
+    );
     font-weight: 400;
     line-height: .8;
     letter-spacing: -.06em;
@@ -417,6 +430,19 @@ body.tg-country-v2 .hero__lead {
     line-height: 1.72;
     text-wrap: pretty;
     text-shadow: 0 2px 12px rgba(0, 0, 0, .64);
+}
+/* Desktop: keep search/coords rows sized only by the left stack. Long intros
+   used to span those rows and push the search bar upward (e.g. Bosnia). */
+@media (min-width: 981px) {
+    body.tg-country-v2 .hero__lead {
+        position: absolute;
+        grid-row: 2 / 5;
+        inset: auto 0 .25rem 0;
+        width: auto;
+        max-height: calc(100% - 1.5rem);
+        margin: 0;
+        overflow: hidden;
+    }
 }
 body.tg-country-v2 .search-wrap {
     position: relative;
@@ -522,13 +548,18 @@ body.tg-country-v2 .hero__coordinates {
     grid-column: 1 / 7;
     grid-row: 4;
     align-self: start;
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
     gap: 1rem;
+    min-height: 1.15em;
     color: #c4c5c8;
     font-size: .72rem;
     font-variant-numeric: tabular-nums;
     text-shadow: 0 2px 9px rgba(0, 0, 0, .7);
+}
+body.tg-country-v2 .hero__coordinates > span:only-child {
+    grid-column: 2;
 }
 
 /* Regional index */
@@ -1376,8 +1407,24 @@ body.tg-country-v2 #scrollTopBtn:active { color: var(--basalt); background: var(
     body.tg-country-v2 .hero__content { padding-top: 9.5rem; grid-template-rows: auto 1fr auto auto auto; }
     body.tg-country-v2.tg-theme .country-active-toggle { grid-column: 1 / 6; }
     body.tg-country-v2 .hero__route { grid-column: 7 / 13; }
-    body.tg-country-v2 .hero__title { grid-column: 1 / 13; grid-row: 2; font-size: clamp(6rem, 20vw, 11rem); }
-    body.tg-country-v2 .hero__lead { grid-column: 6 / 13; grid-row: 3; }
+    body.tg-country-v2 .hero__title {
+        grid-column: 1 / 13;
+        grid-row: 2;
+        --hero-title-char-size: 0.47;
+        font-size: min(
+            clamp(6rem, 20vw, 11rem),
+            calc(100cqi / (var(--hero-title-chars) * var(--hero-title-char-size)))
+        );
+    }
+    body.tg-country-v2 .hero__lead {
+        position: static;
+        inset: auto;
+        grid-column: 6 / 13;
+        grid-row: 3;
+        max-height: none;
+        margin: 0 0 .25rem;
+        overflow: visible;
+    }
     body.tg-country-v2 .search-wrap { grid-column: 1 / 13; grid-row: 4; }
     body.tg-country-v2 .hero__coordinates { grid-column: 1 / 13; grid-row: 5; }
     body.tg-country-v2 .section-intro { grid-template-columns: 5rem minmax(0, 1fr); row-gap: 2rem; }
@@ -1444,8 +1491,26 @@ body.tg-country-v2 #scrollTopBtn:active { color: var(--basalt); background: var(
     body.tg-country-v2 .hero__route { grid-column: 4 / 7; justify-content: flex-end; text-align: right; }
     body.tg-country-v2 .hero__route span:first-child { display: inline; }
     body.tg-country-v2 .hero__route span:not(:first-child) { display: none; }
-    body.tg-country-v2 .hero__title { grid-column: 1 / 7; grid-row: 2; font-size: clamp(5rem, 24vw, 7.4rem); letter-spacing: -.045em; }
-    body.tg-country-v2 .hero__lead { grid-column: 1 / 7; grid-row: 3; max-width: 39rem; }
+    body.tg-country-v2 .hero__title {
+        grid-column: 1 / 7;
+        grid-row: 2;
+        --hero-title-char-size: 0.49;
+        font-size: min(
+            clamp(5rem, 24vw, 7.4rem),
+            calc(100cqi / (var(--hero-title-chars) * var(--hero-title-char-size)))
+        );
+        letter-spacing: -.045em;
+    }
+    body.tg-country-v2 .hero__lead {
+        position: static;
+        inset: auto;
+        grid-column: 1 / 7;
+        grid-row: 3;
+        max-width: 39rem;
+        max-height: none;
+        margin: 0 0 .25rem;
+        overflow: visible;
+    }
     body.tg-country-v2 .search-wrap { grid-column: 1 / 7; grid-row: 4; }
     body.tg-country-v2 .search-bar { min-height: 4.15rem; padding-right: 2rem; }
     body.tg-country-v2 .hero__coordinates { grid-column: 1 / 7; grid-row: 5; font-size: .66rem; }

@@ -93,6 +93,12 @@
         },
     };
 
+    // Markers sit outside #jvm-regions-group, so r stays screen-fixed unless we scale it.
+    const MARKER_ZOOM_R_INITIAL_MAX = 14;
+    const MARKER_ZOOM_R_HOVER_MAX = 16;
+
+    const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
     // Must match TG/assets/world.js inset + Miller central meridian used at build time.
     const WORLD_MAP_INSET = {
         width: 900,
@@ -167,6 +173,48 @@
 
         getMapMarkerDefaultStyle() {
             return MAP_MARKER_STYLE.active;
+        },
+
+        syncMapMarkerSizesForZoom() {
+            if (!mapInstance?._markers || !mapInstance._baseScale) {
+                return;
+            }
+
+            const factor = mapInstance.scale / mapInstance._baseScale;
+            Object.values(mapInstance._markers).forEach((marker) => {
+                const shape = marker?.element?.shape;
+                const style = shape?.style;
+                if (!shape || !style?.initial) {
+                    return;
+                }
+
+                const element = marker.element;
+                if (element._tgBaseInitialR == null) {
+                    element._tgBaseInitialR = Number(style.initial.r) || 4;
+                    element._tgBaseHoverR = Number(style.hover?.r) || element._tgBaseInitialR;
+                }
+
+                const nextInitial = clamp(
+                    element._tgBaseInitialR * factor,
+                    element._tgBaseInitialR,
+                    MARKER_ZOOM_R_INITIAL_MAX,
+                );
+                const nextHover = clamp(
+                    element._tgBaseHoverR * factor,
+                    element._tgBaseHoverR,
+                    MARKER_ZOOM_R_HOVER_MAX,
+                );
+
+                style.initial.r = nextInitial;
+                if (style.hover) {
+                    style.hover.r = nextHover;
+                }
+                if (typeof shape.updateStyle === "function") {
+                    shape.updateStyle();
+                } else if (shape.node) {
+                    shape.node.setAttribute("r", String(shape.isHovered ? nextHover : nextInitial));
+                }
+            });
         },
 
         applyDefaultWorldMapView(map) {
@@ -430,6 +478,7 @@
 
             mapMarkerEntries = entries;
             mapMarkerCount = payloads.length;
+            this.syncMapMarkerSizesForZoom();
         },
 
         refreshMap() {
