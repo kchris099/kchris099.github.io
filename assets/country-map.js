@@ -1217,17 +1217,32 @@
             this.updateLegendCounts();
         }
 
+        getBottomInset() {
+            const insets = this.mapData?.insets || [];
+            if (!insets.length) {
+                return null;
+            }
+            return insets.reduce((lowest, inset) =>
+                inset.frame.y > lowest.frame.y ? inset : lowest,
+            );
+        }
+
         getInsetScreenOffset() {
-            const insets = this.mapData.insets || [];
-            if (!insets.length || !this.svg) {
+            const bottomInset = this.getBottomInset();
+            if (!bottomInset || !this.svg) {
                 return { dx: 0, dy: 0 };
             }
 
             const viewBox = this.parseViewBox(this.svg.getAttribute("viewBox") || this.mapData.viewBox);
-            const margin = 12;
-            const bottomInset = insets.reduce((lowest, inset) =>
-                inset.frame.y > lowest.frame.y ? inset : lowest,
-            );
+            const rect = this.svg.getBoundingClientRect();
+            const meetScale = (
+                rect.width > 0 && rect.height > 0 && viewBox.w > 0 && viewBox.h > 0
+            )
+                ? Math.min(rect.width / viewBox.w, rect.height / viewBox.h)
+                : 1;
+            // Match country-v2 legend: left/bottom 1rem from the map panel edge.
+            const screenMargin = 16;
+            const margin = screenMargin / (meetScale || 1);
             const targetX = viewBox.x + viewBox.w - margin - bottomInset.frame.width;
             const targetY = viewBox.y + viewBox.h - margin - bottomInset.frame.height;
             return {
@@ -1241,7 +1256,8 @@
                 return;
             }
             const insets = this.mapData.insets || [];
-            if (!insets.length) {
+            const bottomInset = this.getBottomInset();
+            if (!insets.length || !bottomInset) {
                 this.insetScreenGroup.removeAttribute("transform");
                 return;
             }
@@ -1261,11 +1277,11 @@
                 if (meetScale > 0) {
                     const counterScale = 1 / meetScale;
                     if (Math.abs(counterScale - 1) >= 0.001) {
-                        const frames = insets.map((inset) => inset.frame);
-                        const pivotX = frames[0].x + frames[0].width / 2;
-                        const minY = Math.min(...frames.map((frame) => frame.y));
-                        const maxY = Math.max(...frames.map((frame) => frame.y + frame.height));
-                        const pivotY = (minY + maxY) / 2;
+                        // Pivot on the bottom-right corner so the stack stays
+                        // pinned to the panel edge (same 1rem margin as the
+                        // legend) instead of drifting inward when counter-scaled.
+                        const pivotX = bottomInset.frame.x + bottomInset.frame.width;
+                        const pivotY = bottomInset.frame.y + bottomInset.frame.height;
                         parts.push(
                             `translate(${pivotX} ${pivotY}) scale(${counterScale}) translate(${-pivotX} ${-pivotY})`,
                         );

@@ -132,6 +132,4 @@ Great Smoky Mountains, NC
 Santa Barbara, CA
 
 San Juan, PR
-
-San Francisco, CA
 `;
