@@ -22,7 +22,7 @@ Banff
 
 Halifax
 
-Niagara Falls Ontario
+Niagara Falls
 
 Saskatoon
 

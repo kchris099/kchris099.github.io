@@ -71,6 +71,18 @@
     function bindChrome() {
         const header = document.getElementById("site-header");
         const scrollTopBtn = document.getElementById("scrollTopBtn");
+        const footer = document.querySelector(".site-footer");
+
+        const updateFooterState = () => {
+            if (!footer || !scrollTopBtn) {
+                return;
+            }
+            const footerRect = footer.getBoundingClientRect();
+            scrollTopBtn.classList.toggle(
+                "is-footer-visible",
+                footerRect.top < window.innerHeight && footerRect.bottom > 0,
+            );
+        };
 
         lenis.on("scroll", ({ scroll }) => {
             if (header) {
@@ -79,6 +91,7 @@
             if (scrollTopBtn) {
                 scrollTopBtn.classList.toggle("is-visible", scroll > 300);
             }
+            updateFooterState();
         });
 
         if (scrollTopBtn) {
@@ -86,6 +99,15 @@
                 lenis.scrollTo(0, { duration: 1.2 });
             });
         }
+
+        if (footer && scrollTopBtn && "IntersectionObserver" in window) {
+            const footerObserver = new IntersectionObserver(([entry]) => {
+                scrollTopBtn.classList.toggle("is-footer-visible", entry.isIntersecting);
+            }, { threshold: 0 });
+            footerObserver.observe(footer);
+        }
+
+        updateFooterState();
 
         document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
             anchor.addEventListener("click", (event) => {

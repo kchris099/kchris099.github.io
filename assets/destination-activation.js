@@ -7,6 +7,7 @@
     let syncChannel = null;
     let config = null;
     let allDestinations = [];
+    const REGION_DROPDOWN_TRANSITION_MS = 420;
 
     const normalizeCode = (code) => String(code || "").toUpperCase();
 
@@ -17,15 +18,38 @@
         .replace(/"/g, "&quot;");
 
     const isAtlasTheme = () => document.body?.classList?.contains("tg-theme");
-
     const closeAllRegionDropdowns = () => {
+        let hasVisibleRegionDropdown = false;
+        const usesFlowRegionLayout = document.body?.classList?.contains("tg-region-index-v3");
         if (isAtlasTheme()) {
             document.querySelectorAll(".continent-dropdown").forEach((el) => {
+                const wasOpen = el.classList.contains("is-open");
+                const wasClosing = el.classList.contains("is-closing");
+                hasVisibleRegionDropdown ||= wasOpen || wasClosing;
                 el.classList.remove("is-open");
-                el.parentElement?.classList.remove("is-expanded");
-                if (el.parentElement) {
-                    el.parentElement.style.zIndex = "1";
+                if (usesFlowRegionLayout && (wasOpen || wasClosing)) {
+                    el.classList.add("is-closing");
+                    window.setTimeout(() => {
+                        if (!el.classList.contains("is-open")) {
+                            el.classList.remove("is-closing");
+                            const flowGroup = el.closest(".region-flow-group");
+                            if (flowGroup && !flowGroup.querySelector(".continent-dropdown.is-open, .continent-dropdown.is-closing")) {
+                                flowGroup.classList.remove("is-region-open");
+                            }
+                        }
+                    }, REGION_DROPDOWN_TRANSITION_MS);
+                } else {
+                    el.classList.remove("is-closing");
                 }
+                const card = el.closest(".continent-card");
+                card?.classList.remove("is-expanded");
+                if (card) {
+                    card.style.zIndex = "1";
+                }
+            });
+            document.querySelectorAll(".continent-card").forEach((card) => {
+                card.classList.remove("is-expanded");
+                card.style.zIndex = "1";
             });
             document.querySelectorAll(".continent-card__toggle").forEach((el) => {
                 el.setAttribute("aria-expanded", "false");
@@ -40,6 +64,7 @@
         document.querySelectorAll(".dropdown-icon").forEach((el) =>
             el.classList.remove("rotate-180", "text-neon-yellow"),
         );
+        return hasVisibleRegionDropdown;
     };
 
     const isLikelyDevServer = () =>
@@ -255,7 +280,8 @@
             if (!container) {
                 return null;
             }
-            return Array.from(container.children).find((card) => card.dataset.region === region) || null;
+            return Array.from(container.querySelectorAll(".continent-card"))
+                .find((card) => card.dataset.region === region) || null;
         },
 
         sortDestinationsForDisplay(destinations) {
@@ -303,6 +329,7 @@
                     class="country-status-dot country-status-dot--${status}${toggleClass}"
                     data-destination-name="${name}"
                     data-destination-slug="${slug || ""}"
+                    aria-pressed="${status === "active" ? "true" : "false"}"
                     aria-label="${labels[status]}"
                     title="${labels[status]}"
                     ${disabled}
@@ -404,6 +431,7 @@
             const link = document.createElement("a");
             link.href = url;
             link.className = "continent-card__toggle continent-card__link";
+            link.dataset.regionNumber = String(index + 1).padStart(2, "0");
             link.innerHTML = `
                 <div class="continent-card__main">
                     <div class="continent-card__icon">
@@ -490,12 +518,16 @@
             const icon = config.regionIcons[region] || "ph-map-pin";
             const card = document.createElement("div");
             card.className = "continent-card";
+            if ((index + 1) % 2 === 0) {
+                card.classList.add("continent-card--alternate");
+            }
             card.dataset.region = region;
             card.style.zIndex = "1";
 
             const header = document.createElement("button");
             header.type = "button";
             header.setAttribute("aria-expanded", "false");
+            header.dataset.regionNumber = String(index + 1).padStart(2, "0");
             header.className = "continent-card__toggle";
             header.innerHTML = `
                 <div class="continent-card__main">
@@ -522,7 +554,12 @@
             container.innerHTML = "";
             this.rebuildAllDestinations();
 
-            this.sortRegionKeysForDisplay(Object.keys(config.countryData)).forEach((region, index) => {
+            const regionKeys = this.sortRegionKeysForDisplay(Object.keys(config.countryData));
+            const flowRegionDropdowns = isAtlasTheme()
+                && document.body?.classList?.contains("tg-region-index-v3");
+            let flowGroup = null;
+
+            regionKeys.forEach((region, index) => {
                     const destinations = this.sortDestinationsForDisplay([
                         ...config.countryData[region],
                     ]);
@@ -574,8 +611,9 @@
 
                     const body = document.createElement("div");
                     body.className = atlasTheme
-                        ? "continent-dropdown frosted-panel"
+                        ? "continent-dropdown"
                         : "dropdown-content absolute top-[calc(100%+8px)] left-0 w-full bg-deepblue-950/95 border border-deepblue-700/80 backdrop-blur-xl rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.7)] transition-all duration-300 opacity-0 pointer-events-none translate-y-[-10px] z-50";
+                    body.dataset.region = region;
 
                     const list = document.createElement("ul");
                     list.className = atlasTheme
@@ -590,13 +628,28 @@
                         const isOpen = atlasTheme
                             ? body.classList.contains("is-open")
                             : body.classList.contains("opacity-100");
-                        closeAllRegionDropdowns();
+                        const hadVisibleRegionDropdown = closeAllRegionDropdowns();
                         if (!isOpen) {
                             if (atlasTheme) {
-                                body.classList.add("is-open");
-                                card.classList.add("is-expanded");
-                                header.setAttribute("aria-expanded", "true");
-                                card.style.zIndex = "130";
+                                const openRegionDropdown = () => {
+                                    body.classList.add("is-closing");
+                                    body.getBoundingClientRect();
+                                    window.requestAnimationFrame(() => {
+                                        window.requestAnimationFrame(() => {
+                                            body.classList.remove("is-closing");
+                                            body.classList.add("is-open");
+                                            card.classList.add("is-expanded");
+                                            header.setAttribute("aria-expanded", "true");
+                                            card.style.zIndex = "130";
+                                            card.closest(".region-flow-group")?.classList.add("is-region-open");
+                                        });
+                                    });
+                                };
+                                if (document.body.classList.contains("tg-region-index-v3") && hadVisibleRegionDropdown) {
+                                    window.setTimeout(openRegionDropdown, REGION_DROPDOWN_TRANSITION_MS);
+                                } else {
+                                    openRegionDropdown();
+                                }
                             } else {
                                 body.classList.remove("opacity-0", "pointer-events-none", "translate-y-[-10px]");
                                 body.classList.add("opacity-100", "pointer-events-auto", "translate-y-0");
@@ -608,8 +661,21 @@
 
                     body.addEventListener("click", (event) => event.stopPropagation());
                     card.appendChild(header);
-                    card.appendChild(body);
-                    container.appendChild(card);
+                    if (flowRegionDropdowns) {
+                        if (index % 3 === 0) {
+                            flowGroup = document.createElement("div");
+                            flowGroup.className = "region-flow-group";
+                            container.appendChild(flowGroup);
+                        }
+                        const flowPair = document.createElement("div");
+                        flowPair.className = "region-flow-pair";
+                        flowPair.appendChild(card);
+                        flowPair.appendChild(body);
+                        flowGroup.appendChild(flowPair);
+                    } else {
+                        card.appendChild(body);
+                        container.appendChild(card);
+                    }
                 });
 
             if (!this._documentClickBound) {
@@ -622,7 +688,11 @@
 
         refreshRegionDropdown(region) {
             const card = this.findRegionCard(region);
-            const list = card?.querySelector(".destination-dropdown-list");
+            const container = document.getElementById(config.containerId || "regions-container");
+            const list = card?.querySelector(".destination-dropdown-list")
+                || Array.from(container?.querySelectorAll(".continent-dropdown") || [])
+                    .find((panel) => panel.dataset.region === region)
+                    ?.querySelector(".destination-dropdown-list");
             if (!list) {
                 return;
             }
@@ -796,11 +866,57 @@
                 searchInput.setAttribute("aria-expanded", String(isOpen));
             };
 
+            const scrollForSearchFocus = () => {
+                const searchBar = searchInput.closest(".search-bar");
+                if (!searchBar) {
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    const rootFontSize =
+                        Number.parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+                    const estimatedRowHeight = 3.65 * rootFontSize;
+                    const estimatedListPadding = 0.7 * rootFontSize;
+                    const estimatedResultsHeight = Math.min(
+                        22 * rootFontSize,
+                        0.54 * window.innerHeight,
+                        6 * estimatedRowHeight + estimatedListPadding,
+                    );
+                    const bottomMargin = 24;
+                    const resultsTop =
+                        searchBar.getBoundingClientRect().bottom + 0.35 * rootFontSize;
+                    const resultsBottom = resultsTop + estimatedResultsHeight;
+                    const visibleBottom = window.innerHeight - bottomMargin;
+                    if (resultsBottom <= visibleBottom) {
+                        return;
+                    }
+
+                    const currentScroll = window.scrollY;
+                    const maxScroll = Math.max(
+                        0,
+                        document.documentElement.scrollHeight - window.innerHeight,
+                    );
+                    const targetScroll = Math.min(
+                        maxScroll,
+                        currentScroll + resultsBottom - visibleBottom,
+                    );
+                    if (targetScroll <= currentScroll + 1) {
+                        return;
+                    }
+
+                    if (window.TGSmoothScroll?.scrollTo) {
+                        window.TGSmoothScroll.scrollTo(targetScroll);
+                    } else {
+                        window.scrollTo({ top: targetScroll, behavior: "smooth" });
+                    }
+                });
+            };
+
             const renderResults = (results) => {
                 searchResultsList.innerHTML = "";
                 if (results.length === 0) {
                     searchResultsList.innerHTML = isAtlasTheme()
-                        ? '<li class="search-empty">No guides found.</li>'
+                        ? '<li class="search-empty">No destinations found.</li>'
                         : '<li class="px-6 py-4 text-slate-400 text-center">No guides found.</li>';
                 } else {
                     results.forEach((result) => {
@@ -843,6 +959,7 @@
                 if (searchInput.value.trim()) {
                     setSearchOpen(true);
                 }
+                scrollForSearchFocus();
             });
 
             searchInput.addEventListener("keydown", (event) => {

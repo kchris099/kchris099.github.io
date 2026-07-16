@@ -7,7 +7,6 @@ Hakodate
 
 Hakone
 
-Hakuba
 
 Kagoshima
 
@@ -36,4 +35,6 @@ Ise
 Koyasan
 
 Nagoya
+
+Hakuba
 `;

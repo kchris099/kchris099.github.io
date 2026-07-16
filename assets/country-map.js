@@ -852,6 +852,26 @@
             backdrop.className = "country-map-inset-drawer__backdrop";
             backdrop.addEventListener("click", () => this.setInsetDrawerOpen(false));
 
+            // Toggle rides on the same slide as the panel so it keeps a fixed
+            // size/attachment while the drawer opens and closes.
+            const slide = document.createElement("div");
+            slide.className = "country-map-inset-drawer__slide";
+
+            const toggle = document.createElement("button");
+            toggle.type = "button";
+            toggle.className = "country-map-inset-toggle";
+            toggle.setAttribute("aria-label", "Show additional regions");
+            toggle.setAttribute("aria-expanded", "false");
+            toggle.setAttribute("aria-controls", "country-map-inset-drawer");
+            toggle.innerHTML =
+                '<i class="ph ph-caret-left country-map-inset-toggle__icon" aria-hidden="true"></i>';
+            toggle.addEventListener("click", (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                this.setInsetDrawerOpen(!this.insetDrawerOpen);
+                toggle.blur();
+            });
+
             const panel = document.createElement("div");
             panel.className = "country-map-inset-drawer__panel";
 
@@ -865,8 +885,11 @@
             close.type = "button";
             close.className = "country-map-inset-drawer__close";
             close.setAttribute("aria-label", "Close additional regions");
-            close.innerHTML = '<span aria-hidden="true">&times;</span>';
-            close.addEventListener("click", () => this.setInsetDrawerOpen(false));
+            close.innerHTML = '<i class="ph ph-x" aria-hidden="true"></i>';
+            close.addEventListener("click", () => {
+                this.setInsetDrawerOpen(false);
+                close.blur();
+            });
             header.appendChild(title);
             header.appendChild(close);
 
@@ -889,36 +912,16 @@
 
             panel.appendChild(header);
             panel.appendChild(svg);
+            slide.appendChild(toggle);
+            slide.appendChild(panel);
             drawer.appendChild(backdrop);
-            drawer.appendChild(panel);
+            drawer.appendChild(slide);
 
             this.insetDrawer = drawer;
             this.insetDrawerGroup = drawerGroup;
             this.insetDrawerSvg = svg;
+            this.insetToggle = toggle;
             return drawer;
-        }
-
-        createInsetToggle() {
-            if (!this.hasMapInsets()) {
-                return null;
-            }
-
-            const button = document.createElement("button");
-            button.type = "button";
-            button.className = "country-map-inset-toggle";
-            button.hidden = true;
-            button.setAttribute("aria-label", "Show additional regions");
-            button.setAttribute("aria-expanded", "false");
-            button.setAttribute("aria-controls", "country-map-inset-drawer");
-            button.innerHTML =
-                '<span class="country-map-inset-toggle__icon" aria-hidden="true">\u2039</span>';
-            button.addEventListener("click", (event) => {
-                event.preventDefault();
-                event.stopPropagation();
-                this.setInsetDrawerOpen(!this.insetDrawerOpen);
-            });
-            this.insetToggle = button;
-            return button;
         }
 
         resolveInsetCoordSpace() {
@@ -939,24 +942,34 @@
             });
         }
 
+        updateInsetToggleChrome(open) {
+            if (!this.insetToggle) {
+                return;
+            }
+            this.insetToggle.setAttribute("aria-expanded", open ? "true" : "false");
+            this.insetToggle.setAttribute(
+                "aria-label",
+                open ? "Hide additional regions" : "Show additional regions",
+            );
+            const icon = this.insetToggle.querySelector(".country-map-inset-toggle__icon");
+            if (icon) {
+                icon.classList.toggle("ph-caret-left", !open);
+                icon.classList.toggle("ph-caret-right", open);
+            }
+        }
+
         setInsetDrawerOpen(open) {
             if (!this.insetDrawer || !this.isMobileInsetLayout()) {
                 return;
             }
+            if (Boolean(open) === this.insetDrawerOpen) {
+                return;
+            }
+
             this.insetDrawerOpen = open;
             this.insetDrawer.classList.toggle("country-map-inset-drawer--open", open);
             this.insetDrawer.setAttribute("aria-hidden", open ? "false" : "true");
-            if (this.insetToggle) {
-                this.insetToggle.setAttribute("aria-expanded", open ? "true" : "false");
-                this.insetToggle.setAttribute(
-                    "aria-label",
-                    open ? "Hide additional regions" : "Show additional regions",
-                );
-                const icon = this.insetToggle.querySelector(".country-map-inset-toggle__icon");
-                if (icon) {
-                    icon.textContent = open ? "\u203A" : "\u2039";
-                }
-            }
+            this.updateInsetToggleChrome(open);
             if (!open) {
                 this.state.hoveredDestination = null;
                 this.state.hoveredRegion = null;
@@ -982,9 +995,6 @@
                     "country-map-insets-screen--mobile-hidden",
                     mobile,
                 );
-            }
-            if (this.insetToggle) {
-                this.insetToggle.hidden = !mobile;
             }
             if (this.insetDrawer) {
                 this.insetDrawer.hidden = !mobile;
@@ -1026,7 +1036,7 @@
             frame.setAttribute("width", String(insetFrame.width));
             frame.setAttribute("height", String(insetFrame.height));
             frame.setAttribute("class", "country-map-inset__frame");
-            frame.setAttribute("rx", "6");
+            frame.setAttribute("rx", "0");
 
             const label = document.createElementNS(SVG_NS, "text");
             label.setAttribute("class", "country-map-inset__label");
@@ -1060,10 +1070,6 @@
                 this.shell.style.setProperty(
                     "--country-map-inset-panel-width",
                     `${mobileInsetPanelWidth}px`,
-                );
-                this.shell.style.setProperty(
-                    "--country-map-inset-toggle-right",
-                    `${mobileInsetPanelWidth + 10}px`,
                 );
             }
 
@@ -1167,14 +1173,10 @@
             this.zoomControls = this.createZoomControls();
             this.selectionPanel = this.createSelectionPanel();
             const insetDrawer = this.createInsetDrawer();
-            const insetToggle = this.createInsetToggle();
 
             mapRoot.appendChild(svg);
             mapRoot.appendChild(this.overlay);
             this.shell.appendChild(this.zoomControls);
-            if (insetToggle) {
-                this.shell.appendChild(insetToggle);
-            }
             if (insetDrawer) {
                 this.shell.appendChild(insetDrawer);
             }

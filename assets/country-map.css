@@ -502,9 +502,9 @@ body.tg-theme .country-map-canvas {
 .country-map-inset-toggle {
     position: absolute;
     top: 50%;
-    right: 0;
-    z-index: 26;
-    transform: translateY(-50%);
+    left: 0;
+    z-index: 2;
+    transform: translate(-100%, -50%);
     width: 22px;
     height: 44px;
     padding: 0;
@@ -512,45 +512,49 @@ body.tg-theme .country-map-canvas {
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
-    background-color: rgba(11, 19, 43, 0.92);
+    background-color: rgba(18, 20, 23, 0.96);
     color: #cbd5e1;
-    border: 1px solid #1e336b;
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-right: none;
-    border-radius: 8px 0 0 8px;
+    border-radius: 0;
     cursor: pointer;
     pointer-events: auto;
     user-select: none;
-    font-family: "Outfit", sans-serif;
-    box-shadow: -4px 0 12px rgba(0, 0, 0, 0.35);
-    transition: right 0.22s ease, background-color 0.16s ease, color 0.16s ease;
-}
-
-.country-map-inset-toggle[aria-expanded="true"] {
-    right: min(
-        var(--country-map-inset-toggle-right, 268px),
-        calc(100% - 32px)
-    );
-    z-index: 36;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    box-shadow: none;
+    transition: background-color 0.16s ease, color 0.16s ease, border-color 0.16s ease;
 }
 
 .country-map-inset-toggle[aria-expanded="true"],
-.country-map-inset-toggle[aria-expanded="true"]:hover,
 .country-map-inset-toggle[aria-expanded="true"]:active {
-    background-color: rgba(11, 19, 43, 0.92);
+    background-color: rgba(18, 20, 23, 0.96);
     color: #cbd5e1;
-    border-color: #1e336b;
+    border-color: rgba(255, 255, 255, 0.12);
     border-right: none;
 }
 
-.country-map-inset-toggle:hover {
-    background-color: #1e336b;
-    color: #fff;
+@media (hover: hover) and (pointer: fine) {
+    .country-map-inset-toggle:hover {
+        background-color: #2a2f38;
+        color: #fff;
+    }
+
+    .country-map-inset-toggle[aria-expanded="true"]:hover {
+        background-color: rgba(18, 20, 23, 0.96);
+        color: #cbd5e1;
+        border-color: rgba(255, 255, 255, 0.12);
+        border-right: none;
+    }
+
+    .country-map-inset-drawer__close:hover {
+        background: #2a2f38;
+        color: #4fbdba;
+    }
 }
 
 .country-map-inset-toggle__icon {
-    font-size: 18px;
+    font-size: 14px;
     line-height: 1;
-    font-weight: 700;
 }
 
 .country-map-inset-drawer {
@@ -565,10 +569,10 @@ body.tg-theme .country-map-canvas {
     inset: 0;
     background: rgba(6, 11, 25, 0.55);
     opacity: 0;
-    transition: opacity 0.22s ease;
+    transition: opacity 0.24s ease;
 }
 
-.country-map-inset-drawer__panel {
+.country-map-inset-drawer__slide {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -578,15 +582,22 @@ body.tg-theme .country-map-canvas {
         var(--country-map-inset-panel-width, 258px),
         calc(100% - 20px)
     );
+    /* Closed: leave the attached toggle peeking at the map's right edge. */
+    transform: translateX(calc(100% + 10px));
+    transition: transform 0.24s ease;
+    pointer-events: none;
+}
+
+.country-map-inset-drawer__panel {
+    position: absolute;
+    inset: 0;
     display: flex;
     flex-direction: column;
-    background: rgba(11, 19, 43, 0.97);
-    border: 1px solid #1e336b;
-    border-radius: 16px;
-    box-shadow: -12px 0 32px rgba(0, 0, 0, 0.45);
+    background: rgba(18, 20, 23, 0.97);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 0;
+    box-shadow: none;
     overflow: hidden;
-    transform: translateX(calc(100% + 12px));
-    transition: transform 0.22s ease;
     pointer-events: auto;
     touch-action: manipulation;
 }
@@ -598,7 +609,7 @@ body.tg-theme .country-map-canvas {
     justify-content: space-between;
     gap: 12px;
     padding: 6px 8px 6px 16px;
-    border-bottom: 1px solid rgba(30, 51, 107, 0.65);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .country-map-inset-drawer--open {
@@ -610,18 +621,18 @@ body.tg-theme .country-map-canvas {
     pointer-events: auto;
 }
 
-.country-map-inset-drawer--open .country-map-inset-drawer__panel {
+.country-map-inset-drawer--open .country-map-inset-drawer__slide {
     transform: translateX(0);
 }
 
 .country-map-inset-drawer__title {
     flex-shrink: 0;
     padding: 0;
-    font-family: "Outfit", sans-serif;
+    font-family: "Plus Jakarta Sans", sans-serif;
     font-size: 13px;
     font-weight: 600;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
+    letter-spacing: 0;
+    text-transform: none;
     color: #94a3b8;
 }
 
@@ -631,16 +642,14 @@ body.tg-theme .country-map-canvas {
     flex: 0 0 40px;
     padding: 0;
     border: 0;
-    border-radius: 8px;
+    border-radius: 0;
     background: transparent;
     color: #cbd5e1;
-    font: 400 24px/40px "Plus Jakarta Sans", sans-serif;
+    font: 400 18px/40px "Plus Jakarta Sans", sans-serif;
     cursor: pointer;
-}
-
-.country-map-inset-drawer__close:hover {
-    background: #2a2f38;
-    color: #4fbdba;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .country-map-inset-drawer__close:focus-visible {
@@ -654,9 +663,14 @@ body.tg-theme .country-map-canvas {
     width: 100%;
     display: block;
     user-select: none;
-    background:
-        radial-gradient(circle at 50% 35%, rgba(79, 189, 186, 0.06), transparent 48%),
-        rgba(18, 20, 23, 0.35);
+    background: rgba(18, 20, 23, 0.9);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .country-map-inset-drawer__backdrop,
+    .country-map-inset-drawer__slide {
+        transition: none;
+    }
 }
 
 .country-map-fallback {
