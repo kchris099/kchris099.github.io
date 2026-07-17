@@ -6,334 +6,779 @@
     <meta name="description" content="Plan a visit to Perth with a concise history, interactive attractions map, prices, and curated highlights across the destination.">
     <meta name="theme-color" content="#121417">
     <title>Perth Guide | Global Explorer Guides</title>
-    <link rel="stylesheet" href="../../assets/tailwind.css">
-    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
     <link rel="stylesheet" href="../../assets/newindex-fonts.css">
     <link rel="stylesheet" href="../../assets/tg-theme.css">
     <link rel="stylesheet" href="../../assets/tg-site-chrome.css">
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
     <link rel="stylesheet" href="../../assets/tg-modern-polish.css">
+    <link rel="stylesheet" href="../../assets/tg-country-page.css">
+    <link rel="stylesheet" href="../../assets/tg-destination-page-v3.css">
     <script defer src="../../assets/lenis.min.js"></script>
     <script defer src="../../assets/tg-smooth-scroll.js"></script>
     <link rel="preload" as="image" href="images/perth_hero.avif" type="image/avif" fetchpriority="high">
     <script defer src="../../assets/leaflet/leaflet.js"></script>
 </head>
-<body class="tg-theme tg-destination-page tg-modern">
-    <header id="site-header" class="header-glass fixed top-0 left-0 right-0 z-50">
+<body class="tg-theme tg-modern tg-country-v2 tg-destination-v3">
+    <a class="skip-link" href="#main-content">Skip to Perth guide</a>
+    <header id="site-header" class="header-glass">
         <div class="page-shell header-glass__inner">
-            <a href="../../index.html" class="font-display site-brand" style="display:flex;align-items:center;gap:0.75rem;text-decoration:none;color:inherit;font-size:1.25rem;" aria-label="Global Explorer home">
+            <a href="../../index.html" class="site-brand" aria-label="Global Explorer home">
                 <span class="site-brand__mark" aria-hidden="true">
                     <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
-                        <circle cx="14" cy="14" r="2" fill="#E8B14F"/>
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
                 </span>
                 Global Explorer
             </a>
-            <nav class="header-glass__nav-mobile" aria-label="Mobile navigation">
-                <a href="../../index.html" class="header-glass__icon-link" aria-label="Home">
-                    <i class="ph ph-house" aria-hidden="true"></i>
-                </a>
-                <a href="australia.html" class="header-glass__icon-link" aria-label="Back to Australia">
-                    <i class="ph ph-arrow-left" aria-hidden="true"></i>
-                </a>
-            </nav>
             <nav class="header-glass__nav" aria-label="Primary">
-                <a href="../../index.html" class="nav-link">Home</a>
-                <a href="perth.html" class="nav-link" aria-current="page">Perth</a>
+                <a href="#main-content" class="nav-link" aria-current="page">Perth</a>
+                <a href="#atlas" class="nav-link">Atlas</a>
+                <a href="#places" class="nav-link">Places</a>
                 <a href="australia.html" class="nav-link">Australia</a>
-                <a href="../../index.html#map" class="nav-link">Atlas</a>
             </nav>
         </div>
     </header>
-    <main>
-        <div class="tg-destination-hero-zone">
-            <div class="tg-destination-hero" aria-hidden="true">
-                <div class="tg-destination-hero__image" style="background-image: url('images/perth_hero.avif')"></div>
-                <div class="tg-destination-hero__fade"></div>
-            </div>
-            <div class="page-shell tg-destination-hero-zone__content">
-        <nav class="tg-toolbar tg-toolbar--compact" aria-label="Breadcrumb">
-            <div class="tg-breadcrumb">
-                <img src="../../assets/flags/w40/au.png" alt="" class="w-6 h-auto rounded-[2px]" aria-hidden="true">
-                <span>Australia</span>
-                <span class="tg-breadcrumb__sep" aria-hidden="true">&rsaquo;</span>
-                <span class="tg-breadcrumb__current">Western Australia</span>
-            </div>
-        </nav>
+    <main id="main-content" tabindex="-1">
+        <section class="destination-hero" aria-labelledby="destination-title">
+            <img class="destination-hero__media" data-destination-hero-image src="images/perth_hero.avif" alt="" width="1600" height="1067" fetchpriority="high" decoding="sync">
+            <div class="destination-hero__shade" aria-hidden="true"></div>
+            <div class="page-shell destination-hero__content">
+                <button
+                    type="button"
+                    id="destination-active-toggle"
+                    class="country-active-toggle country-active-toggle--inactive"
+                    data-iso2="AU"
+                    data-slug="perth"
+                    data-active="false"
+                    data-interactive="true"
+                    aria-label="Toggle Perth visibility on Australia guide"
+                    aria-pressed="false"
+                >
+                    <img src="../../assets/flags/w80/au.png" alt="" aria-hidden="true">
+                    <span class="country-toggle__copy" aria-hidden="true">
+                        <span class="country-toggle__label">Perth guide</span>
+                        <strong class="country-toggle__state"></strong>
+                    </span>
+                </button>
 
-        <header class="tg-page-header">
-            <button
-        type="button"
-        id="destination-active-toggle"
-        class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
-        data-iso2="AU"
-        data-slug="perth"
-        data-active="false"
-        data-interactive="true"
-        aria-label="Toggle Perth visibility on Australia guide"
-        aria-pressed="false"
-    >
-        <i class="ph ph-map-pin text-4xl pointer-events-none" aria-hidden="true"></i>
-    </button>
-            <span class="tg-page-header__eyebrow">Destination Guide — Western Australia</span>
-            <h1 class="tg-page-title font-display">Explore <em>Perth</em></h1>
-            <div class="glass-card frosted-panel tg-panel">
-                <h2 class="tg-panel__title font-display">
-                    <i class="ph ph-scroll" aria-hidden="true"></i> A Brief History
-                </h2>
-                <p class="tg-panel__body">Established in 1829 by the Swan River Colony, Perth struggled until convict labour and the 1890s gold rush drove rapid expansion. Isolated on the western coast, the city grew through later mining booms from a quiet colonial outpost into a modern resource centre. Museums, markets, and street plans still show layers from those periods. Administrative and transport changes in later centuries reshaped the town plan of Perth.</p>
-            </div>
-        </header>
+                <div class="hero__route" aria-label="Destination route and coordinates">
+                    <span>Australia / Western Australia</span>
+                    <span>31.9685&deg; S / 115.8465&deg; E</span>
+                </div>
 
-        <div class="tg-section__header tg-section__header--map-end">
-            <span class="tg-section__eyebrow">Map</span>
-            <h2 class="tg-section__title font-display">Attractions Map</h2>
-        </div>
-            </div>
-        </div>
-
-        <div class="page-shell tg-main tg-main--below-hero">
-        <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Perth attractions"></div>
-        <section class="tg-section">
-            <div class="tg-section__header">
-                <span class="tg-section__eyebrow">Highlights</span>
-                <h2 class="tg-section__title font-display">Top Sights &amp; Activities</h2>
-            </div>
-            <div class="tg-sights-list">
-            
-            <!-- 1. Optus Stadium -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/perth_1.avif" alt="Optus Stadium" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> A$29
+                <h1 id="destination-title" class="destination-hero__title" style="--destination-title-chars: 5">Perth</h1>
+                <div class="destination-hero__history">
+                    <p>The Swan River Colony of 1829 nearly failed until convict labour and the 1890s gold rushes filled the western settlement. Distance from the eastern capitals kept Perth oriented toward Indian Ocean shipping and later mining headquarters. King&#x27;s Park and the Swan estuary frame a city built in bursts of resource wealth. Fremantle&#x27;s convict-built harbour worked as Perth&#x27;s ocean door through those same booms.</p>
+                </div>
+                <dl class="destination-hero__facts" aria-label="Perth guide facts">
+                    <div>
+                        <dt>Country</dt>
+                        <dd>Australia</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Optus Stadium</h3>
-                    <p class="tg-sight-card__text">Optus Stadium, located in Perth, has been recognized as the Most Sports Facility in the World. It hosts a variety of major sporting events throughout the year, including AFL games with enthusiastic crowds and international matches for soccer, rugby, and cricket. The stadium also welcomes musical performances by known artists like Ed Sheeran and Guns N&#x27; Roses. In addition to its sports and entertainment offerings, Optus Stadium provides a venue for weddings.</p>
-                </div>
-            </div>
-            <!-- 2. Blue Boat House -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/perth_2.avif" alt="Blue Boat House" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                    <div>
+                        <dt>Region</dt>
+                        <dd>Western Australia</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Blue Boat House</h3>
-                    <p class="tg-sight-card__text">The Blue Boat House, located at Matilda Bay Reserve near Kings Park in Perth, is a and spot and brides for photo shoots. Built in the 1930s, this cute blue boatshed sits at the end of a wooden jetty on the Swan River and offers limitless Instagram-worthy shots.</p>
-                </div>
-            </div>
-            <!-- 3. Elizabeth Quay -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/perth_3.avif" alt="Elizabeth Quay" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                    <div>
+                        <dt>Places</dt>
+                        <dd>15</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Elizabeth Quay</h3>
-                    <p class="tg-sight-card__text">Elizabeth Quay is a visitor site in Perth, Australia. It offers a variety of attractions including shopping, cafes, boat tours, art installations, and museums. Visitors can enjoy scenic views of the river throughout the day and into the evening. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 4. The Bell Tower -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/perth_4.avif" alt="The Bell Tower" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> A$15
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">The Bell Tower</h3>
-                    <p class="tg-sight-card__text">The Bell Tower is a visitor site in Perth, Australia. The Bell Tower, located near Elizabeth Quay in Barrack Square, is a modern landmark housing historic 16th-century church bells gifted from London. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 5. State Buildings -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/perth_5.avif" alt="State Buildings" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">State Buildings</h3>
-                    <p class="tg-sight-card__text">State Buildings is a luxurious destination in Perth, offering a variety of upscale experiences including dining, retail, and more. Visitors can explore venues like Long Chim courtyard, Wildflower&#x27;s rooftop terrace with river views, Petition bar, and the elegant Postal Hall which is a high-end wedding venue. The buildings also provide backdrops for photography enthusiasts.</p>
-                </div>
-            </div>
-            <!-- 6. Yagan Square -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/perth_6.avif" alt="Yagan Square" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Yagan Square</h3>
-                    <p class="tg-sight-card__text">Yagan Square is a public square in Perth, Australia. It opened or was completed around 2018. Yagan Square, named after the Aboriginal Noongar leader Yagan, is a public space in Perth that opened in March 2018 as part of the Perth City Link urban renewal project. It offers a playscape for children on the upper level of the Market Hall building with natural forms and various play areas suitable for different ages and abilities. Open pavement and surrounding facades define the visitor setting.</p>
-                </div>
-            </div>
-            <!-- 7. RAC Arena -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/perth_7.avif" alt="RAC Arena" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">RAC Arena</h3>
-                    <p class="tg-sight-card__text">RAC Arena in Perth is a recent venue that can accommodate 15,000 people for indoor sports events and live performances by top artists. The arena hosts a prestigious tennis tournament featuring high-ranking male players from around the world, offering substantial prize money and ATP rankings, it is known for its culinary offerings during events. The well-designed layout includes stage entrance doors, ample restrooms, and beverage vendors.</p>
-                </div>
-            </div>
-            <!-- 8. Perth Mosque -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/perth_8.avif" alt="Perth Mosque" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Perth Mosque</h3>
-                    <p class="tg-sight-card__text">Perth Mosque is a religious building in Perth, Australia. Perth Mosque, despite being an old establishment, is in need of renovations for its bathroom and wudhu area. The toilets have handheld water wipes with minimal flow, making them impractical to use. Despite this, the mosque&#x27;s location is ideal and it hosts active congregations for Jumaa prayers. The exterior and main interior spaces are usually viewable outside service times.</p>
-                </div>
-            </div>
-            <!-- 9. Saint Mary&#x27;s Cathedral -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/perth_9.avif" alt="Saint Mary&#x27;s Cathedral" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Saint Mary&#x27;s Cathedral</h3>
-                    <p class="tg-sight-card__text">Saint Mary&#x27;s Cathedral is a religious building in Perth, Australia. Construction and early use date to around 1865. The exterior and main interior spaces are usually viewable outside service times. Saint Mary&#x27;s Cathedral remains part of the public visitor circuit in Perth.</p>
-                </div>
-            </div>
-            <!-- 10. Perth Zoo -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/perth_10.avif" alt="Perth Zoo" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> A$39
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Perth Zoo</h3>
-                    <p class="tg-sight-card__text">Perth Zoo is a and historic destination that offers a wide variety of animal exhibits, behind-the-scenes tours, picnic areas, and cafes. The zoo is home to over 1200 animals from 164 different species originating from Asia, Africa, Australia, and South America. Visitors can encounter African Lions, Asian Elephants, Giraffes, Penguins, Numbats, Meerkats, Rhinoceroses and many more fascinating creatures.</p>
-                </div>
-            </div>
-            <!-- 11. Kings Park and Botanic Garden -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/perth_11.avif" alt="Kings Park and Botanic Garden" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Kings Park and Botanic Garden</h3>
-                    <p class="tg-sight-card__text">Kings Park and Botanic Garden is a public park in Perth, Australia. Kings Park and Botanic Garden in Perth, Western Australia is a beautifully landscaped park that offers views of the Swan River. Visitors can take a free city bus to explore nearby attractions such as the Perth Cultural Centre, the Perth Mint, The Swan Bell Tower, and the new Elizabeth Quay. Paths, lawns, and shaded areas make up the main public facilities.</p>
-                </div>
-            </div>
-            <!-- 12. State War Memorial -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/perth_12.avif" alt="State War Memorial" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">State War Memorial</h3>
-                    <p class="tg-sight-card__text">The State War Memorial in Kings Park is a solemn and tribute to the Australian soldiers who made the ultimate sacrifice for their country. The memorial precinct includes the Cenotaph, Court of Contemplation, Flame of Remembrance, and Pool of Reflection, each honoring different aspects of Australia&#x27;s wartime history. Visitors can also admire 62,000 knitted poppy flowers representing fallen soldiers from World War I.</p>
-                </div>
-            </div>
-            <!-- 13. Aviation Heritage Museum -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/perth_13.avif" alt="Aviation Heritage Museum" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> A$18
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Aviation Heritage Museum</h3>
-                    <p class="tg-sight-card__text">Aviation Heritage Museum is a museum in Perth, Australia. Visitors can explore displays that commemorate the achievements and sacrifices of Air Force personnel, while also gaining insight into Australia&#x27;s extensive aviation legacy. Galleries and public rooms are open on posted hours in Perth.</p>
-                </div>
-            </div>
-            <!-- 14. Fremantle War Memorial -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/perth_14.avif" alt="Fremantle War Memorial" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Fremantle War Memorial</h3>
-                    <p class="tg-sight-card__text">Fremantle War Memorial is a monument in Perth, Australia. Set amidst beautifully maintained rose gardens and lawns, the memorial offers panoramic views of the harbor and the surrounding area. The memorial stands in an open plaza or roadside setting. Fremantle War Memorial remains part of the public visitor circuit in Perth.</p>
-                </div>
-            </div>
-            <!-- 15. Lake Monger Reserve -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/perth_15.avif" alt="Lake Monger Reserve" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Lake Monger Reserve</h3>
-                    <p class="tg-sight-card__text">Lake Monger Reserve is a public park in Perth, Australia. It provides a peaceful natural sanctuary for birdwatching and recreation within the metropolitan area. Paths, lawns, and shaded areas make up the main public facilities. Lake Monger Reserve remains part of the public visitor circuit in Perth.</p>
-                </div>
-            </div>
+                </dl>
             </div>
         </section>
-        </div>
+
+        <section id="atlas" class="destination-atlas" aria-labelledby="atlas-title">
+            <div class="page-shell destination-atlas__layout">
+                <div class="destination-atlas__brief">
+                    <p class="destination-atlas__index">City atlas</p>
+                    <h2 id="atlas-title">Plot the city.</h2>
+                    <p class="destination-atlas__copy">Zoom, pan, and open any marker to focus that place in the catalog below.</p>
+                    <dl class="destination-atlas__facts" aria-label="Map coverage">
+                        <div>
+                            <dt>Plotted</dt>
+                            <dd>15 places</dd>
+                        </div>
+                        <div>
+                            <dt>Center</dt>
+                            <dd>31.9685&deg; S<br>115.8465&deg; E</dd>
+                        </div>
+                    </dl>
+                </div>
+                <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Perth attractions"></div>
+            </div>
+        </section>
+
+        <section id="places" class="destination-places" aria-labelledby="places-title">
+            <div class="page-shell">
+                <div class="destination-chapter">
+                    <h2 id="places-title" class="destination-chapter__heading">15 ways into<br>Perth.</h2>
+                    <p class="destination-chapter__copy">Browse the index, open a location, and read the essentials without scrolling through a long catalog. Each entry contains its image, admission note, and contextual guide.</p>
+                </div>
+                <div class="places-explorer" data-places-explorer>
+                    <aside class="places-explorer__rail" aria-label="Place index">
+                        <div class="places-explorer__toolbar">
+                            <label class="places-explorer__filter-label" for="places-filter">Filter places</label>
+                            <input
+                                id="places-filter"
+                                class="places-explorer__filter"
+                                type="search"
+                                data-places-filter
+                                placeholder="Search by name"
+                                autocomplete="off"
+                            >
+                            <p class="places-explorer__meta"><strong data-places-count>15</strong> of 15 shown</p>
+                        </div>
+                        <ul class="places-explorer__list" role="listbox" aria-label="Places in Perth" data-places-list data-lenis-prevent data-tg-scroll-surface>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option is-active"
+                            role="option"
+                            id="place-option-1"
+                            data-place-option
+                            data-place-index="0"
+                            data-place-name="Optus Stadium"
+                            data-place-lat="-31.950749"
+                            data-place-lng="115.888799"
+                            aria-selected="true"
+                            tabindex="0"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">01</span>
+                            <span class="places-explorer__option-name">Optus Stadium</span>
+                            <span class="places-explorer__option-price">A$29</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-2"
+                            data-place-option
+                            data-place-index="1"
+                            data-place-name="Blue Boat House"
+                            data-place-lat="-31.973519"
+                            data-place-lng="115.826568"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">02</span>
+                            <span class="places-explorer__option-name">Blue Boat House</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-3"
+                            data-place-option
+                            data-place-index="2"
+                            data-place-name="Elizabeth Quay"
+                            data-place-lat="-31.957576"
+                            data-place-lng="115.856987"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">03</span>
+                            <span class="places-explorer__option-name">Elizabeth Quay</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-4"
+                            data-place-option
+                            data-place-index="3"
+                            data-place-name="The Bell Tower"
+                            data-place-lat="-31.959"
+                            data-place-lng="115.858296"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">04</span>
+                            <span class="places-explorer__option-name">The Bell Tower</span>
+                            <span class="places-explorer__option-price">A$15</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-5"
+                            data-place-option
+                            data-place-index="4"
+                            data-place-name="State Buildings"
+                            data-place-lat="-31.955477"
+                            data-place-lng="115.860422"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">05</span>
+                            <span class="places-explorer__option-name">State Buildings</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-6"
+                            data-place-option
+                            data-place-index="5"
+                            data-place-name="Yagan Square"
+                            data-place-lat="-31.950742"
+                            data-place-lng="115.858805"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">06</span>
+                            <span class="places-explorer__option-name">Yagan Square</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-7"
+                            data-place-option
+                            data-place-index="6"
+                            data-place-name="RAC Arena"
+                            data-place-lat="-31.948434"
+                            data-place-lng="115.85211"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">07</span>
+                            <span class="places-explorer__option-name">RAC Arena</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-8"
+                            data-place-option
+                            data-place-index="7"
+                            data-place-name="Perth Mosque"
+                            data-place-lat="-31.943624"
+                            data-place-lng="115.862405"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">08</span>
+                            <span class="places-explorer__option-name">Perth Mosque</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-9"
+                            data-place-option
+                            data-place-index="8"
+                            data-place-name="Saint Mary&#x27;s Cathedral"
+                            data-place-lat="-31.955396"
+                            data-place-lng="115.866494"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">09</span>
+                            <span class="places-explorer__option-name">Saint Mary&#x27;s Cathedral</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-10"
+                            data-place-option
+                            data-place-index="9"
+                            data-place-name="Perth Zoo"
+                            data-place-lat="-31.975531"
+                            data-place-lng="115.852257"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">10</span>
+                            <span class="places-explorer__option-name">Perth Zoo</span>
+                            <span class="places-explorer__option-price">A$39</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-11"
+                            data-place-option
+                            data-place-index="10"
+                            data-place-name="Kings Park and Botanic Garden"
+                            data-place-lat="-31.960911"
+                            data-place-lng="115.832193"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">11</span>
+                            <span class="places-explorer__option-name">Kings Park and Botanic Garden</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-12"
+                            data-place-option
+                            data-place-index="11"
+                            data-place-name="State War Memorial"
+                            data-place-lat="-31.960874"
+                            data-place-lng="115.844661"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">12</span>
+                            <span class="places-explorer__option-name">State War Memorial</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-13"
+                            data-place-option
+                            data-place-index="12"
+                            data-place-name="Aviation Heritage Museum"
+                            data-place-lat="-32.049267"
+                            data-place-lng="115.858722"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">13</span>
+                            <span class="places-explorer__option-name">Aviation Heritage Museum</span>
+                            <span class="places-explorer__option-price">A$18</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-14"
+                            data-place-option
+                            data-place-index="13"
+                            data-place-name="Fremantle War Memorial"
+                            data-place-lat="-32.052516"
+                            data-place-lng="115.756918"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">14</span>
+                            <span class="places-explorer__option-name">Fremantle War Memorial</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-15"
+                            data-place-option
+                            data-place-index="14"
+                            data-place-name="Lake Monger Reserve"
+                            data-place-lat="-31.9340079"
+                            data-place-lng="115.8218237"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">15</span>
+                            <span class="places-explorer__option-name">Lake Monger Reserve</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                        </ul>
+                        <p class="places-explorer__empty" data-places-empty hidden>No places match that filter.</p>
+                    </aside>
+                    <div class="places-explorer__stage" data-places-stage>
+                    <nav class="places-stage__stepper" data-places-stepper aria-label="Browse places" hidden>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--prev" data-places-prev aria-label="Previous place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M14.75 5.25 L8.25 12 l6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M9.1 12 H17.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--next" data-places-next aria-label="Next place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M9.25 5.25 L15.75 12 l-6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M6.6 12 H14.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                    </nav>
+                <article
+                    class="places-stage__panel is-active"
+                    data-place-panel
+                    data-place-index="0"
+                    aria-labelledby="place-title-1"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/perth_1.avif" alt="Optus Stadium" width="1200" height="750" loading="eager" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">01</span>
+                            <span class="places-stage__admission"><span>Admission</span>A$29</span>
+                        </p>
+                        <h3 id="place-title-1" class="places-stage__title">Optus Stadium</h3>
+                        <p class="places-stage__text">Optus Stadium, located in Perth, has been recognized as the Most Sports Facility in the World. It hosts a variety of major sporting events throughout the year, including AFL games with enthusiastic crowds and international matches for soccer, rugby, and cricket. The stadium also welcomes musical performances by known artists like Ed Sheeran and Guns N&#x27; Roses. In addition to its sports and entertainment offerings, Optus Stadium provides a venue for weddings.</p>
+                        <p class="places-stage__coords">31.9507&deg; S / 115.8888&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="1"
+                    aria-labelledby="place-title-2"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/perth_2.avif" alt="Blue Boat House" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">02</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-2" class="places-stage__title">Blue Boat House</h3>
+                        <p class="places-stage__text">The Blue Boat House, located at Matilda Bay Reserve near Kings Park in Perth, is a and spot and brides for photo shoots. Built in the 1930s, this cute blue boatshed sits at the end of a wooden jetty on the Swan River and offers limitless Instagram-worthy shots.</p>
+                        <p class="places-stage__coords">31.9735&deg; S / 115.8266&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="2"
+                    aria-labelledby="place-title-3"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/perth_3.avif" alt="Elizabeth Quay" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">03</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-3" class="places-stage__title">Elizabeth Quay</h3>
+                        <p class="places-stage__text">Elizabeth Quay is a visitor site in Perth, Australia. It offers a variety of attractions including shopping, cafes, boat tours, art installations, and museums. Visitors can enjoy scenic views of the river throughout the day and into the evening. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">31.9576&deg; S / 115.8570&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="3"
+                    aria-labelledby="place-title-4"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/perth_4.avif" alt="The Bell Tower" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">04</span>
+                            <span class="places-stage__admission"><span>Admission</span>A$15</span>
+                        </p>
+                        <h3 id="place-title-4" class="places-stage__title">The Bell Tower</h3>
+                        <p class="places-stage__text">The Bell Tower is a visitor site in Perth, Australia. The Bell Tower, located near Elizabeth Quay in Barrack Square, is a modern landmark housing historic 16th-century church bells gifted from London. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">31.9590&deg; S / 115.8583&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="4"
+                    aria-labelledby="place-title-5"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/perth_5.avif" alt="State Buildings" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">05</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-5" class="places-stage__title">State Buildings</h3>
+                        <p class="places-stage__text">State Buildings is a luxurious destination in Perth, offering a variety of upscale experiences including dining, retail, and more. Visitors can explore venues like Long Chim courtyard, Wildflower&#x27;s rooftop terrace with river views, Petition bar, and the elegant Postal Hall which is a high-end wedding venue. The buildings also provide backdrops for photography enthusiasts.</p>
+                        <p class="places-stage__coords">31.9555&deg; S / 115.8604&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="5"
+                    aria-labelledby="place-title-6"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/perth_6.avif" alt="Yagan Square" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">06</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-6" class="places-stage__title">Yagan Square</h3>
+                        <p class="places-stage__text">Yagan Square is a public square in Perth, Australia. It opened or was completed around 2018. Yagan Square, named after the Aboriginal Noongar leader Yagan, is a public space in Perth that opened in March 2018 as part of the Perth City Link urban renewal project. It offers a playscape for children on the upper level of the Market Hall building with natural forms and various play areas suitable for different ages and abilities. Open pavement and surrounding facades define the visitor setting.</p>
+                        <p class="places-stage__coords">31.9507&deg; S / 115.8588&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="6"
+                    aria-labelledby="place-title-7"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/perth_7.avif" alt="RAC Arena" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">07</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-7" class="places-stage__title">RAC Arena</h3>
+                        <p class="places-stage__text">RAC Arena in Perth is a recent venue that can accommodate 15,000 people for indoor sports events and live performances by top artists. The arena hosts a prestigious tennis tournament featuring high-ranking male players from around the world, offering substantial prize money and ATP rankings, it is known for its culinary offerings during events. The well-designed layout includes stage entrance doors, ample restrooms, and beverage vendors.</p>
+                        <p class="places-stage__coords">31.9484&deg; S / 115.8521&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="7"
+                    aria-labelledby="place-title-8"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/perth_8.avif" alt="Perth Mosque" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">08</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-8" class="places-stage__title">Perth Mosque</h3>
+                        <p class="places-stage__text">Perth Mosque is a religious building in Perth, Australia. Perth Mosque, despite being an old establishment, is in need of renovations for its bathroom and wudhu area. The toilets have handheld water wipes with minimal flow, making them impractical to use. Despite this, the mosque&#x27;s location is ideal and it hosts active congregations for Jumaa prayers. The exterior and main interior spaces are usually viewable outside service times.</p>
+                        <p class="places-stage__coords">31.9436&deg; S / 115.8624&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="8"
+                    aria-labelledby="place-title-9"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/perth_9.avif" alt="Saint Mary&#x27;s Cathedral" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">09</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-9" class="places-stage__title">Saint Mary&#x27;s Cathedral</h3>
+                        <p class="places-stage__text">Saint Mary&#x27;s Cathedral is a religious building in Perth, Australia. Construction and early use date to around 1865. The exterior and main interior spaces are usually viewable outside service times. Saint Mary&#x27;s Cathedral remains part of the public visitor circuit in Perth.</p>
+                        <p class="places-stage__coords">31.9554&deg; S / 115.8665&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="9"
+                    aria-labelledby="place-title-10"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/perth_10.avif" alt="Perth Zoo" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">10</span>
+                            <span class="places-stage__admission"><span>Admission</span>A$39</span>
+                        </p>
+                        <h3 id="place-title-10" class="places-stage__title">Perth Zoo</h3>
+                        <p class="places-stage__text">Perth Zoo is a and historic destination that offers a wide variety of animal exhibits, behind-the-scenes tours, picnic areas, and cafes. The zoo is home to over 1200 animals from 164 different species originating from Asia, Africa, Australia, and South America. Visitors can encounter African Lions, Asian Elephants, Giraffes, Penguins, Numbats, Meerkats, Rhinoceroses and many more fascinating creatures.</p>
+                        <p class="places-stage__coords">31.9755&deg; S / 115.8523&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="10"
+                    aria-labelledby="place-title-11"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/perth_11.avif" alt="Kings Park and Botanic Garden" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">11</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-11" class="places-stage__title">Kings Park and Botanic Garden</h3>
+                        <p class="places-stage__text">Kings Park and Botanic Garden is a public park in Perth, Australia. Kings Park and Botanic Garden in Perth, Western Australia is a beautifully landscaped park that offers views of the Swan River. Visitors can take a free city bus to explore nearby attractions such as the Perth Cultural Centre, the Perth Mint, The Swan Bell Tower, and the new Elizabeth Quay. Paths, lawns, and shaded areas make up the main public facilities.</p>
+                        <p class="places-stage__coords">31.9609&deg; S / 115.8322&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="11"
+                    aria-labelledby="place-title-12"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/perth_12.avif" alt="State War Memorial" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">12</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-12" class="places-stage__title">State War Memorial</h3>
+                        <p class="places-stage__text">The State War Memorial in Kings Park is a solemn and tribute to the Australian soldiers who made the ultimate sacrifice for their country. The memorial precinct includes the Cenotaph, Court of Contemplation, Flame of Remembrance, and Pool of Reflection, each honoring different aspects of Australia&#x27;s wartime history. Visitors can also admire 62,000 knitted poppy flowers representing fallen soldiers from World War I.</p>
+                        <p class="places-stage__coords">31.9609&deg; S / 115.8447&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="12"
+                    aria-labelledby="place-title-13"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/perth_13.avif" alt="Aviation Heritage Museum" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">13</span>
+                            <span class="places-stage__admission"><span>Admission</span>A$18</span>
+                        </p>
+                        <h3 id="place-title-13" class="places-stage__title">Aviation Heritage Museum</h3>
+                        <p class="places-stage__text">Aviation Heritage Museum is a museum in Perth, Australia. Visitors can explore displays that commemorate the achievements and sacrifices of Air Force personnel, while also gaining insight into Australia&#x27;s extensive aviation legacy. Galleries and public rooms are open on posted hours in Perth.</p>
+                        <p class="places-stage__coords">32.0493&deg; S / 115.8587&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="13"
+                    aria-labelledby="place-title-14"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/perth_14.avif" alt="Fremantle War Memorial" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">14</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-14" class="places-stage__title">Fremantle War Memorial</h3>
+                        <p class="places-stage__text">Fremantle War Memorial is a monument in Perth, Australia. Set amidst beautifully maintained rose gardens and lawns, the memorial offers panoramic views of the harbor and the surrounding area. The memorial stands in an open plaza or roadside setting. Fremantle War Memorial remains part of the public visitor circuit in Perth.</p>
+                        <p class="places-stage__coords">32.0525&deg; S / 115.7569&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="14"
+                    aria-labelledby="place-title-15"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/perth_15.avif" alt="Lake Monger Reserve" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">15</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-15" class="places-stage__title">Lake Monger Reserve</h3>
+                        <p class="places-stage__text">Lake Monger Reserve is a public park in Perth, Australia. It provides a peaceful natural sanctuary for birdwatching and recreation within the metropolitan area. Paths, lawns, and shaded areas make up the main public facilities. Lake Monger Reserve remains part of the public visitor circuit in Perth.</p>
+                        <p class="places-stage__coords">31.9340&deg; S / 115.8218&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="site-footer">
         <div class="page-shell">
             <div class="site-footer__bar">
-                <a href="../../index.html" class="site-footer__brand" aria-label="Global Explorer home">
-                    <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
+                <a href="../../index.html" class="site-footer__mark" aria-label="Global Explorer home">
+                    <svg width="24" height="24" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
-                    <span class="site-footer__brand-name font-display">Global Explorer</span>
+                    Global Explorer
                 </a>
-                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides <span>Perth: 15 places across Western Australia.</span></p>
             </div>
         </div>
     </footer>
 
     <button id="scrollTopBtn" type="button" aria-label="Scroll to top">
-        <i class="ph ph-arrow-up" aria-hidden="true"></i>
+        <svg viewBox="0 0 24 24" width="1.15em" height="1.15em" aria-hidden="true" focusable="false">
+            <path d="M12 5.25 V18.75 M12 5.25 L6.75 10.5 M12 5.25 L17.25 10.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
     </button>
 
     <script defer src="../../assets/dev-destination-toggle.js"></script>
     <script defer src="../../assets/tg-page-chrome.js"></script>
     <script defer src="../../assets/tg-destination-map.js"></script>
+    <script defer src="../../assets/tg-destination-places.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const map = L.map('map').setView([-31.968508, 115.846497], 14);
+            const map = L.map('map');
             L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
                 attribution: '&copy; Google Maps',
                 maxZoom: 20
             }).addTo(map);
-            const locations = [{"name": "Optus Stadium", "lat": -31.950749, "lng": 115.888799}, {"name": "Blue Boat House", "lat": -31.973519, "lng": 115.826568}, {"name": "Elizabeth Quay", "lat": -31.957576, "lng": 115.856987}, {"name": "The Bell Tower", "lat": -31.959, "lng": 115.858296}, {"name": "State Buildings", "lat": -31.955477, "lng": 115.860422}, {"name": "Yagan Square", "lat": -31.950742, "lng": 115.858805}, {"name": "RAC Arena", "lat": -31.948434, "lng": 115.85211}, {"name": "Perth Mosque", "lat": -31.943624, "lng": 115.862405}, {"name": "Saint Mary's Cathedral", "lat": -31.955396, "lng": 115.866494}, {"name": "Perth Zoo", "lat": -31.975531, "lng": 115.852257}, {"name": "Kings Park and Botanic Garden", "lat": -31.960911, "lng": 115.832193}, {"name": "State War Memorial", "lat": -31.960874, "lng": 115.844661}, {"name": "Aviation Heritage Museum", "lat": -32.049267, "lng": 115.858722}, {"name": "Fremantle War Memorial", "lat": -32.052516, "lng": 115.756918}, {"name": "Lake Monger Reserve", "lat": -31.9340079, "lng": 115.8218237}];
+            const locations = Array.from(document.querySelectorAll('[data-place-option]')).map((el) => ({
+                name: el.dataset.placeName || '',
+                lat: Number(el.dataset.placeLat),
+                lng: Number(el.dataset.placeLng),
+            }));
             const customIcon = L.icon({
                 iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
                 iconSize: [32, 32],
@@ -341,14 +786,45 @@
                 popupAnchor: [0, -32],
             });
             const destinationCenter = [-31.968508, 115.846497];
-            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.084008, "maxCenterLng": 0.089579};
-            locations.forEach((location) => {
-                L.marker([location.lat, location.lng], { icon: customIcon })
+            const mapContext = {"denseUrban": true};
+            const markers = locations.map((location) => {
+                const marker = L.marker([location.lat, location.lng], { icon: customIcon })
                     .addTo(map)
                     .bindPopup(`<strong>${location.name}</strong>`);
+                return marker;
             });
             window.TGDestinationMap?.fitToLocations(map, locations, destinationCenter, mapContext);
             window.TGDestinationMap?.bindMobileScrollGuard(map, 'map');
+            window.TGDestinationMap?.registerMarkers(map, markers);
+
+            const heroImage = document.querySelector('[data-destination-hero-image]');
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (heroImage && !reduceMotion) {
+                let framePending = false;
+                let scrolling = false;
+                let scrollEndTimer = 0;
+                const updateHeroPosition = () => {
+                    const offset = Math.min(window.scrollY, window.innerHeight * 1.15) * 0.075;
+                    heroImage.style.transform = `translate3d(0, ${offset}px, 0) scale(1.055)`;
+                    framePending = false;
+                };
+                window.addEventListener('scroll', () => {
+                    if (!scrolling) {
+                        scrolling = true;
+                        heroImage.style.willChange = 'transform';
+                    }
+                    window.clearTimeout(scrollEndTimer);
+                    scrollEndTimer = window.setTimeout(() => {
+                        scrolling = false;
+                        heroImage.style.willChange = 'auto';
+                    }, 150);
+                    if (!framePending) {
+                        window.requestAnimationFrame(updateHeroPosition);
+                        framePending = true;
+                    }
+                }, { passive: true });
+                updateHeroPosition();
+            }
         });
     </script>
 </body>

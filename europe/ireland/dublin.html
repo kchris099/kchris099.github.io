@@ -6,620 +6,1633 @@
     <meta name="description" content="Plan a visit to Dublin with a concise history, interactive attractions map, prices, and curated highlights across the destination.">
     <meta name="theme-color" content="#121417">
     <title>Dublin Guide | Global Explorer Guides</title>
-    <link rel="stylesheet" href="../../assets/tailwind.css">
-    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
     <link rel="stylesheet" href="../../assets/newindex-fonts.css">
     <link rel="stylesheet" href="../../assets/tg-theme.css">
     <link rel="stylesheet" href="../../assets/tg-site-chrome.css">
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
     <link rel="stylesheet" href="../../assets/tg-modern-polish.css">
+    <link rel="stylesheet" href="../../assets/tg-country-page.css">
+    <link rel="stylesheet" href="../../assets/tg-destination-page-v3.css">
     <script defer src="../../assets/lenis.min.js"></script>
     <script defer src="../../assets/tg-smooth-scroll.js"></script>
     <link rel="preload" as="image" href="images/dublin_hero.avif" type="image/avif" fetchpriority="high">
     <script defer src="../../assets/leaflet/leaflet.js"></script>
 </head>
-<body class="tg-theme tg-destination-page tg-modern">
-    <header id="site-header" class="header-glass fixed top-0 left-0 right-0 z-50">
+<body class="tg-theme tg-modern tg-country-v2 tg-destination-v3">
+    <a class="skip-link" href="#main-content">Skip to Dublin guide</a>
+    <header id="site-header" class="header-glass">
         <div class="page-shell header-glass__inner">
-            <a href="../../index.html" class="font-display site-brand" style="display:flex;align-items:center;gap:0.75rem;text-decoration:none;color:inherit;font-size:1.25rem;" aria-label="Global Explorer home">
+            <a href="../../index.html" class="site-brand" aria-label="Global Explorer home">
                 <span class="site-brand__mark" aria-hidden="true">
                     <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
-                        <circle cx="14" cy="14" r="2" fill="#E8B14F"/>
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
                 </span>
                 Global Explorer
             </a>
-            <nav class="header-glass__nav-mobile" aria-label="Mobile navigation">
-                <a href="../../index.html" class="header-glass__icon-link" aria-label="Home">
-                    <i class="ph ph-house" aria-hidden="true"></i>
-                </a>
-                <a href="ireland.html" class="header-glass__icon-link" aria-label="Back to Ireland">
-                    <i class="ph ph-arrow-left" aria-hidden="true"></i>
-                </a>
-            </nav>
             <nav class="header-glass__nav" aria-label="Primary">
-                <a href="../../index.html" class="nav-link">Home</a>
-                <a href="dublin.html" class="nav-link" aria-current="page">Dublin</a>
+                <a href="#main-content" class="nav-link" aria-current="page">Dublin</a>
+                <a href="#atlas" class="nav-link">Atlas</a>
+                <a href="#places" class="nav-link">Places</a>
                 <a href="ireland.html" class="nav-link">Ireland</a>
-                <a href="../../index.html#map" class="nav-link">Atlas</a>
             </nav>
         </div>
     </header>
-    <main>
-        <div class="tg-destination-hero-zone">
-            <div class="tg-destination-hero" aria-hidden="true">
-                <div class="tg-destination-hero__image" style="background-image: url('images/dublin_hero.avif')"></div>
-                <div class="tg-destination-hero__fade"></div>
-            </div>
-            <div class="page-shell tg-destination-hero-zone__content">
-        <nav class="tg-toolbar tg-toolbar--compact" aria-label="Breadcrumb">
-            <div class="tg-breadcrumb">
-                <img src="../../assets/flags/w40/ie.png" alt="" class="w-6 h-auto rounded-[2px]" aria-hidden="true">
-                <span>Ireland</span>
-                <span class="tg-breadcrumb__sep" aria-hidden="true">&rsaquo;</span>
-                <span class="tg-breadcrumb__current">Dublin</span>
-            </div>
-        </nav>
+    <main id="main-content" tabindex="-1">
+        <section class="destination-hero" aria-labelledby="destination-title">
+            <img class="destination-hero__media" data-destination-hero-image src="images/dublin_hero.avif" alt="" width="1600" height="1067" fetchpriority="high" decoding="sync">
+            <div class="destination-hero__shade" aria-hidden="true"></div>
+            <div class="page-shell destination-hero__content">
+                <button
+                    type="button"
+                    id="destination-active-toggle"
+                    class="country-active-toggle country-active-toggle--inactive"
+                    data-iso2="IE"
+                    data-slug="dublin"
+                    data-active="false"
+                    data-interactive="true"
+                    aria-label="Toggle Dublin visibility on Ireland guide"
+                    aria-pressed="false"
+                >
+                    <img src="../../assets/flags/w80/ie.png" alt="" aria-hidden="true">
+                    <span class="country-toggle__copy" aria-hidden="true">
+                        <span class="country-toggle__label">Dublin guide</span>
+                        <strong class="country-toggle__state"></strong>
+                    </span>
+                </button>
 
-        <header class="tg-page-header">
-            <button
-        type="button"
-        id="destination-active-toggle"
-        class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
-        data-iso2="IE"
-        data-slug="dublin"
-        data-active="false"
-        data-interactive="true"
-        aria-label="Toggle Dublin visibility on Ireland guide"
-        aria-pressed="false"
-    >
-        <i class="ph ph-map-pin text-4xl pointer-events-none" aria-hidden="true"></i>
-    </button>
-            <span class="tg-page-header__eyebrow">Destination Guide — Dublin</span>
-            <h1 class="tg-page-title font-display">Explore <em>Dublin</em></h1>
-            <div class="glass-card frosted-panel tg-panel">
-                <h2 class="tg-panel__title font-display">
-                    <i class="ph ph-scroll" aria-hidden="true"></i> A Brief History
-                </h2>
-                <p class="tg-panel__body">Dublin is in Ireland. Established as a regional settlement beyond an older fortified core, the city developed through industrialization in the late 19th century, post-war reconstruction, and modern civic expansion that reshaped its public spaces, markets, and surrounding landscape. Museums, markets, and street plans in Dublin still show layers from those periods.</p>
-            </div>
-        </header>
+                <div class="hero__route" aria-label="Destination route and coordinates">
+                    <span>Ireland / Dublin</span>
+                    <span>53.3498&deg; N / 6.2603&deg; W</span>
+                </div>
 
-        <div class="tg-section__header tg-section__header--map-end">
-            <span class="tg-section__eyebrow">Map</span>
-            <h2 class="tg-section__title font-display">Attractions Map</h2>
-        </div>
-            </div>
-        </div>
-
-        <div class="page-shell tg-main tg-main--below-hero">
-        <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Dublin attractions"></div>
-        <section class="tg-section">
-            <div class="tg-section__header">
-                <span class="tg-section__eyebrow">Highlights</span>
-                <h2 class="tg-section__title font-display">Top Sights &amp; Activities</h2>
-            </div>
-            <div class="tg-sights-list">
-            
-            <!-- 1. St Patrick&#x27;s Cathedral -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_1.avif" alt="St Patrick&#x27;s Cathedral" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €12
+                <h1 id="destination-title" class="destination-hero__title" style="--destination-title-chars: 6">Dublin</h1>
+                <div class="destination-hero__history">
+                    <p>Dublin began as a Norse longphort on the Liffey in the 9th century and became the seat of English and later British rule in Ireland. Georgian squares, Trinity College, and the Custom House mark 18th-century expansion. The 1916 Easter Rising and independence struggle centred on the General Post Office. Docklands redevelopment and literary museums now sit beside medieval street lines and the River Liffey quays.</p>
+                </div>
+                <dl class="destination-hero__facts destination-hero__facts--no-region" aria-label="Dublin guide facts">
+                    <div>
+                        <dt>Country</dt>
+                        <dd>Ireland</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">St Patrick&#x27;s Cathedral</h3>
-                    <p class="tg-sight-card__text">The Cathedral of Saint Patrick in Dublin is important religious landmarks in Ireland, and has been a part of the country&#x27;s history for over 800 years. It is the largest cathedral in Ireland and is home to many stained glass windows, marble statues, and medieval tiles. The cathedral also plays an important role in literary pilgrimage, as Jonathan Swift once served as dean here.</p>
-                </div>
-            </div>
-            <!-- 2. Croke Park -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_2.avif" alt="Croke Park" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €18
+                    <div>
+                        <dt>Places</dt>
+                        <dd>37</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Croke Park</h3>
-                    <p class="tg-sight-card__text">Croke Park is a monumental symbol of Irish culture and sport, being the largest stadium in Ireland and the third largest in Europe. With a staggering capacity of 82,300, it is the Gaelic sports, hosting thrilling matches of Gaelic Football and Hurling from April to September each year.</p>
-                </div>
-            </div>
-            <!-- 3. Molly Malone Statue -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_3.avif" alt="Molly Malone Statue" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Molly Malone Statue</h3>
-                    <p class="tg-sight-card__text">The Molly Malone Statue in Dublin is a bronze depiction of the fictional fishmonger from the well-known Irish song. Situated in the city&#x27;s Georgian Quarter on Suffolk Street, this statue attracts hordes of tourists daily who are drawn to its connection with Irish folklore. Although the real Molly Malone may have looked different, this monument has become a symbol of Dublin and is a popular spot for travellers to take selfies.</p>
-                </div>
-            </div>
-            <!-- 4. Irish Whiskey Museum -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_4.avif" alt="Irish Whiskey Museum" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €25
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Irish Whiskey Museum</h3>
-                    <p class="tg-sight-card__text">The Irish Whiskey Museum in Dublin is a must-visit for anyone interested in the rich history and culture of Irish whiskey. The museum offers guided tours that take travellers through interactive exhibits, providing insights into the origins and distillation of Irish whiskey. At the end of the tour, guests can enjoy a tasting experience featuring at least three different whiskeys.</p>
-                </div>
-            </div>
-            <!-- 5. Aviva Stadium -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_5.avif" alt="Aviva Stadium" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €20
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Aviva Stadium</h3>
-                    <p class="tg-sight-card__text">Aviva Stadium is a stadium in Dublin, Ireland. It opened or was completed around 2010. Opened in 2010, this modern stadium has an eye-catching glass end and has an environmentally friendly design that reflects innovative architectural ideas from around the globe. It is a proud home for Ireland&#x27;s national teams and has become a hub for thrilling sporting events. Event access follows posted ticket and gate procedures.</p>
-                </div>
-            </div>
-            <!-- 6. Dublin Zoo -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_6.avif" alt="Dublin Zoo" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €22
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Dublin Zoo</h3>
-                    <p class="tg-sight-card__text">Dublin Zoo, the largest zoo in Ireland, offers a diverse range of exhibits including African Plain, Fringes of the Arctic and Asian Forests. Located within Phoenix Park, it is one of the oldest zoos globally dating back to 1831. The zoo is home to a variety of exotic animals such as giraffes, rhinos, gorillas, elephants, penguins and sea lions.</p>
-                </div>
-            </div>
-            <!-- 7. Wellington Monument -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_7.avif" alt="Wellington Monument" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Wellington Monument</h3>
-                    <p class="tg-sight-card__text">The Wellington Monument is an 62m obelisk located at the beginning of Phoenix Park in Ireland. Surrounded by a well-kept park, it is a great meeting point and offers a perfect spot to relax on its steps. The monument stands tall and, making it an ideal location for early morning solitude or photography.</p>
-                </div>
-            </div>
-            <!-- 8. The Book of Kells Experience -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_8.avif" alt="The Book of Kells Experience" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €26
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">The Book of Kells Experience</h3>
-                    <p class="tg-sight-card__text">The Book of Kells Experience is a visitor site in Dublin, Ireland. Housed at Trinity College, this ancient manuscript dating back to 800 AD contains illuminated illustrations of the Christian Gospels. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 9. Trinity College Dublin -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_9.avif" alt="Trinity College Dublin" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Trinity College Dublin</h3>
-                    <p class="tg-sight-card__text">Trinity College Dublin, a 19-hectare university with Georgian buildings, is known for its humanities, science, and medical programs. The campus is home to the national treasure of Ireland, the Book of Kells, which can be fully appreciated with an audio guide. Travellers can also explore the library gallery, famous for being a filming location in Harry Potter movies, and view the oldest harp in Ireland.</p>
-                </div>
-            </div>
-            <!-- 10. Ha&#x27;penny Bridge -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_10.avif" alt="Ha&#x27;penny Bridge" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Ha&#x27;penny Bridge</h3>
-                    <p class="tg-sight-card__text">The Ha&#x27;penny Bridge, a beautifully refurbished cast-iron structure from the 19th century, is a beloved symbol of Dublin. Spanning nearly 150 feet across the River Liffey, this pedestrian bridge has welcomed countless travellers since its opening in 1816. Originally requiring a toll of half a penny to cross, hence its name, the bridge connects the busy north and south sides of the city.</p>
-                </div>
-            </div>
-            <!-- 11. O&#x27;Connell Monument -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_11.avif" alt="O&#x27;Connell Monument" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">O&#x27;Connell Monument</h3>
-                    <p class="tg-sight-card__text">The O&#x27;Connell Monument, located at the bottom of O&#x27;Connell Street in Dublin, is a significant landmark dedicated to Daniel O&#x27;Connell, an influential Irish political leader known as &quot;The Liberator.&quot; The monument was erected in 1862 and sculpted by John Henry Foley. It stands proudly at the site where O&#x27;Connell Bridge crosses the River Liffey.</p>
-                </div>
-            </div>
-            <!-- 12. Abbey Theatre -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_12.avif" alt="Abbey Theatre" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Abbey Theatre</h3>
-                    <p class="tg-sight-card__text">The Abbey Theatre, founded by W.B. Yeats and Lady Augusta Gregory in 1903, is Ireland&#x27;s national theatre known for staging new Irish and global plays. The theater offers backstage tours providing insights into the staging of drama and its unique role in Irish history, the Theatre Walking Tour explores Dublin&#x27;s artistic legacies and famous actors and writers associated with the city.</p>
-                </div>
-            </div>
-            <!-- 13. Christ Church Cathedral -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_13.avif" alt="Christ Church Cathedral" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €12
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Christ Church Cathedral</h3>
-                    <p class="tg-sight-card__text">Christ Church Cathedral is a medieval place of worship in Dublin, Ireland. It has a rich history dating back to the 11th century when the first Christianized Danish king built a wooden church at the site. The present stone structure was constructed around 1200 and underwent extensive renovations in the 19th century, giving it a Victorian appearance.</p>
-                </div>
-            </div>
-            <!-- 14. Dublin Castle -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_14.avif" alt="Dublin Castle" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €8
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Dublin Castle</h3>
-                    <p class="tg-sight-card__text">Dublin Castle is a fortified historic site in Dublin, Ireland. Records associated with the site include 1204, 1811. Dublin Castle, dating back to 1204, is a historic site that has played a significant role in Ireland&#x27;s history for over 800 years. Dublin Castle remains part of the public visitor circuit in Dublin.</p>
-                </div>
-            </div>
-            <!-- 15. Jameson Distillery Bow St. -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_15.avif" alt="Jameson Distillery Bow St." class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €26
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Jameson Distillery Bow St.</h3>
-                    <p class="tg-sight-card__text">The Jameson Distillery Bow St. Offers an immersive experience in the world of Irish whiskey. While it&#x27;s no longer the main production site, it provides a fascinating tour of the original distillery and educates travellers about the brand&#x27;s history and distillation process. The expert guides share stories as guests explore recreated distillery scenes, culminating in tastings and dining experiences.</p>
-                </div>
-            </div>
-            <!-- 16. St Michan&#x27;s Church of Ireland -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_16.avif" alt="St Michan&#x27;s Church of Ireland" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €7
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">St Michan&#x27;s Church of Ireland</h3>
-                    <p class="tg-sight-card__text">St Michan&#x27;s Church of Ireland is a destination steeped in over 900 years of history, located in the active Smithfield area. While the current structure dates back to the 17th century, it occupies a site that once housed a Viking chapel from 1095. This church is not just an notable building; it also has an pipe organ from the 1720s, which was famously played by Handel himself.</p>
-                </div>
-            </div>
-            <!-- 17. The Hell Fire Club -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_17.avif" alt="The Hell Fire Club" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">The Hell Fire Club</h3>
-                    <p class="tg-sight-card__text">For travellers seeking a sunrise experience in Dublin, look no further than The Hellfire Club, perched high in the Dublin Mountains. A short drive from the city leads visitors to ample parking just a stone&#x27;s throw away from this historic site. Once an old pub, now abandoned, it offers views after a moderate hike of 20 to 40 minutes up Montpelier Hill.</p>
-                </div>
-            </div>
-            <!-- 18. EPIC The Irish Emigration Museum -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_18.avif" alt="EPIC The Irish Emigration Museum" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €22
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">EPIC The Irish Emigration Museum</h3>
-                    <p class="tg-sight-card__text">EPIC The Irish Emigration Museum, located in the Custom House building, is a exploration of the Irish diaspora&#x27;s impact on the world. Through 20 interconnected galleries, travellers can look at the stories and experiences of Irish emigrants who have made significant contributions globally. This award-winning museum offers an interactive and immersive experience that showcases the diverse achievements and struggles of the Irish community over time.</p>
-                </div>
-            </div>
-            <!-- 19. The Convention Centre Dublin -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_19.avif" alt="The Convention Centre Dublin" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Reservation required
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">The Convention Centre Dublin</h3>
-                    <p class="tg-sight-card__text">The Convention Centre Dublin is a visitor site in Dublin, Ireland. Records associated with the site include 2010. Located along the banks of the River Liffey, The Convention Centre Dublin is a landmark of modern architecture in the active Dublin Docklands. Since its completion in 2010, it has proudly held the title of being the world&#x27;s first carbon-neutral international convention center. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 20. Bord Gáis Energy Theatre -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_20.avif" alt="Bord Gáis Energy Theatre" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Bord Gáis Energy Theatre</h3>
-                    <p class="tg-sight-card__text">Bord Gáis Energy Theatre is a theatre in Dublin, Ireland. This 2,100-seat venue is a cultural hub that showcases an array of performances including ballet, opera, musicals, and orchestral concerts. Public access is usually through ticketed performances or daytime visits.</p>
-                </div>
-            </div>
-            <!-- 21. National Botanic Gardens -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_21.avif" alt="National Botanic Gardens" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">National Botanic Gardens</h3>
-                    <p class="tg-sight-card__text">The National Botanic Gardens in Dublin is a large expanse featuring naturalistic areas, formal gardens, an arboretum, and a Victorian palm house. It is both a research and conservation center as well as a recreational park, drawing over 500,000 travellers annually. Families can explore the 50-acre space with its diverse plant species, rose and rock gardens, pond and river walks, organic fruit and vegetable gardens, and Ireland&#x27;s only indoor rainforest.</p>
-                </div>
-            </div>
-            <!-- 22. Stephen&#x27;s Green Shopping Centre -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_22.avif" alt="Stephen&#x27;s Green Shopping Centre" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Stephen&#x27;s Green Shopping Centre</h3>
-                    <p class="tg-sight-card__text">Stephen&#x27;s Green Shopping Centre is a active indoor mall In Dublin&#x27;s prestigious shopping and cultural district. With over 100 specialty retailers and eateries, it offers a diverse shopping experience. From well-known brands like Dunnes Stores, Argos, Boots, and TK Maxx to unique boutiques such as Asha, Cactus, and Retro Nation, the center caters to a wide range of tastes.</p>
-                </div>
-            </div>
-            <!-- 23. The Gaiety Theatre -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_23.avif" alt="The Gaiety Theatre" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">The Gaiety Theatre</h3>
-                    <p class="tg-sight-card__text">The Gaiety Theatre, a classical Victorian auditorium, has been faithfully providing top-quality musical and theatrical performances since its grand opening. As Dublin&#x27;s longest-running theater, it continues to be the city&#x27;s primary venue for musicals, operas, events, comedy, storytelling, and choreography. The theater aims to create a warm and welcoming atmosphere for all travellers.</p>
-                </div>
-            </div>
-            <!-- 24. Merrion Square Park -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_24.avif" alt="Merrion Square Park" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Merrion Square Park</h3>
-                    <p class="tg-sight-card__text">Merrion Square Park is a public park in Dublin, Ireland. Merrion Square Park is a public space in Dublin, known for its lush greenery and active floral and heather gardens. Surrounding the park are cobblestone streets lined with 18th-century brick townhouses, offering a glimpse into the area&#x27;s colonial and republican history. Paths, lawns, and shaded areas make up the main public facilities.</p>
-                </div>
-            </div>
-            <!-- 25. Poolbeg Lighthouse -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_25.avif" alt="Poolbeg Lighthouse" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Poolbeg Lighthouse</h3>
-                    <p class="tg-sight-card__text">Poolbeg Lighthouse is an red structure located in Dublin, accessible via a lengthy seawall that attracts sightseers, anglers, and cyclists. It&#x27;s a favorite spot for watching the sunrise with its panoramic view of the ocean. To get there, it&#x27;s suggested to rent a car on the GoCar app and drive early in the morning before dawn. The Great South Wall, once the world&#x27;s longest seawall, offers views of Dublin Bay and leads to Poolbeg Lighthouse.</p>
-                </div>
-            </div>
-            <!-- 26. The Purty Kitchen -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_26.avif" alt="The Purty Kitchen" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">The Purty Kitchen</h3>
-                    <p class="tg-sight-card__text">The Purty Kitchen is a historic gastropub located near the West Harbour in Dublin. Dating back to 1728, it exudes a warm and sophisticated vibe with its brick fireplaces and cosy alcoves. The large dining room offers a traditional yet elegant atmosphere for enjoying hearty local cuisine and great seafood dishes such as prawn and chorizo linguine, fish pie, Irish beef burgers, tempura plaice, and more.</p>
-                </div>
-            </div>
-            <!-- 27. Dun Laoghaire Sunday Market -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_27.avif" alt="Dun Laoghaire Sunday Market" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Dun Laoghaire Sunday Market</h3>
-                    <p class="tg-sight-card__text">The Dun Laoghaire Sunday Market, also known as the Peoples Park Market, is a long-standing market open from 11am to 4pm every Sunday. Located in the People&#x27;s Park, it offers a wide variety of goods including fruits and vegetables, baked goods, artisan breads, handmade crafts, jewelry, local meats, Irish cheeses and plants, there are international food stalls offering diverse cuisines such as Korean noodles, Italian sausages and seafood.</p>
-                </div>
-            </div>
-            <!-- 28. East Pier Lighthouse -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_28.avif" alt="East Pier Lighthouse" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">East Pier Lighthouse</h3>
-                    <p class="tg-sight-card__text">East Pier Lighthouse, also known as the East Pier Battery, is a spot in Dunleary with seasonal openings. The lighthouse is automated like others along the coast and offers views of the sea and city. Travellers can enjoy a leisurely walk from downtown Dunleary to reach this location, where they can relax on benches at the end of the pier.</p>
-                </div>
-            </div>
-            <!-- 29. Killiney Hill Park -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_29.avif" alt="Killiney Hill Park" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Killiney Hill Park</h3>
-                    <p class="tg-sight-card__text">Killiney Hill Park is a public park in Dublin, Ireland. Killiney Hill Park, located just south of Dublin, is a popular recreational park offering 360-degree views of the surrounding area. From the capital city to the Wicklow Mountains and even the Irish Sea, travellers can enjoy vistas. Paths, lawns, and shaded areas make up the main public facilities.</p>
-                </div>
-            </div>
-            <!-- 30. Drimnagh Medieval Castle and Gardens -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_30.avif" alt="Drimnagh Medieval Castle and Gardens" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Drimnagh Medieval Castle and Gardens</h3>
-                    <p class="tg-sight-card__text">Drimnagh Medieval Castle and Gardens is a fortified historic site in Dublin, Ireland. Located Dublin, Drimnagh Medieval Castle is a example of Norman architecture that has stood the test of time for over 700 years. Once falling into neglect during the 1960s, Drimnagh was rediscovered and careful restored in the late &#x27;90s, opening its doors to travellers eager to explore its rich history. Walls, courtyards, or towers form the main visitor route when the grounds are open.</p>
-                </div>
-            </div>
-            <!-- 31. Howth Head Peak -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_31.avif" alt="Howth Head Peak" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Howth Head Peak</h3>
-                    <p class="tg-sight-card__text">Howth Head Peak is a visitor site in Dublin, Ireland. Howth Head Peak offers a bracing hiking trail with sea, cliff, and lighthouse views. The well-signed coastal walk leads to the peak, where travellers can enjoy views of Dublin Bay and South Dublin. The 12km route is quite taxing, requiring a decent level of fitness. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 32. Howth Cliff Walk (Green Route) -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_32.avif" alt="Howth Cliff Walk (Green Route)" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Howth Cliff Walk (Green Route)</h3>
-                    <p class="tg-sight-card__text">The Howth Cliff Walk (Green Route) offers a gentle clifftop hiking experience with views of the Baily Lighthouse, bays, beaches, and mountains. This walk is considered in Dublin, featuring easy-to-follow trails that showcase cinematic coastal scenes. The 1.5-hour route starts at Howth Summit car park and leads north to Howth Head Peak, providing views of Irelands Eye and Lambay Island.</p>
-                </div>
-            </div>
-            <!-- 33. Baily Lighthouse -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_33.avif" alt="Baily Lighthouse" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Baily Lighthouse</h3>
-                    <p class="tg-sight-card__text">Baily Lighthouse is a visitor site in Dublin, Ireland. Baily Lighthouse, situated in the village of Howth, Ireland, is a must-visit attraction offering panoramic views and a glimpse into the area&#x27;s maritime heritage. Travellers can drive or take public transportation to Howth and explore the pier before began on a scenic hike to Baily Lighthouse. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 34. Howth Lighthouse -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_34.avif" alt="Howth Lighthouse" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Howth Lighthouse</h3>
-                    <p class="tg-sight-card__text">Howth Lighthouse is a visitor site in Dublin, Ireland. Howth Lighthouse is a landmark in Dublin, Ireland, known for its setting and water views. It&#x27;s a popular destination for scenic walks, especially during dawn or sunset when the lighting is perfect for capturing incredible photographs. Accessible by DART or bus from the city center, it offers a leisurely pier walk along the seaside with cliffs as a backdrop. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 35. Phoenix Park -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_35.avif" alt="Phoenix Park" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Phoenix Park</h3>
-                    <p class="tg-sight-card__text">Phoenix Park, known as &quot;Dublin&#x27;s playground,&quot; is a 708-hectare park that was originally a royal hunting ground in the 1660s before opening to the public in 1747. It has a large herd of fallow deer, a Zoological Gardens, Aras an Uachtarain, and a Victorian flower garden.</p>
-                </div>
-            </div>
-            <!-- 36. Ashtown Castle -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_36.avif" alt="Ashtown Castle" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Ashtown Castle</h3>
-                    <p class="tg-sight-card__text">Ashtown Castle, located in Phoenix Park, is a medieval stone house that was once hidden within a larger Georgian mansion. Dating back to the 1430s, the castle was discovered when the surrounding building was demolished in 1978. It has since been restored and now is part of the Phoenix Park travellers Centre. The travellers centre provides insight into the history of the castle and the park from 3500BC to present day.</p>
-                </div>
-            </div>
-            <!-- 37. Iveagh Gardens -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/dublin_37.avif" alt="Iveagh Gardens" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Iveagh Gardens</h3>
-                    <p class="tg-sight-card__text">Iveagh Gardens is a public park in Dublin, Ireland. Records associated with the site include 1865, 1995. Once known as Coburg Gardens, it was revitalized by Sir Benjamin Guinness and later gifted to the Irish nation. Paths, lawns, and shaded areas make up the main public facilities.</p>
-                </div>
-            </div>
+                </dl>
             </div>
         </section>
-        </div>
+
+        <section id="atlas" class="destination-atlas" aria-labelledby="atlas-title">
+            <div class="page-shell destination-atlas__layout">
+                <div class="destination-atlas__brief">
+                    <p class="destination-atlas__index">City atlas</p>
+                    <h2 id="atlas-title">Plot the city.</h2>
+                    <p class="destination-atlas__copy">Zoom, pan, and open any marker to focus that place in the catalog below.</p>
+                    <dl class="destination-atlas__facts" aria-label="Map coverage">
+                        <div>
+                            <dt>Plotted</dt>
+                            <dd>37 places</dd>
+                        </div>
+                        <div>
+                            <dt>Center</dt>
+                            <dd>53.3498&deg; N<br>6.2603&deg; W</dd>
+                        </div>
+                    </dl>
+                </div>
+                <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Dublin attractions"></div>
+            </div>
+        </section>
+
+        <section id="places" class="destination-places" aria-labelledby="places-title">
+            <div class="page-shell">
+                <div class="destination-chapter">
+                    <h2 id="places-title" class="destination-chapter__heading">37 ways into<br>Dublin.</h2>
+                    <p class="destination-chapter__copy">Browse the index, open a location, and read the essentials without scrolling through a long catalog. Each entry contains its image, admission note, and contextual guide.</p>
+                </div>
+                <div class="places-explorer" data-places-explorer>
+                    <aside class="places-explorer__rail" aria-label="Place index">
+                        <div class="places-explorer__toolbar">
+                            <label class="places-explorer__filter-label" for="places-filter">Filter places</label>
+                            <input
+                                id="places-filter"
+                                class="places-explorer__filter"
+                                type="search"
+                                data-places-filter
+                                placeholder="Search by name"
+                                autocomplete="off"
+                            >
+                            <p class="places-explorer__meta"><strong data-places-count>37</strong> of 37 shown</p>
+                        </div>
+                        <ul class="places-explorer__list" role="listbox" aria-label="Places in Dublin" data-places-list data-lenis-prevent data-tg-scroll-surface>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option is-active"
+                            role="option"
+                            id="place-option-1"
+                            data-place-option
+                            data-place-index="0"
+                            data-place-name="St Patrick&#x27;s Cathedral"
+                            data-place-lat="53.339515"
+                            data-place-lng="-6.271477"
+                            aria-selected="true"
+                            tabindex="0"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">01</span>
+                            <span class="places-explorer__option-name">St Patrick&#x27;s Cathedral</span>
+                            <span class="places-explorer__option-price">€12</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-2"
+                            data-place-option
+                            data-place-index="1"
+                            data-place-name="Croke Park"
+                            data-place-lat="53.360748"
+                            data-place-lng="-6.251134"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">02</span>
+                            <span class="places-explorer__option-name">Croke Park</span>
+                            <span class="places-explorer__option-price">€18</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-3"
+                            data-place-option
+                            data-place-index="2"
+                            data-place-name="Molly Malone Statue"
+                            data-place-lat="53.343741"
+                            data-place-lng="-6.260972"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">03</span>
+                            <span class="places-explorer__option-name">Molly Malone Statue</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-4"
+                            data-place-option
+                            data-place-index="3"
+                            data-place-name="Irish Whiskey Museum"
+                            data-place-lat="53.344198"
+                            data-place-lng="-6.259525"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">04</span>
+                            <span class="places-explorer__option-name">Irish Whiskey Museum</span>
+                            <span class="places-explorer__option-price">€25</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-5"
+                            data-place-option
+                            data-place-index="4"
+                            data-place-name="Aviva Stadium"
+                            data-place-lat="53.334288"
+                            data-place-lng="-6.227943"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">05</span>
+                            <span class="places-explorer__option-name">Aviva Stadium</span>
+                            <span class="places-explorer__option-price">€20</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-6"
+                            data-place-option
+                            data-place-index="5"
+                            data-place-name="Dublin Zoo"
+                            data-place-lat="53.357223"
+                            data-place-lng="-6.307109"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">06</span>
+                            <span class="places-explorer__option-name">Dublin Zoo</span>
+                            <span class="places-explorer__option-price">€22</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-7"
+                            data-place-option
+                            data-place-index="6"
+                            data-place-name="Wellington Monument"
+                            data-place-lat="53.349036"
+                            data-place-lng="-6.303101"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">07</span>
+                            <span class="places-explorer__option-name">Wellington Monument</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-8"
+                            data-place-option
+                            data-place-index="7"
+                            data-place-name="The Book of Kells Experience"
+                            data-place-lat="53.343888"
+                            data-place-lng="-6.256755"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">08</span>
+                            <span class="places-explorer__option-name">The Book of Kells Experience</span>
+                            <span class="places-explorer__option-price">€26</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-9"
+                            data-place-option
+                            data-place-index="8"
+                            data-place-name="Trinity College Dublin"
+                            data-place-lat="53.343794"
+                            data-place-lng="-6.254572"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">09</span>
+                            <span class="places-explorer__option-name">Trinity College Dublin</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-10"
+                            data-place-option
+                            data-place-index="9"
+                            data-place-name="Ha&#x27;penny Bridge"
+                            data-place-lat="53.346335"
+                            data-place-lng="-6.263103"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">10</span>
+                            <span class="places-explorer__option-name">Ha&#x27;penny Bridge</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-11"
+                            data-place-option
+                            data-place-index="10"
+                            data-place-name="O&#x27;Connell Monument"
+                            data-place-lat="53.34777"
+                            data-place-lng="-6.259346"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">11</span>
+                            <span class="places-explorer__option-name">O&#x27;Connell Monument</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-12"
+                            data-place-option
+                            data-place-index="11"
+                            data-place-name="Abbey Theatre"
+                            data-place-lat="53.348399"
+                            data-place-lng="-6.257178"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">12</span>
+                            <span class="places-explorer__option-name">Abbey Theatre</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-13"
+                            data-place-option
+                            data-place-index="12"
+                            data-place-name="Christ Church Cathedral"
+                            data-place-lat="53.343513"
+                            data-place-lng="-6.27106"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">13</span>
+                            <span class="places-explorer__option-name">Christ Church Cathedral</span>
+                            <span class="places-explorer__option-price">€12</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-14"
+                            data-place-option
+                            data-place-index="13"
+                            data-place-name="Dublin Castle"
+                            data-place-lat="53.342886"
+                            data-place-lng="-6.267428"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">14</span>
+                            <span class="places-explorer__option-name">Dublin Castle</span>
+                            <span class="places-explorer__option-price">€8</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-15"
+                            data-place-option
+                            data-place-index="14"
+                            data-place-name="Jameson Distillery Bow St."
+                            data-place-lat="53.348185"
+                            data-place-lng="-6.277029"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">15</span>
+                            <span class="places-explorer__option-name">Jameson Distillery Bow St.</span>
+                            <span class="places-explorer__option-price">€26</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-16"
+                            data-place-option
+                            data-place-index="15"
+                            data-place-name="St Michan&#x27;s Church of Ireland"
+                            data-place-lat="53.3475"
+                            data-place-lng="-6.275148"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">16</span>
+                            <span class="places-explorer__option-name">St Michan&#x27;s Church of Ireland</span>
+                            <span class="places-explorer__option-price">€7</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-17"
+                            data-place-option
+                            data-place-index="16"
+                            data-place-name="The Hell Fire Club"
+                            data-place-lat="53.251904"
+                            data-place-lng="-6.33005"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">17</span>
+                            <span class="places-explorer__option-name">The Hell Fire Club</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-18"
+                            data-place-option
+                            data-place-index="17"
+                            data-place-name="EPIC The Irish Emigration Museum"
+                            data-place-lat="53.348312"
+                            data-place-lng="-6.248179"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">18</span>
+                            <span class="places-explorer__option-name">EPIC The Irish Emigration Museum</span>
+                            <span class="places-explorer__option-price">€22</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-19"
+                            data-place-option
+                            data-place-index="18"
+                            data-place-name="The Convention Centre Dublin"
+                            data-place-lat="53.347862"
+                            data-place-lng="-6.239581"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">19</span>
+                            <span class="places-explorer__option-name">The Convention Centre Dublin</span>
+                            <span class="places-explorer__option-price">Reservation required</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-20"
+                            data-place-option
+                            data-place-index="19"
+                            data-place-name="Bord Gáis Energy Theatre"
+                            data-place-lat="53.344185"
+                            data-place-lng="-6.240018"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">20</span>
+                            <span class="places-explorer__option-name">Bord Gáis Energy Theatre</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-21"
+                            data-place-option
+                            data-place-index="20"
+                            data-place-name="National Botanic Gardens"
+                            data-place-lat="53.372549"
+                            data-place-lng="-6.271907"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">21</span>
+                            <span class="places-explorer__option-name">National Botanic Gardens</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-22"
+                            data-place-option
+                            data-place-index="21"
+                            data-place-name="Stephen&#x27;s Green Shopping Centre"
+                            data-place-lat="53.339864"
+                            data-place-lng="-6.261774"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">22</span>
+                            <span class="places-explorer__option-name">Stephen&#x27;s Green Shopping Centre</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-23"
+                            data-place-option
+                            data-place-index="22"
+                            data-place-name="The Gaiety Theatre"
+                            data-place-lat="53.340461"
+                            data-place-lng="-6.261575"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">23</span>
+                            <span class="places-explorer__option-name">The Gaiety Theatre</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-24"
+                            data-place-option
+                            data-place-index="23"
+                            data-place-name="Merrion Square Park"
+                            data-place-lat="53.339672"
+                            data-place-lng="-6.249213"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">24</span>
+                            <span class="places-explorer__option-name">Merrion Square Park</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-25"
+                            data-place-option
+                            data-place-index="24"
+                            data-place-name="Poolbeg Lighthouse"
+                            data-place-lat="53.342138"
+                            data-place-lng="-6.15128"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">25</span>
+                            <span class="places-explorer__option-name">Poolbeg Lighthouse</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-26"
+                            data-place-option
+                            data-place-index="25"
+                            data-place-name="The Purty Kitchen"
+                            data-place-lat="53.29522"
+                            data-place-lng="-6.148103"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">26</span>
+                            <span class="places-explorer__option-name">The Purty Kitchen</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-27"
+                            data-place-option
+                            data-place-index="26"
+                            data-place-name="Dun Laoghaire Sunday Market"
+                            data-place-lat="53.289936"
+                            data-place-lng="-6.128531"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">27</span>
+                            <span class="places-explorer__option-name">Dun Laoghaire Sunday Market</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-28"
+                            data-place-option
+                            data-place-index="27"
+                            data-place-name="East Pier Lighthouse"
+                            data-place-lat="53.302454"
+                            data-place-lng="-6.127029"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">28</span>
+                            <span class="places-explorer__option-name">East Pier Lighthouse</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-29"
+                            data-place-option
+                            data-place-index="28"
+                            data-place-name="Killiney Hill Park"
+                            data-place-lat="53.265379"
+                            data-place-lng="-6.111242"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">29</span>
+                            <span class="places-explorer__option-name">Killiney Hill Park</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-30"
+                            data-place-option
+                            data-place-index="29"
+                            data-place-name="Drimnagh Medieval Castle and Gardens"
+                            data-place-lat="53.324903"
+                            data-place-lng="-6.332874"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">30</span>
+                            <span class="places-explorer__option-name">Drimnagh Medieval Castle and Gardens</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-31"
+                            data-place-option
+                            data-place-index="30"
+                            data-place-name="Howth Head Peak"
+                            data-place-lat="53.384194"
+                            data-place-lng="-6.046762"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">31</span>
+                            <span class="places-explorer__option-name">Howth Head Peak</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-32"
+                            data-place-option
+                            data-place-index="31"
+                            data-place-name="Howth Cliff Walk (Green Route)"
+                            data-place-lat="53.37497"
+                            data-place-lng="-6.049176"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">32</span>
+                            <span class="places-explorer__option-name">Howth Cliff Walk (Green Route)</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-33"
+                            data-place-option
+                            data-place-index="32"
+                            data-place-name="Baily Lighthouse"
+                            data-place-lat="53.361623"
+                            data-place-lng="-6.052328"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">33</span>
+                            <span class="places-explorer__option-name">Baily Lighthouse</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-34"
+                            data-place-option
+                            data-place-index="33"
+                            data-place-name="Howth Lighthouse"
+                            data-place-lat="53.393383"
+                            data-place-lng="-6.066695"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">34</span>
+                            <span class="places-explorer__option-name">Howth Lighthouse</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-35"
+                            data-place-option
+                            data-place-index="34"
+                            data-place-name="Phoenix Park"
+                            data-place-lat="53.355882"
+                            data-place-lng="-6.329813"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">35</span>
+                            <span class="places-explorer__option-name">Phoenix Park</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-36"
+                            data-place-option
+                            data-place-index="35"
+                            data-place-name="Ashtown Castle"
+                            data-place-lat="53.365774"
+                            data-place-lng="-6.330591"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">36</span>
+                            <span class="places-explorer__option-name">Ashtown Castle</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-37"
+                            data-place-option
+                            data-place-index="36"
+                            data-place-name="Iveagh Gardens"
+                            data-place-lat="53.335138"
+                            data-place-lng="-6.261034"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">37</span>
+                            <span class="places-explorer__option-name">Iveagh Gardens</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                        </ul>
+                        <p class="places-explorer__empty" data-places-empty hidden>No places match that filter.</p>
+                    </aside>
+                    <div class="places-explorer__stage" data-places-stage>
+                    <nav class="places-stage__stepper" data-places-stepper aria-label="Browse places" hidden>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--prev" data-places-prev aria-label="Previous place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M14.75 5.25 L8.25 12 l6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M9.1 12 H17.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--next" data-places-next aria-label="Next place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M9.25 5.25 L15.75 12 l-6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M6.6 12 H14.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                    </nav>
+                <article
+                    class="places-stage__panel is-active"
+                    data-place-panel
+                    data-place-index="0"
+                    aria-labelledby="place-title-1"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_1.avif" alt="St Patrick&#x27;s Cathedral" width="1200" height="750" loading="eager" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">01</span>
+                            <span class="places-stage__admission"><span>Admission</span>€12</span>
+                        </p>
+                        <h3 id="place-title-1" class="places-stage__title">St Patrick&#x27;s Cathedral</h3>
+                        <p class="places-stage__text">The Cathedral of Saint Patrick in Dublin is important religious landmarks in Ireland, and has been a part of the country&#x27;s history for over 800 years. It is the largest cathedral in Ireland and is home to many stained glass windows, marble statues, and medieval tiles. The cathedral also plays an important role in literary pilgrimage, as Jonathan Swift once served as dean here.</p>
+                        <p class="places-stage__coords">53.3395&deg; N / 6.2715&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="1"
+                    aria-labelledby="place-title-2"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_2.avif" alt="Croke Park" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">02</span>
+                            <span class="places-stage__admission"><span>Admission</span>€18</span>
+                        </p>
+                        <h3 id="place-title-2" class="places-stage__title">Croke Park</h3>
+                        <p class="places-stage__text">Croke Park is a monumental symbol of Irish culture and sport, being the largest stadium in Ireland and the third largest in Europe. With a staggering capacity of 82,300, it is the Gaelic sports, hosting thrilling matches of Gaelic Football and Hurling from April to September each year.</p>
+                        <p class="places-stage__coords">53.3607&deg; N / 6.2511&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="2"
+                    aria-labelledby="place-title-3"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_3.avif" alt="Molly Malone Statue" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">03</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-3" class="places-stage__title">Molly Malone Statue</h3>
+                        <p class="places-stage__text">The Molly Malone Statue in Dublin is a bronze depiction of the fictional fishmonger from the well-known Irish song. Situated in the city&#x27;s Georgian Quarter on Suffolk Street, this statue attracts hordes of tourists daily who are drawn to its connection with Irish folklore. Although the real Molly Malone may have looked different, this monument has become a symbol of Dublin and is a popular spot for travellers to take selfies.</p>
+                        <p class="places-stage__coords">53.3437&deg; N / 6.2610&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="3"
+                    aria-labelledby="place-title-4"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_4.avif" alt="Irish Whiskey Museum" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">04</span>
+                            <span class="places-stage__admission"><span>Admission</span>€25</span>
+                        </p>
+                        <h3 id="place-title-4" class="places-stage__title">Irish Whiskey Museum</h3>
+                        <p class="places-stage__text">The Irish Whiskey Museum in Dublin is a must-visit for anyone interested in the rich history and culture of Irish whiskey. The museum offers guided tours that take travellers through interactive exhibits, providing insights into the origins and distillation of Irish whiskey. At the end of the tour, guests can enjoy a tasting experience featuring at least three different whiskeys.</p>
+                        <p class="places-stage__coords">53.3442&deg; N / 6.2595&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="4"
+                    aria-labelledby="place-title-5"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_5.avif" alt="Aviva Stadium" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">05</span>
+                            <span class="places-stage__admission"><span>Admission</span>€20</span>
+                        </p>
+                        <h3 id="place-title-5" class="places-stage__title">Aviva Stadium</h3>
+                        <p class="places-stage__text">Aviva Stadium is a stadium in Dublin, Ireland. It opened or was completed around 2010. Opened in 2010, this modern stadium has an eye-catching glass end and has an environmentally friendly design that reflects innovative architectural ideas from around the globe. It is a proud home for Ireland&#x27;s national teams and has become a hub for thrilling sporting events. Event access follows posted ticket and gate procedures.</p>
+                        <p class="places-stage__coords">53.3343&deg; N / 6.2279&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="5"
+                    aria-labelledby="place-title-6"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_6.avif" alt="Dublin Zoo" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">06</span>
+                            <span class="places-stage__admission"><span>Admission</span>€22</span>
+                        </p>
+                        <h3 id="place-title-6" class="places-stage__title">Dublin Zoo</h3>
+                        <p class="places-stage__text">Dublin Zoo, the largest zoo in Ireland, offers a diverse range of exhibits including African Plain, Fringes of the Arctic and Asian Forests. Located within Phoenix Park, it is one of the oldest zoos globally dating back to 1831. The zoo is home to a variety of exotic animals such as giraffes, rhinos, gorillas, elephants, penguins and sea lions.</p>
+                        <p class="places-stage__coords">53.3572&deg; N / 6.3071&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="6"
+                    aria-labelledby="place-title-7"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_7.avif" alt="Wellington Monument" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">07</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-7" class="places-stage__title">Wellington Monument</h3>
+                        <p class="places-stage__text">The Wellington Monument is an 62m obelisk located at the beginning of Phoenix Park in Ireland. Surrounded by a well-kept park, it is a great meeting point and offers a perfect spot to relax on its steps. The monument stands tall and, making it an ideal location for early morning solitude or photography.</p>
+                        <p class="places-stage__coords">53.3490&deg; N / 6.3031&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="7"
+                    aria-labelledby="place-title-8"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_8.avif" alt="The Book of Kells Experience" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">08</span>
+                            <span class="places-stage__admission"><span>Admission</span>€26</span>
+                        </p>
+                        <h3 id="place-title-8" class="places-stage__title">The Book of Kells Experience</h3>
+                        <p class="places-stage__text">The Book of Kells Experience is a visitor site in Dublin, Ireland. Housed at Trinity College, this ancient manuscript dating back to 800 AD contains illuminated illustrations of the Christian Gospels. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">53.3439&deg; N / 6.2568&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="8"
+                    aria-labelledby="place-title-9"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_9.avif" alt="Trinity College Dublin" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">09</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-9" class="places-stage__title">Trinity College Dublin</h3>
+                        <p class="places-stage__text">Trinity College Dublin, a 19-hectare university with Georgian buildings, is known for its humanities, science, and medical programs. The campus is home to the national treasure of Ireland, the Book of Kells, which can be fully appreciated with an audio guide. Travellers can also explore the library gallery, famous for being a filming location in Harry Potter movies, and view the oldest harp in Ireland.</p>
+                        <p class="places-stage__coords">53.3438&deg; N / 6.2546&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="9"
+                    aria-labelledby="place-title-10"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_10.avif" alt="Ha&#x27;penny Bridge" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">10</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-10" class="places-stage__title">Ha&#x27;penny Bridge</h3>
+                        <p class="places-stage__text">The Ha&#x27;penny Bridge, a beautifully refurbished cast-iron structure from the 19th century, is a beloved symbol of Dublin. Spanning nearly 150 feet across the River Liffey, this pedestrian bridge has welcomed countless travellers since its opening in 1816. Originally requiring a toll of half a penny to cross, hence its name, the bridge connects the busy north and south sides of the city.</p>
+                        <p class="places-stage__coords">53.3463&deg; N / 6.2631&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="10"
+                    aria-labelledby="place-title-11"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_11.avif" alt="O&#x27;Connell Monument" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">11</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-11" class="places-stage__title">O&#x27;Connell Monument</h3>
+                        <p class="places-stage__text">The O&#x27;Connell Monument, located at the bottom of O&#x27;Connell Street in Dublin, is a significant landmark dedicated to Daniel O&#x27;Connell, an influential Irish political leader known as &quot;The Liberator.&quot; The monument was erected in 1862 and sculpted by John Henry Foley. It stands proudly at the site where O&#x27;Connell Bridge crosses the River Liffey.</p>
+                        <p class="places-stage__coords">53.3478&deg; N / 6.2593&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="11"
+                    aria-labelledby="place-title-12"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_12.avif" alt="Abbey Theatre" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">12</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-12" class="places-stage__title">Abbey Theatre</h3>
+                        <p class="places-stage__text">The Abbey Theatre, founded by W.B. Yeats and Lady Augusta Gregory in 1903, is Ireland&#x27;s national theatre known for staging new Irish and global plays. The theater offers backstage tours providing insights into the staging of drama and its unique role in Irish history, the Theatre Walking Tour explores Dublin&#x27;s artistic legacies and famous actors and writers associated with the city.</p>
+                        <p class="places-stage__coords">53.3484&deg; N / 6.2572&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="12"
+                    aria-labelledby="place-title-13"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_13.avif" alt="Christ Church Cathedral" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">13</span>
+                            <span class="places-stage__admission"><span>Admission</span>€12</span>
+                        </p>
+                        <h3 id="place-title-13" class="places-stage__title">Christ Church Cathedral</h3>
+                        <p class="places-stage__text">Christ Church Cathedral is a medieval place of worship in Dublin, Ireland. It has a rich history dating back to the 11th century when the first Christianized Danish king built a wooden church at the site. The present stone structure was constructed around 1200 and underwent extensive renovations in the 19th century, giving it a Victorian appearance.</p>
+                        <p class="places-stage__coords">53.3435&deg; N / 6.2711&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="13"
+                    aria-labelledby="place-title-14"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_14.avif" alt="Dublin Castle" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">14</span>
+                            <span class="places-stage__admission"><span>Admission</span>€8</span>
+                        </p>
+                        <h3 id="place-title-14" class="places-stage__title">Dublin Castle</h3>
+                        <p class="places-stage__text">Dublin Castle is a fortified historic site in Dublin, Ireland. Records associated with the site include 1204, 1811. Dublin Castle, dating back to 1204, is a historic site that has played a significant role in Ireland&#x27;s history for over 800 years. Dublin Castle remains part of the public visitor circuit in Dublin.</p>
+                        <p class="places-stage__coords">53.3429&deg; N / 6.2674&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="14"
+                    aria-labelledby="place-title-15"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_15.avif" alt="Jameson Distillery Bow St." width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">15</span>
+                            <span class="places-stage__admission"><span>Admission</span>€26</span>
+                        </p>
+                        <h3 id="place-title-15" class="places-stage__title">Jameson Distillery Bow St.</h3>
+                        <p class="places-stage__text">The Jameson Distillery Bow St. Offers an immersive experience in the world of Irish whiskey. While it&#x27;s no longer the main production site, it provides a fascinating tour of the original distillery and educates travellers about the brand&#x27;s history and distillation process. The expert guides share stories as guests explore recreated distillery scenes, culminating in tastings and dining experiences.</p>
+                        <p class="places-stage__coords">53.3482&deg; N / 6.2770&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="15"
+                    aria-labelledby="place-title-16"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_16.avif" alt="St Michan&#x27;s Church of Ireland" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">16</span>
+                            <span class="places-stage__admission"><span>Admission</span>€7</span>
+                        </p>
+                        <h3 id="place-title-16" class="places-stage__title">St Michan&#x27;s Church of Ireland</h3>
+                        <p class="places-stage__text">St Michan&#x27;s Church of Ireland is a destination steeped in over 900 years of history, located in the active Smithfield area. While the current structure dates back to the 17th century, it occupies a site that once housed a Viking chapel from 1095. This church is not just an notable building; it also has an pipe organ from the 1720s, which was famously played by Handel himself.</p>
+                        <p class="places-stage__coords">53.3475&deg; N / 6.2751&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="16"
+                    aria-labelledby="place-title-17"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_17.avif" alt="The Hell Fire Club" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">17</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-17" class="places-stage__title">The Hell Fire Club</h3>
+                        <p class="places-stage__text">For travellers seeking a sunrise experience in Dublin, look no further than The Hellfire Club, perched high in the Dublin Mountains. A short drive from the city leads visitors to ample parking just a stone&#x27;s throw away from this historic site. Once an old pub, now abandoned, it offers views after a moderate hike of 20 to 40 minutes up Montpelier Hill.</p>
+                        <p class="places-stage__coords">53.2519&deg; N / 6.3300&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="17"
+                    aria-labelledby="place-title-18"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_18.avif" alt="EPIC The Irish Emigration Museum" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">18</span>
+                            <span class="places-stage__admission"><span>Admission</span>€22</span>
+                        </p>
+                        <h3 id="place-title-18" class="places-stage__title">EPIC The Irish Emigration Museum</h3>
+                        <p class="places-stage__text">EPIC The Irish Emigration Museum, located in the Custom House building, is a exploration of the Irish diaspora&#x27;s impact on the world. Through 20 interconnected galleries, travellers can look at the stories and experiences of Irish emigrants who have made significant contributions globally. This award-winning museum offers an interactive and immersive experience that showcases the diverse achievements and struggles of the Irish community over time.</p>
+                        <p class="places-stage__coords">53.3483&deg; N / 6.2482&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="18"
+                    aria-labelledby="place-title-19"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_19.avif" alt="The Convention Centre Dublin" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">19</span>
+                            <span class="places-stage__admission"><span>Admission</span>Reservation required</span>
+                        </p>
+                        <h3 id="place-title-19" class="places-stage__title">The Convention Centre Dublin</h3>
+                        <p class="places-stage__text">The Convention Centre Dublin is a visitor site in Dublin, Ireland. Records associated with the site include 2010. Located along the banks of the River Liffey, The Convention Centre Dublin is a landmark of modern architecture in the active Dublin Docklands. Since its completion in 2010, it has proudly held the title of being the world&#x27;s first carbon-neutral international convention center. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">53.3479&deg; N / 6.2396&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="19"
+                    aria-labelledby="place-title-20"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_20.avif" alt="Bord Gáis Energy Theatre" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">20</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-20" class="places-stage__title">Bord Gáis Energy Theatre</h3>
+                        <p class="places-stage__text">Bord Gáis Energy Theatre is a theatre in Dublin, Ireland. This 2,100-seat venue is a cultural hub that showcases an array of performances including ballet, opera, musicals, and orchestral concerts. Public access is usually through ticketed performances or daytime visits.</p>
+                        <p class="places-stage__coords">53.3442&deg; N / 6.2400&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="20"
+                    aria-labelledby="place-title-21"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_21.avif" alt="National Botanic Gardens" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">21</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-21" class="places-stage__title">National Botanic Gardens</h3>
+                        <p class="places-stage__text">The National Botanic Gardens in Dublin is a large expanse featuring naturalistic areas, formal gardens, an arboretum, and a Victorian palm house. It is both a research and conservation center as well as a recreational park, drawing over 500,000 travellers annually. Families can explore the 50-acre space with its diverse plant species, rose and rock gardens, pond and river walks, organic fruit and vegetable gardens, and Ireland&#x27;s only indoor rainforest.</p>
+                        <p class="places-stage__coords">53.3725&deg; N / 6.2719&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="21"
+                    aria-labelledby="place-title-22"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_22.avif" alt="Stephen&#x27;s Green Shopping Centre" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">22</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-22" class="places-stage__title">Stephen&#x27;s Green Shopping Centre</h3>
+                        <p class="places-stage__text">Stephen&#x27;s Green Shopping Centre is a active indoor mall In Dublin&#x27;s prestigious shopping and cultural district. With over 100 specialty retailers and eateries, it offers a diverse shopping experience. From well-known brands like Dunnes Stores, Argos, Boots, and TK Maxx to unique boutiques such as Asha, Cactus, and Retro Nation, the center caters to a wide range of tastes.</p>
+                        <p class="places-stage__coords">53.3399&deg; N / 6.2618&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="22"
+                    aria-labelledby="place-title-23"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_23.avif" alt="The Gaiety Theatre" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">23</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-23" class="places-stage__title">The Gaiety Theatre</h3>
+                        <p class="places-stage__text">The Gaiety Theatre, a classical Victorian auditorium, has been faithfully providing top-quality musical and theatrical performances since its grand opening. As Dublin&#x27;s longest-running theater, it continues to be the city&#x27;s primary venue for musicals, operas, events, comedy, storytelling, and choreography. The theater aims to create a warm and welcoming atmosphere for all travellers.</p>
+                        <p class="places-stage__coords">53.3405&deg; N / 6.2616&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="23"
+                    aria-labelledby="place-title-24"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_24.avif" alt="Merrion Square Park" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">24</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-24" class="places-stage__title">Merrion Square Park</h3>
+                        <p class="places-stage__text">Merrion Square Park is a public park in Dublin, Ireland. Merrion Square Park is a public space in Dublin, known for its lush greenery and active floral and heather gardens. Surrounding the park are cobblestone streets lined with 18th-century brick townhouses, offering a glimpse into the area&#x27;s colonial and republican history. Paths, lawns, and shaded areas make up the main public facilities.</p>
+                        <p class="places-stage__coords">53.3397&deg; N / 6.2492&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="24"
+                    aria-labelledby="place-title-25"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_25.avif" alt="Poolbeg Lighthouse" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">25</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-25" class="places-stage__title">Poolbeg Lighthouse</h3>
+                        <p class="places-stage__text">Poolbeg Lighthouse is an red structure located in Dublin, accessible via a lengthy seawall that attracts sightseers, anglers, and cyclists. It&#x27;s a favorite spot for watching the sunrise with its panoramic view of the ocean. To get there, it&#x27;s suggested to rent a car on the GoCar app and drive early in the morning before dawn. The Great South Wall, once the world&#x27;s longest seawall, offers views of Dublin Bay and leads to Poolbeg Lighthouse.</p>
+                        <p class="places-stage__coords">53.3421&deg; N / 6.1513&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="25"
+                    aria-labelledby="place-title-26"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_26.avif" alt="The Purty Kitchen" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">26</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-26" class="places-stage__title">The Purty Kitchen</h3>
+                        <p class="places-stage__text">The Purty Kitchen is a historic gastropub located near the West Harbour in Dublin. Dating back to 1728, it exudes a warm and sophisticated vibe with its brick fireplaces and cosy alcoves. The large dining room offers a traditional yet elegant atmosphere for enjoying hearty local cuisine and great seafood dishes such as prawn and chorizo linguine, fish pie, Irish beef burgers, tempura plaice, and more.</p>
+                        <p class="places-stage__coords">53.2952&deg; N / 6.1481&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="26"
+                    aria-labelledby="place-title-27"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_27.avif" alt="Dun Laoghaire Sunday Market" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">27</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-27" class="places-stage__title">Dun Laoghaire Sunday Market</h3>
+                        <p class="places-stage__text">The Dun Laoghaire Sunday Market, also known as the Peoples Park Market, is a long-standing market open from 11am to 4pm every Sunday. Located in the People&#x27;s Park, it offers a wide variety of goods including fruits and vegetables, baked goods, artisan breads, handmade crafts, jewelry, local meats, Irish cheeses and plants, there are international food stalls offering diverse cuisines such as Korean noodles, Italian sausages and seafood.</p>
+                        <p class="places-stage__coords">53.2899&deg; N / 6.1285&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="27"
+                    aria-labelledby="place-title-28"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_28.avif" alt="East Pier Lighthouse" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">28</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-28" class="places-stage__title">East Pier Lighthouse</h3>
+                        <p class="places-stage__text">East Pier Lighthouse, also known as the East Pier Battery, is a spot in Dunleary with seasonal openings. The lighthouse is automated like others along the coast and offers views of the sea and city. Travellers can enjoy a leisurely walk from downtown Dunleary to reach this location, where they can relax on benches at the end of the pier.</p>
+                        <p class="places-stage__coords">53.3025&deg; N / 6.1270&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="28"
+                    aria-labelledby="place-title-29"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_29.avif" alt="Killiney Hill Park" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">29</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-29" class="places-stage__title">Killiney Hill Park</h3>
+                        <p class="places-stage__text">Killiney Hill Park is a public park in Dublin, Ireland. Killiney Hill Park, located just south of Dublin, is a popular recreational park offering 360-degree views of the surrounding area. From the capital city to the Wicklow Mountains and even the Irish Sea, travellers can enjoy vistas. Paths, lawns, and shaded areas make up the main public facilities.</p>
+                        <p class="places-stage__coords">53.2654&deg; N / 6.1112&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="29"
+                    aria-labelledby="place-title-30"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_30.avif" alt="Drimnagh Medieval Castle and Gardens" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">30</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-30" class="places-stage__title">Drimnagh Medieval Castle and Gardens</h3>
+                        <p class="places-stage__text">Drimnagh Medieval Castle and Gardens is a fortified historic site in Dublin, Ireland. Located Dublin, Drimnagh Medieval Castle is a example of Norman architecture that has stood the test of time for over 700 years. Once falling into neglect during the 1960s, Drimnagh was rediscovered and careful restored in the late &#x27;90s, opening its doors to travellers eager to explore its rich history. Walls, courtyards, or towers form the main visitor route when the grounds are open.</p>
+                        <p class="places-stage__coords">53.3249&deg; N / 6.3329&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="30"
+                    aria-labelledby="place-title-31"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_31.avif" alt="Howth Head Peak" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">31</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-31" class="places-stage__title">Howth Head Peak</h3>
+                        <p class="places-stage__text">Howth Head Peak is a visitor site in Dublin, Ireland. Howth Head Peak offers a bracing hiking trail with sea, cliff, and lighthouse views. The well-signed coastal walk leads to the peak, where travellers can enjoy views of Dublin Bay and South Dublin. The 12km route is quite taxing, requiring a decent level of fitness. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">53.3842&deg; N / 6.0468&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="31"
+                    aria-labelledby="place-title-32"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_32.avif" alt="Howth Cliff Walk (Green Route)" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">32</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-32" class="places-stage__title">Howth Cliff Walk (Green Route)</h3>
+                        <p class="places-stage__text">The Howth Cliff Walk (Green Route) offers a gentle clifftop hiking experience with views of the Baily Lighthouse, bays, beaches, and mountains. This walk is considered in Dublin, featuring easy-to-follow trails that showcase cinematic coastal scenes. The 1.5-hour route starts at Howth Summit car park and leads north to Howth Head Peak, providing views of Irelands Eye and Lambay Island.</p>
+                        <p class="places-stage__coords">53.3750&deg; N / 6.0492&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="32"
+                    aria-labelledby="place-title-33"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_33.avif" alt="Baily Lighthouse" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">33</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-33" class="places-stage__title">Baily Lighthouse</h3>
+                        <p class="places-stage__text">Baily Lighthouse is a visitor site in Dublin, Ireland. Baily Lighthouse, situated in the village of Howth, Ireland, is a must-visit attraction offering panoramic views and a glimpse into the area&#x27;s maritime heritage. Travellers can drive or take public transportation to Howth and explore the pier before began on a scenic hike to Baily Lighthouse. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">53.3616&deg; N / 6.0523&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="33"
+                    aria-labelledby="place-title-34"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_34.avif" alt="Howth Lighthouse" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">34</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-34" class="places-stage__title">Howth Lighthouse</h3>
+                        <p class="places-stage__text">Howth Lighthouse is a visitor site in Dublin, Ireland. Howth Lighthouse is a landmark in Dublin, Ireland, known for its setting and water views. It&#x27;s a popular destination for scenic walks, especially during dawn or sunset when the lighting is perfect for capturing incredible photographs. Accessible by DART or bus from the city center, it offers a leisurely pier walk along the seaside with cliffs as a backdrop. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">53.3934&deg; N / 6.0667&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="34"
+                    aria-labelledby="place-title-35"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_35.avif" alt="Phoenix Park" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">35</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-35" class="places-stage__title">Phoenix Park</h3>
+                        <p class="places-stage__text">Phoenix Park, known as &quot;Dublin&#x27;s playground,&quot; is a 708-hectare park that was originally a royal hunting ground in the 1660s before opening to the public in 1747. It has a large herd of fallow deer, a Zoological Gardens, Aras an Uachtarain, and a Victorian flower garden.</p>
+                        <p class="places-stage__coords">53.3559&deg; N / 6.3298&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="35"
+                    aria-labelledby="place-title-36"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_36.avif" alt="Ashtown Castle" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">36</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-36" class="places-stage__title">Ashtown Castle</h3>
+                        <p class="places-stage__text">Ashtown Castle, located in Phoenix Park, is a medieval stone house that was once hidden within a larger Georgian mansion. Dating back to the 1430s, the castle was discovered when the surrounding building was demolished in 1978. It has since been restored and now is part of the Phoenix Park travellers Centre. The travellers centre provides insight into the history of the castle and the park from 3500BC to present day.</p>
+                        <p class="places-stage__coords">53.3658&deg; N / 6.3306&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="36"
+                    aria-labelledby="place-title-37"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/dublin_37.avif" alt="Iveagh Gardens" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">37</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-37" class="places-stage__title">Iveagh Gardens</h3>
+                        <p class="places-stage__text">Iveagh Gardens is a public park in Dublin, Ireland. Records associated with the site include 1865, 1995. Once known as Coburg Gardens, it was revitalized by Sir Benjamin Guinness and later gifted to the Irish nation. Paths, lawns, and shaded areas make up the main public facilities.</p>
+                        <p class="places-stage__coords">53.3351&deg; N / 6.2610&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="site-footer">
         <div class="page-shell">
             <div class="site-footer__bar">
-                <a href="../../index.html" class="site-footer__brand" aria-label="Global Explorer home">
-                    <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
+                <a href="../../index.html" class="site-footer__mark" aria-label="Global Explorer home">
+                    <svg width="24" height="24" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
-                    <span class="site-footer__brand-name font-display">Global Explorer</span>
+                    Global Explorer
                 </a>
-                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides <span>Dublin: 37 places across Dublin.</span></p>
             </div>
         </div>
     </footer>
 
     <button id="scrollTopBtn" type="button" aria-label="Scroll to top">
-        <i class="ph ph-arrow-up" aria-hidden="true"></i>
+        <svg viewBox="0 0 24 24" width="1.15em" height="1.15em" aria-hidden="true" focusable="false">
+            <path d="M12 5.25 V18.75 M12 5.25 L6.75 10.5 M12 5.25 L17.25 10.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
     </button>
 
     <script defer src="../../assets/dev-destination-toggle.js"></script>
     <script defer src="../../assets/tg-page-chrome.js"></script>
     <script defer src="../../assets/tg-destination-map.js"></script>
+    <script defer src="../../assets/tg-destination-places.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const map = L.map('map').setView([53.349805, -6.260310], 14);
+            const map = L.map('map');
             L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
                 attribution: '&copy; Google Maps',
                 maxZoom: 20
             }).addTo(map);
-            const locations = [{"name": "St Patrick's Cathedral", "lat": 53.339515, "lng": -6.271477}, {"name": "Croke Park", "lat": 53.360748, "lng": -6.251134}, {"name": "Molly Malone Statue", "lat": 53.343741, "lng": -6.260972}, {"name": "Irish Whiskey Museum", "lat": 53.344198, "lng": -6.259525}, {"name": "Aviva Stadium", "lat": 53.334288, "lng": -6.227943}, {"name": "Dublin Zoo", "lat": 53.357223, "lng": -6.307109}, {"name": "Wellington Monument", "lat": 53.349036, "lng": -6.303101}, {"name": "The Book of Kells Experience", "lat": 53.343888, "lng": -6.256755}, {"name": "Trinity College Dublin", "lat": 53.343794, "lng": -6.254572}, {"name": "Ha'penny Bridge", "lat": 53.346335, "lng": -6.263103}, {"name": "O'Connell Monument", "lat": 53.34777, "lng": -6.259346}, {"name": "Abbey Theatre", "lat": 53.348399, "lng": -6.257178}, {"name": "Christ Church Cathedral", "lat": 53.343513, "lng": -6.27106}, {"name": "Dublin Castle", "lat": 53.342886, "lng": -6.267428}, {"name": "Jameson Distillery Bow St.", "lat": 53.348185, "lng": -6.277029}, {"name": "St Michan's Church of Ireland", "lat": 53.3475, "lng": -6.275148}, {"name": "The Hell Fire Club", "lat": 53.251904, "lng": -6.33005}, {"name": "EPIC The Irish Emigration Museum", "lat": 53.348312, "lng": -6.248179}, {"name": "The Convention Centre Dublin", "lat": 53.347862, "lng": -6.239581}, {"name": "Bord Gáis Energy Theatre", "lat": 53.344185, "lng": -6.240018}, {"name": "National Botanic Gardens", "lat": 53.372549, "lng": -6.271907}, {"name": "Stephen's Green Shopping Centre", "lat": 53.339864, "lng": -6.261774}, {"name": "The Gaiety Theatre", "lat": 53.340461, "lng": -6.261575}, {"name": "Merrion Square Park", "lat": 53.339672, "lng": -6.249213}, {"name": "Poolbeg Lighthouse", "lat": 53.342138, "lng": -6.15128}, {"name": "The Purty Kitchen", "lat": 53.29522, "lng": -6.148103}, {"name": "Dun Laoghaire Sunday Market", "lat": 53.289936, "lng": -6.128531}, {"name": "East Pier Lighthouse", "lat": 53.302454, "lng": -6.127029}, {"name": "Killiney Hill Park", "lat": 53.265379, "lng": -6.111242}, {"name": "Drimnagh Medieval Castle and Gardens", "lat": 53.324903, "lng": -6.332874}, {"name": "Howth Head Peak", "lat": 53.384194, "lng": -6.046762}, {"name": "Howth Cliff Walk (Green Route)", "lat": 53.37497, "lng": -6.049176}, {"name": "Baily Lighthouse", "lat": 53.361623, "lng": -6.052328}, {"name": "Howth Lighthouse", "lat": 53.393383, "lng": -6.066695}, {"name": "Phoenix Park", "lat": 53.355882, "lng": -6.329813}, {"name": "Ashtown Castle", "lat": 53.365774, "lng": -6.330591}, {"name": "Iveagh Gardens", "lat": 53.335138, "lng": -6.261034}];
+            const locations = Array.from(document.querySelectorAll('[data-place-option]')).map((el) => ({
+                name: el.dataset.placeName || '',
+                lat: Number(el.dataset.placeLat),
+                lng: Number(el.dataset.placeLng),
+            }));
             const customIcon = L.icon({
                 iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
                 iconSize: [32, 32],
@@ -627,14 +1640,45 @@
                 popupAnchor: [0, -32],
             });
             const destinationCenter = [53.349805, -6.260310];
-            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": true, "compactRegion": false, "denseUrban": false, "maxCenterLat": 0.097901, "maxCenterLng": 0.213548};
-            locations.forEach((location) => {
-                L.marker([location.lat, location.lng], { icon: customIcon })
+            const mapContext = {"spreadUrban": true};
+            const markers = locations.map((location) => {
+                const marker = L.marker([location.lat, location.lng], { icon: customIcon })
                     .addTo(map)
                     .bindPopup(`<strong>${location.name}</strong>`);
+                return marker;
             });
             window.TGDestinationMap?.fitToLocations(map, locations, destinationCenter, mapContext);
             window.TGDestinationMap?.bindMobileScrollGuard(map, 'map');
+            window.TGDestinationMap?.registerMarkers(map, markers);
+
+            const heroImage = document.querySelector('[data-destination-hero-image]');
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (heroImage && !reduceMotion) {
+                let framePending = false;
+                let scrolling = false;
+                let scrollEndTimer = 0;
+                const updateHeroPosition = () => {
+                    const offset = Math.min(window.scrollY, window.innerHeight * 1.15) * 0.075;
+                    heroImage.style.transform = `translate3d(0, ${offset}px, 0) scale(1.055)`;
+                    framePending = false;
+                };
+                window.addEventListener('scroll', () => {
+                    if (!scrolling) {
+                        scrolling = true;
+                        heroImage.style.willChange = 'transform';
+                    }
+                    window.clearTimeout(scrollEndTimer);
+                    scrollEndTimer = window.setTimeout(() => {
+                        scrolling = false;
+                        heroImage.style.willChange = 'auto';
+                    }, 150);
+                    if (!framePending) {
+                        window.requestAnimationFrame(updateHeroPosition);
+                        framePending = true;
+                    }
+                }, { passive: true });
+                updateHeroPosition();
+            }
         });
     </script>
 </body>

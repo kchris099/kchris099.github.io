@@ -6,269 +6,584 @@
     <meta name="description" content="Plan a visit to Shanghai with a concise history, interactive attractions map, prices, and curated highlights across the destination.">
     <meta name="theme-color" content="#121417">
     <title>Shanghai Guide | Global Explorer Guides</title>
-    <link rel="stylesheet" href="../../assets/tailwind.css">
-    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
     <link rel="stylesheet" href="../../assets/newindex-fonts.css">
     <link rel="stylesheet" href="../../assets/tg-theme.css">
     <link rel="stylesheet" href="../../assets/tg-site-chrome.css">
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
     <link rel="stylesheet" href="../../assets/tg-modern-polish.css">
+    <link rel="stylesheet" href="../../assets/tg-country-page.css">
+    <link rel="stylesheet" href="../../assets/tg-destination-page-v3.css">
     <script defer src="../../assets/lenis.min.js"></script>
     <script defer src="../../assets/tg-smooth-scroll.js"></script>
     <link rel="preload" as="image" href="images/shanghai_hero.avif" type="image/avif" fetchpriority="high">
     <script defer src="../../assets/leaflet/leaflet.js"></script>
 </head>
-<body class="tg-theme tg-destination-page tg-modern">
-    <header id="site-header" class="header-glass fixed top-0 left-0 right-0 z-50">
+<body class="tg-theme tg-modern tg-country-v2 tg-destination-v3">
+    <a class="skip-link" href="#main-content">Skip to Shanghai guide</a>
+    <header id="site-header" class="header-glass">
         <div class="page-shell header-glass__inner">
-            <a href="../../index.html" class="font-display site-brand" style="display:flex;align-items:center;gap:0.75rem;text-decoration:none;color:inherit;font-size:1.25rem;" aria-label="Global Explorer home">
+            <a href="../../index.html" class="site-brand" aria-label="Global Explorer home">
                 <span class="site-brand__mark" aria-hidden="true">
                     <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
-                        <circle cx="14" cy="14" r="2" fill="#E8B14F"/>
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
                 </span>
                 Global Explorer
             </a>
-            <nav class="header-glass__nav-mobile" aria-label="Mobile navigation">
-                <a href="../../index.html" class="header-glass__icon-link" aria-label="Home">
-                    <i class="ph ph-house" aria-hidden="true"></i>
-                </a>
-                <a href="china.html" class="header-glass__icon-link" aria-label="Back to China">
-                    <i class="ph ph-arrow-left" aria-hidden="true"></i>
-                </a>
-            </nav>
             <nav class="header-glass__nav" aria-label="Primary">
-                <a href="../../index.html" class="nav-link">Home</a>
-                <a href="shanghai.html" class="nav-link" aria-current="page">Shanghai</a>
+                <a href="#main-content" class="nav-link" aria-current="page">Shanghai</a>
+                <a href="#atlas" class="nav-link">Atlas</a>
+                <a href="#places" class="nav-link">Places</a>
                 <a href="china.html" class="nav-link">China</a>
-                <a href="../../index.html#map" class="nav-link">Atlas</a>
             </nav>
         </div>
     </header>
-    <main>
-        <div class="tg-destination-hero-zone">
-            <div class="tg-destination-hero" aria-hidden="true">
-                <div class="tg-destination-hero__image" style="background-image: url('images/shanghai_hero.avif')"></div>
-                <div class="tg-destination-hero__fade"></div>
-            </div>
-            <div class="page-shell tg-destination-hero-zone__content">
-        <nav class="tg-toolbar tg-toolbar--compact" aria-label="Breadcrumb">
-            <div class="tg-breadcrumb">
-                <img src="../../assets/flags/w40/cn.png" alt="" class="w-6 h-auto rounded-[2px]" aria-hidden="true">
-                <span>China</span>
-                <span class="tg-breadcrumb__sep" aria-hidden="true">&rsaquo;</span>
-                <span class="tg-breadcrumb__current">East China</span>
-            </div>
-        </nav>
+    <main id="main-content" tabindex="-1">
+        <section class="destination-hero" aria-labelledby="destination-title">
+            <img class="destination-hero__media" data-destination-hero-image src="images/shanghai_hero.avif" alt="" width="1600" height="1067" fetchpriority="high" decoding="sync">
+            <div class="destination-hero__shade" aria-hidden="true"></div>
+            <div class="page-shell destination-hero__content">
+                <button
+                    type="button"
+                    id="destination-active-toggle"
+                    class="country-active-toggle country-active-toggle--inactive"
+                    data-iso2="CN"
+                    data-slug="shanghai"
+                    data-active="false"
+                    data-interactive="true"
+                    aria-label="Toggle Shanghai visibility on China guide"
+                    aria-pressed="false"
+                >
+                    <img src="../../assets/flags/w80/cn.png" alt="" aria-hidden="true">
+                    <span class="country-toggle__copy" aria-hidden="true">
+                        <span class="country-toggle__label">Shanghai guide</span>
+                        <strong class="country-toggle__state"></strong>
+                    </span>
+                </button>
 
-        <header class="tg-page-header">
-            <button
-        type="button"
-        id="destination-active-toggle"
-        class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
-        data-iso2="CN"
-        data-slug="shanghai"
-        data-active="false"
-        data-interactive="true"
-        aria-label="Toggle Shanghai visibility on China guide"
-        aria-pressed="false"
-    >
-        <i class="ph ph-map-pin text-4xl pointer-events-none" aria-hidden="true"></i>
-    </button>
-            <span class="tg-page-header__eyebrow">Destination Guide — East China</span>
-            <h1 class="tg-page-title font-display">Explore <em>Shanghai</em></h1>
-            <div class="glass-card frosted-panel tg-panel">
-                <h2 class="tg-panel__title font-display">
-                    <i class="ph ph-scroll" aria-hidden="true"></i> A Brief History
-                </h2>
-                <p class="tg-panel__body">Rising from a humble fishing village, Shanghai was transformed by the 1842 Treaty of Nanking into a global treaty port. The foreign concessions brought rapid industrialization and architectural fusion, turning the city into the undisputed economic powerhouse of modern China. Museums, markets, and street plans in Shanghai still show layers from those periods.</p>
-            </div>
-        </header>
+                <div class="hero__route" aria-label="Destination route and coordinates">
+                    <span>China / East China</span>
+                    <span>31.2325&deg; N / 121.4825&deg; E</span>
+                </div>
 
-        <div class="tg-section__header tg-section__header--map-end">
-            <span class="tg-section__eyebrow">Map</span>
-            <h2 class="tg-section__title font-display">Attractions Map</h2>
-        </div>
-            </div>
-        </div>
-
-        <div class="page-shell tg-main tg-main--below-hero">
-        <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Shanghai attractions"></div>
-        <section class="tg-section">
-            <div class="tg-section__header">
-                <span class="tg-section__eyebrow">Highlights</span>
-                <h2 class="tg-section__title font-display">Top Sights &amp; Activities</h2>
-            </div>
-            <div class="tg-sights-list">
-            
-            <!-- 1. The Bund -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/shanghai_1.avif" alt="The Bund" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                <h1 id="destination-title" class="destination-hero__title" style="--destination-title-chars: 8">Shanghai</h1>
+                <div class="destination-hero__history">
+                    <p>The Treaty of Nanking in 1842 forced Shanghai open as a treaty port; foreign concessions then lined the Huangpu with banks and warehouses. That semi-colonial boom, not the earlier fishing villages, produced the Bund skyline and the industrial base that made Shanghai China&#x27;s commercial capital. Pudong&#x27;s towers opposite the Bund make the treaty-port waterfront a before-and-after skyline.</p>
+                </div>
+                <dl class="destination-hero__facts" aria-label="Shanghai guide facts">
+                    <div>
+                        <dt>Country</dt>
+                        <dd>China</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">The Bund</h3>
-                    <p class="tg-sight-card__text">The Bund is a historic 1,500-meter-long waterfront promenade in Shanghai, featuring a mix of modern and colonial buildings. The area has undergone gentrification, attracting luxury brands like MCM, Cartier, Prada, and Ralph Lauren to set up shop in former colonial banking and trading headquarters along the Huangpu River.</p>
-                </div>
-            </div>
-            <!-- 2. Dongfangmingzhu Pleasure Cruise Boat Wharf -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/shanghai_2.avif" alt="Dongfangmingzhu Pleasure Cruise Boat Wharf" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> CNY130
+                    <div>
+                        <dt>Region</dt>
+                        <dd>East China</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Dongfangmingzhu Pleasure Cruise Boat Wharf</h3>
-                    <p class="tg-sight-card__text">The Dongfangmingzhu Pleasure Cruise Boat Wharf is a major departure point for sightseeing cruises along the Huangpu River in Shanghai. Located near the well known Oriental Pearl Tower, the wharf has the chance to experience the striking contrast between the historic Bund architecture and the modern Pudong skyline from the water.</p>
-                </div>
-            </div>
-            <!-- 3. Oriental Pearl TV Tower -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/shanghai_3.avif" alt="Oriental Pearl TV Tower" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> CNY199
+                    <div>
+                        <dt>Places</dt>
+                        <dd>10</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Oriental Pearl TV Tower</h3>
-                    <p class="tg-sight-card__text">Oriental Pearl TV Tower is a visitor site in Shanghai, China. The Oriental Pearl TV Tower is a futuristic 468-meter tall structure in Shanghai, offering panoramic city views, a history museum, and a revolving restaurant. It is located in the Lujiazui area and is part of the modern Shanghai skyline. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 4. Shanghai Tower -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/shanghai_4.avif" alt="Shanghai Tower" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> CNY180
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Shanghai Tower</h3>
-                    <p class="tg-sight-card__text">The Shanghai Tower, soaring to an height of 632 meters, is a must-visit landmark in Shanghai. As visitors began on visitor adventure, start by heading to Lujiazui where experience one of the fastest elevators in the world that whisks visitors up to the 118th-floor observation deck at 546 meters.</p>
-                </div>
-            </div>
-            <!-- 5. Jin Mao Tower -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/shanghai_5.avif" alt="Jin Mao Tower" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> CNY120
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Jin Mao Tower</h3>
-                    <p class="tg-sight-card__text">Shanghai&#x27;s Jin Mao Tower is an 88-story skyscraper that has a striking design and houses various amenities such as restaurants, offices, and the Grand Hyatt hotel. This notable building stands at 420.5 meters tall and is known for its Skywalk, an enclosed observation deck located on the 88th floor that can accommodate over 1,000 visitors at once.</p>
-                </div>
-            </div>
-            <!-- 6. Jade Buddha Temple -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/shanghai_6.avif" alt="Jade Buddha Temple" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> CNY20
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Jade Buddha Temple</h3>
-                    <p class="tg-sight-card__text">The Jade Buddha Temple, located in the Anyuan Lu district of Shanghai, is a Buddhist temple known for its large and ornate jade Buddha sculptures. The temple was built between 1918 and 1928 to replace the original one from 1882. It houses two Shakyamuni statues brought from Burma by the monk Huigen.</p>
-                </div>
-            </div>
-            <!-- 7. Jing&#x27;an Temple -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/shanghai_7.avif" alt="Jing&#x27;an Temple" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> CNY50
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Jing&#x27;an Temple</h3>
-                    <p class="tg-sight-card__text">Jing&#x27;an Temple is a historic Buddhist complex located in the busy center of Shanghai. The temple, which comprises three main halls and houses a large sitting jade Buddha, has a unique experience against the backdrop of busy shopping malls and skyscrapers. The aroma of incense fills the air as visitors wander through the halls, where light incense bundles and make offerings at various shrines and statues.</p>
-                </div>
-            </div>
-            <!-- 8. Tianzifang -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/shanghai_8.avif" alt="Tianzifang" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Tianzifang</h3>
-                    <p class="tg-sight-card__text">Tianzifang is a visitor site in Shanghai, China. Tianzifang is a active arts and crafts enclave developed from a renovated traditional residential area in the French Concession of Shanghai. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 9. Yu Garden -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/shanghai_9.avif" alt="Yu Garden" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> CNY30
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Yu Garden</h3>
-                    <p class="tg-sight-card__text">Yu Garden is a public park in Shanghai, China. Construction and early use date to around 1577. Yu Garden, a 5-acre garden constructed in 1577, showcases Ming dynasty pavilions, ponds, rockeries, and arched bridges. The Deluxe Yu Garden View Rooms offer comfort and indulgence with views of the garden and old Shanghai town. Paths, lawns, and shaded areas make up the main public facilities.</p>
-                </div>
-            </div>
-            <!-- 10. Nanjing Road Pedestrian Street -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/shanghai_10.avif" alt="Nanjing Road Pedestrian Street" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Nanjing Road Pedestrian Street</h3>
-                    <p class="tg-sight-card__text">Nanjing Road Pedestrian Street is a visitor site in Shanghai, China. Nanjing Road Pedestrian Street is a known and busy stretch of road in Shanghai, China. It has earned the reputation as &#x27;the First Chinese Business Street&#x27; and is home to over 600 shops offering traditional, specialty, and famous brand stores. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
+                </dl>
             </div>
         </section>
-        </div>
+
+        <section id="atlas" class="destination-atlas" aria-labelledby="atlas-title">
+            <div class="page-shell destination-atlas__layout">
+                <div class="destination-atlas__brief">
+                    <p class="destination-atlas__index">City atlas</p>
+                    <h2 id="atlas-title">Plot the city.</h2>
+                    <p class="destination-atlas__copy">Zoom, pan, and open any marker to focus that place in the catalog below.</p>
+                    <dl class="destination-atlas__facts" aria-label="Map coverage">
+                        <div>
+                            <dt>Plotted</dt>
+                            <dd>10 places</dd>
+                        </div>
+                        <div>
+                            <dt>Center</dt>
+                            <dd>31.2325&deg; N<br>121.4825&deg; E</dd>
+                        </div>
+                    </dl>
+                </div>
+                <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Shanghai attractions"></div>
+            </div>
+        </section>
+
+        <section id="places" class="destination-places" aria-labelledby="places-title">
+            <div class="page-shell">
+                <div class="destination-chapter">
+                    <h2 id="places-title" class="destination-chapter__heading">10 ways into<br>Shanghai.</h2>
+                    <p class="destination-chapter__copy">Browse the index, open a location, and read the essentials without scrolling through a long catalog. Each entry contains its image, admission note, and contextual guide.</p>
+                </div>
+                <div class="places-explorer" data-places-explorer>
+                    <aside class="places-explorer__rail" aria-label="Place index">
+                        <div class="places-explorer__toolbar">
+                            <label class="places-explorer__filter-label" for="places-filter">Filter places</label>
+                            <input
+                                id="places-filter"
+                                class="places-explorer__filter"
+                                type="search"
+                                data-places-filter
+                                placeholder="Search by name"
+                                autocomplete="off"
+                            >
+                            <p class="places-explorer__meta"><strong data-places-count>10</strong> of 10 shown</p>
+                        </div>
+                        <ul class="places-explorer__list" role="listbox" aria-label="Places in Shanghai" data-places-list data-lenis-prevent data-tg-scroll-surface>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option is-active"
+                            role="option"
+                            id="place-option-1"
+                            data-place-option
+                            data-place-index="0"
+                            data-place-name="The Bund"
+                            data-place-lat="31.240261"
+                            data-place-lng="121.490577"
+                            aria-selected="true"
+                            tabindex="0"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">01</span>
+                            <span class="places-explorer__option-name">The Bund</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-2"
+                            data-place-option
+                            data-place-index="1"
+                            data-place-name="Dongfangmingzhu Pleasure Cruise Boat Wharf"
+                            data-place-lat="31.240716"
+                            data-place-lng="121.496792"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">02</span>
+                            <span class="places-explorer__option-name">Dongfangmingzhu Pleasure Cruise Boat Wharf</span>
+                            <span class="places-explorer__option-price">CNY130</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-3"
+                            data-place-option
+                            data-place-index="2"
+                            data-place-name="Oriental Pearl TV Tower"
+                            data-place-lat="31.239689"
+                            data-place-lng="121.499755"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">03</span>
+                            <span class="places-explorer__option-name">Oriental Pearl TV Tower</span>
+                            <span class="places-explorer__option-price">CNY199</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-4"
+                            data-place-option
+                            data-place-index="3"
+                            data-place-name="Shanghai Tower"
+                            data-place-lat="31.233518"
+                            data-place-lng="121.505618"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">04</span>
+                            <span class="places-explorer__option-name">Shanghai Tower</span>
+                            <span class="places-explorer__option-price">CNY180</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-5"
+                            data-place-option
+                            data-place-index="4"
+                            data-place-name="Jin Mao Tower"
+                            data-place-lat="31.235251"
+                            data-place-lng="121.505749"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">05</span>
+                            <span class="places-explorer__option-name">Jin Mao Tower</span>
+                            <span class="places-explorer__option-price">CNY120</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-6"
+                            data-place-option
+                            data-place-index="5"
+                            data-place-name="Jade Buddha Temple"
+                            data-place-lat="31.241347"
+                            data-place-lng="121.445121"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">06</span>
+                            <span class="places-explorer__option-name">Jade Buddha Temple</span>
+                            <span class="places-explorer__option-price">CNY20</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-7"
+                            data-place-option
+                            data-place-index="6"
+                            data-place-name="Jing&#x27;an Temple"
+                            data-place-lat="31.223519"
+                            data-place-lng="121.445284"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">07</span>
+                            <span class="places-explorer__option-name">Jing&#x27;an Temple</span>
+                            <span class="places-explorer__option-price">CNY50</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-8"
+                            data-place-option
+                            data-place-index="7"
+                            data-place-name="Tianzifang"
+                            data-place-lat="31.20881199999999"
+                            data-place-lng="121.468898"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">08</span>
+                            <span class="places-explorer__option-name">Tianzifang</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-9"
+                            data-place-option
+                            data-place-index="8"
+                            data-place-name="Yu Garden"
+                            data-place-lat="31.227236"
+                            data-place-lng="121.492094"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">09</span>
+                            <span class="places-explorer__option-name">Yu Garden</span>
+                            <span class="places-explorer__option-price">CNY30</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-10"
+                            data-place-option
+                            data-place-index="9"
+                            data-place-name="Nanjing Road Pedestrian Street"
+                            data-place-lat="31.234721"
+                            data-place-lng="121.474898"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">10</span>
+                            <span class="places-explorer__option-name">Nanjing Road Pedestrian Street</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                        </ul>
+                        <p class="places-explorer__empty" data-places-empty hidden>No places match that filter.</p>
+                    </aside>
+                    <div class="places-explorer__stage" data-places-stage>
+                    <nav class="places-stage__stepper" data-places-stepper aria-label="Browse places" hidden>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--prev" data-places-prev aria-label="Previous place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M14.75 5.25 L8.25 12 l6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M9.1 12 H17.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--next" data-places-next aria-label="Next place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M9.25 5.25 L15.75 12 l-6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M6.6 12 H14.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                    </nav>
+                <article
+                    class="places-stage__panel is-active"
+                    data-place-panel
+                    data-place-index="0"
+                    aria-labelledby="place-title-1"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/shanghai_1.avif" alt="The Bund" width="1200" height="750" loading="eager" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">01</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-1" class="places-stage__title">The Bund</h3>
+                        <p class="places-stage__text">The Bund is a historic 1,500-meter-long waterfront promenade in Shanghai, featuring a mix of modern and colonial buildings. The area has undergone gentrification, attracting luxury brands like MCM, Cartier, Prada, and Ralph Lauren to set up shop in former colonial banking and trading headquarters along the Huangpu River.</p>
+                        <p class="places-stage__coords">31.2403&deg; N / 121.4906&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="1"
+                    aria-labelledby="place-title-2"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/shanghai_2.avif" alt="Dongfangmingzhu Pleasure Cruise Boat Wharf" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">02</span>
+                            <span class="places-stage__admission"><span>Admission</span>CNY130</span>
+                        </p>
+                        <h3 id="place-title-2" class="places-stage__title">Dongfangmingzhu Pleasure Cruise Boat Wharf</h3>
+                        <p class="places-stage__text">The Dongfangmingzhu Pleasure Cruise Boat Wharf is a major departure point for sightseeing cruises along the Huangpu River in Shanghai. Located near the well known Oriental Pearl Tower, the wharf has the chance to experience the striking contrast between the historic Bund architecture and the modern Pudong skyline from the water.</p>
+                        <p class="places-stage__coords">31.2407&deg; N / 121.4968&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="2"
+                    aria-labelledby="place-title-3"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/shanghai_3.avif" alt="Oriental Pearl TV Tower" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">03</span>
+                            <span class="places-stage__admission"><span>Admission</span>CNY199</span>
+                        </p>
+                        <h3 id="place-title-3" class="places-stage__title">Oriental Pearl TV Tower</h3>
+                        <p class="places-stage__text">Oriental Pearl TV Tower is a visitor site in Shanghai, China. The Oriental Pearl TV Tower is a futuristic 468-meter tall structure in Shanghai, offering panoramic city views, a history museum, and a revolving restaurant. It is located in the Lujiazui area and is part of the modern Shanghai skyline. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">31.2397&deg; N / 121.4998&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="3"
+                    aria-labelledby="place-title-4"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/shanghai_4.avif" alt="Shanghai Tower" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">04</span>
+                            <span class="places-stage__admission"><span>Admission</span>CNY180</span>
+                        </p>
+                        <h3 id="place-title-4" class="places-stage__title">Shanghai Tower</h3>
+                        <p class="places-stage__text">The Shanghai Tower, soaring to an height of 632 meters, is a must-visit landmark in Shanghai. As visitors began on visitor adventure, start by heading to Lujiazui where experience one of the fastest elevators in the world that whisks visitors up to the 118th-floor observation deck at 546 meters.</p>
+                        <p class="places-stage__coords">31.2335&deg; N / 121.5056&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="4"
+                    aria-labelledby="place-title-5"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/shanghai_5.avif" alt="Jin Mao Tower" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">05</span>
+                            <span class="places-stage__admission"><span>Admission</span>CNY120</span>
+                        </p>
+                        <h3 id="place-title-5" class="places-stage__title">Jin Mao Tower</h3>
+                        <p class="places-stage__text">Shanghai&#x27;s Jin Mao Tower is an 88-story skyscraper that has a striking design and houses various amenities such as restaurants, offices, and the Grand Hyatt hotel. This notable building stands at 420.5 meters tall and is known for its Skywalk, an enclosed observation deck located on the 88th floor that can accommodate over 1,000 visitors at once.</p>
+                        <p class="places-stage__coords">31.2353&deg; N / 121.5057&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="5"
+                    aria-labelledby="place-title-6"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/shanghai_6.avif" alt="Jade Buddha Temple" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">06</span>
+                            <span class="places-stage__admission"><span>Admission</span>CNY20</span>
+                        </p>
+                        <h3 id="place-title-6" class="places-stage__title">Jade Buddha Temple</h3>
+                        <p class="places-stage__text">The Jade Buddha Temple, located in the Anyuan Lu district of Shanghai, is a Buddhist temple known for its large and ornate jade Buddha sculptures. The temple was built between 1918 and 1928 to replace the original one from 1882. It houses two Shakyamuni statues brought from Burma by the monk Huigen.</p>
+                        <p class="places-stage__coords">31.2413&deg; N / 121.4451&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="6"
+                    aria-labelledby="place-title-7"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/shanghai_7.avif" alt="Jing&#x27;an Temple" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">07</span>
+                            <span class="places-stage__admission"><span>Admission</span>CNY50</span>
+                        </p>
+                        <h3 id="place-title-7" class="places-stage__title">Jing&#x27;an Temple</h3>
+                        <p class="places-stage__text">Jing&#x27;an Temple is a historic Buddhist complex located in the busy center of Shanghai. The temple, which comprises three main halls and houses a large sitting jade Buddha, has a unique experience against the backdrop of busy shopping malls and skyscrapers. The aroma of incense fills the air as visitors wander through the halls, where light incense bundles and make offerings at various shrines and statues.</p>
+                        <p class="places-stage__coords">31.2235&deg; N / 121.4453&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="7"
+                    aria-labelledby="place-title-8"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/shanghai_8.avif" alt="Tianzifang" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">08</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-8" class="places-stage__title">Tianzifang</h3>
+                        <p class="places-stage__text">Tianzifang is a visitor site in Shanghai, China. Tianzifang is a active arts and crafts enclave developed from a renovated traditional residential area in the French Concession of Shanghai. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">31.2088&deg; N / 121.4689&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="8"
+                    aria-labelledby="place-title-9"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/shanghai_9.avif" alt="Yu Garden" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">09</span>
+                            <span class="places-stage__admission"><span>Admission</span>CNY30</span>
+                        </p>
+                        <h3 id="place-title-9" class="places-stage__title">Yu Garden</h3>
+                        <p class="places-stage__text">Yu Garden is a public park in Shanghai, China. Construction and early use date to around 1577. Yu Garden, a 5-acre garden constructed in 1577, showcases Ming dynasty pavilions, ponds, rockeries, and arched bridges. The Deluxe Yu Garden View Rooms offer comfort and indulgence with views of the garden and old Shanghai town. Paths, lawns, and shaded areas make up the main public facilities.</p>
+                        <p class="places-stage__coords">31.2272&deg; N / 121.4921&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="9"
+                    aria-labelledby="place-title-10"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/shanghai_10.avif" alt="Nanjing Road Pedestrian Street" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">10</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-10" class="places-stage__title">Nanjing Road Pedestrian Street</h3>
+                        <p class="places-stage__text">Nanjing Road Pedestrian Street is a visitor site in Shanghai, China. Nanjing Road Pedestrian Street is a known and busy stretch of road in Shanghai, China. It has earned the reputation as &#x27;the First Chinese Business Street&#x27; and is home to over 600 shops offering traditional, specialty, and famous brand stores. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">31.2347&deg; N / 121.4749&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="site-footer">
         <div class="page-shell">
             <div class="site-footer__bar">
-                <a href="../../index.html" class="site-footer__brand" aria-label="Global Explorer home">
-                    <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
+                <a href="../../index.html" class="site-footer__mark" aria-label="Global Explorer home">
+                    <svg width="24" height="24" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
-                    <span class="site-footer__brand-name font-display">Global Explorer</span>
+                    Global Explorer
                 </a>
-                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides <span>Shanghai: 10 places across East China.</span></p>
             </div>
         </div>
     </footer>
 
     <button id="scrollTopBtn" type="button" aria-label="Scroll to top">
-        <i class="ph ph-arrow-up" aria-hidden="true"></i>
+        <svg viewBox="0 0 24 24" width="1.15em" height="1.15em" aria-hidden="true" focusable="false">
+            <path d="M12 5.25 V18.75 M12 5.25 L6.75 10.5 M12 5.25 L17.25 10.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
     </button>
 
     <script defer src="../../assets/dev-destination-toggle.js"></script>
     <script defer src="../../assets/tg-page-chrome.js"></script>
     <script defer src="../../assets/tg-destination-map.js"></script>
+    <script defer src="../../assets/tg-destination-places.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const map = L.map('map').setView([31.232507, 121.482479], 14);
+            const map = L.map('map');
             L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
                 attribution: '&copy; Google Maps',
                 maxZoom: 20
             }).addTo(map);
-            const locations = [{"name": "The Bund", "lat": 31.240261, "lng": 121.490577}, {"name": "Dongfangmingzhu Pleasure Cruise Boat Wharf", "lat": 31.240716, "lng": 121.496792}, {"name": "Oriental Pearl TV Tower", "lat": 31.239689, "lng": 121.499755}, {"name": "Shanghai Tower", "lat": 31.233518, "lng": 121.505618}, {"name": "Jin Mao Tower", "lat": 31.235251, "lng": 121.505749}, {"name": "Jade Buddha Temple", "lat": 31.241347, "lng": 121.445121}, {"name": "Jing'an Temple", "lat": 31.223519, "lng": 121.445284}, {"name": "Tianzifang", "lat": 31.20881199999999, "lng": 121.468898}, {"name": "Yu Garden", "lat": 31.227236, "lng": 121.492094}, {"name": "Nanjing Road Pedestrian Street", "lat": 31.234721, "lng": 121.474898}];
+            const locations = Array.from(document.querySelectorAll('[data-place-option]')).map((el) => ({
+                name: el.dataset.placeName || '',
+                lat: Number(el.dataset.placeLat),
+                lng: Number(el.dataset.placeLng),
+            }));
             const customIcon = L.icon({
                 iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
                 iconSize: [32, 32],
@@ -276,14 +591,45 @@
                 popupAnchor: [0, -32],
             });
             const destinationCenter = [31.232507, 121.482479];
-            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.023695, "maxCenterLng": 0.037358};
-            locations.forEach((location) => {
-                L.marker([location.lat, location.lng], { icon: customIcon })
+            const mapContext = {"denseUrban": true};
+            const markers = locations.map((location) => {
+                const marker = L.marker([location.lat, location.lng], { icon: customIcon })
                     .addTo(map)
                     .bindPopup(`<strong>${location.name}</strong>`);
+                return marker;
             });
             window.TGDestinationMap?.fitToLocations(map, locations, destinationCenter, mapContext);
             window.TGDestinationMap?.bindMobileScrollGuard(map, 'map');
+            window.TGDestinationMap?.registerMarkers(map, markers);
+
+            const heroImage = document.querySelector('[data-destination-hero-image]');
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (heroImage && !reduceMotion) {
+                let framePending = false;
+                let scrolling = false;
+                let scrollEndTimer = 0;
+                const updateHeroPosition = () => {
+                    const offset = Math.min(window.scrollY, window.innerHeight * 1.15) * 0.075;
+                    heroImage.style.transform = `translate3d(0, ${offset}px, 0) scale(1.055)`;
+                    framePending = false;
+                };
+                window.addEventListener('scroll', () => {
+                    if (!scrolling) {
+                        scrolling = true;
+                        heroImage.style.willChange = 'transform';
+                    }
+                    window.clearTimeout(scrollEndTimer);
+                    scrollEndTimer = window.setTimeout(() => {
+                        scrolling = false;
+                        heroImage.style.willChange = 'auto';
+                    }, 150);
+                    if (!framePending) {
+                        window.requestAnimationFrame(updateHeroPosition);
+                        framePending = true;
+                    }
+                }, { passive: true });
+                updateHeroPosition();
+            }
         });
     </script>
 </body>

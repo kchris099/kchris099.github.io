@@ -6,646 +6,1715 @@
     <meta name="description" content="Plan a visit to Madrid with a concise history, interactive attractions map, prices, and curated highlights across the destination.">
     <meta name="theme-color" content="#121417">
     <title>Madrid Guide | Global Explorer Guides</title>
-    <link rel="stylesheet" href="../../assets/tailwind.css">
-    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
     <link rel="stylesheet" href="../../assets/newindex-fonts.css">
     <link rel="stylesheet" href="../../assets/tg-theme.css">
     <link rel="stylesheet" href="../../assets/tg-site-chrome.css">
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
     <link rel="stylesheet" href="../../assets/tg-modern-polish.css">
+    <link rel="stylesheet" href="../../assets/tg-country-page.css">
+    <link rel="stylesheet" href="../../assets/tg-destination-page-v3.css">
     <script defer src="../../assets/lenis.min.js"></script>
     <script defer src="../../assets/tg-smooth-scroll.js"></script>
     <link rel="preload" as="image" href="images/madrid_hero.avif" type="image/avif" fetchpriority="high">
     <script defer src="../../assets/leaflet/leaflet.js"></script>
 </head>
-<body class="tg-theme tg-destination-page tg-modern">
-    <header id="site-header" class="header-glass fixed top-0 left-0 right-0 z-50">
+<body class="tg-theme tg-modern tg-country-v2 tg-destination-v3">
+    <a class="skip-link" href="#main-content">Skip to Madrid guide</a>
+    <header id="site-header" class="header-glass">
         <div class="page-shell header-glass__inner">
-            <a href="../../index.html" class="font-display site-brand" style="display:flex;align-items:center;gap:0.75rem;text-decoration:none;color:inherit;font-size:1.25rem;" aria-label="Global Explorer home">
+            <a href="../../index.html" class="site-brand" aria-label="Global Explorer home">
                 <span class="site-brand__mark" aria-hidden="true">
                     <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
-                        <circle cx="14" cy="14" r="2" fill="#E8B14F"/>
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
                 </span>
                 Global Explorer
             </a>
-            <nav class="header-glass__nav-mobile" aria-label="Mobile navigation">
-                <a href="../../index.html" class="header-glass__icon-link" aria-label="Home">
-                    <i class="ph ph-house" aria-hidden="true"></i>
-                </a>
-                <a href="spain.html" class="header-glass__icon-link" aria-label="Back to Spain">
-                    <i class="ph ph-arrow-left" aria-hidden="true"></i>
-                </a>
-            </nav>
             <nav class="header-glass__nav" aria-label="Primary">
-                <a href="../../index.html" class="nav-link">Home</a>
-                <a href="madrid.html" class="nav-link" aria-current="page">Madrid</a>
+                <a href="#main-content" class="nav-link" aria-current="page">Madrid</a>
+                <a href="#atlas" class="nav-link">Atlas</a>
+                <a href="#places" class="nav-link">Places</a>
                 <a href="spain.html" class="nav-link">Spain</a>
-                <a href="../../index.html#map" class="nav-link">Atlas</a>
             </nav>
         </div>
     </header>
-    <main>
-        <div class="tg-destination-hero-zone">
-            <div class="tg-destination-hero" aria-hidden="true">
-                <div class="tg-destination-hero__image" style="background-image: url('images/madrid_hero.avif')"></div>
-                <div class="tg-destination-hero__fade"></div>
-            </div>
-            <div class="page-shell tg-destination-hero-zone__content">
-        <nav class="tg-toolbar tg-toolbar--compact" aria-label="Breadcrumb">
-            <div class="tg-breadcrumb">
-                <img src="../../assets/flags/w40/es.png" alt="" class="w-6 h-auto rounded-[2px]" aria-hidden="true">
-                <span>Spain</span>
-                <span class="tg-breadcrumb__sep" aria-hidden="true">&rsaquo;</span>
-                <span class="tg-breadcrumb__current">Central Spain</span>
-            </div>
-        </nav>
+    <main id="main-content" tabindex="-1">
+        <section class="destination-hero" aria-labelledby="destination-title">
+            <img class="destination-hero__media" data-destination-hero-image src="images/madrid_hero.avif" alt="" width="1600" height="1067" fetchpriority="high" decoding="sync">
+            <div class="destination-hero__shade" aria-hidden="true"></div>
+            <div class="page-shell destination-hero__content">
+                <button
+                    type="button"
+                    id="destination-active-toggle"
+                    class="country-active-toggle country-active-toggle--active"
+                    data-iso2="ES"
+                    data-slug="madrid"
+                    data-active="true"
+                    data-interactive="true"
+                    aria-label="Toggle Madrid visibility on Spain guide"
+                    aria-pressed="true"
+                >
+                    <img src="../../assets/flags/w80/es.png" alt="" aria-hidden="true">
+                    <span class="country-toggle__copy" aria-hidden="true">
+                        <span class="country-toggle__label">Madrid guide</span>
+                        <strong class="country-toggle__state"></strong>
+                    </span>
+                </button>
 
-        <header class="tg-page-header">
-            <button
-        type="button"
-        id="destination-active-toggle"
-        class="country-active-toggle country-active-toggle--active country-active-toggle--readonly"
-        data-iso2="ES"
-        data-slug="madrid"
-        data-active="true"
-        data-interactive="true"
-        aria-label="Toggle Madrid visibility on Spain guide"
-        aria-pressed="true"
-    >
-        <i class="ph ph-map-pin text-4xl pointer-events-none" aria-hidden="true"></i>
-    </button>
-            <span class="tg-page-header__eyebrow">Destination Guide — Central Spain</span>
-            <h1 class="tg-page-title font-display">Explore <em>Madrid</em></h1>
-            <div class="glass-card frosted-panel tg-panel">
-                <h2 class="tg-panel__title font-display">
-                    <i class="ph ph-scroll" aria-hidden="true"></i> A Brief History
-                </h2>
-                <p class="tg-panel__body">Madrid became the capital of Spain in 1561 under Philip II, replacing Valladolid. The Royal Palace, Plaza Mayor, and Prado Museum expanded through the Bourbon monarchy and 19th-century reforms. The city remained the seat of government through the Civil War and Franco era. Retiro Park and Gran Vía boulevard date from the late 19th and early 20th centuries. Today it hosts national ministries and museums.</p>
-            </div>
-        </header>
+                <div class="hero__route" aria-label="Destination route and coordinates">
+                    <span>Spain / Central Spain</span>
+                    <span>40.4187&deg; N / 3.7007&deg; W</span>
+                </div>
 
-        <div class="tg-section__header tg-section__header--map-end">
-            <span class="tg-section__eyebrow">Map</span>
-            <h2 class="tg-section__title font-display">Attractions Map</h2>
-        </div>
-            </div>
-        </div>
-
-        <div class="page-shell tg-main tg-main--below-hero">
-        <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Madrid attractions"></div>
-        <section class="tg-section">
-            <div class="tg-section__header">
-                <span class="tg-section__eyebrow">Highlights</span>
-                <h2 class="tg-section__title font-display">Top Sights &amp; Activities</h2>
-            </div>
-            <div class="tg-sights-list">
-            
-            <!-- 1. Plaza Mayor -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_1.avif" alt="Plaza Mayor" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                <h1 id="destination-title" class="destination-hero__title" style="--destination-title-chars: 6">Madrid</h1>
+                <div class="destination-hero__history">
+                    <p>Madrid became the capital of Spain in 1561 under Philip II, replacing Valladolid. The Royal Palace, Plaza Mayor, and Prado Museum expanded through the Bourbon monarchy and 19th-century reforms. The city remained the seat of government through the Civil War and Franco era. Retiro Park and Gran Vía boulevard date from the late 19th and early 20th centuries. Today it hosts national ministries and museums.</p>
+                </div>
+                <dl class="destination-hero__facts" aria-label="Madrid guide facts">
+                    <div>
+                        <dt>Country</dt>
+                        <dd>Spain</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Plaza Mayor</h3>
-                    <p class="tg-sight-card__text">Plaza Mayor, also known as Madrid de Los Austrias, is a public square in Madrid, Spain. Records associated with the site include 1516, 1700. Plaza Mayor, also known as Madrid de Los Austrias, is a historic square in Madrid that served as the center of power for the Habsburgs from 1516 to 1700. Open pavement and surrounding facades define the visitor setting.</p>
-                </div>
-            </div>
-            <!-- 2. Puerta del Sol -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_2.avif" alt="Puerta del Sol" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                    <div>
+                        <dt>Region</dt>
+                        <dd>Central Spain</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Puerta del Sol</h3>
-                    <p class="tg-sight-card__text">The Puerta del Sol is a public square in Madrid, one of the known and busiest places in the city. This is the centre of the radial network of Spanish roads. The square also contains the famous clock whose bells mark the traditional eating of the Twelve Grapes and the beginning of a new year.</p>
-                </div>
-            </div>
-            <!-- 3. El Oso y el Madrono -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_3.avif" alt="El Oso y el Madrono" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                    <div>
+                        <dt>Places</dt>
+                        <dd>39</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">El Oso y el Madrono</h3>
-                    <p class="tg-sight-card__text">El Oso y el Madrono is a visitor site in Madrid. The Statue of the Bear and the Strawberry Tree is a sculpture from the second half of the 20th century, situated in the Spanish capital, Madrid. It represents the coat of arms of Madrid and is found on the east side of the Puerta del Sol, between Calle de Alcalá and Carrera de San Jerónimo, in the historical centre of the capital.</p>
-                </div>
-            </div>
-            <!-- 4. Mirador de El Corte Inglés de Callao -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_4.avif" alt="Mirador de El Corte Inglés de Callao" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Mirador de El Corte Inglés de Callao</h3>
-                    <p class="tg-sight-card__text">Mirador de El Corte Inglés de Callao is a visitor site in Madrid, Spain. The main structures and grounds are the principal points of interest. Local maps mark Mirador de El Corte Inglés de Callao inside Madrid. Approaches are signed from nearby streets in Madrid, Spain.</p>
-                </div>
-            </div>
-            <!-- 5. Edificio Carrión -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_5.avif" alt="Edificio Carrión" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Edificio Carrión</h3>
-                    <p class="tg-sight-card__text">Edificio Carrión is a visitor site in Madrid. The Gran Vía is a street in central Madrid, Spain. It leads from Calle de Alcalá, close to Plaza de Cibeles, to Plaza de España. The street, sometimes referred to as the &quot;Spanish Broadway&quot;, is one of the city&#x27;s most important shopping areas, with a large number of hotels and large movie theatres.</p>
-                </div>
-            </div>
-            <!-- 6. El Retiro Park -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_6.avif" alt="El Retiro Park" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">El Retiro Park</h3>
-                    <p class="tg-sight-card__text">The Retiro Park, also known as Buen Retiro Park or simply El Retiro, is one of the largest city parks in Madrid, Spain. The park belonged to the Spanish monarchy until 1868, when it became a public park following the Glorious Revolution. The park is located at the edge of the city centre, near both the Alcalá Gate and the Museo del Prado, and covers 1.4 km2.</p>
-                </div>
-            </div>
-            <!-- 7. Museo Nacional del Prado -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_7.avif" alt="Museo Nacional del Prado" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €15
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Museo Nacional del Prado</h3>
-                    <p class="tg-sight-card__text">The Museo del Prado, officially known as Museo Nacional del Prado, is the main Spanish national art museum, located in central Madrid. It houses collections of European art, dating from the 12th century to the early 20th century, based on the former Spanish royal collection, and the single collection of Spanish art. Founded as a museum of paintings and sculpture in 1819, it also contains important collections of other types of works.</p>
-                </div>
-            </div>
-            <!-- 8. Museo Nacional Centro de Arte Reina Sofía -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_8.avif" alt="Museo Nacional Centro de Arte Reina Sofía" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €12
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Museo Nacional Centro de Arte Reina Sofía</h3>
-                    <p class="tg-sight-card__text">The Museo Nacional Centro de Arte Reina Sofía is Spain&#x27;s national museum of 20th-century art. The museum was officially inaugurated on September 10, 1992, and is named for Queen Sofía. It is located in Madrid, near the Atocha train and metro stations, at the southern end of what is known as the Golden Triangle of Art.</p>
-                </div>
-            </div>
-            <!-- 9. Palacio Real de Madrid -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_9.avif" alt="Palacio Real de Madrid" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €18
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Palacio Real de Madrid</h3>
-                    <p class="tg-sight-card__text">The Royal Palace of Madrid is the official residence of the Spanish royal family and is used primarily for state ceremonies. With over 135,000 m2 of floor space and 3,418 rooms, the Royal Palace of Madrid is the largest palace in Western Europe, the largest royal palace in Europe, and among the largest palaces in the world. The palace is located on Bailén Street in the western part of central Madrid, east of the Manzanares River, and is accessible from Ópera metro station.</p>
-                </div>
-            </div>
-            <!-- 10. Mirador de la Cornisa del Palacio Real -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_10.avif" alt="Mirador de la Cornisa del Palacio Real" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Mirador de la Cornisa del Palacio Real</h3>
-                    <p class="tg-sight-card__text">Mirador de la Cornisa del Palacio Real is a viewpoint in Madrid, Spain. A beautifully sweeping, scenic, elevated viewing terrace spectacularly wrapping directly around the grand royal palace. Approach paths are usually short walks from a road or parking area.</p>
-                </div>
-            </div>
-            <!-- 11. Temple of Debod -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_11.avif" alt="Temple of Debod" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Temple of Debod</h3>
-                    <p class="tg-sight-card__text">The Temple of Debod is an ancient Nubian temple currently located in Madrid, Spain. The temple was originally erected in the early 2nd century BC 15 km south of Aswan, Egypt. The Egyptian government donated the temple to Spain in 1968 as a sign of gratitude for their participation in the International Campaign to Save the Monuments of Nubia.</p>
-                </div>
-            </div>
-            <!-- 12. Bernabeu -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_12.avif" alt="Bernabeu" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €25
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Bernabeu</h3>
-                    <p class="tg-sight-card__text">Bernabeu is a visitor site in Madrid. The Bernabéu also known as Santiago Bernabéu Stadium, is a retractable roof football stadium in El Viso, district of Chamartín, Madrid, Spain. With a seating capacity of 83,186 following its extensive renovation completed in late 2024, the stadium has the second-largest seating capacity for a football stadium in Spain, behind Camp Nou in Barcelona. It has been the home stadium of Real Madrid since its completion in 1947.</p>
-                </div>
-            </div>
-            <!-- 13. Jardín del Capricho -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_13.avif" alt="Jardín del Capricho" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Jardín del Capricho</h3>
-                    <p class="tg-sight-card__text">Jardín del Capricho is a visitor site in Madrid, Spain. El Capricho is a park in Madrid. The word capricho is Spanish for &quot;whim&quot; or &quot;caprice&quot;. The main structures and grounds are the principal points of interest. Local maps mark Jardín del Capricho inside Madrid.</p>
-                </div>
-            </div>
-            <!-- 14. Las Ventas Bullring -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_14.avif" alt="Las Ventas Bullring" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €16
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Las Ventas Bullring</h3>
-                    <p class="tg-sight-card__text">Las Ventas Bullring, also known as Plaza de Toros Monumental de Las Ventas, is a historic bullfighting arena located east of central Madrid. Built in the 1920s in neo-Mudéjar style, it is considered the most important and prestigious bullring in the world. The venue hosts not only bullfights but also concerts and events. Travellers can explore the fine Museo Taurino to gain insight into this Spanish tradition or simply admire the architecture.</p>
-                </div>
-            </div>
-            <!-- 15. Mercado de San Miguel -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_15.avif" alt="Mercado de San Miguel" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Mercado de San Miguel</h3>
-                    <p class="tg-sight-card__text">Mercado de San Miguel is a visitor site in Madrid, Spain. Construction and early use date to around 1916. Mercado de San Miguel, one of the oldest covered markets in Madrid, is a historic gourmet venue that offers a rich culinary experience. Mercado de San Miguel remains part of the public visitor circuit in Madrid.</p>
-                </div>
-            </div>
-            <!-- 16. Teatro Real -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_16.avif" alt="Teatro Real" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €10
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Teatro Real</h3>
-                    <p class="tg-sight-card__text">Teatro Real, also known as El Real, is a prestigious opera house in central Madrid near the Palacio Real. Established in 1850 and extensively remodeled in the late 20th century, it offers a grand design with an auditorium that seats around 1,740 people. The venue hosts an program of its own and international productions, classical music concerts, and dance performances.</p>
-                </div>
-            </div>
-            <!-- 17. Tablao Flamenco Torres Bermejas -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_17.avif" alt="Tablao Flamenco Torres Bermejas" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €28
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Tablao Flamenco Torres Bermejas</h3>
-                    <p class="tg-sight-card__text">Tablao Flamenco Torres Bermejas is a known venue in Madrid that has been showing live flamenco performances since 1960. The establishment has hosted some of the Flamenco artists in Spain and attracted famous spectators, including members of Spanish nobility and television icons.</p>
-                </div>
-            </div>
-            <!-- 18. Hammam Al Ándalus Plaza Mayor -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_19.avif" alt="Hammam Al Ándalus Plaza Mayor" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €70
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Hammam Al Ándalus Plaza Mayor</h3>
-                    <p class="tg-sight-card__text">Hammam Al Ándalus Plaza Mayor is a public square in Madrid, Spain. Hammam Al Ándalus is a luxurious thermal spa in Madrid, offering ornate bathing areas and massages with essential oils and hot stone beds. The converted cellars house traditional Arab baths with a water circuit taking travellers through different temperature pools. Open pavement and surrounding facades define the visitor setting.</p>
-                </div>
-            </div>
-            <!-- 19. Cibeles Fountain -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_20.avif" alt="Cibeles Fountain" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Cibeles Fountain</h3>
-                    <p class="tg-sight-card__text">Cibeles Fountain, also known as Fuente de Cibeles, is a visitor site in Madrid, Spain. The fountain represents the Roman goddess of fertility and nature holding the key to the city in her left hand. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 20. Linares Palace -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_21.avif" alt="Linares Palace" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €10
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Linares Palace</h3>
-                    <p class="tg-sight-card__text">Linares Palace, located in the Plaza de Cibeles, is a historic 19th-century palace with an ornate interior and a rich history. Built as the residence of the Marquises of Linares, it is now home to Casa de America and hosts various exhibitions and events. The palace is shrouded in mystery and ghost stories, adding to its allure. Guided tours are available on weekends, offering insights into the palace&#x27;s history and legends.</p>
-                </div>
-            </div>
-            <!-- 21. Plaza de España -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_22.avif" alt="Plaza de España" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Plaza de España</h3>
-                    <p class="tg-sight-card__text">Plaza de España is a square in Madrid, Spain. Plaza de España is a public square in Madrid, Spain framed by civic and commercial buildings. Open pavement and surrounding facades frame the square. Local maps mark Plaza de España inside Madrid. Approaches are signed from nearby streets in Madrid, Spain.</p>
-                </div>
-            </div>
-            <!-- 22. Puerta de Alcalá -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_23.avif" alt="Puerta de Alcalá" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Puerta de Alcalá</h3>
-                    <p class="tg-sight-card__text">Puerta de Alcalá is a triumphal arch located near Parque del Buen Retiro, adorned with elegant sculptures and stone carvings. It is one of the ancient gates that provided access to the city and is considered the precursor of famous triumphal arches in other cities. Commissioned by King Charles III in the late 18th century, this neoclassical monument was designed by Italian architect Francesco Sabatini.</p>
-                </div>
-            </div>
-            <!-- 23. Church of Saint Manuel and Saint Benedict -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_24.avif" alt="Church of Saint Manuel and Saint Benedict" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Church of Saint Manuel and Saint Benedict</h3>
-                    <p class="tg-sight-card__text">The parish Church of Saint Manuel and Saint Benedict is a building built in Neo-Byzantine style. It is easy to recognize its tower and red copper dome, and its interior is rich in mosaics. The church is well worth visiting for its architecture alone, but it&#x27;s also a peaceful place where reflect on the beauty of religion.</p>
-                </div>
-            </div>
-            <!-- 24. Great Pond of El Retiro -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_25.avif" alt="Great Pond of El Retiro" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Great Pond of El Retiro</h3>
-                    <p class="tg-sight-card__text">Great Pond of El Retiro is a visitor site in Madrid, Spain. The main structures and grounds are the principal points of interest. Local maps mark Great Pond of El Retiro inside Madrid. Approaches are signed from nearby streets in Madrid, Spain. Posted signs mark the main approach within Madrid.</p>
-                </div>
-            </div>
-            <!-- 25. Palacio de Cristal -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_26.avif" alt="Palacio de Cristal" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Palacio de Cristal</h3>
-                    <p class="tg-sight-card__text">Palacio de Cristal, also known as the Crystal Palace, is a attraction In Retiro Park in Madrid. This and photogenic spot was inspired by London&#x27;s Crystal Palace and is a conservatory made entirely of glass. Built in 1887, it was originally designed to showcase native plants and objects from the Philippines during Spain&#x27;s colonial period.</p>
-                </div>
-            </div>
-            <!-- 26. Rose Garden -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_27.avif" alt="Rose Garden" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Rose Garden</h3>
-                    <p class="tg-sight-card__text">Rose Garden is a public park in Madrid, Spain. The garden comes alive in May when the roses are in full bloom, but it&#x27;s enchanting any time of year. Paths, lawns, and shaded areas make up the main public facilities. Rose Garden remains part of the public visitor circuit in Madrid.</p>
-                </div>
-            </div>
-            <!-- 27. Puente de Toledo -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_28.avif" alt="Puente de Toledo" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Puente de Toledo</h3>
-                    <p class="tg-sight-card__text">Toledo Bridge, also known as Puente de Toledo, is a restored baroque-style pedestrian bridge that crosses the Manzanares River in Madrid. Constructed between 1719 and 1724 by Pedro de Ribera, this 180-meter-long bridge offers views of the surrounding area. The bridge is particularly enchanting at sunset, providing a romantic and setting for reflection and relaxation.</p>
-                </div>
-            </div>
-            <!-- 28. Historic Segovia Bridge -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_29.avif" alt="Historic Segovia Bridge" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Historic Segovia Bridge</h3>
-                    <p class="tg-sight-card__text">The Segovia Bridge, dating back to the 1580s, is a historic landmark in Madrid. It offers views of the river and surrounding attractions such as La Almudena Cathedral, the Royal Palace, and Plaza de Espanas. The bridge is located near the ancient city of Segovia, known for its Roman aqueduct and UNESCO World Heritage Site status. Travellers can enjoy picnics in the adjacent riverfront park with lush greenery and fountains.</p>
-                </div>
-            </div>
-            <!-- 29. Gran Vía -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_30.avif" alt="Gran Vía" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Gran Vía</h3>
-                    <p class="tg-sight-card__text">Gran Vía is a visitor site in Madrid, Spain. Gran Vía is a must-visit avenue in Madrid, for its early-20th-century architecture and atmosphere. Along Gran Vía, find an array of retail shops, restaurants, and lively bars that cater to all tastes. The main structures and grounds are the principal points of interest.</p>
-                </div>
-            </div>
-            <!-- 30. Iglesia de San Jerónimo el Real -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_31.avif" alt="Iglesia de San Jerónimo el Real" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Iglesia de San Jerónimo el Real</h3>
-                    <p class="tg-sight-card__text">The Church of San Jerónimo el Real, also known as Los Jeronimos, is a historic 16th-century church located near the Prado Museum in Madrid. Originally a monastery ordered by Queen Isabella the Catholic, it has witnessed significant events in Spanish history. The architecture reflects Elizabethan Gothic style with side chapels and a baroque cloister. Despite undergoing various changes over many years, it remains one of the few late Gothic buildings in Madrid.</p>
-                </div>
-            </div>
-            <!-- 31. Neptune Fountain -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_32.avif" alt="Neptune Fountain" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Neptune Fountain</h3>
-                    <p class="tg-sight-card__text">Neptune Fountain is a visitor site in Madrid, Spain. It opened or was completed around 1782. Designed by architect Ventura Rodriguez and completed in 1782, this fountain has Neptune himself, majestically seated on a shell-shaped chariot drawn by two powerful sea horses. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 32. Real Jardín Botánico -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_33.avif" alt="Real Jardín Botánico" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €4
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Real Jardín Botánico</h3>
-                    <p class="tg-sight-card__text">Real Jardín Botánico, also known as the Royal Botanical Garden, is a visitor site in Madrid, Spain. Real Jardín Botánico, also known as the Royal Botanical Garden, is a historic botanical garden located next to the Prado Museum in Madrid. The garden includes various themed zones such as a Mediterranean garden, tropical garden, and medicinal plant garden. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 33. Casa de Campo -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_34.avif" alt="Casa de Campo" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Casa de Campo</h3>
-                    <p class="tg-sight-card__text">Casa de Campo is a visitor site in Madrid, Spain. The main structures and grounds are the principal points of interest. Local maps mark Casa de Campo inside Madrid. Approaches are signed from nearby streets in Madrid, Spain. Posted signs mark the main approach within Madrid.</p>
-                </div>
-            </div>
-            <!-- 34. Zoo Aquarium de Madrid -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_35.avif" alt="Zoo Aquarium de Madrid" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €20
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Zoo Aquarium de Madrid</h3>
-                    <p class="tg-sight-card__text">Zoo Aquarium de Madrid is a vast facility featuring animals in their natural habitats, a dolphinarium, and a shark tank. It also includes a petting zoo for kids, travellers can enjoy various attractions within its grounds such as the Parque de Atracciones amusement park and Lago, a location for lunch. The zoo can be accessed via cable cars from Parque Oeste or by taking the metro to Principe Pio and walking across the river.</p>
-                </div>
-            </div>
-            <!-- 35. Cine Doré -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_36.avif" alt="Cine Doré" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €3
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Cine Doré</h3>
-                    <p class="tg-sight-card__text">The Cine Doré is an old movie theater in Madrid that specializes in classic and new films. It is home to the Filmoteca Espanola, a ministry of culture institution that restores and preserves old films. This cinema has been featured in a few Pedro Almodovar movies. It&#x27;s always open and offers great value for visitor money - just 2.50 a ticket!</p>
-                </div>
-            </div>
-            <!-- 36. Moncloa&#x27;s Lighthouse -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_37.avif" alt="Moncloa&#x27;s Lighthouse" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €4
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Moncloa&#x27;s Lighthouse</h3>
-                    <p class="tg-sight-card__text">Moncloa&#x27;s Lighthouse is a visitor site in Madrid, Spain. Construction and early use date to around 1992. Moncloa&#x27;s Lighthouse, built in 1992, was a former transmission tower that now has an observation deck and information panels. At 110 meters high, the lighthouse offers a 360-degree panoramic view of Madrid. Travellers can access the observation deck for a nominal fee and enjoy the cityscape. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 37. Royal Basilica of Saint Francis the Great -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_38.avif" alt="Royal Basilica of Saint Francis the Great" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €6
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Royal Basilica of Saint Francis the Great</h3>
-                    <p class="tg-sight-card__text">The Royal Basilica of Saint Francis the Great, In Madrid&#x27;s La Latina neighborhood, is an neoclassical basilica with a vast frescoed dome and chapel adorned with paintings by known artists such as Goya and Zurbaran. This National Monument, built in 1784 by Sabatini, has a 33-meter diameter dome that dominates the skyline. The basilica also houses a valuable collection of religious art and marble sculptures.</p>
-                </div>
-            </div>
-            <!-- 38. Toledo Gate -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_39.avif" alt="Toledo Gate" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Toledo Gate</h3>
-                    <p class="tg-sight-card__text">Toledo Gate is a visitor site in Madrid, Spain. The main structures and grounds are the principal points of interest. Local maps mark Toledo Gate inside Madrid. Approaches are signed from nearby streets in Madrid, Spain. Posted signs mark the main approach within Madrid.</p>
-                </div>
-            </div>
-            <!-- 39. Catedral de Santa María la Real de la Almudena -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/madrid_40.avif" alt="Catedral de Santa María la Real de la Almudena" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Catedral de Santa María la Real de la Almudena</h3>
-                    <p class="tg-sight-card__text">Located right across from the majestic Royal Palace, the Catedral de Santa María la Real de la Almudena is a evidence of Madrid&#x27;s rich architectural heritage. This Baroque Catholic cathedral, which took over a century to complete, beginning in 1883 and finishing in 1993, has an blend of neo-Gothic and neo-Romanesque styles. Inside, travellers are greeted by active chapels adorned with stained glass windows that show the space beautifully.</p>
-                </div>
-            </div>
+                </dl>
             </div>
         </section>
-        </div>
+
+        <section id="atlas" class="destination-atlas" aria-labelledby="atlas-title">
+            <div class="page-shell destination-atlas__layout">
+                <div class="destination-atlas__brief">
+                    <p class="destination-atlas__index">City atlas</p>
+                    <h2 id="atlas-title">Plot the city.</h2>
+                    <p class="destination-atlas__copy">Zoom, pan, and open any marker to focus that place in the catalog below.</p>
+                    <dl class="destination-atlas__facts" aria-label="Map coverage">
+                        <div>
+                            <dt>Plotted</dt>
+                            <dd>39 places</dd>
+                        </div>
+                        <div>
+                            <dt>Center</dt>
+                            <dd>40.4187&deg; N<br>3.7007&deg; W</dd>
+                        </div>
+                    </dl>
+                </div>
+                <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Madrid attractions"></div>
+            </div>
+        </section>
+
+        <section id="places" class="destination-places" aria-labelledby="places-title">
+            <div class="page-shell">
+                <div class="destination-chapter">
+                    <h2 id="places-title" class="destination-chapter__heading">39 ways into<br>Madrid.</h2>
+                    <p class="destination-chapter__copy">Browse the index, open a location, and read the essentials without scrolling through a long catalog. Each entry contains its image, admission note, and contextual guide.</p>
+                </div>
+                <div class="places-explorer" data-places-explorer>
+                    <aside class="places-explorer__rail" aria-label="Place index">
+                        <div class="places-explorer__toolbar">
+                            <label class="places-explorer__filter-label" for="places-filter">Filter places</label>
+                            <input
+                                id="places-filter"
+                                class="places-explorer__filter"
+                                type="search"
+                                data-places-filter
+                                placeholder="Search by name"
+                                autocomplete="off"
+                            >
+                            <p class="places-explorer__meta"><strong data-places-count>39</strong> of 39 shown</p>
+                        </div>
+                        <ul class="places-explorer__list" role="listbox" aria-label="Places in Madrid" data-places-list data-lenis-prevent data-tg-scroll-surface>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option is-active"
+                            role="option"
+                            id="place-option-1"
+                            data-place-option
+                            data-place-index="0"
+                            data-place-name="Plaza Mayor"
+                            data-place-lat="40.415511"
+                            data-place-lng="-3.707401"
+                            aria-selected="true"
+                            tabindex="0"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">01</span>
+                            <span class="places-explorer__option-name">Plaza Mayor</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-2"
+                            data-place-option
+                            data-place-index="1"
+                            data-place-name="Puerta del Sol"
+                            data-place-lat="40.4169"
+                            data-place-lng="-3.7033"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">02</span>
+                            <span class="places-explorer__option-name">Puerta del Sol</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-3"
+                            data-place-option
+                            data-place-index="2"
+                            data-place-name="El Oso y el Madrono"
+                            data-place-lat="40.4167"
+                            data-place-lng="-3.7032"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">03</span>
+                            <span class="places-explorer__option-name">El Oso y el Madrono</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-4"
+                            data-place-option
+                            data-place-index="3"
+                            data-place-name="Mirador de El Corte Inglés de Callao"
+                            data-place-lat="40.4198"
+                            data-place-lng="-3.7056"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">04</span>
+                            <span class="places-explorer__option-name">Mirador de El Corte Inglés de Callao</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-5"
+                            data-place-option
+                            data-place-index="4"
+                            data-place-name="Edificio Carrión"
+                            data-place-lat="40.4202"
+                            data-place-lng="-3.7058"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">05</span>
+                            <span class="places-explorer__option-name">Edificio Carrión</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-6"
+                            data-place-option
+                            data-place-index="5"
+                            data-place-name="El Retiro Park"
+                            data-place-lat="40.415258"
+                            data-place-lng="-3.683466"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">06</span>
+                            <span class="places-explorer__option-name">El Retiro Park</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-7"
+                            data-place-option
+                            data-place-index="6"
+                            data-place-name="Museo Nacional del Prado"
+                            data-place-lat="40.413782"
+                            data-place-lng="-3.692127"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">07</span>
+                            <span class="places-explorer__option-name">Museo Nacional del Prado</span>
+                            <span class="places-explorer__option-price">€15</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-8"
+                            data-place-option
+                            data-place-index="7"
+                            data-place-name="Museo Nacional Centro de Arte Reina Sofía"
+                            data-place-lat="40.407912"
+                            data-place-lng="-3.694557"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">08</span>
+                            <span class="places-explorer__option-name">Museo Nacional Centro de Arte Reina Sofía</span>
+                            <span class="places-explorer__option-price">€12</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-9"
+                            data-place-option
+                            data-place-index="8"
+                            data-place-name="Palacio Real de Madrid"
+                            data-place-lat="40.418"
+                            data-place-lng="-3.7143"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">09</span>
+                            <span class="places-explorer__option-name">Palacio Real de Madrid</span>
+                            <span class="places-explorer__option-price">€18</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-10"
+                            data-place-option
+                            data-place-index="9"
+                            data-place-name="Mirador de la Cornisa del Palacio Real"
+                            data-place-lat="40.4172"
+                            data-place-lng="-3.7148"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">10</span>
+                            <span class="places-explorer__option-name">Mirador de la Cornisa del Palacio Real</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-11"
+                            data-place-option
+                            data-place-index="10"
+                            data-place-name="Temple of Debod"
+                            data-place-lat="40.424022"
+                            data-place-lng="-3.717769"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">11</span>
+                            <span class="places-explorer__option-name">Temple of Debod</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-12"
+                            data-place-option
+                            data-place-index="11"
+                            data-place-name="Bernabeu"
+                            data-place-lat="40.4531"
+                            data-place-lng="-3.6883"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">12</span>
+                            <span class="places-explorer__option-name">Bernabeu</span>
+                            <span class="places-explorer__option-price">€25</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-13"
+                            data-place-option
+                            data-place-index="12"
+                            data-place-name="Jardín del Capricho"
+                            data-place-lat="40.4564"
+                            data-place-lng="-3.5986"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">13</span>
+                            <span class="places-explorer__option-name">Jardín del Capricho</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-14"
+                            data-place-option
+                            data-place-index="13"
+                            data-place-name="Las Ventas Bullring"
+                            data-place-lat="40.432136"
+                            data-place-lng="-3.663291"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">14</span>
+                            <span class="places-explorer__option-name">Las Ventas Bullring</span>
+                            <span class="places-explorer__option-price">€16</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-15"
+                            data-place-option
+                            data-place-index="14"
+                            data-place-name="Mercado de San Miguel"
+                            data-place-lat="40.415379"
+                            data-place-lng="-3.70897"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">15</span>
+                            <span class="places-explorer__option-name">Mercado de San Miguel</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-16"
+                            data-place-option
+                            data-place-index="15"
+                            data-place-name="Teatro Real"
+                            data-place-lat="40.418132"
+                            data-place-lng="-3.710297"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">16</span>
+                            <span class="places-explorer__option-name">Teatro Real</span>
+                            <span class="places-explorer__option-price">€10</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-17"
+                            data-place-option
+                            data-place-index="16"
+                            data-place-name="Tablao Flamenco Torres Bermejas"
+                            data-place-lat="40.41981"
+                            data-place-lng="-3.704231"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">17</span>
+                            <span class="places-explorer__option-name">Tablao Flamenco Torres Bermejas</span>
+                            <span class="places-explorer__option-price">€28</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-18"
+                            data-place-option
+                            data-place-index="17"
+                            data-place-name="Hammam Al Ándalus Plaza Mayor"
+                            data-place-lat="40.41438"
+                            data-place-lng="-3.704393"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">18</span>
+                            <span class="places-explorer__option-name">Hammam Al Ándalus Plaza Mayor</span>
+                            <span class="places-explorer__option-price">€70</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-19"
+                            data-place-option
+                            data-place-index="18"
+                            data-place-name="Cibeles Fountain"
+                            data-place-lat="40.419333"
+                            data-place-lng="-3.693082"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">19</span>
+                            <span class="places-explorer__option-name">Cibeles Fountain</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-20"
+                            data-place-option
+                            data-place-index="19"
+                            data-place-name="Linares Palace"
+                            data-place-lat="40.419791"
+                            data-place-lng="-3.692151"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">20</span>
+                            <span class="places-explorer__option-name">Linares Palace</span>
+                            <span class="places-explorer__option-price">€10</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-21"
+                            data-place-option
+                            data-place-index="20"
+                            data-place-name="Plaza de España"
+                            data-place-lat="40.4233828"
+                            data-place-lng="-3.7121647"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">21</span>
+                            <span class="places-explorer__option-name">Plaza de España</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-22"
+                            data-place-option
+                            data-place-index="21"
+                            data-place-name="Puerta de Alcalá"
+                            data-place-lat="40.419992"
+                            data-place-lng="-3.688737"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">22</span>
+                            <span class="places-explorer__option-name">Puerta de Alcalá</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-23"
+                            data-place-option
+                            data-place-index="22"
+                            data-place-name="Church of Saint Manuel and Saint Benedict"
+                            data-place-lat="40.420914"
+                            data-place-lng="-3.686153"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">23</span>
+                            <span class="places-explorer__option-name">Church of Saint Manuel and Saint Benedict</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-24"
+                            data-place-option
+                            data-place-index="23"
+                            data-place-name="Great Pond of El Retiro"
+                            data-place-lat="40.417142"
+                            data-place-lng="-3.6839005"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">24</span>
+                            <span class="places-explorer__option-name">Great Pond of El Retiro</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-25"
+                            data-place-option
+                            data-place-index="24"
+                            data-place-name="Palacio de Cristal"
+                            data-place-lat="40.413635"
+                            data-place-lng="-3.682"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">25</span>
+                            <span class="places-explorer__option-name">Palacio de Cristal</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-26"
+                            data-place-option
+                            data-place-index="25"
+                            data-place-name="Rose Garden"
+                            data-place-lat="40.41079"
+                            data-place-lng="-3.680323"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">26</span>
+                            <span class="places-explorer__option-name">Rose Garden</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-27"
+                            data-place-option
+                            data-place-index="26"
+                            data-place-name="Puente de Toledo"
+                            data-place-lat="40.399652"
+                            data-place-lng="-3.714935"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">27</span>
+                            <span class="places-explorer__option-name">Puente de Toledo</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-28"
+                            data-place-option
+                            data-place-index="27"
+                            data-place-name="Historic Segovia Bridge"
+                            data-place-lat="40.413966"
+                            data-place-lng="-3.722793"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">28</span>
+                            <span class="places-explorer__option-name">Historic Segovia Bridge</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-29"
+                            data-place-option
+                            data-place-index="28"
+                            data-place-name="Gran Vía"
+                            data-place-lat="40.418933"
+                            data-place-lng="-3.69689"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">29</span>
+                            <span class="places-explorer__option-name">Gran Vía</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-30"
+                            data-place-option
+                            data-place-index="29"
+                            data-place-name="Iglesia de San Jerónimo el Real"
+                            data-place-lat="40.414536"
+                            data-place-lng="-3.69098"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">30</span>
+                            <span class="places-explorer__option-name">Iglesia de San Jerónimo el Real</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-31"
+                            data-place-option
+                            data-place-index="30"
+                            data-place-name="Neptune Fountain"
+                            data-place-lat="40.415265"
+                            data-place-lng="-3.694153"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">31</span>
+                            <span class="places-explorer__option-name">Neptune Fountain</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-32"
+                            data-place-option
+                            data-place-index="31"
+                            data-place-name="Real Jardín Botánico"
+                            data-place-lat="40.411106"
+                            data-place-lng="-3.691127"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">32</span>
+                            <span class="places-explorer__option-name">Real Jardín Botánico</span>
+                            <span class="places-explorer__option-price">€4</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-33"
+                            data-place-option
+                            data-place-index="32"
+                            data-place-name="Casa de Campo"
+                            data-place-lat="40.4252589"
+                            data-place-lng="-3.7526816"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">33</span>
+                            <span class="places-explorer__option-name">Casa de Campo</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-34"
+                            data-place-option
+                            data-place-index="33"
+                            data-place-name="Zoo Aquarium de Madrid"
+                            data-place-lat="40.408956"
+                            data-place-lng="-3.761229"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">34</span>
+                            <span class="places-explorer__option-name">Zoo Aquarium de Madrid</span>
+                            <span class="places-explorer__option-price">€20</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-35"
+                            data-place-option
+                            data-place-index="34"
+                            data-place-name="Cine Doré"
+                            data-place-lat="40.411658"
+                            data-place-lng="-3.698995"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">35</span>
+                            <span class="places-explorer__option-name">Cine Doré</span>
+                            <span class="places-explorer__option-price">€3</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-36"
+                            data-place-option
+                            data-place-index="35"
+                            data-place-name="Moncloa&#x27;s Lighthouse"
+                            data-place-lat="40.437426"
+                            data-place-lng="-3.721679"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">36</span>
+                            <span class="places-explorer__option-name">Moncloa&#x27;s Lighthouse</span>
+                            <span class="places-explorer__option-price">€4</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-37"
+                            data-place-option
+                            data-place-index="36"
+                            data-place-name="Royal Basilica of Saint Francis the Great"
+                            data-place-lat="40.4105"
+                            data-place-lng="-3.714548"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">37</span>
+                            <span class="places-explorer__option-name">Royal Basilica of Saint Francis the Great</span>
+                            <span class="places-explorer__option-price">€6</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-38"
+                            data-place-option
+                            data-place-index="37"
+                            data-place-name="Toledo Gate"
+                            data-place-lat="40.4067666"
+                            data-place-lng="-3.7116135"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">38</span>
+                            <span class="places-explorer__option-name">Toledo Gate</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-39"
+                            data-place-option
+                            data-place-index="38"
+                            data-place-name="Catedral de Santa María la Real de la Almudena"
+                            data-place-lat="40.415651"
+                            data-place-lng="-3.714552"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">39</span>
+                            <span class="places-explorer__option-name">Catedral de Santa María la Real de la Almudena</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                        </ul>
+                        <p class="places-explorer__empty" data-places-empty hidden>No places match that filter.</p>
+                    </aside>
+                    <div class="places-explorer__stage" data-places-stage>
+                    <nav class="places-stage__stepper" data-places-stepper aria-label="Browse places" hidden>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--prev" data-places-prev aria-label="Previous place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M14.75 5.25 L8.25 12 l6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M9.1 12 H17.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--next" data-places-next aria-label="Next place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M9.25 5.25 L15.75 12 l-6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M6.6 12 H14.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                    </nav>
+                <article
+                    class="places-stage__panel is-active"
+                    data-place-panel
+                    data-place-index="0"
+                    aria-labelledby="place-title-1"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_1.avif" alt="Plaza Mayor" width="1200" height="750" loading="eager" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">01</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-1" class="places-stage__title">Plaza Mayor</h3>
+                        <p class="places-stage__text">Plaza Mayor, also known as Madrid de Los Austrias, is a public square in Madrid, Spain. Records associated with the site include 1516, 1700. Plaza Mayor, also known as Madrid de Los Austrias, is a historic square in Madrid that served as the center of power for the Habsburgs from 1516 to 1700. Open pavement and surrounding facades define the visitor setting.</p>
+                        <p class="places-stage__coords">40.4155&deg; N / 3.7074&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="1"
+                    aria-labelledby="place-title-2"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_2.avif" alt="Puerta del Sol" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">02</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-2" class="places-stage__title">Puerta del Sol</h3>
+                        <p class="places-stage__text">The Puerta del Sol is a public square in Madrid, one of the known and busiest places in the city. This is the centre of the radial network of Spanish roads. The square also contains the famous clock whose bells mark the traditional eating of the Twelve Grapes and the beginning of a new year.</p>
+                        <p class="places-stage__coords">40.4169&deg; N / 3.7033&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="2"
+                    aria-labelledby="place-title-3"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_3.avif" alt="El Oso y el Madrono" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">03</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-3" class="places-stage__title">El Oso y el Madrono</h3>
+                        <p class="places-stage__text">El Oso y el Madrono is a visitor site in Madrid. The Statue of the Bear and the Strawberry Tree is a sculpture from the second half of the 20th century, situated in the Spanish capital, Madrid. It represents the coat of arms of Madrid and is found on the east side of the Puerta del Sol, between Calle de Alcalá and Carrera de San Jerónimo, in the historical centre of the capital.</p>
+                        <p class="places-stage__coords">40.4167&deg; N / 3.7032&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="3"
+                    aria-labelledby="place-title-4"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_4.avif" alt="Mirador de El Corte Inglés de Callao" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">04</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-4" class="places-stage__title">Mirador de El Corte Inglés de Callao</h3>
+                        <p class="places-stage__text">Mirador de El Corte Inglés de Callao is a visitor site in Madrid, Spain. The main structures and grounds are the principal points of interest. Local maps mark Mirador de El Corte Inglés de Callao inside Madrid. Approaches are signed from nearby streets in Madrid, Spain.</p>
+                        <p class="places-stage__coords">40.4198&deg; N / 3.7056&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="4"
+                    aria-labelledby="place-title-5"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_5.avif" alt="Edificio Carrión" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">05</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-5" class="places-stage__title">Edificio Carrión</h3>
+                        <p class="places-stage__text">Edificio Carrión is a visitor site in Madrid. The Gran Vía is a street in central Madrid, Spain. It leads from Calle de Alcalá, close to Plaza de Cibeles, to Plaza de España. The street, sometimes referred to as the &quot;Spanish Broadway&quot;, is one of the city&#x27;s most important shopping areas, with a large number of hotels and large movie theatres.</p>
+                        <p class="places-stage__coords">40.4202&deg; N / 3.7058&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="5"
+                    aria-labelledby="place-title-6"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_6.avif" alt="El Retiro Park" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">06</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-6" class="places-stage__title">El Retiro Park</h3>
+                        <p class="places-stage__text">The Retiro Park, also known as Buen Retiro Park or simply El Retiro, is one of the largest city parks in Madrid, Spain. The park belonged to the Spanish monarchy until 1868, when it became a public park following the Glorious Revolution. The park is located at the edge of the city centre, near both the Alcalá Gate and the Museo del Prado, and covers 1.4 km2.</p>
+                        <p class="places-stage__coords">40.4153&deg; N / 3.6835&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="6"
+                    aria-labelledby="place-title-7"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_7.avif" alt="Museo Nacional del Prado" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">07</span>
+                            <span class="places-stage__admission"><span>Admission</span>€15</span>
+                        </p>
+                        <h3 id="place-title-7" class="places-stage__title">Museo Nacional del Prado</h3>
+                        <p class="places-stage__text">The Museo del Prado, officially known as Museo Nacional del Prado, is the main Spanish national art museum, located in central Madrid. It houses collections of European art, dating from the 12th century to the early 20th century, based on the former Spanish royal collection, and the single collection of Spanish art. Founded as a museum of paintings and sculpture in 1819, it also contains important collections of other types of works.</p>
+                        <p class="places-stage__coords">40.4138&deg; N / 3.6921&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="7"
+                    aria-labelledby="place-title-8"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_8.avif" alt="Museo Nacional Centro de Arte Reina Sofía" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">08</span>
+                            <span class="places-stage__admission"><span>Admission</span>€12</span>
+                        </p>
+                        <h3 id="place-title-8" class="places-stage__title">Museo Nacional Centro de Arte Reina Sofía</h3>
+                        <p class="places-stage__text">The Museo Nacional Centro de Arte Reina Sofía is Spain&#x27;s national museum of 20th-century art. The museum was officially inaugurated on September 10, 1992, and is named for Queen Sofía. It is located in Madrid, near the Atocha train and metro stations, at the southern end of what is known as the Golden Triangle of Art.</p>
+                        <p class="places-stage__coords">40.4079&deg; N / 3.6946&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="8"
+                    aria-labelledby="place-title-9"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_9.avif" alt="Palacio Real de Madrid" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">09</span>
+                            <span class="places-stage__admission"><span>Admission</span>€18</span>
+                        </p>
+                        <h3 id="place-title-9" class="places-stage__title">Palacio Real de Madrid</h3>
+                        <p class="places-stage__text">The Royal Palace of Madrid is the official residence of the Spanish royal family and is used primarily for state ceremonies. With over 135,000 m2 of floor space and 3,418 rooms, the Royal Palace of Madrid is the largest palace in Western Europe, the largest royal palace in Europe, and among the largest palaces in the world. The palace is located on Bailén Street in the western part of central Madrid, east of the Manzanares River, and is accessible from Ópera metro station.</p>
+                        <p class="places-stage__coords">40.4180&deg; N / 3.7143&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="9"
+                    aria-labelledby="place-title-10"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_10.avif" alt="Mirador de la Cornisa del Palacio Real" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">10</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-10" class="places-stage__title">Mirador de la Cornisa del Palacio Real</h3>
+                        <p class="places-stage__text">Mirador de la Cornisa del Palacio Real is a viewpoint in Madrid, Spain. A beautifully sweeping, scenic, elevated viewing terrace spectacularly wrapping directly around the grand royal palace. Approach paths are usually short walks from a road or parking area.</p>
+                        <p class="places-stage__coords">40.4172&deg; N / 3.7148&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="10"
+                    aria-labelledby="place-title-11"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_11.avif" alt="Temple of Debod" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">11</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-11" class="places-stage__title">Temple of Debod</h3>
+                        <p class="places-stage__text">The Temple of Debod is an ancient Nubian temple currently located in Madrid, Spain. The temple was originally erected in the early 2nd century BC 15 km south of Aswan, Egypt. The Egyptian government donated the temple to Spain in 1968 as a sign of gratitude for their participation in the International Campaign to Save the Monuments of Nubia.</p>
+                        <p class="places-stage__coords">40.4240&deg; N / 3.7178&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="11"
+                    aria-labelledby="place-title-12"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_12.avif" alt="Bernabeu" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">12</span>
+                            <span class="places-stage__admission"><span>Admission</span>€25</span>
+                        </p>
+                        <h3 id="place-title-12" class="places-stage__title">Bernabeu</h3>
+                        <p class="places-stage__text">Bernabeu is a visitor site in Madrid. The Bernabéu also known as Santiago Bernabéu Stadium, is a retractable roof football stadium in El Viso, district of Chamartín, Madrid, Spain. With a seating capacity of 83,186 following its extensive renovation completed in late 2024, the stadium has the second-largest seating capacity for a football stadium in Spain, behind Camp Nou in Barcelona. It has been the home stadium of Real Madrid since its completion in 1947.</p>
+                        <p class="places-stage__coords">40.4531&deg; N / 3.6883&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="12"
+                    aria-labelledby="place-title-13"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_13.avif" alt="Jardín del Capricho" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">13</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-13" class="places-stage__title">Jardín del Capricho</h3>
+                        <p class="places-stage__text">Jardín del Capricho is a visitor site in Madrid, Spain. El Capricho is a park in Madrid. The word capricho is Spanish for &quot;whim&quot; or &quot;caprice&quot;. The main structures and grounds are the principal points of interest. Local maps mark Jardín del Capricho inside Madrid.</p>
+                        <p class="places-stage__coords">40.4564&deg; N / 3.5986&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="13"
+                    aria-labelledby="place-title-14"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_14.avif" alt="Las Ventas Bullring" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">14</span>
+                            <span class="places-stage__admission"><span>Admission</span>€16</span>
+                        </p>
+                        <h3 id="place-title-14" class="places-stage__title">Las Ventas Bullring</h3>
+                        <p class="places-stage__text">Las Ventas Bullring, also known as Plaza de Toros Monumental de Las Ventas, is a historic bullfighting arena located east of central Madrid. Built in the 1920s in neo-Mudéjar style, it is considered the most important and prestigious bullring in the world. The venue hosts not only bullfights but also concerts and events. Travellers can explore the fine Museo Taurino to gain insight into this Spanish tradition or simply admire the architecture.</p>
+                        <p class="places-stage__coords">40.4321&deg; N / 3.6633&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="14"
+                    aria-labelledby="place-title-15"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_15.avif" alt="Mercado de San Miguel" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">15</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-15" class="places-stage__title">Mercado de San Miguel</h3>
+                        <p class="places-stage__text">Mercado de San Miguel is a visitor site in Madrid, Spain. Construction and early use date to around 1916. Mercado de San Miguel, one of the oldest covered markets in Madrid, is a historic gourmet venue that offers a rich culinary experience. Mercado de San Miguel remains part of the public visitor circuit in Madrid.</p>
+                        <p class="places-stage__coords">40.4154&deg; N / 3.7090&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="15"
+                    aria-labelledby="place-title-16"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_16.avif" alt="Teatro Real" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">16</span>
+                            <span class="places-stage__admission"><span>Admission</span>€10</span>
+                        </p>
+                        <h3 id="place-title-16" class="places-stage__title">Teatro Real</h3>
+                        <p class="places-stage__text">Teatro Real, also known as El Real, is a prestigious opera house in central Madrid near the Palacio Real. Established in 1850 and extensively remodeled in the late 20th century, it offers a grand design with an auditorium that seats around 1,740 people. The venue hosts an program of its own and international productions, classical music concerts, and dance performances.</p>
+                        <p class="places-stage__coords">40.4181&deg; N / 3.7103&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="16"
+                    aria-labelledby="place-title-17"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_17.avif" alt="Tablao Flamenco Torres Bermejas" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">17</span>
+                            <span class="places-stage__admission"><span>Admission</span>€28</span>
+                        </p>
+                        <h3 id="place-title-17" class="places-stage__title">Tablao Flamenco Torres Bermejas</h3>
+                        <p class="places-stage__text">Tablao Flamenco Torres Bermejas is a known venue in Madrid that has been showing live flamenco performances since 1960. The establishment has hosted some of the Flamenco artists in Spain and attracted famous spectators, including members of Spanish nobility and television icons.</p>
+                        <p class="places-stage__coords">40.4198&deg; N / 3.7042&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="17"
+                    aria-labelledby="place-title-18"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_19.avif" alt="Hammam Al Ándalus Plaza Mayor" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">18</span>
+                            <span class="places-stage__admission"><span>Admission</span>€70</span>
+                        </p>
+                        <h3 id="place-title-18" class="places-stage__title">Hammam Al Ándalus Plaza Mayor</h3>
+                        <p class="places-stage__text">Hammam Al Ándalus Plaza Mayor is a public square in Madrid, Spain. Hammam Al Ándalus is a luxurious thermal spa in Madrid, offering ornate bathing areas and massages with essential oils and hot stone beds. The converted cellars house traditional Arab baths with a water circuit taking travellers through different temperature pools. Open pavement and surrounding facades define the visitor setting.</p>
+                        <p class="places-stage__coords">40.4144&deg; N / 3.7044&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="18"
+                    aria-labelledby="place-title-19"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_20.avif" alt="Cibeles Fountain" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">19</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-19" class="places-stage__title">Cibeles Fountain</h3>
+                        <p class="places-stage__text">Cibeles Fountain, also known as Fuente de Cibeles, is a visitor site in Madrid, Spain. The fountain represents the Roman goddess of fertility and nature holding the key to the city in her left hand. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">40.4193&deg; N / 3.6931&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="19"
+                    aria-labelledby="place-title-20"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_21.avif" alt="Linares Palace" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">20</span>
+                            <span class="places-stage__admission"><span>Admission</span>€10</span>
+                        </p>
+                        <h3 id="place-title-20" class="places-stage__title">Linares Palace</h3>
+                        <p class="places-stage__text">Linares Palace, located in the Plaza de Cibeles, is a historic 19th-century palace with an ornate interior and a rich history. Built as the residence of the Marquises of Linares, it is now home to Casa de America and hosts various exhibitions and events. The palace is shrouded in mystery and ghost stories, adding to its allure. Guided tours are available on weekends, offering insights into the palace&#x27;s history and legends.</p>
+                        <p class="places-stage__coords">40.4198&deg; N / 3.6922&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="20"
+                    aria-labelledby="place-title-21"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_22.avif" alt="Plaza de España" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">21</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-21" class="places-stage__title">Plaza de España</h3>
+                        <p class="places-stage__text">Plaza de España is a square in Madrid, Spain. Plaza de España is a public square in Madrid, Spain framed by civic and commercial buildings. Open pavement and surrounding facades frame the square. Local maps mark Plaza de España inside Madrid. Approaches are signed from nearby streets in Madrid, Spain.</p>
+                        <p class="places-stage__coords">40.4234&deg; N / 3.7122&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="21"
+                    aria-labelledby="place-title-22"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_23.avif" alt="Puerta de Alcalá" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">22</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-22" class="places-stage__title">Puerta de Alcalá</h3>
+                        <p class="places-stage__text">Puerta de Alcalá is a triumphal arch located near Parque del Buen Retiro, adorned with elegant sculptures and stone carvings. It is one of the ancient gates that provided access to the city and is considered the precursor of famous triumphal arches in other cities. Commissioned by King Charles III in the late 18th century, this neoclassical monument was designed by Italian architect Francesco Sabatini.</p>
+                        <p class="places-stage__coords">40.4200&deg; N / 3.6887&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="22"
+                    aria-labelledby="place-title-23"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_24.avif" alt="Church of Saint Manuel and Saint Benedict" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">23</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-23" class="places-stage__title">Church of Saint Manuel and Saint Benedict</h3>
+                        <p class="places-stage__text">The parish Church of Saint Manuel and Saint Benedict is a building built in Neo-Byzantine style. It is easy to recognize its tower and red copper dome, and its interior is rich in mosaics. The church is well worth visiting for its architecture alone, but it&#x27;s also a peaceful place where reflect on the beauty of religion.</p>
+                        <p class="places-stage__coords">40.4209&deg; N / 3.6862&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="23"
+                    aria-labelledby="place-title-24"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_25.avif" alt="Great Pond of El Retiro" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">24</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-24" class="places-stage__title">Great Pond of El Retiro</h3>
+                        <p class="places-stage__text">Great Pond of El Retiro is a visitor site in Madrid, Spain. The main structures and grounds are the principal points of interest. Local maps mark Great Pond of El Retiro inside Madrid. Approaches are signed from nearby streets in Madrid, Spain. Posted signs mark the main approach within Madrid.</p>
+                        <p class="places-stage__coords">40.4171&deg; N / 3.6839&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="24"
+                    aria-labelledby="place-title-25"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_26.avif" alt="Palacio de Cristal" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">25</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-25" class="places-stage__title">Palacio de Cristal</h3>
+                        <p class="places-stage__text">Palacio de Cristal, also known as the Crystal Palace, is a attraction In Retiro Park in Madrid. This and photogenic spot was inspired by London&#x27;s Crystal Palace and is a conservatory made entirely of glass. Built in 1887, it was originally designed to showcase native plants and objects from the Philippines during Spain&#x27;s colonial period.</p>
+                        <p class="places-stage__coords">40.4136&deg; N / 3.6820&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="25"
+                    aria-labelledby="place-title-26"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_27.avif" alt="Rose Garden" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">26</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-26" class="places-stage__title">Rose Garden</h3>
+                        <p class="places-stage__text">Rose Garden is a public park in Madrid, Spain. The garden comes alive in May when the roses are in full bloom, but it&#x27;s enchanting any time of year. Paths, lawns, and shaded areas make up the main public facilities. Rose Garden remains part of the public visitor circuit in Madrid.</p>
+                        <p class="places-stage__coords">40.4108&deg; N / 3.6803&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="26"
+                    aria-labelledby="place-title-27"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_28.avif" alt="Puente de Toledo" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">27</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-27" class="places-stage__title">Puente de Toledo</h3>
+                        <p class="places-stage__text">Toledo Bridge, also known as Puente de Toledo, is a restored baroque-style pedestrian bridge that crosses the Manzanares River in Madrid. Constructed between 1719 and 1724 by Pedro de Ribera, this 180-meter-long bridge offers views of the surrounding area. The bridge is particularly enchanting at sunset, providing a romantic and setting for reflection and relaxation.</p>
+                        <p class="places-stage__coords">40.3997&deg; N / 3.7149&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="27"
+                    aria-labelledby="place-title-28"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_29.avif" alt="Historic Segovia Bridge" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">28</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-28" class="places-stage__title">Historic Segovia Bridge</h3>
+                        <p class="places-stage__text">The Segovia Bridge, dating back to the 1580s, is a historic landmark in Madrid. It offers views of the river and surrounding attractions such as La Almudena Cathedral, the Royal Palace, and Plaza de Espanas. The bridge is located near the ancient city of Segovia, known for its Roman aqueduct and UNESCO World Heritage Site status. Travellers can enjoy picnics in the adjacent riverfront park with lush greenery and fountains.</p>
+                        <p class="places-stage__coords">40.4140&deg; N / 3.7228&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="28"
+                    aria-labelledby="place-title-29"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_30.avif" alt="Gran Vía" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">29</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-29" class="places-stage__title">Gran Vía</h3>
+                        <p class="places-stage__text">Gran Vía is a visitor site in Madrid, Spain. Gran Vía is a must-visit avenue in Madrid, for its early-20th-century architecture and atmosphere. Along Gran Vía, find an array of retail shops, restaurants, and lively bars that cater to all tastes. The main structures and grounds are the principal points of interest.</p>
+                        <p class="places-stage__coords">40.4189&deg; N / 3.6969&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="29"
+                    aria-labelledby="place-title-30"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_31.avif" alt="Iglesia de San Jerónimo el Real" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">30</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-30" class="places-stage__title">Iglesia de San Jerónimo el Real</h3>
+                        <p class="places-stage__text">The Church of San Jerónimo el Real, also known as Los Jeronimos, is a historic 16th-century church located near the Prado Museum in Madrid. Originally a monastery ordered by Queen Isabella the Catholic, it has witnessed significant events in Spanish history. The architecture reflects Elizabethan Gothic style with side chapels and a baroque cloister. Despite undergoing various changes over many years, it remains one of the few late Gothic buildings in Madrid.</p>
+                        <p class="places-stage__coords">40.4145&deg; N / 3.6910&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="30"
+                    aria-labelledby="place-title-31"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_32.avif" alt="Neptune Fountain" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">31</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-31" class="places-stage__title">Neptune Fountain</h3>
+                        <p class="places-stage__text">Neptune Fountain is a visitor site in Madrid, Spain. It opened or was completed around 1782. Designed by architect Ventura Rodriguez and completed in 1782, this fountain has Neptune himself, majestically seated on a shell-shaped chariot drawn by two powerful sea horses. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">40.4153&deg; N / 3.6942&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="31"
+                    aria-labelledby="place-title-32"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_33.avif" alt="Real Jardín Botánico" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">32</span>
+                            <span class="places-stage__admission"><span>Admission</span>€4</span>
+                        </p>
+                        <h3 id="place-title-32" class="places-stage__title">Real Jardín Botánico</h3>
+                        <p class="places-stage__text">Real Jardín Botánico, also known as the Royal Botanical Garden, is a visitor site in Madrid, Spain. Real Jardín Botánico, also known as the Royal Botanical Garden, is a historic botanical garden located next to the Prado Museum in Madrid. The garden includes various themed zones such as a Mediterranean garden, tropical garden, and medicinal plant garden. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">40.4111&deg; N / 3.6911&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="32"
+                    aria-labelledby="place-title-33"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_34.avif" alt="Casa de Campo" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">33</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-33" class="places-stage__title">Casa de Campo</h3>
+                        <p class="places-stage__text">Casa de Campo is a visitor site in Madrid, Spain. The main structures and grounds are the principal points of interest. Local maps mark Casa de Campo inside Madrid. Approaches are signed from nearby streets in Madrid, Spain. Posted signs mark the main approach within Madrid.</p>
+                        <p class="places-stage__coords">40.4253&deg; N / 3.7527&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="33"
+                    aria-labelledby="place-title-34"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_35.avif" alt="Zoo Aquarium de Madrid" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">34</span>
+                            <span class="places-stage__admission"><span>Admission</span>€20</span>
+                        </p>
+                        <h3 id="place-title-34" class="places-stage__title">Zoo Aquarium de Madrid</h3>
+                        <p class="places-stage__text">Zoo Aquarium de Madrid is a vast facility featuring animals in their natural habitats, a dolphinarium, and a shark tank. It also includes a petting zoo for kids, travellers can enjoy various attractions within its grounds such as the Parque de Atracciones amusement park and Lago, a location for lunch. The zoo can be accessed via cable cars from Parque Oeste or by taking the metro to Principe Pio and walking across the river.</p>
+                        <p class="places-stage__coords">40.4090&deg; N / 3.7612&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="34"
+                    aria-labelledby="place-title-35"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_36.avif" alt="Cine Doré" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">35</span>
+                            <span class="places-stage__admission"><span>Admission</span>€3</span>
+                        </p>
+                        <h3 id="place-title-35" class="places-stage__title">Cine Doré</h3>
+                        <p class="places-stage__text">The Cine Doré is an old movie theater in Madrid that specializes in classic and new films. It is home to the Filmoteca Espanola, a ministry of culture institution that restores and preserves old films. This cinema has been featured in a few Pedro Almodovar movies. It&#x27;s always open and offers great value for visitor money - just 2.50 a ticket!</p>
+                        <p class="places-stage__coords">40.4117&deg; N / 3.6990&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="35"
+                    aria-labelledby="place-title-36"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_37.avif" alt="Moncloa&#x27;s Lighthouse" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">36</span>
+                            <span class="places-stage__admission"><span>Admission</span>€4</span>
+                        </p>
+                        <h3 id="place-title-36" class="places-stage__title">Moncloa&#x27;s Lighthouse</h3>
+                        <p class="places-stage__text">Moncloa&#x27;s Lighthouse is a visitor site in Madrid, Spain. Construction and early use date to around 1992. Moncloa&#x27;s Lighthouse, built in 1992, was a former transmission tower that now has an observation deck and information panels. At 110 meters high, the lighthouse offers a 360-degree panoramic view of Madrid. Travellers can access the observation deck for a nominal fee and enjoy the cityscape. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">40.4374&deg; N / 3.7217&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="36"
+                    aria-labelledby="place-title-37"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_38.avif" alt="Royal Basilica of Saint Francis the Great" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">37</span>
+                            <span class="places-stage__admission"><span>Admission</span>€6</span>
+                        </p>
+                        <h3 id="place-title-37" class="places-stage__title">Royal Basilica of Saint Francis the Great</h3>
+                        <p class="places-stage__text">The Royal Basilica of Saint Francis the Great, In Madrid&#x27;s La Latina neighborhood, is an neoclassical basilica with a vast frescoed dome and chapel adorned with paintings by known artists such as Goya and Zurbaran. This National Monument, built in 1784 by Sabatini, has a 33-meter diameter dome that dominates the skyline. The basilica also houses a valuable collection of religious art and marble sculptures.</p>
+                        <p class="places-stage__coords">40.4105&deg; N / 3.7145&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="37"
+                    aria-labelledby="place-title-38"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_39.avif" alt="Toledo Gate" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">38</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-38" class="places-stage__title">Toledo Gate</h3>
+                        <p class="places-stage__text">Toledo Gate is a visitor site in Madrid, Spain. The main structures and grounds are the principal points of interest. Local maps mark Toledo Gate inside Madrid. Approaches are signed from nearby streets in Madrid, Spain. Posted signs mark the main approach within Madrid.</p>
+                        <p class="places-stage__coords">40.4068&deg; N / 3.7116&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="38"
+                    aria-labelledby="place-title-39"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/madrid_40.avif" alt="Catedral de Santa María la Real de la Almudena" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">39</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-39" class="places-stage__title">Catedral de Santa María la Real de la Almudena</h3>
+                        <p class="places-stage__text">Located right across from the majestic Royal Palace, the Catedral de Santa María la Real de la Almudena is a evidence of Madrid&#x27;s rich architectural heritage. This Baroque Catholic cathedral, which took over a century to complete, beginning in 1883 and finishing in 1993, has an blend of neo-Gothic and neo-Romanesque styles. Inside, travellers are greeted by active chapels adorned with stained glass windows that show the space beautifully.</p>
+                        <p class="places-stage__coords">40.4157&deg; N / 3.7146&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="site-footer">
         <div class="page-shell">
             <div class="site-footer__bar">
-                <a href="../../index.html" class="site-footer__brand" aria-label="Global Explorer home">
-                    <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
+                <a href="../../index.html" class="site-footer__mark" aria-label="Global Explorer home">
+                    <svg width="24" height="24" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
-                    <span class="site-footer__brand-name font-display">Global Explorer</span>
+                    Global Explorer
                 </a>
-                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides <span>Madrid: 39 places across Central Spain.</span></p>
             </div>
         </div>
     </footer>
 
     <button id="scrollTopBtn" type="button" aria-label="Scroll to top">
-        <i class="ph ph-arrow-up" aria-hidden="true"></i>
+        <svg viewBox="0 0 24 24" width="1.15em" height="1.15em" aria-hidden="true" focusable="false">
+            <path d="M12 5.25 V18.75 M12 5.25 L6.75 10.5 M12 5.25 L17.25 10.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
     </button>
 
     <script defer src="../../assets/dev-destination-toggle.js"></script>
     <script defer src="../../assets/tg-page-chrome.js"></script>
     <script defer src="../../assets/tg-destination-map.js"></script>
+    <script defer src="../../assets/tg-destination-places.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const map = L.map('map').setView([40.418658, -3.700696], 14);
+            const map = L.map('map');
             L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
                 attribution: '&copy; Google Maps',
                 maxZoom: 20
             }).addTo(map);
-            const locations = [{"name": "Plaza Mayor", "lat": 40.415511, "lng": -3.707401}, {"name": "Puerta del Sol", "lat": 40.4169, "lng": -3.7033}, {"name": "El Oso y el Madrono", "lat": 40.4167, "lng": -3.7032}, {"name": "Mirador de El Corte Inglés de Callao", "lat": 40.4198, "lng": -3.7056}, {"name": "Edificio Carrión", "lat": 40.4202, "lng": -3.7058}, {"name": "El Retiro Park", "lat": 40.415258, "lng": -3.683466}, {"name": "Museo Nacional del Prado", "lat": 40.413782, "lng": -3.692127}, {"name": "Museo Nacional Centro de Arte Reina Sofía", "lat": 40.407912, "lng": -3.694557}, {"name": "Palacio Real de Madrid", "lat": 40.418, "lng": -3.7143}, {"name": "Mirador de la Cornisa del Palacio Real", "lat": 40.4172, "lng": -3.7148}, {"name": "Temple of Debod", "lat": 40.424022, "lng": -3.717769}, {"name": "Bernabeu", "lat": 40.4531, "lng": -3.6883}, {"name": "Jardín del Capricho", "lat": 40.4564, "lng": -3.5986}, {"name": "Las Ventas Bullring", "lat": 40.432136, "lng": -3.663291}, {"name": "Mercado de San Miguel", "lat": 40.415379, "lng": -3.70897}, {"name": "Teatro Real", "lat": 40.418132, "lng": -3.710297}, {"name": "Tablao Flamenco Torres Bermejas", "lat": 40.41981, "lng": -3.704231}, {"name": "Hammam Al Ándalus Plaza Mayor", "lat": 40.41438, "lng": -3.704393}, {"name": "Cibeles Fountain", "lat": 40.419333, "lng": -3.693082}, {"name": "Linares Palace", "lat": 40.419791, "lng": -3.692151}, {"name": "Plaza de España", "lat": 40.4233828, "lng": -3.7121647}, {"name": "Puerta de Alcalá", "lat": 40.419992, "lng": -3.688737}, {"name": "Church of Saint Manuel and Saint Benedict", "lat": 40.420914, "lng": -3.686153}, {"name": "Great Pond of El Retiro", "lat": 40.417142, "lng": -3.6839005}, {"name": "Palacio de Cristal", "lat": 40.413635, "lng": -3.682}, {"name": "Rose Garden", "lat": 40.41079, "lng": -3.680323}, {"name": "Puente de Toledo", "lat": 40.399652, "lng": -3.714935}, {"name": "Historic Segovia Bridge", "lat": 40.413966, "lng": -3.722793}, {"name": "Gran Vía", "lat": 40.418933, "lng": -3.69689}, {"name": "Iglesia de San Jerónimo el Real", "lat": 40.414536, "lng": -3.69098}, {"name": "Neptune Fountain", "lat": 40.415265, "lng": -3.694153}, {"name": "Real Jardín Botánico", "lat": 40.411106, "lng": -3.691127}, {"name": "Casa de Campo", "lat": 40.4252589, "lng": -3.7526816}, {"name": "Zoo Aquarium de Madrid", "lat": 40.408956, "lng": -3.761229}, {"name": "Cine Doré", "lat": 40.411658, "lng": -3.698995}, {"name": "Moncloa's Lighthouse", "lat": 40.437426, "lng": -3.721679}, {"name": "Royal Basilica of Saint Francis the Great", "lat": 40.4105, "lng": -3.714548}, {"name": "Toledo Gate", "lat": 40.4067666, "lng": -3.7116135}, {"name": "Catedral de Santa María la Real de la Almudena", "lat": 40.415651, "lng": -3.714552}];
+            const locations = Array.from(document.querySelectorAll('[data-place-option]')).map((el) => ({
+                name: el.dataset.placeName || '',
+                lat: Number(el.dataset.placeLat),
+                lng: Number(el.dataset.placeLng),
+            }));
             const customIcon = L.icon({
                 iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
                 iconSize: [32, 32],
@@ -653,14 +1722,45 @@
                 popupAnchor: [0, -32],
             });
             const destinationCenter = [40.418658, -3.700696];
-            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.037742, "maxCenterLng": 0.102096};
-            locations.forEach((location) => {
-                L.marker([location.lat, location.lng], { icon: customIcon })
+            const mapContext = {"denseUrban": true};
+            const markers = locations.map((location) => {
+                const marker = L.marker([location.lat, location.lng], { icon: customIcon })
                     .addTo(map)
                     .bindPopup(`<strong>${location.name}</strong>`);
+                return marker;
             });
             window.TGDestinationMap?.fitToLocations(map, locations, destinationCenter, mapContext);
             window.TGDestinationMap?.bindMobileScrollGuard(map, 'map');
+            window.TGDestinationMap?.registerMarkers(map, markers);
+
+            const heroImage = document.querySelector('[data-destination-hero-image]');
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (heroImage && !reduceMotion) {
+                let framePending = false;
+                let scrolling = false;
+                let scrollEndTimer = 0;
+                const updateHeroPosition = () => {
+                    const offset = Math.min(window.scrollY, window.innerHeight * 1.15) * 0.075;
+                    heroImage.style.transform = `translate3d(0, ${offset}px, 0) scale(1.055)`;
+                    framePending = false;
+                };
+                window.addEventListener('scroll', () => {
+                    if (!scrolling) {
+                        scrolling = true;
+                        heroImage.style.willChange = 'transform';
+                    }
+                    window.clearTimeout(scrollEndTimer);
+                    scrollEndTimer = window.setTimeout(() => {
+                        scrolling = false;
+                        heroImage.style.willChange = 'auto';
+                    }, 150);
+                    if (!framePending) {
+                        window.requestAnimationFrame(updateHeroPosition);
+                        framePending = true;
+                    }
+                }, { passive: true });
+                updateHeroPosition();
+            }
         });
     </script>
 </body>

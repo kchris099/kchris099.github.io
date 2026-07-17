@@ -6,555 +6,1438 @@
     <meta name="description" content="Plan a visit to Jerusalem with a concise history, interactive attractions map, prices, and curated highlights across the destination.">
     <meta name="theme-color" content="#121417">
     <title>Jerusalem Guide | Global Explorer Guides</title>
-    <link rel="stylesheet" href="../../assets/tailwind.css">
-    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
     <link rel="stylesheet" href="../../assets/newindex-fonts.css">
     <link rel="stylesheet" href="../../assets/tg-theme.css">
     <link rel="stylesheet" href="../../assets/tg-site-chrome.css">
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
     <link rel="stylesheet" href="../../assets/tg-modern-polish.css">
+    <link rel="stylesheet" href="../../assets/tg-country-page.css">
+    <link rel="stylesheet" href="../../assets/tg-destination-page-v3.css">
     <script defer src="../../assets/lenis.min.js"></script>
     <script defer src="../../assets/tg-smooth-scroll.js"></script>
     <link rel="preload" as="image" href="images/jerusalem_hero.avif" type="image/avif" fetchpriority="high">
     <script defer src="../../assets/leaflet/leaflet.js"></script>
 </head>
-<body class="tg-theme tg-destination-page tg-modern">
-    <header id="site-header" class="header-glass fixed top-0 left-0 right-0 z-50">
+<body class="tg-theme tg-modern tg-country-v2 tg-destination-v3">
+    <a class="skip-link" href="#main-content">Skip to Jerusalem guide</a>
+    <header id="site-header" class="header-glass">
         <div class="page-shell header-glass__inner">
-            <a href="../../index.html" class="font-display site-brand" style="display:flex;align-items:center;gap:0.75rem;text-decoration:none;color:inherit;font-size:1.25rem;" aria-label="Global Explorer home">
+            <a href="../../index.html" class="site-brand" aria-label="Global Explorer home">
                 <span class="site-brand__mark" aria-hidden="true">
                     <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
-                        <circle cx="14" cy="14" r="2" fill="#E8B14F"/>
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
                 </span>
                 Global Explorer
             </a>
-            <nav class="header-glass__nav-mobile" aria-label="Mobile navigation">
-                <a href="../../index.html" class="header-glass__icon-link" aria-label="Home">
-                    <i class="ph ph-house" aria-hidden="true"></i>
-                </a>
-                <a href="israel.html" class="header-glass__icon-link" aria-label="Back to Israel">
-                    <i class="ph ph-arrow-left" aria-hidden="true"></i>
-                </a>
-            </nav>
             <nav class="header-glass__nav" aria-label="Primary">
-                <a href="../../index.html" class="nav-link">Home</a>
-                <a href="jerusalem.html" class="nav-link" aria-current="page">Jerusalem</a>
+                <a href="#main-content" class="nav-link" aria-current="page">Jerusalem</a>
+                <a href="#atlas" class="nav-link">Atlas</a>
+                <a href="#places" class="nav-link">Places</a>
                 <a href="israel.html" class="nav-link">Israel</a>
-                <a href="../../index.html#map" class="nav-link">Atlas</a>
             </nav>
         </div>
     </header>
-    <main>
-        <div class="tg-destination-hero-zone">
-            <div class="tg-destination-hero" aria-hidden="true">
-                <div class="tg-destination-hero__image" style="background-image: url('images/jerusalem_hero.avif')"></div>
-                <div class="tg-destination-hero__fade"></div>
-            </div>
-            <div class="page-shell tg-destination-hero-zone__content">
-        <nav class="tg-toolbar tg-toolbar--compact" aria-label="Breadcrumb">
-            <div class="tg-breadcrumb">
-                <img src="../../assets/flags/w40/il.png" alt="" class="w-6 h-auto rounded-[2px]" aria-hidden="true">
-                <span>Israel</span>
-                <span class="tg-breadcrumb__sep" aria-hidden="true">&rsaquo;</span>
-                <span class="tg-breadcrumb__current">Jerusalem</span>
-            </div>
-        </nav>
+    <main id="main-content" tabindex="-1">
+        <section class="destination-hero" aria-labelledby="destination-title">
+            <img class="destination-hero__media" data-destination-hero-image src="images/jerusalem_hero.avif" alt="" width="1600" height="1067" fetchpriority="high" decoding="sync">
+            <div class="destination-hero__shade" aria-hidden="true"></div>
+            <div class="page-shell destination-hero__content">
+                <button
+                    type="button"
+                    id="destination-active-toggle"
+                    class="country-active-toggle country-active-toggle--inactive"
+                    data-iso2="IL"
+                    data-slug="jerusalem"
+                    data-active="false"
+                    data-interactive="true"
+                    aria-label="Toggle Jerusalem visibility on Israel guide"
+                    aria-pressed="false"
+                >
+                    <img src="../../assets/flags/w80/il.png" alt="" aria-hidden="true">
+                    <span class="country-toggle__copy" aria-hidden="true">
+                        <span class="country-toggle__label">Jerusalem guide</span>
+                        <strong class="country-toggle__state"></strong>
+                    </span>
+                </button>
 
-        <header class="tg-page-header">
-            <button
-        type="button"
-        id="destination-active-toggle"
-        class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
-        data-iso2="IL"
-        data-slug="jerusalem"
-        data-active="false"
-        data-interactive="true"
-        aria-label="Toggle Jerusalem visibility on Israel guide"
-        aria-pressed="false"
-    >
-        <i class="ph ph-map-pin text-4xl pointer-events-none" aria-hidden="true"></i>
-    </button>
-            <span class="tg-page-header__eyebrow">Destination Guide — Jerusalem</span>
-            <h1 class="tg-page-title font-display">Explore <em>Jerusalem</em></h1>
-            <div class="glass-card frosted-panel tg-panel">
-                <h2 class="tg-panel__title font-display">
-                    <i class="ph ph-scroll" aria-hidden="true"></i> A Brief History
-                </h2>
-                <p class="tg-panel__body">Jerusalem&#x27;s Old City layers Canaanite, Jewish, Roman, Byzantine, Islamic, and Ottoman sacred landscapes within Ottoman walls. The Western Wall, Church of the Holy Sepulchre, and Dome of the Rock anchor competing yet intertwined pilgrimage traditions that shaped Levantine history for three millennia. Mount of Olives viewpoints and city-wall gates connect sacred quarters to surrounding Judaean hills.</p>
-            </div>
-        </header>
+                <div class="hero__route" aria-label="Destination route and coordinates">
+                    <span>Israel / Jerusalem</span>
+                    <span>31.7742&deg; N / 35.2106&deg; E</span>
+                </div>
 
-        <div class="tg-section__header tg-section__header--map-end">
-            <span class="tg-section__eyebrow">Map</span>
-            <h2 class="tg-section__title font-display">Attractions Map</h2>
-        </div>
-            </div>
-        </div>
-
-        <div class="page-shell tg-main tg-main--below-hero">
-        <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Jerusalem attractions"></div>
-        <section class="tg-section">
-            <div class="tg-section__header">
-                <span class="tg-section__eyebrow">Highlights</span>
-                <h2 class="tg-section__title font-display">Top Sights &amp; Activities</h2>
-            </div>
-            <div class="tg-sights-list">
-            
-            <!-- 1. Church of the Holy Sepulchre -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/jerusalem_1.avif" alt="Church of the Holy Sepulchre" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                <h1 id="destination-title" class="destination-hero__title" style="--destination-title-chars: 9">Jerusalem</h1>
+                <div class="destination-hero__history">
+                    <p>Jerusalem&#x27;s Old City layers Canaanite, Jewish, Roman, Byzantine, Islamic, and Ottoman sacred landscapes within Ottoman walls. The Western Wall, Church of the Holy Sepulchre, and Dome of the Rock anchor competing yet intertwined pilgrimage traditions that shaped Levantine history for three millennia. Mount of Olives viewpoints and city-wall gates connect sacred quarters to surrounding Judaean hills.</p>
+                </div>
+                <dl class="destination-hero__facts destination-hero__facts--no-region" aria-label="Jerusalem guide facts">
+                    <div>
+                        <dt>Country</dt>
+                        <dd>Israel</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Church of the Holy Sepulchre</h3>
-                    <p class="tg-sight-card__text">The Church of the Holy Sepulchre is a historic basilica dating back to the 4th century and is believed by some Christians to be the site of Jesus&#x27;s tomb. The church holds historical significance, with its roots tracing back through thousands of years of Jewish history, from Byzantine Rule to the British Mandate. Visitors can experience a whirlwind tour that includes stops at sites like the Western Wall, Via Dolorosa, and Bethlehem.</p>
-                </div>
-            </div>
-            <!-- 2. New Gate -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/jerusalem_2.avif" alt="New Gate" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                    <div>
+                        <dt>Places</dt>
+                        <dd>32</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">New Gate</h3>
-                    <p class="tg-sight-card__text">New Gate is a visitor site in Jerusalem, Israel. New Gate remains part of the public visitor circuit in Jerusalem. The main structures and grounds are the principal points of interest. Local maps mark New Gate inside Jerusalem. Approaches are signed from nearby streets in Jerusalem, Israel.</p>
-                </div>
-            </div>
-            <!-- 3. Alrov Mamilla Avenue -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/jerusalem_3.avif" alt="Alrov Mamilla Avenue" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Alrov Mamilla Avenue</h3>
-                    <p class="tg-sight-card__text">Alrov Mamilla Avenue is a visitor site in Jerusalem, Israel. Alrov Mamilla Avenue, also known as Mamilla Avenue, is a and historic shopping destination located near the Old City in Jerusalem. Visitors can enjoy street artists, painters, musicians, cafes, and dining options along the pedestrian mall. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 4. Museum of The Underground Prisoners -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/jerusalem_4.avif" alt="Museum of The Underground Prisoners" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> ₪15
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Museum of The Underground Prisoners</h3>
-                    <p class="tg-sight-card__text">This museum tells the story of a group of Jewish fighters who operated an underground network in pre-state Israel. The building where the museum is located served as a prison during the British occupation of Palestine, and many sympathizers with the Jewish cause were imprisoned here.</p>
-                </div>
-            </div>
-            <!-- 5. Friends of Zion Museum -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/jerusalem_5.avif" alt="Friends of Zion Museum" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> ₪45
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Friends of Zion Museum</h3>
-                    <p class="tg-sight-card__text">Located Jerusalem, the Friends of Zion Museum is a evidence of the long running friendship between Jewish and Christian communities over time. This modern facility employs recent technology, including immersive 3D movies, surround sound, and interactive touchscreens to guide visitors through a narrative that spans over 3,000 years.</p>
-                </div>
-            </div>
-            <!-- 6. Mahaneh Yehudah Market -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/jerusalem_6.avif" alt="Mahaneh Yehudah Market" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Mahaneh Yehudah Market</h3>
-                    <p class="tg-sight-card__text">Mahaneh Yehudah Market is a documented market or commercial centre in Jerusalem, Israel, listed in local civic guides for its role in regional trade and daily commerce. The site operates during standard market hours and is open to visitors without charge for browsing. Travellers enter from the surrounding streets and combine the visit with nearby food vendors and craft stalls.</p>
-                </div>
-            </div>
-            <!-- 7. Belz Great Synagogue -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/jerusalem_7.avif" alt="Belz Great Synagogue" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Belz Great Synagogue</h3>
-                    <p class="tg-sight-card__text">The Belz Great Synagogue in Jerusalem is a tribute to Jewish heritage, far surpassing its original European counterpart. This notable building is not only the largest synagogue in Jerusalem but also potentially the largest in the world, accommodating up to 7,000 worshippers within its grand central sanctuary. Its striking design draws inspiration from the Second Temple and becomes even more enchanting when illuminated at night.</p>
-                </div>
-            </div>
-            <!-- 8. Gethsemane -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/jerusalem_8.avif" alt="Gethsemane" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Gethsemane</h3>
-                    <p class="tg-sight-card__text">Gethsemane is a visitor site in Jerusalem, Israel. The Garden of Gethsemane, located at the base of the Mount of Olives in Jerusalem, is a remarkable site steeped in Christian heritage and historical depth. The main structures and grounds are the principal points of interest.</p>
-                </div>
-            </div>
-            <!-- 9. St. Anne&#x27;s Church, Jerusalem -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/jerusalem_9.avif" alt="St. Anne&#x27;s Church, Jerusalem" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> ₪12
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">St. Anne&#x27;s Church, Jerusalem</h3>
-                    <p class="tg-sight-card__text">St. Anne&#x27;s Church, Jerusalem is a religious building in Jerusalem, Israel. Records associated with the site include 1138. Anne&#x27;s Church in Jerusalem is a restored Romanesque church with a rich history dating back to its completion in 1138 by the Crusaders. Situated near the beginning of the Via Dolorosa, it holds significance as the traditional birthplace of the Virgin Mary. The exterior and main interior spaces are usually viewable outside service times.</p>
-                </div>
-            </div>
-            <!-- 10. Dome of the Rock -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/jerusalem_10.avif" alt="Dome of the Rock" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Dome of the Rock</h3>
-                    <p class="tg-sight-card__text">The Dome of the Rock is an Islamic shrine with a gold-topped structure built around 690AD. It holds great significance for Christians and Jews as well. Situated on the Temple Mount, it was completed under the rule of Umayyad Caliph Abd al-Malik and has been covered in gold twice in the 20th century. Despite common misconceptions, it is not a mosque but rather a shrine to the Foundation Stone, important in both Torah and Islamic beliefs.</p>
-                </div>
-            </div>
-            <!-- 11. Western Wall -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/jerusalem_11.avif" alt="Western Wall" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Western Wall</h3>
-                    <p class="tg-sight-card__text">The Western Wall, also known as the Wailing Wall, is a significant site in the Jewish Quarter of Jerusalem. It is a remnant of the ancient wall that surrounded the Temple courtyard and holds great religious and historical importance for Jewish people. Visitors can witness worshippers reciting verses or leaving written prayers in its stones. The wall was built around 2000 years ago to support Temple Mount, and after the destruction of the Second Temple, it became a place for lamentation.</p>
-                </div>
-            </div>
-            <!-- 12. Al-Aqsa Mosque -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/jerusalem_12.avif" alt="Al-Aqsa Mosque" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Al-Aqsa Mosque</h3>
-                    <p class="tg-sight-card__text">Al-Aqsa Mosque is a religious building in Jerusalem, Israel. Revered as the third holiest site in Islam, this domed mosque has deep historical roots, having been rebuilt between the 8th and 11th centuries. It occupies a significant location on Temple Mount, which is also sacred to Judaism due to its connection with the ancient Temple. The exterior and main interior spaces are usually viewable outside service times.</p>
-                </div>
-            </div>
-            <!-- 13. Dung Gate -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/jerusalem_13.avif" alt="Dung Gate" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Dung Gate</h3>
-                    <p class="tg-sight-card__text">The Dung Gate is an ancient landmark constructed in 1537 that leads pedestrians to the Western Wall. It is situated not far from the Wailing Wall and provides access to various archaeological sites such as the City of David, where Jerusalem began 3000-4000 years ago. This area has many underground paths, some of which are submerged in water, allowing visitors to explore the historical exhibition at the Davidson Center located next to the Wailing Wall.</p>
-                </div>
-            </div>
-            <!-- 14. Saint Peter in Gallicantu -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/jerusalem_14.avif" alt="Saint Peter in Gallicantu" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> ₪10
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Saint Peter in Gallicantu</h3>
-                    <p class="tg-sight-card__text">Saint Peter in Gallicantu is a visitor site in Jerusalem, Israel. Construction and early use date to around 1931. The Church of Saint Peter in Gallicantu is a hillside church built in 1931 to commemorate the denial of Jesus by the apostle Peter. It is believed to be the site where Peter denied Jesus and later accepted him after the resurrection. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 15. Zion Gate -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/jerusalem_15.avif" alt="Zion Gate" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Zion Gate</h3>
-                    <p class="tg-sight-card__text">Zion Gate, also known as the Gate of the Prophet David, connects the Armenian and Jewish Quarters of the Old City of Jerusalem with Mount Zion. Built in 1540 by Suleiman the, the gate&#x27;s stone facade is heavily pockmarked with bullet holes from the intense fighting during the 1948 Arab-Israeli War, serving as a visceral reminder of the city&#x27;s turbulent modern history.</p>
-                </div>
-            </div>
-            <!-- 16. Dormition Abbey - Hagia Maria -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/jerusalem_16.avif" alt="Dormition Abbey - Hagia Maria" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Dormition Abbey - Hagia Maria</h3>
-                    <p class="tg-sight-card__text">Dormition Abbey, also known as Hagia Maria, is a historic Christian complex located on Mount Zion in Jerusalem. It is believed to be the site where the Virgin Mary passed away and where Jesus held the Last Supper. The abbey hosts Christmas carols and a traditional Midnight Mass on Christmas Eve, followed by a communal walk to Bethlehem with the monks.</p>
-                </div>
-            </div>
-            <!-- 17. Menachem Begin Heritage Center -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/jerusalem_17.avif" alt="Menachem Begin Heritage Center" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> ₪30
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Menachem Begin Heritage Center</h3>
-                    <p class="tg-sight-card__text">The Menachem Begin Heritage Center in Jerusalem is a destination that offers a deep look at the life and impact of the former revolutionary soldier and Israeli leader. Situated on the Hinnom Ridge, it provides views of Mount Zion and the Old City walls. The center has multimedia exhibits, documentaries, and touchscreen displays that make for an engaging experience, recent archaeological findings from the First Temple period add to its uniqueness.</p>
-                </div>
-            </div>
-            <!-- 18. The First Station -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/jerusalem_18.avif" alt="The First Station" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">The First Station</h3>
-                    <p class="tg-sight-card__text">The First Station is a visitor site in Jerusalem, Israel. The First Station in Jerusalem is a cultural and entertainment hub located at a 19th-century train station. Renovated in recent years, it offers an array of experiences including local food, organic produce shopping, boutiques with local and international goods, live concerts, and themed events. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 19. Montefiore Windmill -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/jerusalem_19.avif" alt="Montefiore Windmill" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Montefiore Windmill</h3>
-                    <p class="tg-sight-card__text">Montefiore Windmill is a visitor site in Jerusalem, Israel. Construction and early use date to around 1857. Constructed in 1857, this structure was envisioned by Sir Moses Montefiore during his multiple visits to the city in the 19th century. His dream was to alleviate overcrowding within the Old City walls by establishing a new community complete with residential apartments and a windmill for flour production. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 20. Damascus Gate -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/jerusalem_20.avif" alt="Damascus Gate" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Damascus Gate</h3>
-                    <p class="tg-sight-card__text">Damascus Gate, a historic stone structure dating back to 1537, is one of the primary entrances to Jerusalem&#x27;s Old City. It is located near significant religious sites such as the believed crucifixion and resurrection site of Jesus. Annually, an evening of Christmas carols in English, Hebrew, and Arabic takes place here, nearby attractions include Ein Kerem village with its ancient holy sites like the Church of the Visitation and the Church of John the Baptist.</p>
-                </div>
-            </div>
-            <!-- 21. Herod&#x27;s Gate -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/jerusalem_21.avif" alt="Herod&#x27;s Gate" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Herod&#x27;s Gate</h3>
-                    <p class="tg-sight-card__text">Herod&#x27;s Gate is an Ottoman-era access gate located in the Old City of Jerusalem. It provides quick access to public transportation and taxis, making it convenient for reaching West Jerusalem&#x27;s city center. The gate also leads to a variety of shops and eateries. Visitors can walk through the 500-foot-long Herodian Channel in the tunnels, passing by the massive foundation stones of the Western Wall before exiting near this site.</p>
-                </div>
-            </div>
-            <!-- 22. Mt of Olives -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/jerusalem_22.avif" alt="Mt of Olives" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Mt of Olives</h3>
-                    <p class="tg-sight-card__text">The Mount of Olives, a historic mountain referenced in the Old and New Testaments of the Bible, holds significant religious and cultural importance. It has been a sacred spot for centuries and is now home to several important churches and holy sites. Notably, it was mentioned in the Scriptures as King David&#x27;s escape route during his son&#x27;s rebellion and later in the prophets. In the New, it is where Jesus taught his disciples, wept over Jerusalem, and ascended into heaven.</p>
-                </div>
-            </div>
-            <!-- 23. Shrine of the Book -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/jerusalem_23.avif" alt="Shrine of the Book" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> ₪62
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Shrine of the Book</h3>
-                    <p class="tg-sight-card__text">The Shrine of the Book, located within the Israel Museum, is a unique dome-shaped structure that houses the Dead Sea Scrolls, significant archaeological discoveries of the 20th century. These ancient biblical manuscripts were accidentally found in remote caves near Qumran and are considered a literary treasure of importance. The building&#x27;s design is inspired by the covers of the pots in which the scrolls were originally discovered.</p>
-                </div>
-            </div>
-            <!-- 24. Church of the Nativity -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/jerusalem_24.avif" alt="Church of the Nativity" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Church of the Nativity</h3>
-                    <p class="tg-sight-card__text">Church of the Nativity is a religious building in Jerusalem, Israel. The Church of the Nativity is a 4th-century heritage site built above a cave believed to be the birthplace of Jesus. The city where it stands has references dating back to the Canaanite period, but its significance grew when Queen Helena identified it as Jesus&#x27; birthplace. The exterior and main interior spaces are usually viewable outside service times.</p>
-                </div>
-            </div>
-            <!-- 25. Yad Vashem -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/jerusalem_25.avif" alt="Yad Vashem" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free (reservation fee ₪10)
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Yad Vashem</h3>
-                    <p class="tg-sight-card__text">Yad Vashem, established in 1953, is a memorial complex dedicated to honoring the six million Jewish victims of the Holocaust. It also pays tribute to the bravery of Jewish resistance fighters and non-Jews who risked their lives to save Jews during that time. Located on Har Hazikaron in Jerusalem, it includes monuments, a historical museum, an archive and research center for documenting the Holocaust, and an educational facility.</p>
-                </div>
-            </div>
-            <!-- 26. Herzl Museum -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/jerusalem_26.avif" alt="Herzl Museum" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> ₪25
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Herzl Museum</h3>
-                    <p class="tg-sight-card__text">The Herzl Museum, located at Mount Herzl in Israel, is a tribute to Theodor Herzl, the visionary behind the Zionist movement and the establishment of the State of Israel. The museum offers an interactive experience showing Herzl&#x27;s life and his significant role in advocating for a Jewish state. Visitors can explore reconstructions of his study and library, as well as view original documents, photos, and audio-visual presentations.</p>
-                </div>
-            </div>
-            <!-- 27. The Tisch Family Zoological Gardens in Jerusalem -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/jerusalem_27.avif" alt="The Tisch Family Zoological Gardens in Jerusalem" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> ₪79
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">The Tisch Family Zoological Gardens in Jerusalem</h3>
-                    <p class="tg-sight-card__text">The Tisch Family Zoological Gardens, commonly known as the Biblical Zoo, is a major wildlife park in Jerusalem. It is known for its focus on breeding and conserving animal species mentioned in the Hebrew Bible. The expansive, beautifully landscaped grounds include a large artificial lake and provide spacious, naturalistic habitats for a diverse range of global wildlife.</p>
-                </div>
-            </div>
-            <!-- 28. Israel Aquarium -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/jerusalem_28.avif" alt="Israel Aquarium" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> ₪65
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Israel Aquarium</h3>
-                    <p class="tg-sight-card__text">Israel Aquarium sits within the The Tisch Family Zoological Gardens in Jerusalem area of Jerusalem, documented in local heritage registers for its civic or cultural role. Visitors approach from the main access road and combine the visit with neighbouring heritage buildings and public spaces in the district.</p>
-                </div>
-            </div>
-            <!-- 29. Ein Lavan -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/jerusalem_29.avif" alt="Ein Lavan" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Ein Lavan</h3>
-                    <p class="tg-sight-card__text">Ein Lavan is a visitor site in Jerusalem, Israel. In the Judean Hills, Ein Lavan is a that beckons visitors year-round, but truly shines during late summer and early autumn. This natural spring features two beautifully refurbished pools, one shallow enough for little ones to splash around in and another deeper pool for those seeking a refreshing swim. The main structures and grounds are the principal points of interest.</p>
-                </div>
-            </div>
-            <!-- 30. Sataf -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/jerusalem_30.avif" alt="Sataf" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> ₪15
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Sataf</h3>
-                    <p class="tg-sight-card__text">Sataf, located just a short drive from Jerusalem, is an ancient agricultural site located the Mountains of Jerusalem. The area has millennia-old olive and almond trees, as well as vineyards that thrive on its slopes. Visitors can explore five interconnected hiking trails that offer various options for a circular walk starting from the main entrance and car park. Along the blue trail, hikers pass through olive groves, a well, and an inhabited cave from ancient times.</p>
-                </div>
-            </div>
-            <!-- 31. Ein Hemed National Park -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/jerusalem_31.avif" alt="Ein Hemed National Park" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> ₪24
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Ein Hemed National Park</h3>
-                    <p class="tg-sight-card__text">Ein Hemed National Park is a park in Jerusalem, Israel. Ein Hemed National Park is a public park in Jerusalem, Israel. Paths and lawns provide the main public walking areas. Local maps mark Ein Hemed National Park inside Jerusalem. Approaches are signed from nearby streets in Jerusalem, Israel.</p>
-                </div>
-            </div>
-            <!-- 32. Nebi Samuel National Park -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/jerusalem_32.avif" alt="Nebi Samuel National Park" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Nebi Samuel National Park</h3>
-                    <p class="tg-sight-card__text">Nebi Samuel National Park is a park in Jerusalem, Israel. Nebi Samuel National Park is a public park in Jerusalem, Israel. Paths and lawns provide the main public walking areas. Local maps mark Nebi Samuel National Park inside Jerusalem. Approaches are signed from nearby streets in Jerusalem, Israel.</p>
-                </div>
-            </div>
+                </dl>
             </div>
         </section>
-        </div>
+
+        <section id="atlas" class="destination-atlas" aria-labelledby="atlas-title">
+            <div class="page-shell destination-atlas__layout">
+                <div class="destination-atlas__brief">
+                    <p class="destination-atlas__index">City atlas</p>
+                    <h2 id="atlas-title">Plot the city.</h2>
+                    <p class="destination-atlas__copy">Zoom, pan, and open any marker to focus that place in the catalog below.</p>
+                    <dl class="destination-atlas__facts" aria-label="Map coverage">
+                        <div>
+                            <dt>Plotted</dt>
+                            <dd>32 places</dd>
+                        </div>
+                        <div>
+                            <dt>Center</dt>
+                            <dd>31.7742&deg; N<br>35.2106&deg; E</dd>
+                        </div>
+                    </dl>
+                </div>
+                <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Jerusalem attractions"></div>
+            </div>
+        </section>
+
+        <section id="places" class="destination-places" aria-labelledby="places-title">
+            <div class="page-shell">
+                <div class="destination-chapter">
+                    <h2 id="places-title" class="destination-chapter__heading">32 ways into<br>Jerusalem.</h2>
+                    <p class="destination-chapter__copy">Browse the index, open a location, and read the essentials without scrolling through a long catalog. Each entry contains its image, admission note, and contextual guide.</p>
+                </div>
+                <div class="places-explorer" data-places-explorer>
+                    <aside class="places-explorer__rail" aria-label="Place index">
+                        <div class="places-explorer__toolbar">
+                            <label class="places-explorer__filter-label" for="places-filter">Filter places</label>
+                            <input
+                                id="places-filter"
+                                class="places-explorer__filter"
+                                type="search"
+                                data-places-filter
+                                placeholder="Search by name"
+                                autocomplete="off"
+                            >
+                            <p class="places-explorer__meta"><strong data-places-count>32</strong> of 32 shown</p>
+                        </div>
+                        <ul class="places-explorer__list" role="listbox" aria-label="Places in Jerusalem" data-places-list data-lenis-prevent data-tg-scroll-surface>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option is-active"
+                            role="option"
+                            id="place-option-1"
+                            data-place-option
+                            data-place-index="0"
+                            data-place-name="Church of the Holy Sepulchre"
+                            data-place-lat="31.778481"
+                            data-place-lng="35.2296"
+                            aria-selected="true"
+                            tabindex="0"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">01</span>
+                            <span class="places-explorer__option-name">Church of the Holy Sepulchre</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-2"
+                            data-place-option
+                            data-place-index="1"
+                            data-place-name="New Gate"
+                            data-place-lat="31.7792943"
+                            data-place-lng="35.2261752"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">02</span>
+                            <span class="places-explorer__option-name">New Gate</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-3"
+                            data-place-option
+                            data-place-index="2"
+                            data-place-name="Alrov Mamilla Avenue"
+                            data-place-lat="31.777785"
+                            data-place-lng="35.223819"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">03</span>
+                            <span class="places-explorer__option-name">Alrov Mamilla Avenue</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-4"
+                            data-place-option
+                            data-place-index="3"
+                            data-place-name="Museum of The Underground Prisoners"
+                            data-place-lat="31.781093"
+                            data-place-lng="35.224094"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">04</span>
+                            <span class="places-explorer__option-name">Museum of The Underground Prisoners</span>
+                            <span class="places-explorer__option-price">₪15</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-5"
+                            data-place-option
+                            data-place-index="4"
+                            data-place-name="Friends of Zion Museum"
+                            data-place-lat="31.780129"
+                            data-place-lng="35.220295"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">05</span>
+                            <span class="places-explorer__option-name">Friends of Zion Museum</span>
+                            <span class="places-explorer__option-price">₪45</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-6"
+                            data-place-option
+                            data-place-index="5"
+                            data-place-name="Mahaneh Yehudah Market"
+                            data-place-lat="31.7848355"
+                            data-place-lng="35.2126355"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">06</span>
+                            <span class="places-explorer__option-name">Mahaneh Yehudah Market</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-7"
+                            data-place-option
+                            data-place-index="6"
+                            data-place-name="Belz Great Synagogue"
+                            data-place-lat="31.79721"
+                            data-place-lng="35.207669"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">07</span>
+                            <span class="places-explorer__option-name">Belz Great Synagogue</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-8"
+                            data-place-option
+                            data-place-index="7"
+                            data-place-name="Gethsemane"
+                            data-place-lat="31.77931"
+                            data-place-lng="35.23978"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">08</span>
+                            <span class="places-explorer__option-name">Gethsemane</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-9"
+                            data-place-option
+                            data-place-index="8"
+                            data-place-name="St. Anne&#x27;s Church, Jerusalem"
+                            data-place-lat="31.780888"
+                            data-place-lng="35.236126"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">09</span>
+                            <span class="places-explorer__option-name">St. Anne&#x27;s Church, Jerusalem</span>
+                            <span class="places-explorer__option-price">₪12</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-10"
+                            data-place-option
+                            data-place-index="9"
+                            data-place-name="Dome of the Rock"
+                            data-place-lat="31.778019"
+                            data-place-lng="35.235408"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">10</span>
+                            <span class="places-explorer__option-name">Dome of the Rock</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-11"
+                            data-place-option
+                            data-place-index="10"
+                            data-place-name="Western Wall"
+                            data-place-lat="31.776719"
+                            data-place-lng="35.234509"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">11</span>
+                            <span class="places-explorer__option-name">Western Wall</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-12"
+                            data-place-option
+                            data-place-index="11"
+                            data-place-name="Al-Aqsa Mosque"
+                            data-place-lat="31.776069"
+                            data-place-lng="35.23578"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">12</span>
+                            <span class="places-explorer__option-name">Al-Aqsa Mosque</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-13"
+                            data-place-option
+                            data-place-index="12"
+                            data-place-name="Dung Gate"
+                            data-place-lat="31.774827"
+                            data-place-lng="35.23414"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">13</span>
+                            <span class="places-explorer__option-name">Dung Gate</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-14"
+                            data-place-option
+                            data-place-index="13"
+                            data-place-name="Saint Peter in Gallicantu"
+                            data-place-lat="31.771288"
+                            data-place-lng="35.232111"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">14</span>
+                            <span class="places-explorer__option-name">Saint Peter in Gallicantu</span>
+                            <span class="places-explorer__option-price">₪10</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-15"
+                            data-place-option
+                            data-place-index="14"
+                            data-place-name="Zion Gate"
+                            data-place-lat="31.772842"
+                            data-place-lng="35.229724"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">15</span>
+                            <span class="places-explorer__option-name">Zion Gate</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-16"
+                            data-place-option
+                            data-place-index="15"
+                            data-place-name="Dormition Abbey - Hagia Maria"
+                            data-place-lat="31.771667"
+                            data-place-lng="35.229044"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">16</span>
+                            <span class="places-explorer__option-name">Dormition Abbey - Hagia Maria</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-17"
+                            data-place-option
+                            data-place-index="16"
+                            data-place-name="Menachem Begin Heritage Center"
+                            data-place-lat="31.76933"
+                            data-place-lng="35.225435"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">17</span>
+                            <span class="places-explorer__option-name">Menachem Begin Heritage Center</span>
+                            <span class="places-explorer__option-price">₪30</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-18"
+                            data-place-option
+                            data-place-index="17"
+                            data-place-name="The First Station"
+                            data-place-lat="31.767219"
+                            data-place-lng="35.224282"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">18</span>
+                            <span class="places-explorer__option-name">The First Station</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-19"
+                            data-place-option
+                            data-place-index="18"
+                            data-place-name="Montefiore Windmill"
+                            data-place-lat="31.771505"
+                            data-place-lng="35.223994"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">19</span>
+                            <span class="places-explorer__option-name">Montefiore Windmill</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-20"
+                            data-place-option
+                            data-place-index="19"
+                            data-place-name="Damascus Gate"
+                            data-place-lat="31.781625"
+                            data-place-lng="35.230408"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">20</span>
+                            <span class="places-explorer__option-name">Damascus Gate</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-21"
+                            data-place-option
+                            data-place-index="20"
+                            data-place-name="Herod&#x27;s Gate"
+                            data-place-lat="31.782949"
+                            data-place-lng="35.233669"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">21</span>
+                            <span class="places-explorer__option-name">Herod&#x27;s Gate</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-22"
+                            data-place-option
+                            data-place-index="21"
+                            data-place-name="Mt of Olives"
+                            data-place-lat="31.777932"
+                            data-place-lng="35.245698"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">22</span>
+                            <span class="places-explorer__option-name">Mt of Olives</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-23"
+                            data-place-option
+                            data-place-index="22"
+                            data-place-name="Shrine of the Book"
+                            data-place-lat="31.773466"
+                            data-place-lng="35.202982"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">23</span>
+                            <span class="places-explorer__option-name">Shrine of the Book</span>
+                            <span class="places-explorer__option-price">₪62</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-24"
+                            data-place-option
+                            data-place-index="23"
+                            data-place-name="Church of the Nativity"
+                            data-place-lat="31.704303"
+                            data-place-lng="35.207529"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">24</span>
+                            <span class="places-explorer__option-name">Church of the Nativity</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-25"
+                            data-place-option
+                            data-place-index="24"
+                            data-place-name="Yad Vashem"
+                            data-place-lat="31.774194"
+                            data-place-lng="35.175302"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">25</span>
+                            <span class="places-explorer__option-name">Yad Vashem</span>
+                            <span class="places-explorer__option-price">Free (reservation fee ₪10)</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-26"
+                            data-place-option
+                            data-place-index="25"
+                            data-place-name="Herzl Museum"
+                            data-place-lat="31.772442"
+                            data-place-lng="35.181467"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">26</span>
+                            <span class="places-explorer__option-name">Herzl Museum</span>
+                            <span class="places-explorer__option-price">₪25</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-27"
+                            data-place-option
+                            data-place-index="26"
+                            data-place-name="The Tisch Family Zoological Gardens in Jerusalem"
+                            data-place-lat="31.74622"
+                            data-place-lng="35.177338"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">27</span>
+                            <span class="places-explorer__option-name">The Tisch Family Zoological Gardens in Jerusalem</span>
+                            <span class="places-explorer__option-price">₪79</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-28"
+                            data-place-option
+                            data-place-index="27"
+                            data-place-name="Israel Aquarium"
+                            data-place-lat="31.744709"
+                            data-place-lng="35.1657752"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">28</span>
+                            <span class="places-explorer__option-name">Israel Aquarium</span>
+                            <span class="places-explorer__option-price">₪65</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-29"
+                            data-place-option
+                            data-place-index="28"
+                            data-place-name="Ein Lavan"
+                            data-place-lat="31.74928"
+                            data-place-lng="35.159371"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">29</span>
+                            <span class="places-explorer__option-name">Ein Lavan</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-30"
+                            data-place-option
+                            data-place-index="29"
+                            data-place-name="Sataf"
+                            data-place-lat="31.771742"
+                            data-place-lng="35.127656"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">30</span>
+                            <span class="places-explorer__option-name">Sataf</span>
+                            <span class="places-explorer__option-price">₪15</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-31"
+                            data-place-option
+                            data-place-index="30"
+                            data-place-name="Ein Hemed National Park"
+                            data-place-lat="31.794795"
+                            data-place-lng="35.127566"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">31</span>
+                            <span class="places-explorer__option-name">Ein Hemed National Park</span>
+                            <span class="places-explorer__option-price">₪24</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-32"
+                            data-place-option
+                            data-place-index="31"
+                            data-place-name="Nebi Samuel National Park"
+                            data-place-lat="31.833024"
+                            data-place-lng="35.180546"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">32</span>
+                            <span class="places-explorer__option-name">Nebi Samuel National Park</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                        </ul>
+                        <p class="places-explorer__empty" data-places-empty hidden>No places match that filter.</p>
+                    </aside>
+                    <div class="places-explorer__stage" data-places-stage>
+                    <nav class="places-stage__stepper" data-places-stepper aria-label="Browse places" hidden>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--prev" data-places-prev aria-label="Previous place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M14.75 5.25 L8.25 12 l6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M9.1 12 H17.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--next" data-places-next aria-label="Next place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M9.25 5.25 L15.75 12 l-6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M6.6 12 H14.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                    </nav>
+                <article
+                    class="places-stage__panel is-active"
+                    data-place-panel
+                    data-place-index="0"
+                    aria-labelledby="place-title-1"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/jerusalem_1.avif" alt="Church of the Holy Sepulchre" width="1200" height="750" loading="eager" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">01</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-1" class="places-stage__title">Church of the Holy Sepulchre</h3>
+                        <p class="places-stage__text">The Church of the Holy Sepulchre is a historic basilica dating back to the 4th century and is believed by some Christians to be the site of Jesus&#x27;s tomb. The church holds historical significance, with its roots tracing back through thousands of years of Jewish history, from Byzantine Rule to the British Mandate. Visitors can experience a whirlwind tour that includes stops at sites like the Western Wall, Via Dolorosa, and Bethlehem.</p>
+                        <p class="places-stage__coords">31.7785&deg; N / 35.2296&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="1"
+                    aria-labelledby="place-title-2"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/jerusalem_2.avif" alt="New Gate" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">02</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-2" class="places-stage__title">New Gate</h3>
+                        <p class="places-stage__text">New Gate is a visitor site in Jerusalem, Israel. New Gate remains part of the public visitor circuit in Jerusalem. The main structures and grounds are the principal points of interest. Local maps mark New Gate inside Jerusalem. Approaches are signed from nearby streets in Jerusalem, Israel.</p>
+                        <p class="places-stage__coords">31.7793&deg; N / 35.2262&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="2"
+                    aria-labelledby="place-title-3"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/jerusalem_3.avif" alt="Alrov Mamilla Avenue" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">03</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-3" class="places-stage__title">Alrov Mamilla Avenue</h3>
+                        <p class="places-stage__text">Alrov Mamilla Avenue is a visitor site in Jerusalem, Israel. Alrov Mamilla Avenue, also known as Mamilla Avenue, is a and historic shopping destination located near the Old City in Jerusalem. Visitors can enjoy street artists, painters, musicians, cafes, and dining options along the pedestrian mall. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">31.7778&deg; N / 35.2238&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="3"
+                    aria-labelledby="place-title-4"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/jerusalem_4.avif" alt="Museum of The Underground Prisoners" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">04</span>
+                            <span class="places-stage__admission"><span>Admission</span>₪15</span>
+                        </p>
+                        <h3 id="place-title-4" class="places-stage__title">Museum of The Underground Prisoners</h3>
+                        <p class="places-stage__text">This museum tells the story of a group of Jewish fighters who operated an underground network in pre-state Israel. The building where the museum is located served as a prison during the British occupation of Palestine, and many sympathizers with the Jewish cause were imprisoned here.</p>
+                        <p class="places-stage__coords">31.7811&deg; N / 35.2241&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="4"
+                    aria-labelledby="place-title-5"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/jerusalem_5.avif" alt="Friends of Zion Museum" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">05</span>
+                            <span class="places-stage__admission"><span>Admission</span>₪45</span>
+                        </p>
+                        <h3 id="place-title-5" class="places-stage__title">Friends of Zion Museum</h3>
+                        <p class="places-stage__text">Located Jerusalem, the Friends of Zion Museum is a evidence of the long running friendship between Jewish and Christian communities over time. This modern facility employs recent technology, including immersive 3D movies, surround sound, and interactive touchscreens to guide visitors through a narrative that spans over 3,000 years.</p>
+                        <p class="places-stage__coords">31.7801&deg; N / 35.2203&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="5"
+                    aria-labelledby="place-title-6"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/jerusalem_6.avif" alt="Mahaneh Yehudah Market" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">06</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-6" class="places-stage__title">Mahaneh Yehudah Market</h3>
+                        <p class="places-stage__text">Mahaneh Yehudah Market is a documented market or commercial centre in Jerusalem, Israel, listed in local civic guides for its role in regional trade and daily commerce. The site operates during standard market hours and is open to visitors without charge for browsing. Travellers enter from the surrounding streets and combine the visit with nearby food vendors and craft stalls.</p>
+                        <p class="places-stage__coords">31.7848&deg; N / 35.2126&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="6"
+                    aria-labelledby="place-title-7"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/jerusalem_7.avif" alt="Belz Great Synagogue" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">07</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-7" class="places-stage__title">Belz Great Synagogue</h3>
+                        <p class="places-stage__text">The Belz Great Synagogue in Jerusalem is a tribute to Jewish heritage, far surpassing its original European counterpart. This notable building is not only the largest synagogue in Jerusalem but also potentially the largest in the world, accommodating up to 7,000 worshippers within its grand central sanctuary. Its striking design draws inspiration from the Second Temple and becomes even more enchanting when illuminated at night.</p>
+                        <p class="places-stage__coords">31.7972&deg; N / 35.2077&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="7"
+                    aria-labelledby="place-title-8"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/jerusalem_8.avif" alt="Gethsemane" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">08</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-8" class="places-stage__title">Gethsemane</h3>
+                        <p class="places-stage__text">Gethsemane is a visitor site in Jerusalem, Israel. The Garden of Gethsemane, located at the base of the Mount of Olives in Jerusalem, is a remarkable site steeped in Christian heritage and historical depth. The main structures and grounds are the principal points of interest.</p>
+                        <p class="places-stage__coords">31.7793&deg; N / 35.2398&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="8"
+                    aria-labelledby="place-title-9"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/jerusalem_9.avif" alt="St. Anne&#x27;s Church, Jerusalem" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">09</span>
+                            <span class="places-stage__admission"><span>Admission</span>₪12</span>
+                        </p>
+                        <h3 id="place-title-9" class="places-stage__title">St. Anne&#x27;s Church, Jerusalem</h3>
+                        <p class="places-stage__text">St. Anne&#x27;s Church, Jerusalem is a religious building in Jerusalem, Israel. Records associated with the site include 1138. Anne&#x27;s Church in Jerusalem is a restored Romanesque church with a rich history dating back to its completion in 1138 by the Crusaders. Situated near the beginning of the Via Dolorosa, it holds significance as the traditional birthplace of the Virgin Mary. The exterior and main interior spaces are usually viewable outside service times.</p>
+                        <p class="places-stage__coords">31.7809&deg; N / 35.2361&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="9"
+                    aria-labelledby="place-title-10"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/jerusalem_10.avif" alt="Dome of the Rock" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">10</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-10" class="places-stage__title">Dome of the Rock</h3>
+                        <p class="places-stage__text">The Dome of the Rock is an Islamic shrine with a gold-topped structure built around 690AD. It holds great significance for Christians and Jews as well. Situated on the Temple Mount, it was completed under the rule of Umayyad Caliph Abd al-Malik and has been covered in gold twice in the 20th century. Despite common misconceptions, it is not a mosque but rather a shrine to the Foundation Stone, important in both Torah and Islamic beliefs.</p>
+                        <p class="places-stage__coords">31.7780&deg; N / 35.2354&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="10"
+                    aria-labelledby="place-title-11"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/jerusalem_11.avif" alt="Western Wall" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">11</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-11" class="places-stage__title">Western Wall</h3>
+                        <p class="places-stage__text">The Western Wall, also known as the Wailing Wall, is a significant site in the Jewish Quarter of Jerusalem. It is a remnant of the ancient wall that surrounded the Temple courtyard and holds great religious and historical importance for Jewish people. Visitors can witness worshippers reciting verses or leaving written prayers in its stones. The wall was built around 2000 years ago to support Temple Mount, and after the destruction of the Second Temple, it became a place for lamentation.</p>
+                        <p class="places-stage__coords">31.7767&deg; N / 35.2345&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="11"
+                    aria-labelledby="place-title-12"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/jerusalem_12.avif" alt="Al-Aqsa Mosque" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">12</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-12" class="places-stage__title">Al-Aqsa Mosque</h3>
+                        <p class="places-stage__text">Al-Aqsa Mosque is a religious building in Jerusalem, Israel. Revered as the third holiest site in Islam, this domed mosque has deep historical roots, having been rebuilt between the 8th and 11th centuries. It occupies a significant location on Temple Mount, which is also sacred to Judaism due to its connection with the ancient Temple. The exterior and main interior spaces are usually viewable outside service times.</p>
+                        <p class="places-stage__coords">31.7761&deg; N / 35.2358&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="12"
+                    aria-labelledby="place-title-13"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/jerusalem_13.avif" alt="Dung Gate" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">13</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-13" class="places-stage__title">Dung Gate</h3>
+                        <p class="places-stage__text">The Dung Gate is an ancient landmark constructed in 1537 that leads pedestrians to the Western Wall. It is situated not far from the Wailing Wall and provides access to various archaeological sites such as the City of David, where Jerusalem began 3000-4000 years ago. This area has many underground paths, some of which are submerged in water, allowing visitors to explore the historical exhibition at the Davidson Center located next to the Wailing Wall.</p>
+                        <p class="places-stage__coords">31.7748&deg; N / 35.2341&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="13"
+                    aria-labelledby="place-title-14"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/jerusalem_14.avif" alt="Saint Peter in Gallicantu" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">14</span>
+                            <span class="places-stage__admission"><span>Admission</span>₪10</span>
+                        </p>
+                        <h3 id="place-title-14" class="places-stage__title">Saint Peter in Gallicantu</h3>
+                        <p class="places-stage__text">Saint Peter in Gallicantu is a visitor site in Jerusalem, Israel. Construction and early use date to around 1931. The Church of Saint Peter in Gallicantu is a hillside church built in 1931 to commemorate the denial of Jesus by the apostle Peter. It is believed to be the site where Peter denied Jesus and later accepted him after the resurrection. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">31.7713&deg; N / 35.2321&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="14"
+                    aria-labelledby="place-title-15"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/jerusalem_15.avif" alt="Zion Gate" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">15</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-15" class="places-stage__title">Zion Gate</h3>
+                        <p class="places-stage__text">Zion Gate, also known as the Gate of the Prophet David, connects the Armenian and Jewish Quarters of the Old City of Jerusalem with Mount Zion. Built in 1540 by Suleiman the, the gate&#x27;s stone facade is heavily pockmarked with bullet holes from the intense fighting during the 1948 Arab-Israeli War, serving as a visceral reminder of the city&#x27;s turbulent modern history.</p>
+                        <p class="places-stage__coords">31.7728&deg; N / 35.2297&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="15"
+                    aria-labelledby="place-title-16"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/jerusalem_16.avif" alt="Dormition Abbey - Hagia Maria" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">16</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-16" class="places-stage__title">Dormition Abbey - Hagia Maria</h3>
+                        <p class="places-stage__text">Dormition Abbey, also known as Hagia Maria, is a historic Christian complex located on Mount Zion in Jerusalem. It is believed to be the site where the Virgin Mary passed away and where Jesus held the Last Supper. The abbey hosts Christmas carols and a traditional Midnight Mass on Christmas Eve, followed by a communal walk to Bethlehem with the monks.</p>
+                        <p class="places-stage__coords">31.7717&deg; N / 35.2290&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="16"
+                    aria-labelledby="place-title-17"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/jerusalem_17.avif" alt="Menachem Begin Heritage Center" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">17</span>
+                            <span class="places-stage__admission"><span>Admission</span>₪30</span>
+                        </p>
+                        <h3 id="place-title-17" class="places-stage__title">Menachem Begin Heritage Center</h3>
+                        <p class="places-stage__text">The Menachem Begin Heritage Center in Jerusalem is a destination that offers a deep look at the life and impact of the former revolutionary soldier and Israeli leader. Situated on the Hinnom Ridge, it provides views of Mount Zion and the Old City walls. The center has multimedia exhibits, documentaries, and touchscreen displays that make for an engaging experience, recent archaeological findings from the First Temple period add to its uniqueness.</p>
+                        <p class="places-stage__coords">31.7693&deg; N / 35.2254&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="17"
+                    aria-labelledby="place-title-18"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/jerusalem_18.avif" alt="The First Station" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">18</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-18" class="places-stage__title">The First Station</h3>
+                        <p class="places-stage__text">The First Station is a visitor site in Jerusalem, Israel. The First Station in Jerusalem is a cultural and entertainment hub located at a 19th-century train station. Renovated in recent years, it offers an array of experiences including local food, organic produce shopping, boutiques with local and international goods, live concerts, and themed events. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">31.7672&deg; N / 35.2243&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="18"
+                    aria-labelledby="place-title-19"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/jerusalem_19.avif" alt="Montefiore Windmill" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">19</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-19" class="places-stage__title">Montefiore Windmill</h3>
+                        <p class="places-stage__text">Montefiore Windmill is a visitor site in Jerusalem, Israel. Construction and early use date to around 1857. Constructed in 1857, this structure was envisioned by Sir Moses Montefiore during his multiple visits to the city in the 19th century. His dream was to alleviate overcrowding within the Old City walls by establishing a new community complete with residential apartments and a windmill for flour production. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">31.7715&deg; N / 35.2240&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="19"
+                    aria-labelledby="place-title-20"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/jerusalem_20.avif" alt="Damascus Gate" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">20</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-20" class="places-stage__title">Damascus Gate</h3>
+                        <p class="places-stage__text">Damascus Gate, a historic stone structure dating back to 1537, is one of the primary entrances to Jerusalem&#x27;s Old City. It is located near significant religious sites such as the believed crucifixion and resurrection site of Jesus. Annually, an evening of Christmas carols in English, Hebrew, and Arabic takes place here, nearby attractions include Ein Kerem village with its ancient holy sites like the Church of the Visitation and the Church of John the Baptist.</p>
+                        <p class="places-stage__coords">31.7816&deg; N / 35.2304&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="20"
+                    aria-labelledby="place-title-21"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/jerusalem_21.avif" alt="Herod&#x27;s Gate" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">21</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-21" class="places-stage__title">Herod&#x27;s Gate</h3>
+                        <p class="places-stage__text">Herod&#x27;s Gate is an Ottoman-era access gate located in the Old City of Jerusalem. It provides quick access to public transportation and taxis, making it convenient for reaching West Jerusalem&#x27;s city center. The gate also leads to a variety of shops and eateries. Visitors can walk through the 500-foot-long Herodian Channel in the tunnels, passing by the massive foundation stones of the Western Wall before exiting near this site.</p>
+                        <p class="places-stage__coords">31.7829&deg; N / 35.2337&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="21"
+                    aria-labelledby="place-title-22"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/jerusalem_22.avif" alt="Mt of Olives" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">22</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-22" class="places-stage__title">Mt of Olives</h3>
+                        <p class="places-stage__text">The Mount of Olives, a historic mountain referenced in the Old and New Testaments of the Bible, holds significant religious and cultural importance. It has been a sacred spot for centuries and is now home to several important churches and holy sites. Notably, it was mentioned in the Scriptures as King David&#x27;s escape route during his son&#x27;s rebellion and later in the prophets. In the New, it is where Jesus taught his disciples, wept over Jerusalem, and ascended into heaven.</p>
+                        <p class="places-stage__coords">31.7779&deg; N / 35.2457&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="22"
+                    aria-labelledby="place-title-23"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/jerusalem_23.avif" alt="Shrine of the Book" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">23</span>
+                            <span class="places-stage__admission"><span>Admission</span>₪62</span>
+                        </p>
+                        <h3 id="place-title-23" class="places-stage__title">Shrine of the Book</h3>
+                        <p class="places-stage__text">The Shrine of the Book, located within the Israel Museum, is a unique dome-shaped structure that houses the Dead Sea Scrolls, significant archaeological discoveries of the 20th century. These ancient biblical manuscripts were accidentally found in remote caves near Qumran and are considered a literary treasure of importance. The building&#x27;s design is inspired by the covers of the pots in which the scrolls were originally discovered.</p>
+                        <p class="places-stage__coords">31.7735&deg; N / 35.2030&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="23"
+                    aria-labelledby="place-title-24"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/jerusalem_24.avif" alt="Church of the Nativity" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">24</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-24" class="places-stage__title">Church of the Nativity</h3>
+                        <p class="places-stage__text">Church of the Nativity is a religious building in Jerusalem, Israel. The Church of the Nativity is a 4th-century heritage site built above a cave believed to be the birthplace of Jesus. The city where it stands has references dating back to the Canaanite period, but its significance grew when Queen Helena identified it as Jesus&#x27; birthplace. The exterior and main interior spaces are usually viewable outside service times.</p>
+                        <p class="places-stage__coords">31.7043&deg; N / 35.2075&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="24"
+                    aria-labelledby="place-title-25"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/jerusalem_25.avif" alt="Yad Vashem" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">25</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free (reservation fee ₪10)</span>
+                        </p>
+                        <h3 id="place-title-25" class="places-stage__title">Yad Vashem</h3>
+                        <p class="places-stage__text">Yad Vashem, established in 1953, is a memorial complex dedicated to honoring the six million Jewish victims of the Holocaust. It also pays tribute to the bravery of Jewish resistance fighters and non-Jews who risked their lives to save Jews during that time. Located on Har Hazikaron in Jerusalem, it includes monuments, a historical museum, an archive and research center for documenting the Holocaust, and an educational facility.</p>
+                        <p class="places-stage__coords">31.7742&deg; N / 35.1753&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="25"
+                    aria-labelledby="place-title-26"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/jerusalem_26.avif" alt="Herzl Museum" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">26</span>
+                            <span class="places-stage__admission"><span>Admission</span>₪25</span>
+                        </p>
+                        <h3 id="place-title-26" class="places-stage__title">Herzl Museum</h3>
+                        <p class="places-stage__text">The Herzl Museum, located at Mount Herzl in Israel, is a tribute to Theodor Herzl, the visionary behind the Zionist movement and the establishment of the State of Israel. The museum offers an interactive experience showing Herzl&#x27;s life and his significant role in advocating for a Jewish state. Visitors can explore reconstructions of his study and library, as well as view original documents, photos, and audio-visual presentations.</p>
+                        <p class="places-stage__coords">31.7724&deg; N / 35.1815&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="26"
+                    aria-labelledby="place-title-27"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/jerusalem_27.avif" alt="The Tisch Family Zoological Gardens in Jerusalem" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">27</span>
+                            <span class="places-stage__admission"><span>Admission</span>₪79</span>
+                        </p>
+                        <h3 id="place-title-27" class="places-stage__title">The Tisch Family Zoological Gardens in Jerusalem</h3>
+                        <p class="places-stage__text">The Tisch Family Zoological Gardens, commonly known as the Biblical Zoo, is a major wildlife park in Jerusalem. It is known for its focus on breeding and conserving animal species mentioned in the Hebrew Bible. The expansive, beautifully landscaped grounds include a large artificial lake and provide spacious, naturalistic habitats for a diverse range of global wildlife.</p>
+                        <p class="places-stage__coords">31.7462&deg; N / 35.1773&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="27"
+                    aria-labelledby="place-title-28"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/jerusalem_28.avif" alt="Israel Aquarium" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">28</span>
+                            <span class="places-stage__admission"><span>Admission</span>₪65</span>
+                        </p>
+                        <h3 id="place-title-28" class="places-stage__title">Israel Aquarium</h3>
+                        <p class="places-stage__text">Israel Aquarium sits within the The Tisch Family Zoological Gardens in Jerusalem area of Jerusalem, documented in local heritage registers for its civic or cultural role. Visitors approach from the main access road and combine the visit with neighbouring heritage buildings and public spaces in the district.</p>
+                        <p class="places-stage__coords">31.7447&deg; N / 35.1658&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="28"
+                    aria-labelledby="place-title-29"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/jerusalem_29.avif" alt="Ein Lavan" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">29</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-29" class="places-stage__title">Ein Lavan</h3>
+                        <p class="places-stage__text">Ein Lavan is a visitor site in Jerusalem, Israel. In the Judean Hills, Ein Lavan is a that beckons visitors year-round, but truly shines during late summer and early autumn. This natural spring features two beautifully refurbished pools, one shallow enough for little ones to splash around in and another deeper pool for those seeking a refreshing swim. The main structures and grounds are the principal points of interest.</p>
+                        <p class="places-stage__coords">31.7493&deg; N / 35.1594&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="29"
+                    aria-labelledby="place-title-30"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/jerusalem_30.avif" alt="Sataf" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">30</span>
+                            <span class="places-stage__admission"><span>Admission</span>₪15</span>
+                        </p>
+                        <h3 id="place-title-30" class="places-stage__title">Sataf</h3>
+                        <p class="places-stage__text">Sataf, located just a short drive from Jerusalem, is an ancient agricultural site located the Mountains of Jerusalem. The area has millennia-old olive and almond trees, as well as vineyards that thrive on its slopes. Visitors can explore five interconnected hiking trails that offer various options for a circular walk starting from the main entrance and car park. Along the blue trail, hikers pass through olive groves, a well, and an inhabited cave from ancient times.</p>
+                        <p class="places-stage__coords">31.7717&deg; N / 35.1277&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="30"
+                    aria-labelledby="place-title-31"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/jerusalem_31.avif" alt="Ein Hemed National Park" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">31</span>
+                            <span class="places-stage__admission"><span>Admission</span>₪24</span>
+                        </p>
+                        <h3 id="place-title-31" class="places-stage__title">Ein Hemed National Park</h3>
+                        <p class="places-stage__text">Ein Hemed National Park is a park in Jerusalem, Israel. Ein Hemed National Park is a public park in Jerusalem, Israel. Paths and lawns provide the main public walking areas. Local maps mark Ein Hemed National Park inside Jerusalem. Approaches are signed from nearby streets in Jerusalem, Israel.</p>
+                        <p class="places-stage__coords">31.7948&deg; N / 35.1276&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="31"
+                    aria-labelledby="place-title-32"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/jerusalem_32.avif" alt="Nebi Samuel National Park" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">32</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-32" class="places-stage__title">Nebi Samuel National Park</h3>
+                        <p class="places-stage__text">Nebi Samuel National Park is a park in Jerusalem, Israel. Nebi Samuel National Park is a public park in Jerusalem, Israel. Paths and lawns provide the main public walking areas. Local maps mark Nebi Samuel National Park inside Jerusalem. Approaches are signed from nearby streets in Jerusalem, Israel.</p>
+                        <p class="places-stage__coords">31.8330&deg; N / 35.1805&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="site-footer">
         <div class="page-shell">
             <div class="site-footer__bar">
-                <a href="../../index.html" class="site-footer__brand" aria-label="Global Explorer home">
-                    <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
+                <a href="../../index.html" class="site-footer__mark" aria-label="Global Explorer home">
+                    <svg width="24" height="24" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
-                    <span class="site-footer__brand-name font-display">Global Explorer</span>
+                    Global Explorer
                 </a>
-                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides <span>Jerusalem: 32 places across Jerusalem.</span></p>
             </div>
         </div>
     </footer>
 
     <button id="scrollTopBtn" type="button" aria-label="Scroll to top">
-        <i class="ph ph-arrow-up" aria-hidden="true"></i>
+        <svg viewBox="0 0 24 24" width="1.15em" height="1.15em" aria-hidden="true" focusable="false">
+            <path d="M12 5.25 V18.75 M12 5.25 L6.75 10.5 M12 5.25 L17.25 10.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
     </button>
 
     <script defer src="../../assets/dev-destination-toggle.js"></script>
     <script defer src="../../assets/tg-page-chrome.js"></script>
     <script defer src="../../assets/tg-destination-map.js"></script>
+    <script defer src="../../assets/tg-destination-places.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const map = L.map('map').setView([31.774225, 35.210623], 14);
+            const map = L.map('map');
             L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
                 attribution: '&copy; Google Maps',
                 maxZoom: 20
             }).addTo(map);
-            const locations = [{"name": "Church of the Holy Sepulchre", "lat": 31.778481, "lng": 35.2296}, {"name": "New Gate", "lat": 31.7792943, "lng": 35.2261752}, {"name": "Alrov Mamilla Avenue", "lat": 31.777785, "lng": 35.223819}, {"name": "Museum of The Underground Prisoners", "lat": 31.781093, "lng": 35.224094}, {"name": "Friends of Zion Museum", "lat": 31.780129, "lng": 35.220295}, {"name": "Mahaneh Yehudah Market", "lat": 31.7848355, "lng": 35.2126355}, {"name": "Belz Great Synagogue", "lat": 31.79721, "lng": 35.207669}, {"name": "Gethsemane", "lat": 31.77931, "lng": 35.23978}, {"name": "St. Anne's Church, Jerusalem", "lat": 31.780888, "lng": 35.236126}, {"name": "Dome of the Rock", "lat": 31.778019, "lng": 35.235408}, {"name": "Western Wall", "lat": 31.776719, "lng": 35.234509}, {"name": "Al-Aqsa Mosque", "lat": 31.776069, "lng": 35.23578}, {"name": "Dung Gate", "lat": 31.774827, "lng": 35.23414}, {"name": "Saint Peter in Gallicantu", "lat": 31.771288, "lng": 35.232111}, {"name": "Zion Gate", "lat": 31.772842, "lng": 35.229724}, {"name": "Dormition Abbey - Hagia Maria", "lat": 31.771667, "lng": 35.229044}, {"name": "Menachem Begin Heritage Center", "lat": 31.76933, "lng": 35.225435}, {"name": "The First Station", "lat": 31.767219, "lng": 35.224282}, {"name": "Montefiore Windmill", "lat": 31.771505, "lng": 35.223994}, {"name": "Damascus Gate", "lat": 31.781625, "lng": 35.230408}, {"name": "Herod's Gate", "lat": 31.782949, "lng": 35.233669}, {"name": "Mt of Olives", "lat": 31.777932, "lng": 35.245698}, {"name": "Shrine of the Book", "lat": 31.773466, "lng": 35.202982}, {"name": "Church of the Nativity", "lat": 31.704303, "lng": 35.207529}, {"name": "Yad Vashem", "lat": 31.774194, "lng": 35.175302}, {"name": "Herzl Museum", "lat": 31.772442, "lng": 35.181467}, {"name": "The Tisch Family Zoological Gardens in Jerusalem", "lat": 31.74622, "lng": 35.177338}, {"name": "Israel Aquarium", "lat": 31.744709, "lng": 35.1657752}, {"name": "Ein Lavan", "lat": 31.74928, "lng": 35.159371}, {"name": "Sataf", "lat": 31.771742, "lng": 35.127656}, {"name": "Ein Hemed National Park", "lat": 31.794795, "lng": 35.127566}, {"name": "Nebi Samuel National Park", "lat": 31.833024, "lng": 35.180546}];
+            const locations = Array.from(document.querySelectorAll('[data-place-option]')).map((el) => ({
+                name: el.dataset.placeName || '',
+                lat: Number(el.dataset.placeLat),
+                lng: Number(el.dataset.placeLng),
+            }));
             const customIcon = L.icon({
                 iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
                 iconSize: [32, 32],
@@ -562,14 +1445,45 @@
                 popupAnchor: [0, -32],
             });
             const destinationCenter = [31.774225, 35.210623];
-            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.069922, "maxCenterLng": 0.083057};
-            locations.forEach((location) => {
-                L.marker([location.lat, location.lng], { icon: customIcon })
+            const mapContext = {"denseUrban": true};
+            const markers = locations.map((location) => {
+                const marker = L.marker([location.lat, location.lng], { icon: customIcon })
                     .addTo(map)
                     .bindPopup(`<strong>${location.name}</strong>`);
+                return marker;
             });
             window.TGDestinationMap?.fitToLocations(map, locations, destinationCenter, mapContext);
             window.TGDestinationMap?.bindMobileScrollGuard(map, 'map');
+            window.TGDestinationMap?.registerMarkers(map, markers);
+
+            const heroImage = document.querySelector('[data-destination-hero-image]');
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (heroImage && !reduceMotion) {
+                let framePending = false;
+                let scrolling = false;
+                let scrollEndTimer = 0;
+                const updateHeroPosition = () => {
+                    const offset = Math.min(window.scrollY, window.innerHeight * 1.15) * 0.075;
+                    heroImage.style.transform = `translate3d(0, ${offset}px, 0) scale(1.055)`;
+                    framePending = false;
+                };
+                window.addEventListener('scroll', () => {
+                    if (!scrolling) {
+                        scrolling = true;
+                        heroImage.style.willChange = 'transform';
+                    }
+                    window.clearTimeout(scrollEndTimer);
+                    scrollEndTimer = window.setTimeout(() => {
+                        scrolling = false;
+                        heroImage.style.willChange = 'auto';
+                    }, 150);
+                    if (!framePending) {
+                        window.requestAnimationFrame(updateHeroPosition);
+                        framePending = true;
+                    }
+                }, { passive: true });
+                updateHeroPosition();
+            }
         });
     </script>
 </body>

@@ -6,282 +6,623 @@
     <meta name="description" content="Plan a visit to Beijing with a concise history, interactive attractions map, prices, and curated highlights across the destination.">
     <meta name="theme-color" content="#121417">
     <title>Beijing Guide | Global Explorer Guides</title>
-    <link rel="stylesheet" href="../../assets/tailwind.css">
-    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
     <link rel="stylesheet" href="../../assets/newindex-fonts.css">
     <link rel="stylesheet" href="../../assets/tg-theme.css">
     <link rel="stylesheet" href="../../assets/tg-site-chrome.css">
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
     <link rel="stylesheet" href="../../assets/tg-modern-polish.css">
+    <link rel="stylesheet" href="../../assets/tg-country-page.css">
+    <link rel="stylesheet" href="../../assets/tg-destination-page-v3.css">
     <script defer src="../../assets/lenis.min.js"></script>
     <script defer src="../../assets/tg-smooth-scroll.js"></script>
     <link rel="preload" as="image" href="images/beijing_hero.avif" type="image/avif" fetchpriority="high">
     <script defer src="../../assets/leaflet/leaflet.js"></script>
 </head>
-<body class="tg-theme tg-destination-page tg-modern">
-    <header id="site-header" class="header-glass fixed top-0 left-0 right-0 z-50">
+<body class="tg-theme tg-modern tg-country-v2 tg-destination-v3">
+    <a class="skip-link" href="#main-content">Skip to Beijing guide</a>
+    <header id="site-header" class="header-glass">
         <div class="page-shell header-glass__inner">
-            <a href="../../index.html" class="font-display site-brand" style="display:flex;align-items:center;gap:0.75rem;text-decoration:none;color:inherit;font-size:1.25rem;" aria-label="Global Explorer home">
+            <a href="../../index.html" class="site-brand" aria-label="Global Explorer home">
                 <span class="site-brand__mark" aria-hidden="true">
                     <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
-                        <circle cx="14" cy="14" r="2" fill="#E8B14F"/>
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
                 </span>
                 Global Explorer
             </a>
-            <nav class="header-glass__nav-mobile" aria-label="Mobile navigation">
-                <a href="../../index.html" class="header-glass__icon-link" aria-label="Home">
-                    <i class="ph ph-house" aria-hidden="true"></i>
-                </a>
-                <a href="china.html" class="header-glass__icon-link" aria-label="Back to China">
-                    <i class="ph ph-arrow-left" aria-hidden="true"></i>
-                </a>
-            </nav>
             <nav class="header-glass__nav" aria-label="Primary">
-                <a href="../../index.html" class="nav-link">Home</a>
-                <a href="beijing.html" class="nav-link" aria-current="page">Beijing</a>
+                <a href="#main-content" class="nav-link" aria-current="page">Beijing</a>
+                <a href="#atlas" class="nav-link">Atlas</a>
+                <a href="#places" class="nav-link">Places</a>
                 <a href="china.html" class="nav-link">China</a>
-                <a href="../../index.html#map" class="nav-link">Atlas</a>
             </nav>
         </div>
     </header>
-    <main>
-        <div class="tg-destination-hero-zone">
-            <div class="tg-destination-hero" aria-hidden="true">
-                <div class="tg-destination-hero__image" style="background-image: url('images/beijing_hero.avif')"></div>
-                <div class="tg-destination-hero__fade"></div>
-            </div>
-            <div class="page-shell tg-destination-hero-zone__content">
-        <nav class="tg-toolbar tg-toolbar--compact" aria-label="Breadcrumb">
-            <div class="tg-breadcrumb">
-                <img src="../../assets/flags/w40/cn.png" alt="" class="w-6 h-auto rounded-[2px]" aria-hidden="true">
-                <span>China</span>
-                <span class="tg-breadcrumb__sep" aria-hidden="true">&rsaquo;</span>
-                <span class="tg-breadcrumb__current">North China</span>
-            </div>
-        </nav>
+    <main id="main-content" tabindex="-1">
+        <section class="destination-hero" aria-labelledby="destination-title">
+            <img class="destination-hero__media" data-destination-hero-image src="images/beijing_hero.avif" alt="" width="1600" height="1067" fetchpriority="high" decoding="sync">
+            <div class="destination-hero__shade" aria-hidden="true"></div>
+            <div class="page-shell destination-hero__content">
+                <button
+                    type="button"
+                    id="destination-active-toggle"
+                    class="country-active-toggle country-active-toggle--inactive"
+                    data-iso2="CN"
+                    data-slug="beijing"
+                    data-active="false"
+                    data-interactive="true"
+                    aria-label="Toggle Beijing visibility on China guide"
+                    aria-pressed="false"
+                >
+                    <img src="../../assets/flags/w80/cn.png" alt="" aria-hidden="true">
+                    <span class="country-toggle__copy" aria-hidden="true">
+                        <span class="country-toggle__label">Beijing guide</span>
+                        <strong class="country-toggle__state"></strong>
+                    </span>
+                </button>
 
-        <header class="tg-page-header">
-            <button
-        type="button"
-        id="destination-active-toggle"
-        class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
-        data-iso2="CN"
-        data-slug="beijing"
-        data-active="false"
-        data-interactive="true"
-        aria-label="Toggle Beijing visibility on China guide"
-        aria-pressed="false"
-    >
-        <i class="ph ph-map-pin text-4xl pointer-events-none" aria-hidden="true"></i>
-    </button>
-            <span class="tg-page-header__eyebrow">Destination Guide — North China</span>
-            <h1 class="tg-page-title font-display">Explore <em>Beijing</em></h1>
-            <div class="glass-card frosted-panel tg-panel">
-                <h2 class="tg-panel__title font-display">
-                    <i class="ph ph-scroll" aria-hidden="true"></i> A Brief History
-                </h2>
-                <p class="tg-panel__body">Beijing has served as a national capital for Liao, Jin, Yuan, Ming, and Qing dynasties. The Forbidden City, Temple of Heaven, and hutong lanes record imperial ritual and court life, while Tiananmen Square and twentieth-century avenues reflect republican and revolutionary transformations of the North China plain. Summer Palace gardens and Ming-era wall segments complement imperial monuments on the North China plain.</p>
-            </div>
-        </header>
+                <div class="hero__route" aria-label="Destination route and coordinates">
+                    <span>China / North China</span>
+                    <span>39.9375&deg; N / 116.3757&deg; E</span>
+                </div>
 
-        <div class="tg-section__header tg-section__header--map-end">
-            <span class="tg-section__eyebrow">Map</span>
-            <h2 class="tg-section__title font-display">Attractions Map</h2>
-        </div>
-            </div>
-        </div>
-
-        <div class="page-shell tg-main tg-main--below-hero">
-        <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Beijing attractions"></div>
-        <section class="tg-section">
-            <div class="tg-section__header">
-                <span class="tg-section__eyebrow">Highlights</span>
-                <h2 class="tg-section__title font-display">Top Sights &amp; Activities</h2>
-            </div>
-            <div class="tg-sights-list">
-            
-            <!-- 1. Temple of Heaven -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/beijing_1.avif" alt="Temple of Heaven" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> CNY34
+                <h1 id="destination-title" class="destination-hero__title" style="--destination-title-chars: 7">Beijing</h1>
+                <div class="destination-hero__history">
+                    <p>Beijing has served as a national capital for Liao, Jin, Yuan, Ming, and Qing dynasties. The Forbidden City, Temple of Heaven, and hutong lanes record imperial ritual and court life, while Tiananmen Square and twentieth-century avenues reflect republican and revolutionary transformations of the North China plain. Summer Palace gardens and Ming-era wall segments complement imperial monuments on the North China plain.</p>
+                </div>
+                <dl class="destination-hero__facts" aria-label="Beijing guide facts">
+                    <div>
+                        <dt>Country</dt>
+                        <dd>China</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Temple of Heaven</h3>
-                    <p class="tg-sight-card__text">The Temple of Heaven is a known temple complex dating back to 1420, known for its distinctive circular buildings set in a popular park. It&#x27;s located in the Dongcheng district of Beijing, which is an ideal area for accommodations due to its proximity to historical sites like the Forbidden City and Tiananmen Square. The district also offers attractions such as Jingshan Park for nature lovers and the Wangfujing pedestrian mall for shopping enthusiasts.</p>
-                </div>
-            </div>
-            <!-- 2. Tiananmen Square -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/beijing_2.avif" alt="Tiananmen Square" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                    <div>
+                        <dt>Region</dt>
+                        <dd>North China</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Tiananmen Square</h3>
-                    <p class="tg-sight-card__text">Tiananmen Square is a historic and expansive city square in Beijing, China. It is a cultural center and holds great political significance in the country&#x27;s history. The square has witnessed many important events and is a prominent location for political gatherings and national celebrations.</p>
-                </div>
-            </div>
-            <!-- 3. Tiananmen -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/beijing_3.avif" alt="Tiananmen" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                    <div>
+                        <dt>Places</dt>
+                        <dd>11</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Tiananmen</h3>
-                    <p class="tg-sight-card__text">Tiananmen, also known as the Gate of Heavenly Peace, is a visitor site in Beijing, China. Records associated with the site include 1949. Tiananmen, also known as the Gate of Heavenly Peace, is a historic and symbolic gateway to the Forbidden City in Beijing. This structure served as the site where Mao proclaimed the People&#x27;s Republic of China in 1949. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 4. Summer Palace -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/beijing_4.avif" alt="Summer Palace" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> CNY20
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Summer Palace</h3>
-                    <p class="tg-sight-card__text">Summer Palace is a castle in Beijing, China. The Summer Palace, a lakefront retreat in Beijing, is celebrated for its detailed temples and artworks set against beautifully landscaped grounds. This remarkable site exemplifies the pinnacle of classical Chinese garden design, harmoniously blending human craftsmanship with the beauty of nature. Walls, courtyards, or towers form the usual visitor route when open.</p>
-                </div>
-            </div>
-            <!-- 5. Yuanmingyuan Park -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/beijing_5.avif" alt="Yuanmingyuan Park" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> CNY25
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Yuanmingyuan Park</h3>
-                    <p class="tg-sight-card__text">Yuanmingyuan Park, located in northwestern Beijing, is home to the ruins of the Old Summer Palace. Once an imperial residence known for its architecture and gardens, it was looted and destroyed during the Second Opium War in 1860. The palace was known for its vast art and antiquities collection. Today, visitors can explore the ruins of Dashuifa Site, a reminder of the palace&#x27;s history.</p>
-                </div>
-            </div>
-            <!-- 6. Prince Gong Mansion -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/beijing_6.avif" alt="Prince Gong Mansion" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> CNY40
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Prince Gong Mansion</h3>
-                    <p class="tg-sight-card__text">Prince Gong Mansion, also known as the Prince Kung&#x27;s Mansion, is a visitor site in Beijing, China. Records associated with the site include 1777. The Prince Gong Mansion, also known as the Prince Kung&#x27;s Mansion, is a well-preserved museum located in central Beijing, China. This grand 1777 mansion has ancient Chinese architecture and has courtyards, gardens, ponds, and a special religious area. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 7. Beihai Park -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/beijing_7.avif" alt="Beihai Park" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> CNY5
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Beihai Park</h3>
-                    <p class="tg-sight-card__text">Beihai Park, a 69-hectare oasis in Beijing, first opened its gates to the public in 1925. This historic park has a rich history woven through centuries, having evolved during the Jin, Yuan, Ming, and Qing dynasties. As one of China&#x27;s oldest and most well-preserved imperial gardens, Beihai Park showcases gardening artistry that reflects the local history of ancient China.</p>
-                </div>
-            </div>
-            <!-- 8. Jingshan Park -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/beijing_8.avif" alt="Jingshan Park" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> CNY2
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Jingshan Park</h3>
-                    <p class="tg-sight-card__text">Jingshan Park is a historic gem located on a hill, large over 57 acres and offering panoramic views of the Forbidden City. After exploring the rich history and architecture of the Forbidden City, take a leisurely stroll to Jingshan Park for a bit of hiking. As visitors ascend, discover a temple at the summit that provides an unparalleled vantage point to admire the grandeur of Beijing&#x27;s imperial palace below.</p>
-                </div>
-            </div>
-            <!-- 9. The Palace Museum -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/beijing_9.avif" alt="The Palace Museum" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> CNY40
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">The Palace Museum</h3>
-                    <p class="tg-sight-card__text">The Palace Museum, a massive palace complex and museum, is known for its historical significance and contemporary Chinese art. Established in 1925, it houses an extensive collection of antiquities alongside groundbreaking modern artworks. With over 80,000 daily visitors, the museum offers tours, art exhibits, and dining options. The inventory has grown to 1,860,000 items since its establishment and continues to expand with new exhibitions and thematic shows.</p>
-                </div>
-            </div>
-            <!-- 10. Meridian Gate -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/beijing_10.avif" alt="Meridian Gate" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> CNY60
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Meridian Gate</h3>
-                    <p class="tg-sight-card__text">The Meridian Gate, also known as Wumen, is a grand and historic ceremonial entrance to the Forbidden City in Beijing. It served as the main entrance for Ming and Qing Emperors and is now landmarks within the Palace Museum. This imposing structure consists of five towers and gateways, overlooking Tiananmen Square. As the largest gate of the museum, it remains the sole entry point into the Forbidden City.</p>
-                </div>
-            </div>
-            <!-- 11. National Stadium -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/beijing_11.avif" alt="National Stadium" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> CNY50
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">National Stadium</h3>
-                    <p class="tg-sight-card__text">The National Stadium, also known as the Bird&#x27;s Nest or Olympic Stadium, is an venue in Beijing. Originally built for the Olympics, it now hosts a variety of events including concerts and sports competitions. The stadium&#x27;s unique design has made it a landmark in the city, with its massive steel columns and struts giving it an architectural brilliance that is rarely seen elsewhere.</p>
-                </div>
-            </div>
+                </dl>
             </div>
         </section>
-        </div>
+
+        <section id="atlas" class="destination-atlas" aria-labelledby="atlas-title">
+            <div class="page-shell destination-atlas__layout">
+                <div class="destination-atlas__brief">
+                    <p class="destination-atlas__index">City atlas</p>
+                    <h2 id="atlas-title">Plot the city.</h2>
+                    <p class="destination-atlas__copy">Zoom, pan, and open any marker to focus that place in the catalog below.</p>
+                    <dl class="destination-atlas__facts" aria-label="Map coverage">
+                        <div>
+                            <dt>Plotted</dt>
+                            <dd>11 places</dd>
+                        </div>
+                        <div>
+                            <dt>Center</dt>
+                            <dd>39.9375&deg; N<br>116.3757&deg; E</dd>
+                        </div>
+                    </dl>
+                </div>
+                <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Beijing attractions"></div>
+            </div>
+        </section>
+
+        <section id="places" class="destination-places" aria-labelledby="places-title">
+            <div class="page-shell">
+                <div class="destination-chapter">
+                    <h2 id="places-title" class="destination-chapter__heading">11 ways into<br>Beijing.</h2>
+                    <p class="destination-chapter__copy">Browse the index, open a location, and read the essentials without scrolling through a long catalog. Each entry contains its image, admission note, and contextual guide.</p>
+                </div>
+                <div class="places-explorer" data-places-explorer>
+                    <aside class="places-explorer__rail" aria-label="Place index">
+                        <div class="places-explorer__toolbar">
+                            <label class="places-explorer__filter-label" for="places-filter">Filter places</label>
+                            <input
+                                id="places-filter"
+                                class="places-explorer__filter"
+                                type="search"
+                                data-places-filter
+                                placeholder="Search by name"
+                                autocomplete="off"
+                            >
+                            <p class="places-explorer__meta"><strong data-places-count>11</strong> of 11 shown</p>
+                        </div>
+                        <ul class="places-explorer__list" role="listbox" aria-label="Places in Beijing" data-places-list data-lenis-prevent data-tg-scroll-surface>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option is-active"
+                            role="option"
+                            id="place-option-1"
+                            data-place-option
+                            data-place-index="0"
+                            data-place-name="Temple of Heaven"
+                            data-place-lat="39.88218"
+                            data-place-lng="116.406606"
+                            aria-selected="true"
+                            tabindex="0"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">01</span>
+                            <span class="places-explorer__option-name">Temple of Heaven</span>
+                            <span class="places-explorer__option-price">CNY34</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-2"
+                            data-place-option
+                            data-place-index="1"
+                            data-place-name="Tiananmen Square"
+                            data-place-lat="39.90549"
+                            data-place-lng="116.397632"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">02</span>
+                            <span class="places-explorer__option-name">Tiananmen Square</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-3"
+                            data-place-option
+                            data-place-index="2"
+                            data-place-name="Tiananmen"
+                            data-place-lat="39.90872"
+                            data-place-lng="116.39748"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">03</span>
+                            <span class="places-explorer__option-name">Tiananmen</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-4"
+                            data-place-option
+                            data-place-index="3"
+                            data-place-name="Summer Palace"
+                            data-place-lat="39.999982"
+                            data-place-lng="116.275461"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">04</span>
+                            <span class="places-explorer__option-name">Summer Palace</span>
+                            <span class="places-explorer__option-price">CNY20</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-5"
+                            data-place-option
+                            data-place-index="4"
+                            data-place-name="Yuanmingyuan Park"
+                            data-place-lat="40.008098"
+                            data-place-lng="116.298215"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">05</span>
+                            <span class="places-explorer__option-name">Yuanmingyuan Park</span>
+                            <span class="places-explorer__option-price">CNY25</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-6"
+                            data-place-option
+                            data-place-index="5"
+                            data-place-name="Prince Gong Mansion"
+                            data-place-lat="39.935774"
+                            data-place-lng="116.386407"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">06</span>
+                            <span class="places-explorer__option-name">Prince Gong Mansion</span>
+                            <span class="places-explorer__option-price">CNY40</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-7"
+                            data-place-option
+                            data-place-index="6"
+                            data-place-name="Beihai Park"
+                            data-place-lat="39.925447"
+                            data-place-lng="116.389264"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">07</span>
+                            <span class="places-explorer__option-name">Beihai Park</span>
+                            <span class="places-explorer__option-price">CNY5</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-8"
+                            data-place-option
+                            data-place-index="7"
+                            data-place-name="Jingshan Park"
+                            data-place-lat="39.925099"
+                            data-place-lng="116.396843"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">08</span>
+                            <span class="places-explorer__option-name">Jingshan Park</span>
+                            <span class="places-explorer__option-price">CNY2</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-9"
+                            data-place-option
+                            data-place-index="8"
+                            data-place-name="The Palace Museum"
+                            data-place-lat="39.916345"
+                            data-place-lng="116.397155"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">09</span>
+                            <span class="places-explorer__option-name">The Palace Museum</span>
+                            <span class="places-explorer__option-price">CNY40</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-10"
+                            data-place-option
+                            data-place-index="9"
+                            data-place-name="Meridian Gate"
+                            data-place-lat="39.913866"
+                            data-place-lng="116.39721"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">10</span>
+                            <span class="places-explorer__option-name">Meridian Gate</span>
+                            <span class="places-explorer__option-price">CNY60</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-11"
+                            data-place-option
+                            data-place-index="10"
+                            data-place-name="National Stadium"
+                            data-place-lat="39.991334"
+                            data-place-lng="116.390385"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">11</span>
+                            <span class="places-explorer__option-name">National Stadium</span>
+                            <span class="places-explorer__option-price">CNY50</span>
+                        </button>
+                    </li>
+                        </ul>
+                        <p class="places-explorer__empty" data-places-empty hidden>No places match that filter.</p>
+                    </aside>
+                    <div class="places-explorer__stage" data-places-stage>
+                    <nav class="places-stage__stepper" data-places-stepper aria-label="Browse places" hidden>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--prev" data-places-prev aria-label="Previous place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M14.75 5.25 L8.25 12 l6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M9.1 12 H17.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--next" data-places-next aria-label="Next place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M9.25 5.25 L15.75 12 l-6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M6.6 12 H14.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                    </nav>
+                <article
+                    class="places-stage__panel is-active"
+                    data-place-panel
+                    data-place-index="0"
+                    aria-labelledby="place-title-1"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/beijing_1.avif" alt="Temple of Heaven" width="1200" height="750" loading="eager" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">01</span>
+                            <span class="places-stage__admission"><span>Admission</span>CNY34</span>
+                        </p>
+                        <h3 id="place-title-1" class="places-stage__title">Temple of Heaven</h3>
+                        <p class="places-stage__text">The Temple of Heaven is a known temple complex dating back to 1420, known for its distinctive circular buildings set in a popular park. It&#x27;s located in the Dongcheng district of Beijing, which is an ideal area for accommodations due to its proximity to historical sites like the Forbidden City and Tiananmen Square. The district also offers attractions such as Jingshan Park for nature lovers and the Wangfujing pedestrian mall for shopping enthusiasts.</p>
+                        <p class="places-stage__coords">39.8822&deg; N / 116.4066&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="1"
+                    aria-labelledby="place-title-2"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/beijing_2.avif" alt="Tiananmen Square" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">02</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-2" class="places-stage__title">Tiananmen Square</h3>
+                        <p class="places-stage__text">Tiananmen Square is a historic and expansive city square in Beijing, China. It is a cultural center and holds great political significance in the country&#x27;s history. The square has witnessed many important events and is a prominent location for political gatherings and national celebrations.</p>
+                        <p class="places-stage__coords">39.9055&deg; N / 116.3976&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="2"
+                    aria-labelledby="place-title-3"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/beijing_3.avif" alt="Tiananmen" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">03</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-3" class="places-stage__title">Tiananmen</h3>
+                        <p class="places-stage__text">Tiananmen, also known as the Gate of Heavenly Peace, is a visitor site in Beijing, China. Records associated with the site include 1949. Tiananmen, also known as the Gate of Heavenly Peace, is a historic and symbolic gateway to the Forbidden City in Beijing. This structure served as the site where Mao proclaimed the People&#x27;s Republic of China in 1949. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">39.9087&deg; N / 116.3975&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="3"
+                    aria-labelledby="place-title-4"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/beijing_4.avif" alt="Summer Palace" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">04</span>
+                            <span class="places-stage__admission"><span>Admission</span>CNY20</span>
+                        </p>
+                        <h3 id="place-title-4" class="places-stage__title">Summer Palace</h3>
+                        <p class="places-stage__text">Summer Palace is a castle in Beijing, China. The Summer Palace, a lakefront retreat in Beijing, is celebrated for its detailed temples and artworks set against beautifully landscaped grounds. This remarkable site exemplifies the pinnacle of classical Chinese garden design, harmoniously blending human craftsmanship with the beauty of nature. Walls, courtyards, or towers form the usual visitor route when open.</p>
+                        <p class="places-stage__coords">40.0000&deg; N / 116.2755&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="4"
+                    aria-labelledby="place-title-5"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/beijing_5.avif" alt="Yuanmingyuan Park" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">05</span>
+                            <span class="places-stage__admission"><span>Admission</span>CNY25</span>
+                        </p>
+                        <h3 id="place-title-5" class="places-stage__title">Yuanmingyuan Park</h3>
+                        <p class="places-stage__text">Yuanmingyuan Park, located in northwestern Beijing, is home to the ruins of the Old Summer Palace. Once an imperial residence known for its architecture and gardens, it was looted and destroyed during the Second Opium War in 1860. The palace was known for its vast art and antiquities collection. Today, visitors can explore the ruins of Dashuifa Site, a reminder of the palace&#x27;s history.</p>
+                        <p class="places-stage__coords">40.0081&deg; N / 116.2982&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="5"
+                    aria-labelledby="place-title-6"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/beijing_6.avif" alt="Prince Gong Mansion" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">06</span>
+                            <span class="places-stage__admission"><span>Admission</span>CNY40</span>
+                        </p>
+                        <h3 id="place-title-6" class="places-stage__title">Prince Gong Mansion</h3>
+                        <p class="places-stage__text">Prince Gong Mansion, also known as the Prince Kung&#x27;s Mansion, is a visitor site in Beijing, China. Records associated with the site include 1777. The Prince Gong Mansion, also known as the Prince Kung&#x27;s Mansion, is a well-preserved museum located in central Beijing, China. This grand 1777 mansion has ancient Chinese architecture and has courtyards, gardens, ponds, and a special religious area. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">39.9358&deg; N / 116.3864&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="6"
+                    aria-labelledby="place-title-7"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/beijing_7.avif" alt="Beihai Park" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">07</span>
+                            <span class="places-stage__admission"><span>Admission</span>CNY5</span>
+                        </p>
+                        <h3 id="place-title-7" class="places-stage__title">Beihai Park</h3>
+                        <p class="places-stage__text">Beihai Park, a 69-hectare oasis in Beijing, first opened its gates to the public in 1925. This historic park has a rich history woven through centuries, having evolved during the Jin, Yuan, Ming, and Qing dynasties. As one of China&#x27;s oldest and most well-preserved imperial gardens, Beihai Park showcases gardening artistry that reflects the local history of ancient China.</p>
+                        <p class="places-stage__coords">39.9254&deg; N / 116.3893&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="7"
+                    aria-labelledby="place-title-8"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/beijing_8.avif" alt="Jingshan Park" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">08</span>
+                            <span class="places-stage__admission"><span>Admission</span>CNY2</span>
+                        </p>
+                        <h3 id="place-title-8" class="places-stage__title">Jingshan Park</h3>
+                        <p class="places-stage__text">Jingshan Park is a historic gem located on a hill, large over 57 acres and offering panoramic views of the Forbidden City. After exploring the rich history and architecture of the Forbidden City, take a leisurely stroll to Jingshan Park for a bit of hiking. As visitors ascend, discover a temple at the summit that provides an unparalleled vantage point to admire the grandeur of Beijing&#x27;s imperial palace below.</p>
+                        <p class="places-stage__coords">39.9251&deg; N / 116.3968&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="8"
+                    aria-labelledby="place-title-9"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/beijing_9.avif" alt="The Palace Museum" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">09</span>
+                            <span class="places-stage__admission"><span>Admission</span>CNY40</span>
+                        </p>
+                        <h3 id="place-title-9" class="places-stage__title">The Palace Museum</h3>
+                        <p class="places-stage__text">The Palace Museum, a massive palace complex and museum, is known for its historical significance and contemporary Chinese art. Established in 1925, it houses an extensive collection of antiquities alongside groundbreaking modern artworks. With over 80,000 daily visitors, the museum offers tours, art exhibits, and dining options. The inventory has grown to 1,860,000 items since its establishment and continues to expand with new exhibitions and thematic shows.</p>
+                        <p class="places-stage__coords">39.9163&deg; N / 116.3972&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="9"
+                    aria-labelledby="place-title-10"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/beijing_10.avif" alt="Meridian Gate" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">10</span>
+                            <span class="places-stage__admission"><span>Admission</span>CNY60</span>
+                        </p>
+                        <h3 id="place-title-10" class="places-stage__title">Meridian Gate</h3>
+                        <p class="places-stage__text">The Meridian Gate, also known as Wumen, is a grand and historic ceremonial entrance to the Forbidden City in Beijing. It served as the main entrance for Ming and Qing Emperors and is now landmarks within the Palace Museum. This imposing structure consists of five towers and gateways, overlooking Tiananmen Square. As the largest gate of the museum, it remains the sole entry point into the Forbidden City.</p>
+                        <p class="places-stage__coords">39.9139&deg; N / 116.3972&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="10"
+                    aria-labelledby="place-title-11"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/beijing_11.avif" alt="National Stadium" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">11</span>
+                            <span class="places-stage__admission"><span>Admission</span>CNY50</span>
+                        </p>
+                        <h3 id="place-title-11" class="places-stage__title">National Stadium</h3>
+                        <p class="places-stage__text">The National Stadium, also known as the Bird&#x27;s Nest or Olympic Stadium, is an venue in Beijing. Originally built for the Olympics, it now hosts a variety of events including concerts and sports competitions. The stadium&#x27;s unique design has made it a landmark in the city, with its massive steel columns and struts giving it an architectural brilliance that is rarely seen elsewhere.</p>
+                        <p class="places-stage__coords">39.9913&deg; N / 116.3904&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="site-footer">
         <div class="page-shell">
             <div class="site-footer__bar">
-                <a href="../../index.html" class="site-footer__brand" aria-label="Global Explorer home">
-                    <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
+                <a href="../../index.html" class="site-footer__mark" aria-label="Global Explorer home">
+                    <svg width="24" height="24" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
-                    <span class="site-footer__brand-name font-display">Global Explorer</span>
+                    Global Explorer
                 </a>
-                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides <span>Beijing: 11 places across North China.</span></p>
             </div>
         </div>
     </footer>
 
     <button id="scrollTopBtn" type="button" aria-label="Scroll to top">
-        <i class="ph ph-arrow-up" aria-hidden="true"></i>
+        <svg viewBox="0 0 24 24" width="1.15em" height="1.15em" aria-hidden="true" focusable="false">
+            <path d="M12 5.25 V18.75 M12 5.25 L6.75 10.5 M12 5.25 L17.25 10.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
     </button>
 
     <script defer src="../../assets/dev-destination-toggle.js"></script>
     <script defer src="../../assets/tg-page-chrome.js"></script>
     <script defer src="../../assets/tg-destination-map.js"></script>
+    <script defer src="../../assets/tg-destination-places.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const map = L.map('map').setView([39.937485, 116.375696], 14);
+            const map = L.map('map');
             L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
                 attribution: '&copy; Google Maps',
                 maxZoom: 20
             }).addTo(map);
-            const locations = [{"name": "Temple of Heaven", "lat": 39.88218, "lng": 116.406606}, {"name": "Tiananmen Square", "lat": 39.90549, "lng": 116.397632}, {"name": "Tiananmen", "lat": 39.90872, "lng": 116.39748}, {"name": "Summer Palace", "lat": 39.999982, "lng": 116.275461}, {"name": "Yuanmingyuan Park", "lat": 40.008098, "lng": 116.298215}, {"name": "Prince Gong Mansion", "lat": 39.935774, "lng": 116.386407}, {"name": "Beihai Park", "lat": 39.925447, "lng": 116.389264}, {"name": "Jingshan Park", "lat": 39.925099, "lng": 116.396843}, {"name": "The Palace Museum", "lat": 39.916345, "lng": 116.397155}, {"name": "Meridian Gate", "lat": 39.913866, "lng": 116.39721}, {"name": "National Stadium", "lat": 39.991334, "lng": 116.390385}];
+            const locations = Array.from(document.querySelectorAll('[data-place-option]')).map((el) => ({
+                name: el.dataset.placeName || '',
+                lat: Number(el.dataset.placeLat),
+                lng: Number(el.dataset.placeLng),
+            }));
             const customIcon = L.icon({
                 iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
                 iconSize: [32, 32],
@@ -289,14 +630,45 @@
                 popupAnchor: [0, -32],
             });
             const destinationCenter = [39.937485, 116.375696];
-            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.070613, "maxCenterLng": 0.100235};
-            locations.forEach((location) => {
-                L.marker([location.lat, location.lng], { icon: customIcon })
+            const mapContext = {"denseUrban": true};
+            const markers = locations.map((location) => {
+                const marker = L.marker([location.lat, location.lng], { icon: customIcon })
                     .addTo(map)
                     .bindPopup(`<strong>${location.name}</strong>`);
+                return marker;
             });
             window.TGDestinationMap?.fitToLocations(map, locations, destinationCenter, mapContext);
             window.TGDestinationMap?.bindMobileScrollGuard(map, 'map');
+            window.TGDestinationMap?.registerMarkers(map, markers);
+
+            const heroImage = document.querySelector('[data-destination-hero-image]');
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (heroImage && !reduceMotion) {
+                let framePending = false;
+                let scrolling = false;
+                let scrollEndTimer = 0;
+                const updateHeroPosition = () => {
+                    const offset = Math.min(window.scrollY, window.innerHeight * 1.15) * 0.075;
+                    heroImage.style.transform = `translate3d(0, ${offset}px, 0) scale(1.055)`;
+                    framePending = false;
+                };
+                window.addEventListener('scroll', () => {
+                    if (!scrolling) {
+                        scrolling = true;
+                        heroImage.style.willChange = 'transform';
+                    }
+                    window.clearTimeout(scrollEndTimer);
+                    scrollEndTimer = window.setTimeout(() => {
+                        scrolling = false;
+                        heroImage.style.willChange = 'auto';
+                    }, 150);
+                    if (!framePending) {
+                        window.requestAnimationFrame(updateHeroPosition);
+                        framePending = true;
+                    }
+                }, { passive: true });
+                updateHeroPosition();
+            }
         });
     </script>
 </body>

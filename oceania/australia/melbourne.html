@@ -6,659 +6,1754 @@
     <meta name="description" content="Plan a visit to Melbourne with a concise history, interactive attractions map, prices, and curated highlights across the destination.">
     <meta name="theme-color" content="#121417">
     <title>Melbourne Guide | Global Explorer Guides</title>
-    <link rel="stylesheet" href="../../assets/tailwind.css">
-    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
     <link rel="stylesheet" href="../../assets/newindex-fonts.css">
     <link rel="stylesheet" href="../../assets/tg-theme.css">
     <link rel="stylesheet" href="../../assets/tg-site-chrome.css">
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
     <link rel="stylesheet" href="../../assets/tg-modern-polish.css">
+    <link rel="stylesheet" href="../../assets/tg-country-page.css">
+    <link rel="stylesheet" href="../../assets/tg-destination-page-v3.css">
     <script defer src="../../assets/lenis.min.js"></script>
     <script defer src="../../assets/tg-smooth-scroll.js"></script>
     <link rel="preload" as="image" href="images/melbourne_hero.avif" type="image/avif" fetchpriority="high">
     <script defer src="../../assets/leaflet/leaflet.js"></script>
 </head>
-<body class="tg-theme tg-destination-page tg-modern">
-    <header id="site-header" class="header-glass fixed top-0 left-0 right-0 z-50">
+<body class="tg-theme tg-modern tg-country-v2 tg-destination-v3">
+    <a class="skip-link" href="#main-content">Skip to Melbourne guide</a>
+    <header id="site-header" class="header-glass">
         <div class="page-shell header-glass__inner">
-            <a href="../../index.html" class="font-display site-brand" style="display:flex;align-items:center;gap:0.75rem;text-decoration:none;color:inherit;font-size:1.25rem;" aria-label="Global Explorer home">
+            <a href="../../index.html" class="site-brand" aria-label="Global Explorer home">
                 <span class="site-brand__mark" aria-hidden="true">
                     <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
-                        <circle cx="14" cy="14" r="2" fill="#E8B14F"/>
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
                 </span>
                 Global Explorer
             </a>
-            <nav class="header-glass__nav-mobile" aria-label="Mobile navigation">
-                <a href="../../index.html" class="header-glass__icon-link" aria-label="Home">
-                    <i class="ph ph-house" aria-hidden="true"></i>
-                </a>
-                <a href="australia.html" class="header-glass__icon-link" aria-label="Back to Australia">
-                    <i class="ph ph-arrow-left" aria-hidden="true"></i>
-                </a>
-            </nav>
             <nav class="header-glass__nav" aria-label="Primary">
-                <a href="../../index.html" class="nav-link">Home</a>
-                <a href="melbourne.html" class="nav-link" aria-current="page">Melbourne</a>
+                <a href="#main-content" class="nav-link" aria-current="page">Melbourne</a>
+                <a href="#atlas" class="nav-link">Atlas</a>
+                <a href="#places" class="nav-link">Places</a>
                 <a href="australia.html" class="nav-link">Australia</a>
-                <a href="../../index.html#map" class="nav-link">Atlas</a>
             </nav>
         </div>
     </header>
-    <main>
-        <div class="tg-destination-hero-zone">
-            <div class="tg-destination-hero" aria-hidden="true">
-                <div class="tg-destination-hero__image" style="background-image: url('images/melbourne_hero.avif')"></div>
-                <div class="tg-destination-hero__fade"></div>
-            </div>
-            <div class="page-shell tg-destination-hero-zone__content">
-        <nav class="tg-toolbar tg-toolbar--compact" aria-label="Breadcrumb">
-            <div class="tg-breadcrumb">
-                <img src="../../assets/flags/w40/au.png" alt="" class="w-6 h-auto rounded-[2px]" aria-hidden="true">
-                <span>Australia</span>
-                <span class="tg-breadcrumb__sep" aria-hidden="true">&rsaquo;</span>
-                <span class="tg-breadcrumb__current">East Coast</span>
-            </div>
-        </nav>
+    <main id="main-content" tabindex="-1">
+        <section class="destination-hero" aria-labelledby="destination-title">
+            <img class="destination-hero__media" data-destination-hero-image src="images/melbourne_hero.avif" alt="" width="1600" height="1067" fetchpriority="high" decoding="sync">
+            <div class="destination-hero__shade" aria-hidden="true"></div>
+            <div class="page-shell destination-hero__content">
+                <button
+                    type="button"
+                    id="destination-active-toggle"
+                    class="country-active-toggle country-active-toggle--inactive"
+                    data-iso2="AU"
+                    data-slug="melbourne"
+                    data-active="false"
+                    data-interactive="true"
+                    aria-label="Toggle Melbourne visibility on Australia guide"
+                    aria-pressed="false"
+                >
+                    <img src="../../assets/flags/w80/au.png" alt="" aria-hidden="true">
+                    <span class="country-toggle__copy" aria-hidden="true">
+                        <span class="country-toggle__label">Melbourne guide</span>
+                        <strong class="country-toggle__state"></strong>
+                    </span>
+                </button>
 
-        <header class="tg-page-header">
-            <button
-        type="button"
-        id="destination-active-toggle"
-        class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
-        data-iso2="AU"
-        data-slug="melbourne"
-        data-active="false"
-        data-interactive="true"
-        aria-label="Toggle Melbourne visibility on Australia guide"
-        aria-pressed="false"
-    >
-        <i class="ph ph-map-pin text-4xl pointer-events-none" aria-hidden="true"></i>
-    </button>
-            <span class="tg-page-header__eyebrow">Destination Guide — East Coast</span>
-            <h1 class="tg-page-title font-display">Explore <em>Melbourne</em></h1>
-            <div class="glass-card frosted-panel tg-panel">
-                <h2 class="tg-panel__title font-display">
-                    <i class="ph ph-scroll" aria-hidden="true"></i> A Brief History
-                </h2>
-                <p class="tg-panel__body">Melbourne prospered after an 1850s gold rush with Victorian arcades, tramlines, and laneway culture. Federation Square, Royal Exhibition Building, and Yarra embankments record how Victoria&#x27;s capital became a finance and arts hub in southeast Australia. Royal Botanic Gardens and Yarra riverside precincts extend gold-era boulevards through Victoria&#x27;s capital grid.</p>
-            </div>
-        </header>
+                <div class="hero__route" aria-label="Destination route and coordinates">
+                    <span>Australia / East Coast</span>
+                    <span>37.8250&deg; S / 144.9683&deg; E</span>
+                </div>
 
-        <div class="tg-section__header tg-section__header--map-end">
-            <span class="tg-section__eyebrow">Map</span>
-            <h2 class="tg-section__title font-display">Attractions Map</h2>
-        </div>
-            </div>
-        </div>
-
-        <div class="page-shell tg-main tg-main--below-hero">
-        <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Melbourne attractions"></div>
-        <section class="tg-section">
-            <div class="tg-section__header">
-                <span class="tg-section__eyebrow">Highlights</span>
-                <h2 class="tg-section__title font-display">Top Sights &amp; Activities</h2>
-            </div>
-            <div class="tg-sights-list">
-            
-            <!-- 1. South Melbourne Market -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_1.avif" alt="South Melbourne Market" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                <h1 id="destination-title" class="destination-hero__title" style="--destination-title-chars: 9">Melbourne</h1>
+                <div class="destination-hero__history">
+                    <p>Melbourne prospered after an 1850s gold rush with Victorian arcades, tramlines, and laneway culture. Federation Square, Royal Exhibition Building, and Yarra embankments record how Victoria&#x27;s capital became a finance and arts hub in southeast Australia. Royal Botanic Gardens and Yarra riverside precincts extend gold-era boulevards through Victoria&#x27;s capital grid.</p>
+                </div>
+                <dl class="destination-hero__facts" aria-label="Melbourne guide facts">
+                    <div>
+                        <dt>Country</dt>
+                        <dd>Australia</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">South Melbourne Market</h3>
-                    <p class="tg-sight-card__text">South Melbourne Market is a market in Melbourne, Australia. Records associated with the site include 1867. South Melbourne Market is a indoor market that has been used by locals and tourists since 1867. While it may not be as large as Queen Victoria Market, it offers a diverse range of stalls selling fresh produce, meat, seafood, artisanal products, and vintage items. Stalls sell food and goods during regular market hours.</p>
-                </div>
-            </div>
-            <!-- 2. Shrine of Remembrance -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_2.avif" alt="Shrine of Remembrance" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                    <div>
+                        <dt>Region</dt>
+                        <dd>East Coast</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Shrine of Remembrance</h3>
-                    <p class="tg-sight-card__text">The Shrine of Remembrance in Melbourne is the largest war memorial in Victoria, serving as a tribute to Australian soldiers who sacrificed their lives during the World Wars. The shrine hosts over 120 ceremonies and commemorative services annually, making it an active venue for honoring heroes. Its location offers views of Melbourne city and the bay area. The solemn atmosphere and architectural design resembling ancient Greece create a experience for visitors.</p>
-                </div>
-            </div>
-            <!-- 3. Royal Botanic Gardens Victoria - Melbourne Gardens -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_3.avif" alt="Royal Botanic Gardens Victoria - Melbourne Gardens" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                    <div>
+                        <dt>Places</dt>
+                        <dd>40</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Royal Botanic Gardens Victoria - Melbourne Gardens</h3>
-                    <p class="tg-sight-card__text">Royal Botanic Gardens Victoria - Melbourne Gardens is a public park in Melbourne, Australia. Records associated with the site include 1846. Royal Botanic Gardens Victoria - Melbourne Gardens, established in 1846, covers 36 hectares and has Australian species as well as non-native gardens. Similar to New York&#x27;s Central Park, it occupies a significant portion of the city and offers various attractions such as the Melbourne Observatory, Guilfoyles Volcano, and Fern Gully.</p>
-                </div>
-            </div>
-            <!-- 4. Royal Exhibition Building -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_4.avif" alt="Royal Exhibition Building" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> A$29
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Royal Exhibition Building</h3>
-                    <p class="tg-sight-card__text">The Royal Exhibition Building, constructed in 1880, is a significant 19th-century exhibition center with a striking dome. It is situated amidst beautifully landscaped gardens and holds UNESCO World Heritage status. This venue hosts various major events and exhibitions throughout the year, such as the Melbourne International Flower &amp; Garden Show and GABS (the Great Australasian Beer SpecTAPular). Notably, it was also the location of Australia&#x27;s first Parliament in 1901.</p>
-                </div>
-            </div>
-            <!-- 5. Carlton Gardens -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_5.avif" alt="Carlton Gardens" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Carlton Gardens</h3>
-                    <p class="tg-sight-card__text">Carlton Gardens, located in Carlton near Melbourne&#x27;s CBD, is a beautifully landscaped Victorian-era park that houses the Royal Exhibition Building and Melbourne Museum. This World Heritage-listed site offers a setting for picnics and leisurely strolls. Visitors can grab delicious takeaway treats from nearby delis, trattorias, or cafes on Lygon or Brunswick Streets before finding a cozy spot on the grassy patches within the gardens.</p>
-                </div>
-            </div>
-            <!-- 6. DFO South Wharf -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_6.avif" alt="DFO South Wharf" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">DFO South Wharf</h3>
-                    <p class="tg-sight-card__text">DFO South Wharf is a shopping haven for both local and international brands, with over 180 stores offering a wide range of products from fashion to household items. Popular brands like Adidas, Armani, Calvin Klein, and Nike can be found here. After a day of shopping, visitors can relax at the waterfront cafes, restaurants, and bars along the South Wharf Promenade.</p>
-                </div>
-            </div>
-            <!-- 7. Brighton Bathing Boxes -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_7.avif" alt="Brighton Bathing Boxes" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Brighton Bathing Boxes</h3>
-                    <p class="tg-sight-card__text">The Brighton Bathing Boxes, located about 12km south of Melbourne city center at Brighton Beach, are a collection of 82 brightly colored wooden beach huts dating back to the early 1900s. Originally used for changing into swimwear during the Victorian era, these and much-photographed structures have become a staple of the beachfront. Each hut has its own unique design and character, making them a popular spot for tourists and locals alike to capture memorable photos.</p>
-                </div>
-            </div>
-            <!-- 8. Melbourne Central -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_8.avif" alt="Melbourne Central" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Melbourne Central</h3>
-                    <p class="tg-sight-card__text">Melbourne Central is a busy multilevel space with over 300 retailers, offering a wide array of Australian and international fashion brands, dining options, cafes, pubs, bars, beauty shops, and a cinema. The Coops Shot Tower stands tall under a glass-domed roof and is a popular spot for visitors to catch the hourly performance of the Australian song Waltzing Matilda.</p>
-                </div>
-            </div>
-            <!-- 9. St Francis’ Church -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_9.avif" alt="St Francis’ Church" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">St Francis’ Church</h3>
-                    <p class="tg-sight-card__text">St Francis&#x27; Church is a religious building in Melbourne, Australia. Construction and early use date to around 1841. Francis&#x27; Church is a Catholic church in Victoria, built between 1841 and 1845. It is one of the oldest churches in the city, and despite its age it is very well maintained. The exterior and main interior spaces are usually viewable outside service times.</p>
-                </div>
-            </div>
-            <!-- 10. Chinatown Melbourne -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_10.avif" alt="Chinatown Melbourne" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Chinatown Melbourne</h3>
-                    <p class="tg-sight-card__text">Chinatown Melbourne is a and historic neighborhood that includes Chinese eateries, shops, and cultural events. The culinary scene in Melbourne reflects its diversity, with options ranging from street food in Chinatown to upscale dining experiences along the Yarra River. Visitors are encouraged to try local delights such as fairy bread, salt and pepper calamari, and Anzac biscuits, the city&#x27;s passion for brunch at quirky cafes in Fitzroy is not to be missed.</p>
-                </div>
-            </div>
-            <!-- 11. Her Majesty&#x27;s Theatre -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_11.avif" alt="Her Majesty&#x27;s Theatre" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Her Majesty&#x27;s Theatre</h3>
-                    <p class="tg-sight-card__text">Her Majesty&#x27;s Theatre, located on Exhibition Street in Melbourne, is a historic 19th-century venue known for its opulent red and gold decor. Originally built in 1886 as the Alexandra Theatre, it has since become a popular destination for musicals, ballet performances, and international concert acts. The grand architecture of the building adds to its charm and allure.</p>
-                </div>
-            </div>
-            <!-- 12. Queen Victoria Market -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_12.avif" alt="Queen Victoria Market" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Queen Victoria Market</h3>
-                    <p class="tg-sight-card__text">Queen Victoria Market, also known as Queen Vic or the Vic Market, is a market in Melbourne, Australia. Queen Victoria Market, also known as Queen Vic or the Vic Market, is a historic landmark in Melbourne spanning 2 city blocks. Stalls sell food and goods during regular market hours.</p>
-                </div>
-            </div>
-            <!-- 13. Flagstaff Gardens -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_13.avif" alt="Flagstaff Gardens" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Flagstaff Gardens</h3>
-                    <p class="tg-sight-card__text">Flagstaff Gardens is a public park in Melbourne, Australia. Records associated with the site include 1862. Flagstaff Gardens, established in 1862, is one of Melbourne&#x27;s oldest parks and a designated heritage site. Paths, lawns, and shaded areas make up the main public facilities.</p>
-                </div>
-            </div>
-            <!-- 14. Melbourne Skydeck -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_14.avif" alt="Melbourne Skydeck" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> A$33
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Melbourne Skydeck</h3>
-                    <p class="tg-sight-card__text">The Melbourne Skydeck, located on the 88th floor of the Eureka Tower, offers a luxurious observation deck with panoramic views of the city. Visitors can enjoy vistas of the CBD, Yarra River, and surrounding suburbs from this gold-plated vantage point. The highlight is a protruding glass cube that provides an exhilarating experience for those seeking an adrenaline rush.</p>
-                </div>
-            </div>
-            <!-- 15. Hamer Hall -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_15.avif" alt="Hamer Hall" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Hamer Hall</h3>
-                    <p class="tg-sight-card__text">Hamer Hall is a known concert venue in Melbourne, offering an elegant space for combination and chamber orchestras, as well as jazz and rock &#x27;n&#x27; roll concerts. What sets it apart is its unique design that allows visitors to enjoy views without having to ride an elevator. The exterior staircase provides access to city and riverside vistas. Once inside, the hall&#x27;s intimate atmosphere and acoustics create a experience for concert-goers.</p>
-                </div>
-            </div>
-            <!-- 16. Flinders Street -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_16.avif" alt="Flinders Street" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Flinders Street</h3>
-                    <p class="tg-sight-card__text">Flinders Street is a visitor site in Melbourne, Australia. Records associated with the site include 1909. The grounds and principal structures are the main points of interest. Flinders Street remains part of the public visitor circuit in Melbourne. Local maps identify Flinders Street within Melbourne, Australia.</p>
-                </div>
-            </div>
-            <!-- 17. St Paul&#x27;s Cathedral, Melbourne -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_17.avif" alt="St Paul&#x27;s Cathedral, Melbourne" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">St Paul&#x27;s Cathedral, Melbourne</h3>
-                    <p class="tg-sight-card__text">St Paul&#x27;s Cathedral, Melbourne is a religious building in Melbourne, Australia. Records associated with the site include 1891. St Paul&#x27;s Cathedral in Melbourne, consecrated in 1891, is a neo-Gothic structure with twin spires and stained-glass processional doors. The exterior and main interior spaces are usually viewable outside service times.</p>
-                </div>
-            </div>
-            <!-- 18. Regent Theatre -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_18.avif" alt="Regent Theatre" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Regent Theatre</h3>
-                    <p class="tg-sight-card__text">The Regent Theatre, originally a 1920s cinema, has been splendidly refurbished and is a and opulent venue for live concerts and internationally known musicals. Despite facing challenges like fire and threats of demolition, the theatre was magnificently restored in 1996 to its former glory. With seating for up to 2,145 patrons over two levels, complete with chandeliers and lavish seating, the theatre offers a luxurious experience.</p>
-                </div>
-            </div>
-            <!-- 19. Melbourne Town Hall -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_19.avif" alt="Melbourne Town Hall" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free (guided tour A$15)
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Melbourne Town Hall</h3>
-                    <p class="tg-sight-card__text">Melbourne Town Hall is a visitor site in Melbourne, Australia. Melbourne Town Hall is a 19th-century building In the city, serving as the seat of local government and a venue for various events. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 20. Forum Melbourne -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_20.avif" alt="Forum Melbourne" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Forum Melbourne</h3>
-                    <p class="tg-sight-card__text">Forum Melbourne, In Melbourne&#x27;s CBD, is a live music venue that has recently undergone extensive renovation and restoration. The auditorium has a domed ceiling adorned with lights to resemble the night sky and statues reminiscent of ancient Greece. Hosting an lineup of artists such as Marlon Williams, Bastille, Amy Shark, and Flight Facilities, it offers well equipped acoustics for a clear musical experience.</p>
-                </div>
-            </div>
-            <!-- 21. Melbourne Star Observation Wheel -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_21.avif" alt="Melbourne Star Observation Wheel" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Closed
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Melbourne Star Observation Wheel</h3>
-                    <p class="tg-sight-card__text">The Melbourne Star Observation Wheel is a massive rotating wheel offering 360-degree views and glass-enclosed cabins for up to 20 people. It provides a unique introduction to the color, history, and culture of the city. For familiar with Melbourne or visiting for the first time, it offers a way to get visitor bearings. The 30-minute rotation allows visitors to take in ever-changing views of inner Melbourne, lush gardens, sports stadiums, cultural precincts, and Port Phillip Bay.</p>
-                </div>
-            </div>
-            <!-- 22. Sidney Myer Music Bowl -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_22.avif" alt="Sidney Myer Music Bowl" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Sidney Myer Music Bowl</h3>
-                    <p class="tg-sight-card__text">Sidney Myer Music Bowl is a visitor site in Melbourne, Australia. Sidney Myer Music Bowl is a popular performance venue located within the King&#x27;s Domain Gardens in Melbourne. The gardens feature mature trees, flower beds, and notable landmarks such as Government House and the Shrine of Remembrance. The main structures and grounds are the principal points of interest.</p>
-                </div>
-            </div>
-            <!-- 23. Cooks&#x27; Cottage -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_23.avif" alt="Cooks&#x27; Cottage" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> A$8
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Cooks&#x27; Cottage</h3>
-                    <p class="tg-sight-card__text">Cooks&#x27; Cottage is a visitor site in Melbourne, Australia. Construction and early use date to around 1755. Originally constructed in Yorkshire, England in 1755, it was later transported to Australia as a tribute to Captain James Cook&#x27;s family. Although the famous explorer never resided here, his father built the cottage. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 24. Fitzroy Gardens -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_24.avif" alt="Fitzroy Gardens" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Fitzroy Gardens</h3>
-                    <p class="tg-sight-card__text">Fitzroy Gardens is a public park in Melbourne, Australia. Paths, lawns, and shaded areas make up the main public facilities. Fitzroy Gardens remains part of the public visitor circuit in Melbourne. Local maps identify Fitzroy Gardens within Melbourne, Australia.</p>
-                </div>
-            </div>
-            <!-- 25. Treasury Gardens -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_25.avif" alt="Treasury Gardens" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Treasury Gardens</h3>
-                    <p class="tg-sight-card__text">Treasury Gardens is a public park in Melbourne, Australia. It hosts community events and private functions while serving as a recreational facility for those living on the east side of the CBD. Paths, lawns, and shaded areas make up the main public facilities.</p>
-                </div>
-            </div>
-            <!-- 26. SEA LIFE Melbourne Aquarium -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_26.avif" alt="SEA LIFE Melbourne Aquarium" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> A$39
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">SEA LIFE Melbourne Aquarium</h3>
-                    <p class="tg-sight-card__text">SEA LIFE Melbourne Aquarium is a visitor site in Melbourne, Australia. SEA LIFE Melbourne Aquarium is a popular attraction for families and travelers in Melbourne. It houses over 10,000 marine animals, including sharks, crocodiles, penguins, and colorful fish. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 27. Rialto -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_27.avif" alt="Rialto" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Rialto</h3>
-                    <p class="tg-sight-card__text">Rialto is a visitor site in Melbourne, Australia. Rialto Towers, celebrating its 30th anniversary, is an part of Melbourne&#x27;s skyline. The South Tower stands at 251m and is the seventh tallest building in Australia, while the North Tower reaches 185 meters. Visitors can enjoy ground-level coffee shops and eateries as well as views from the top floors. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 28. St Kilda Botanical Gardens -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_28.avif" alt="St Kilda Botanical Gardens" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">St Kilda Botanical Gardens</h3>
-                    <p class="tg-sight-card__text">St Kilda Botanical Gardens is a public park in Melbourne, Australia. Records associated with the site include 1857. St Kilda Botanical Gardens, established in 1857, cover 16 acres and offer a more intimate and community-oriented experience compared to the larger Royal Botanic Garden. Paths, lawns, and shaded areas make up the main public facilities.</p>
-                </div>
-            </div>
-            <!-- 29. Palais Theatre -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_29.avif" alt="Palais Theatre" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Palais Theatre</h3>
-                    <p class="tg-sight-card__text">The Palais Theatre, a classic 1920s picture house turned live entertainment venue, is an landmark on the St Kilda foreshore in Melbourne. This beautifully restored art deco building has hosted a wide range of events over its 90-plus-year history, from mainstream musical acts to ballet and comedy shows. With its rich history and architecture, the theatre attracts both local talent and international superstars.</p>
-                </div>
-            </div>
-            <!-- 30. St Kilda Pier -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_30.avif" alt="St Kilda Pier" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">St Kilda Pier</h3>
-                    <p class="tg-sight-card__text">St Kilda Pier is a popular spot in Melbourne, offering views of the city skyline and Port Phillip Bay. During the day, visitors can take a leisurely stroll along the pier, bask in the sunshine, and admire the panoramic vistas. The heritage-listed St Kilda Pier Kiosk at the end of the pier provides a chance to grab a coffee or snack. As evening falls, it becomes an ideal location for spotting Little Penguins as they make their way back home.</p>
-                </div>
-            </div>
-            <!-- 31. Rippon Lea Estate -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_31.avif" alt="Rippon Lea Estate" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> A$15
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Rippon Lea Estate</h3>
-                    <p class="tg-sight-card__text">Rippon Lea Estate is a grand 19th-century mansion set within expansive manicured gardens, offering guided tours and a cafe. Originally built in 1868 for businessman Frederick Sargood, the estate now welcomes visitors to explore its opulent interiors and lush grounds spanning 14 acres. The estate hosts various events throughout the year, from high tea and markets to themed parties.</p>
-                </div>
-            </div>
-            <!-- 32. Point Ormond Lookout -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_32.avif" alt="Point Ormond Lookout" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Point Ormond Lookout</h3>
-                    <p class="tg-sight-card__text">Point Ormond Lookout, located at Elwood Beach in Australia, is a popular spot for photographers seeking views of the city skyline during sunset and sunrise. The lookout offers vistas of the bay, making it an ideal location for capturing dramatic seascapes under various weather conditions. Visitors can also enjoy walking or cycling along the continuous Bay trail adorned with interesting artwork and information.</p>
-                </div>
-            </div>
-            <!-- 33. Caulfield Racecourse -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_33.avif" alt="Caulfield Racecourse" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> A$25
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Caulfield Racecourse</h3>
-                    <p class="tg-sight-card__text">Caulfield Racecourse is a visitor site in Melbourne, Australia. Caulfield Racecourse, located in Melbourne, is a popular destination for horse racing enthusiasts and visitors. The grounds and principal structures are the main points of interest. Caulfield Racecourse remains part of the public visitor circuit in Melbourne.</p>
-                </div>
-            </div>
-            <!-- 34. Princes Pier -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_34.avif" alt="Princes Pier" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Princes Pier</h3>
-                    <p class="tg-sight-card__text">Princes Pier, located in Port Melbourne, is a historic and photogenic landmark that stretches 560 meters into Port Phillip Bay. Originally built in 1915 to accommodate large cruise liners and serve as an arrival point for immigrants, it has since become a beloved spot for locals and tourists. The pier offers bay views, plenty of photo opportunities, and a rich sense of history.</p>
-                </div>
-            </div>
-            <!-- 35. Edinburgh Gardens -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_35.avif" alt="Edinburgh Gardens" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Edinburgh Gardens</h3>
-                    <p class="tg-sight-card__text">Edinburgh Gardens is a public park in Melbourne, Australia. Edinburgh Gardens is a vast 24-hectare park in North Fitzroy, offering an array of facilities for visitors to enjoy. It&#x27;s a popular spot for picnics with its expansive lawns, shaded areas, and picnic and barbecue spots. Paths, lawns, and shaded areas make up the main public facilities.</p>
-                </div>
-            </div>
-            <!-- 36. Victoria Park -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_36.avif" alt="Victoria Park" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Victoria Park</h3>
-                    <p class="tg-sight-card__text">Victoria Park is a public park in Melbourne, Australia. Records associated with the site include 1892, 1999. Just north of the city, Victoria Park is a cherished landmark that once served as the home ground for the Collingwood Football Club from 1892 until 1999. This historic site has transformed into a community hub where locals can enjoy various recreational activities. Paths, lawns, and shaded areas make up the main public facilities.</p>
-                </div>
-            </div>
-            <!-- 37. Collingwood Children&#x27;s Farm -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_37.avif" alt="Collingwood Children&#x27;s Farm" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> A$20
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Collingwood Children&#x27;s Farm</h3>
-                    <p class="tg-sight-card__text">Collingwood Children&#x27;s Farm is a visitor site in Melbourne, Australia. Located in the inner-city suburb of Abbotsford, Collingwood Children&#x27;s Farm is a beloved nonprofit working farm offering hands-on experiences with various friendly animals. Visitors can feed chickens, cuddle goats and guinea pigs, milk cows like Heather, and enjoy pony or tractor rides. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 38. Quang Minh Buddhist Temple -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_38.avif" alt="Quang Minh Buddhist Temple" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Quang Minh Buddhist Temple</h3>
-                    <p class="tg-sight-card__text">Quang Minh Buddhist Temple is a visitor site in Melbourne. The art center in Footscray is an gallery that presents a wide variety of local talent. The artwork displayed is not only visually but also thought-provoking and emotionally engaging. It celebrates diversity by featuring works from Indigenous artists and individuals of different cultural backgrounds, showing both emerging and established artists alike.</p>
-                </div>
-            </div>
-            <!-- 39. Melbourne Zoo -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_39.avif" alt="Melbourne Zoo" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> A$45
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Melbourne Zoo</h3>
-                    <p class="tg-sight-card__text">Melbourne Zoo, established in 1862, is one of the world&#x27;s oldest zoos and a family-friendly destination. It houses over 320 animal species from around the world, totaling more than 5,000 individual creatures. Visitors can explore attractions such as the Reptile House, Butterfly House, Gorilla Rainforest, and Caterpillar Greenhouse. The award-winning Trail of the Elephants provides a chance to interact with these majestic animals in a recreated Asian village setting.</p>
-                </div>
-            </div>
-            <!-- 40. Melbourne Cricket Ground -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/melbourne_40.avif" alt="Melbourne Cricket Ground" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> A$34
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Melbourne Cricket Ground</h3>
-                    <p class="tg-sight-card__text">The Melbourne Cricket Ground (MCG) is an sports venue with a rich history dating back to 1853. It has been the main stadium for the 1956 Summer Olympics and is known as the home of Australian football. With a capacity of 100,000 people, it&#x27;s one of Melbourne&#x27;s top tourist destinations. The MCG offers daily tours that provide visitors with insights into its storied past and significance in Australian sports history.</p>
-                </div>
-            </div>
+                </dl>
             </div>
         </section>
-        </div>
+
+        <section id="atlas" class="destination-atlas" aria-labelledby="atlas-title">
+            <div class="page-shell destination-atlas__layout">
+                <div class="destination-atlas__brief">
+                    <p class="destination-atlas__index">City atlas</p>
+                    <h2 id="atlas-title">Plot the city.</h2>
+                    <p class="destination-atlas__copy">Zoom, pan, and open any marker to focus that place in the catalog below.</p>
+                    <dl class="destination-atlas__facts" aria-label="Map coverage">
+                        <div>
+                            <dt>Plotted</dt>
+                            <dd>40 places</dd>
+                        </div>
+                        <div>
+                            <dt>Center</dt>
+                            <dd>37.8250&deg; S<br>144.9683&deg; E</dd>
+                        </div>
+                    </dl>
+                </div>
+                <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Melbourne attractions"></div>
+            </div>
+        </section>
+
+        <section id="places" class="destination-places" aria-labelledby="places-title">
+            <div class="page-shell">
+                <div class="destination-chapter">
+                    <h2 id="places-title" class="destination-chapter__heading">40 ways into<br>Melbourne.</h2>
+                    <p class="destination-chapter__copy">Browse the index, open a location, and read the essentials without scrolling through a long catalog. Each entry contains its image, admission note, and contextual guide.</p>
+                </div>
+                <div class="places-explorer" data-places-explorer>
+                    <aside class="places-explorer__rail" aria-label="Place index">
+                        <div class="places-explorer__toolbar">
+                            <label class="places-explorer__filter-label" for="places-filter">Filter places</label>
+                            <input
+                                id="places-filter"
+                                class="places-explorer__filter"
+                                type="search"
+                                data-places-filter
+                                placeholder="Search by name"
+                                autocomplete="off"
+                            >
+                            <p class="places-explorer__meta"><strong data-places-count>40</strong> of 40 shown</p>
+                        </div>
+                        <ul class="places-explorer__list" role="listbox" aria-label="Places in Melbourne" data-places-list data-lenis-prevent data-tg-scroll-surface>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option is-active"
+                            role="option"
+                            id="place-option-1"
+                            data-place-option
+                            data-place-index="0"
+                            data-place-name="South Melbourne Market"
+                            data-place-lat="-37.832011"
+                            data-place-lng="144.955939"
+                            aria-selected="true"
+                            tabindex="0"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">01</span>
+                            <span class="places-explorer__option-name">South Melbourne Market</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-2"
+                            data-place-option
+                            data-place-index="1"
+                            data-place-name="Shrine of Remembrance"
+                            data-place-lat="-37.830516"
+                            data-place-lng="144.973432"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">02</span>
+                            <span class="places-explorer__option-name">Shrine of Remembrance</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-3"
+                            data-place-option
+                            data-place-index="2"
+                            data-place-name="Royal Botanic Gardens Victoria - Melbourne Gardens"
+                            data-place-lat="-37.830244"
+                            data-place-lng="144.98015"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">03</span>
+                            <span class="places-explorer__option-name">Royal Botanic Gardens Victoria - Melbourne Gardens</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-4"
+                            data-place-option
+                            data-place-index="3"
+                            data-place-name="Royal Exhibition Building"
+                            data-place-lat="-37.804689"
+                            data-place-lng="144.97165"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">04</span>
+                            <span class="places-explorer__option-name">Royal Exhibition Building</span>
+                            <span class="places-explorer__option-price">A$29</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-5"
+                            data-place-option
+                            data-place-index="4"
+                            data-place-name="Carlton Gardens"
+                            data-place-lat="-37.805431"
+                            data-place-lng="144.971412"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">05</span>
+                            <span class="places-explorer__option-name">Carlton Gardens</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-6"
+                            data-place-option
+                            data-place-index="5"
+                            data-place-name="DFO South Wharf"
+                            data-place-lat="-37.824617"
+                            data-place-lng="144.949931"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">06</span>
+                            <span class="places-explorer__option-name">DFO South Wharf</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-7"
+                            data-place-option
+                            data-place-index="6"
+                            data-place-name="Brighton Bathing Boxes"
+                            data-place-lat="-37.917991"
+                            data-place-lng="144.986795"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">07</span>
+                            <span class="places-explorer__option-name">Brighton Bathing Boxes</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-8"
+                            data-place-option
+                            data-place-index="7"
+                            data-place-name="Melbourne Central"
+                            data-place-lat="-37.810236"
+                            data-place-lng="144.962765"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">08</span>
+                            <span class="places-explorer__option-name">Melbourne Central</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-9"
+                            data-place-option
+                            data-place-index="8"
+                            data-place-name="St Francis’ Church"
+                            data-place-lat="-37.811657"
+                            data-place-lng="144.962396"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">09</span>
+                            <span class="places-explorer__option-name">St Francis’ Church</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-10"
+                            data-place-option
+                            data-place-index="9"
+                            data-place-name="Chinatown Melbourne"
+                            data-place-lat="-37.812006"
+                            data-place-lng="144.966804"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">10</span>
+                            <span class="places-explorer__option-name">Chinatown Melbourne</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-11"
+                            data-place-option
+                            data-place-index="10"
+                            data-place-name="Her Majesty&#x27;s Theatre"
+                            data-place-lat="-37.810926"
+                            data-place-lng="144.969601"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">11</span>
+                            <span class="places-explorer__option-name">Her Majesty&#x27;s Theatre</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-12"
+                            data-place-option
+                            data-place-index="11"
+                            data-place-name="Queen Victoria Market"
+                            data-place-lat="-37.80758"
+                            data-place-lng="144.956785"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">12</span>
+                            <span class="places-explorer__option-name">Queen Victoria Market</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-13"
+                            data-place-option
+                            data-place-index="12"
+                            data-place-name="Flagstaff Gardens"
+                            data-place-lat="-37.810558"
+                            data-place-lng="144.95452"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">13</span>
+                            <span class="places-explorer__option-name">Flagstaff Gardens</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-14"
+                            data-place-option
+                            data-place-index="13"
+                            data-place-name="Melbourne Skydeck"
+                            data-place-lat="-37.821334"
+                            data-place-lng="144.964698"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">14</span>
+                            <span class="places-explorer__option-name">Melbourne Skydeck</span>
+                            <span class="places-explorer__option-price">A$33</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-15"
+                            data-place-option
+                            data-place-index="14"
+                            data-place-name="Hamer Hall"
+                            data-place-lat="-37.820145"
+                            data-place-lng="144.967995"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">15</span>
+                            <span class="places-explorer__option-name">Hamer Hall</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-16"
+                            data-place-option
+                            data-place-index="15"
+                            data-place-name="Flinders Street"
+                            data-place-lat="-37.818271"
+                            data-place-lng="144.967062"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">16</span>
+                            <span class="places-explorer__option-name">Flinders Street</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-17"
+                            data-place-option
+                            data-place-index="16"
+                            data-place-name="St Paul&#x27;s Cathedral, Melbourne"
+                            data-place-lat="-37.817029"
+                            data-place-lng="144.967687"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">17</span>
+                            <span class="places-explorer__option-name">St Paul&#x27;s Cathedral, Melbourne</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-18"
+                            data-place-option
+                            data-place-index="17"
+                            data-place-name="Regent Theatre"
+                            data-place-lat="-37.815899"
+                            data-place-lng="144.967911"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">18</span>
+                            <span class="places-explorer__option-name">Regent Theatre</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-19"
+                            data-place-option
+                            data-place-index="18"
+                            data-place-name="Melbourne Town Hall"
+                            data-place-lat="-37.815086"
+                            data-place-lng="144.966565"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">19</span>
+                            <span class="places-explorer__option-name">Melbourne Town Hall</span>
+                            <span class="places-explorer__option-price">Free (guided tour A$15)</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-20"
+                            data-place-option
+                            data-place-index="19"
+                            data-place-name="Forum Melbourne"
+                            data-place-lat="-37.816627"
+                            data-place-lng="144.969576"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">20</span>
+                            <span class="places-explorer__option-name">Forum Melbourne</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-21"
+                            data-place-option
+                            data-place-index="20"
+                            data-place-name="Melbourne Star Observation Wheel"
+                            data-place-lat="-37.8118"
+                            data-place-lng="144.937437"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">21</span>
+                            <span class="places-explorer__option-name">Melbourne Star Observation Wheel</span>
+                            <span class="places-explorer__option-price">Closed</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-22"
+                            data-place-option
+                            data-place-index="21"
+                            data-place-name="Sidney Myer Music Bowl"
+                            data-place-lat="-37.824038"
+                            data-place-lng="144.973522"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">22</span>
+                            <span class="places-explorer__option-name">Sidney Myer Music Bowl</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-23"
+                            data-place-option
+                            data-place-index="22"
+                            data-place-name="Cooks&#x27; Cottage"
+                            data-place-lat="-37.814501"
+                            data-place-lng="144.979448"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">23</span>
+                            <span class="places-explorer__option-name">Cooks&#x27; Cottage</span>
+                            <span class="places-explorer__option-price">A$8</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-24"
+                            data-place-option
+                            data-place-index="23"
+                            data-place-name="Fitzroy Gardens"
+                            data-place-lat="-37.812721"
+                            data-place-lng="144.980068"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">24</span>
+                            <span class="places-explorer__option-name">Fitzroy Gardens</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-25"
+                            data-place-option
+                            data-place-index="24"
+                            data-place-name="Treasury Gardens"
+                            data-place-lat="-37.814333"
+                            data-place-lng="144.975984"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">25</span>
+                            <span class="places-explorer__option-name">Treasury Gardens</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-26"
+                            data-place-option
+                            data-place-index="25"
+                            data-place-name="SEA LIFE Melbourne Aquarium"
+                            data-place-lat="-37.820627"
+                            data-place-lng="144.95822"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">26</span>
+                            <span class="places-explorer__option-name">SEA LIFE Melbourne Aquarium</span>
+                            <span class="places-explorer__option-price">A$39</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-27"
+                            data-place-option
+                            data-place-index="26"
+                            data-place-name="Rialto"
+                            data-place-lat="-37.818274"
+                            data-place-lng="144.957646"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">27</span>
+                            <span class="places-explorer__option-name">Rialto</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-28"
+                            data-place-option
+                            data-place-index="27"
+                            data-place-name="St Kilda Botanical Gardens"
+                            data-place-lat="-37.87086"
+                            data-place-lng="144.983954"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">28</span>
+                            <span class="places-explorer__option-name">St Kilda Botanical Gardens</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-29"
+                            data-place-option
+                            data-place-index="28"
+                            data-place-name="Palais Theatre"
+                            data-place-lat="-37.867583"
+                            data-place-lng="144.976035"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">29</span>
+                            <span class="places-explorer__option-name">Palais Theatre</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-30"
+                            data-place-option
+                            data-place-index="29"
+                            data-place-name="St Kilda Pier"
+                            data-place-lat="-37.864754"
+                            data-place-lng="144.965916"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">30</span>
+                            <span class="places-explorer__option-name">St Kilda Pier</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-31"
+                            data-place-option
+                            data-place-index="30"
+                            data-place-name="Rippon Lea Estate"
+                            data-place-lat="-37.878604"
+                            data-place-lng="144.997848"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">31</span>
+                            <span class="places-explorer__option-name">Rippon Lea Estate</span>
+                            <span class="places-explorer__option-price">A$15</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-32"
+                            data-place-option
+                            data-place-index="31"
+                            data-place-name="Point Ormond Lookout"
+                            data-place-lat="-37.881955"
+                            data-place-lng="144.976231"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">32</span>
+                            <span class="places-explorer__option-name">Point Ormond Lookout</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-33"
+                            data-place-option
+                            data-place-index="32"
+                            data-place-name="Caulfield Racecourse"
+                            data-place-lat="-37.877592"
+                            data-place-lng="145.038412"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">33</span>
+                            <span class="places-explorer__option-name">Caulfield Racecourse</span>
+                            <span class="places-explorer__option-price">A$25</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-34"
+                            data-place-option
+                            data-place-index="33"
+                            data-place-name="Princes Pier"
+                            data-place-lat="-37.841012"
+                            data-place-lng="144.926952"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">34</span>
+                            <span class="places-explorer__option-name">Princes Pier</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-35"
+                            data-place-option
+                            data-place-index="34"
+                            data-place-name="Edinburgh Gardens"
+                            data-place-lat="-37.787369"
+                            data-place-lng="144.983"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">35</span>
+                            <span class="places-explorer__option-name">Edinburgh Gardens</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-36"
+                            data-place-option
+                            data-place-index="35"
+                            data-place-name="Victoria Park"
+                            data-place-lat="-37.798367"
+                            data-place-lng="144.996424"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">36</span>
+                            <span class="places-explorer__option-name">Victoria Park</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-37"
+                            data-place-option
+                            data-place-index="36"
+                            data-place-name="Collingwood Children&#x27;s Farm"
+                            data-place-lat="-37.802605"
+                            data-place-lng="145.005305"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">37</span>
+                            <span class="places-explorer__option-name">Collingwood Children&#x27;s Farm</span>
+                            <span class="places-explorer__option-price">A$20</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-38"
+                            data-place-option
+                            data-place-index="37"
+                            data-place-name="Quang Minh Buddhist Temple"
+                            data-place-lat="-37.774237"
+                            data-place-lng="144.851035"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">38</span>
+                            <span class="places-explorer__option-name">Quang Minh Buddhist Temple</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-39"
+                            data-place-option
+                            data-place-index="38"
+                            data-place-name="Melbourne Zoo"
+                            data-place-lat="-37.784135"
+                            data-place-lng="144.951547"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">39</span>
+                            <span class="places-explorer__option-name">Melbourne Zoo</span>
+                            <span class="places-explorer__option-price">A$45</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-40"
+                            data-place-option
+                            data-place-index="39"
+                            data-place-name="Melbourne Cricket Ground"
+                            data-place-lat="-37.819967"
+                            data-place-lng="144.983449"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">40</span>
+                            <span class="places-explorer__option-name">Melbourne Cricket Ground</span>
+                            <span class="places-explorer__option-price">A$34</span>
+                        </button>
+                    </li>
+                        </ul>
+                        <p class="places-explorer__empty" data-places-empty hidden>No places match that filter.</p>
+                    </aside>
+                    <div class="places-explorer__stage" data-places-stage>
+                    <nav class="places-stage__stepper" data-places-stepper aria-label="Browse places" hidden>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--prev" data-places-prev aria-label="Previous place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M14.75 5.25 L8.25 12 l6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M9.1 12 H17.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--next" data-places-next aria-label="Next place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M9.25 5.25 L15.75 12 l-6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M6.6 12 H14.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                    </nav>
+                <article
+                    class="places-stage__panel is-active"
+                    data-place-panel
+                    data-place-index="0"
+                    aria-labelledby="place-title-1"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_1.avif" alt="South Melbourne Market" width="1200" height="750" loading="eager" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">01</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-1" class="places-stage__title">South Melbourne Market</h3>
+                        <p class="places-stage__text">South Melbourne Market is a market in Melbourne, Australia. Records associated with the site include 1867. South Melbourne Market is a indoor market that has been used by locals and tourists since 1867. While it may not be as large as Queen Victoria Market, it offers a diverse range of stalls selling fresh produce, meat, seafood, artisanal products, and vintage items. Stalls sell food and goods during regular market hours.</p>
+                        <p class="places-stage__coords">37.8320&deg; S / 144.9559&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="1"
+                    aria-labelledby="place-title-2"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_2.avif" alt="Shrine of Remembrance" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">02</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-2" class="places-stage__title">Shrine of Remembrance</h3>
+                        <p class="places-stage__text">The Shrine of Remembrance in Melbourne is the largest war memorial in Victoria, serving as a tribute to Australian soldiers who sacrificed their lives during the World Wars. The shrine hosts over 120 ceremonies and commemorative services annually, making it an active venue for honoring heroes. Its location offers views of Melbourne city and the bay area. The solemn atmosphere and architectural design resembling ancient Greece create a experience for visitors.</p>
+                        <p class="places-stage__coords">37.8305&deg; S / 144.9734&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="2"
+                    aria-labelledby="place-title-3"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_3.avif" alt="Royal Botanic Gardens Victoria - Melbourne Gardens" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">03</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-3" class="places-stage__title">Royal Botanic Gardens Victoria - Melbourne Gardens</h3>
+                        <p class="places-stage__text">Royal Botanic Gardens Victoria - Melbourne Gardens is a public park in Melbourne, Australia. Records associated with the site include 1846. Royal Botanic Gardens Victoria - Melbourne Gardens, established in 1846, covers 36 hectares and has Australian species as well as non-native gardens. Similar to New York&#x27;s Central Park, it occupies a significant portion of the city and offers various attractions such as the Melbourne Observatory, Guilfoyles Volcano, and Fern Gully.</p>
+                        <p class="places-stage__coords">37.8302&deg; S / 144.9802&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="3"
+                    aria-labelledby="place-title-4"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_4.avif" alt="Royal Exhibition Building" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">04</span>
+                            <span class="places-stage__admission"><span>Admission</span>A$29</span>
+                        </p>
+                        <h3 id="place-title-4" class="places-stage__title">Royal Exhibition Building</h3>
+                        <p class="places-stage__text">The Royal Exhibition Building, constructed in 1880, is a significant 19th-century exhibition center with a striking dome. It is situated amidst beautifully landscaped gardens and holds UNESCO World Heritage status. This venue hosts various major events and exhibitions throughout the year, such as the Melbourne International Flower &amp; Garden Show and GABS (the Great Australasian Beer SpecTAPular). Notably, it was also the location of Australia&#x27;s first Parliament in 1901.</p>
+                        <p class="places-stage__coords">37.8047&deg; S / 144.9717&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="4"
+                    aria-labelledby="place-title-5"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_5.avif" alt="Carlton Gardens" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">05</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-5" class="places-stage__title">Carlton Gardens</h3>
+                        <p class="places-stage__text">Carlton Gardens, located in Carlton near Melbourne&#x27;s CBD, is a beautifully landscaped Victorian-era park that houses the Royal Exhibition Building and Melbourne Museum. This World Heritage-listed site offers a setting for picnics and leisurely strolls. Visitors can grab delicious takeaway treats from nearby delis, trattorias, or cafes on Lygon or Brunswick Streets before finding a cozy spot on the grassy patches within the gardens.</p>
+                        <p class="places-stage__coords">37.8054&deg; S / 144.9714&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="5"
+                    aria-labelledby="place-title-6"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_6.avif" alt="DFO South Wharf" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">06</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-6" class="places-stage__title">DFO South Wharf</h3>
+                        <p class="places-stage__text">DFO South Wharf is a shopping haven for both local and international brands, with over 180 stores offering a wide range of products from fashion to household items. Popular brands like Adidas, Armani, Calvin Klein, and Nike can be found here. After a day of shopping, visitors can relax at the waterfront cafes, restaurants, and bars along the South Wharf Promenade.</p>
+                        <p class="places-stage__coords">37.8246&deg; S / 144.9499&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="6"
+                    aria-labelledby="place-title-7"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_7.avif" alt="Brighton Bathing Boxes" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">07</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-7" class="places-stage__title">Brighton Bathing Boxes</h3>
+                        <p class="places-stage__text">The Brighton Bathing Boxes, located about 12km south of Melbourne city center at Brighton Beach, are a collection of 82 brightly colored wooden beach huts dating back to the early 1900s. Originally used for changing into swimwear during the Victorian era, these and much-photographed structures have become a staple of the beachfront. Each hut has its own unique design and character, making them a popular spot for tourists and locals alike to capture memorable photos.</p>
+                        <p class="places-stage__coords">37.9180&deg; S / 144.9868&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="7"
+                    aria-labelledby="place-title-8"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_8.avif" alt="Melbourne Central" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">08</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-8" class="places-stage__title">Melbourne Central</h3>
+                        <p class="places-stage__text">Melbourne Central is a busy multilevel space with over 300 retailers, offering a wide array of Australian and international fashion brands, dining options, cafes, pubs, bars, beauty shops, and a cinema. The Coops Shot Tower stands tall under a glass-domed roof and is a popular spot for visitors to catch the hourly performance of the Australian song Waltzing Matilda.</p>
+                        <p class="places-stage__coords">37.8102&deg; S / 144.9628&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="8"
+                    aria-labelledby="place-title-9"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_9.avif" alt="St Francis’ Church" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">09</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-9" class="places-stage__title">St Francis’ Church</h3>
+                        <p class="places-stage__text">St Francis&#x27; Church is a religious building in Melbourne, Australia. Construction and early use date to around 1841. Francis&#x27; Church is a Catholic church in Victoria, built between 1841 and 1845. It is one of the oldest churches in the city, and despite its age it is very well maintained. The exterior and main interior spaces are usually viewable outside service times.</p>
+                        <p class="places-stage__coords">37.8117&deg; S / 144.9624&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="9"
+                    aria-labelledby="place-title-10"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_10.avif" alt="Chinatown Melbourne" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">10</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-10" class="places-stage__title">Chinatown Melbourne</h3>
+                        <p class="places-stage__text">Chinatown Melbourne is a and historic neighborhood that includes Chinese eateries, shops, and cultural events. The culinary scene in Melbourne reflects its diversity, with options ranging from street food in Chinatown to upscale dining experiences along the Yarra River. Visitors are encouraged to try local delights such as fairy bread, salt and pepper calamari, and Anzac biscuits, the city&#x27;s passion for brunch at quirky cafes in Fitzroy is not to be missed.</p>
+                        <p class="places-stage__coords">37.8120&deg; S / 144.9668&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="10"
+                    aria-labelledby="place-title-11"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_11.avif" alt="Her Majesty&#x27;s Theatre" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">11</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-11" class="places-stage__title">Her Majesty&#x27;s Theatre</h3>
+                        <p class="places-stage__text">Her Majesty&#x27;s Theatre, located on Exhibition Street in Melbourne, is a historic 19th-century venue known for its opulent red and gold decor. Originally built in 1886 as the Alexandra Theatre, it has since become a popular destination for musicals, ballet performances, and international concert acts. The grand architecture of the building adds to its charm and allure.</p>
+                        <p class="places-stage__coords">37.8109&deg; S / 144.9696&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="11"
+                    aria-labelledby="place-title-12"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_12.avif" alt="Queen Victoria Market" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">12</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-12" class="places-stage__title">Queen Victoria Market</h3>
+                        <p class="places-stage__text">Queen Victoria Market, also known as Queen Vic or the Vic Market, is a market in Melbourne, Australia. Queen Victoria Market, also known as Queen Vic or the Vic Market, is a historic landmark in Melbourne spanning 2 city blocks. Stalls sell food and goods during regular market hours.</p>
+                        <p class="places-stage__coords">37.8076&deg; S / 144.9568&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="12"
+                    aria-labelledby="place-title-13"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_13.avif" alt="Flagstaff Gardens" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">13</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-13" class="places-stage__title">Flagstaff Gardens</h3>
+                        <p class="places-stage__text">Flagstaff Gardens is a public park in Melbourne, Australia. Records associated with the site include 1862. Flagstaff Gardens, established in 1862, is one of Melbourne&#x27;s oldest parks and a designated heritage site. Paths, lawns, and shaded areas make up the main public facilities.</p>
+                        <p class="places-stage__coords">37.8106&deg; S / 144.9545&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="13"
+                    aria-labelledby="place-title-14"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_14.avif" alt="Melbourne Skydeck" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">14</span>
+                            <span class="places-stage__admission"><span>Admission</span>A$33</span>
+                        </p>
+                        <h3 id="place-title-14" class="places-stage__title">Melbourne Skydeck</h3>
+                        <p class="places-stage__text">The Melbourne Skydeck, located on the 88th floor of the Eureka Tower, offers a luxurious observation deck with panoramic views of the city. Visitors can enjoy vistas of the CBD, Yarra River, and surrounding suburbs from this gold-plated vantage point. The highlight is a protruding glass cube that provides an exhilarating experience for those seeking an adrenaline rush.</p>
+                        <p class="places-stage__coords">37.8213&deg; S / 144.9647&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="14"
+                    aria-labelledby="place-title-15"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_15.avif" alt="Hamer Hall" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">15</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-15" class="places-stage__title">Hamer Hall</h3>
+                        <p class="places-stage__text">Hamer Hall is a known concert venue in Melbourne, offering an elegant space for combination and chamber orchestras, as well as jazz and rock &#x27;n&#x27; roll concerts. What sets it apart is its unique design that allows visitors to enjoy views without having to ride an elevator. The exterior staircase provides access to city and riverside vistas. Once inside, the hall&#x27;s intimate atmosphere and acoustics create a experience for concert-goers.</p>
+                        <p class="places-stage__coords">37.8201&deg; S / 144.9680&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="15"
+                    aria-labelledby="place-title-16"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_16.avif" alt="Flinders Street" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">16</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-16" class="places-stage__title">Flinders Street</h3>
+                        <p class="places-stage__text">Flinders Street is a visitor site in Melbourne, Australia. Records associated with the site include 1909. The grounds and principal structures are the main points of interest. Flinders Street remains part of the public visitor circuit in Melbourne. Local maps identify Flinders Street within Melbourne, Australia.</p>
+                        <p class="places-stage__coords">37.8183&deg; S / 144.9671&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="16"
+                    aria-labelledby="place-title-17"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_17.avif" alt="St Paul&#x27;s Cathedral, Melbourne" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">17</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-17" class="places-stage__title">St Paul&#x27;s Cathedral, Melbourne</h3>
+                        <p class="places-stage__text">St Paul&#x27;s Cathedral, Melbourne is a religious building in Melbourne, Australia. Records associated with the site include 1891. St Paul&#x27;s Cathedral in Melbourne, consecrated in 1891, is a neo-Gothic structure with twin spires and stained-glass processional doors. The exterior and main interior spaces are usually viewable outside service times.</p>
+                        <p class="places-stage__coords">37.8170&deg; S / 144.9677&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="17"
+                    aria-labelledby="place-title-18"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_18.avif" alt="Regent Theatre" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">18</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-18" class="places-stage__title">Regent Theatre</h3>
+                        <p class="places-stage__text">The Regent Theatre, originally a 1920s cinema, has been splendidly refurbished and is a and opulent venue for live concerts and internationally known musicals. Despite facing challenges like fire and threats of demolition, the theatre was magnificently restored in 1996 to its former glory. With seating for up to 2,145 patrons over two levels, complete with chandeliers and lavish seating, the theatre offers a luxurious experience.</p>
+                        <p class="places-stage__coords">37.8159&deg; S / 144.9679&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="18"
+                    aria-labelledby="place-title-19"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_19.avif" alt="Melbourne Town Hall" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">19</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free (guided tour A$15)</span>
+                        </p>
+                        <h3 id="place-title-19" class="places-stage__title">Melbourne Town Hall</h3>
+                        <p class="places-stage__text">Melbourne Town Hall is a visitor site in Melbourne, Australia. Melbourne Town Hall is a 19th-century building In the city, serving as the seat of local government and a venue for various events. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">37.8151&deg; S / 144.9666&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="19"
+                    aria-labelledby="place-title-20"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_20.avif" alt="Forum Melbourne" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">20</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-20" class="places-stage__title">Forum Melbourne</h3>
+                        <p class="places-stage__text">Forum Melbourne, In Melbourne&#x27;s CBD, is a live music venue that has recently undergone extensive renovation and restoration. The auditorium has a domed ceiling adorned with lights to resemble the night sky and statues reminiscent of ancient Greece. Hosting an lineup of artists such as Marlon Williams, Bastille, Amy Shark, and Flight Facilities, it offers well equipped acoustics for a clear musical experience.</p>
+                        <p class="places-stage__coords">37.8166&deg; S / 144.9696&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="20"
+                    aria-labelledby="place-title-21"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_21.avif" alt="Melbourne Star Observation Wheel" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">21</span>
+                            <span class="places-stage__admission"><span>Admission</span>Closed</span>
+                        </p>
+                        <h3 id="place-title-21" class="places-stage__title">Melbourne Star Observation Wheel</h3>
+                        <p class="places-stage__text">The Melbourne Star Observation Wheel is a massive rotating wheel offering 360-degree views and glass-enclosed cabins for up to 20 people. It provides a unique introduction to the color, history, and culture of the city. For familiar with Melbourne or visiting for the first time, it offers a way to get visitor bearings. The 30-minute rotation allows visitors to take in ever-changing views of inner Melbourne, lush gardens, sports stadiums, cultural precincts, and Port Phillip Bay.</p>
+                        <p class="places-stage__coords">37.8118&deg; S / 144.9374&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="21"
+                    aria-labelledby="place-title-22"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_22.avif" alt="Sidney Myer Music Bowl" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">22</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-22" class="places-stage__title">Sidney Myer Music Bowl</h3>
+                        <p class="places-stage__text">Sidney Myer Music Bowl is a visitor site in Melbourne, Australia. Sidney Myer Music Bowl is a popular performance venue located within the King&#x27;s Domain Gardens in Melbourne. The gardens feature mature trees, flower beds, and notable landmarks such as Government House and the Shrine of Remembrance. The main structures and grounds are the principal points of interest.</p>
+                        <p class="places-stage__coords">37.8240&deg; S / 144.9735&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="22"
+                    aria-labelledby="place-title-23"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_23.avif" alt="Cooks&#x27; Cottage" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">23</span>
+                            <span class="places-stage__admission"><span>Admission</span>A$8</span>
+                        </p>
+                        <h3 id="place-title-23" class="places-stage__title">Cooks&#x27; Cottage</h3>
+                        <p class="places-stage__text">Cooks&#x27; Cottage is a visitor site in Melbourne, Australia. Construction and early use date to around 1755. Originally constructed in Yorkshire, England in 1755, it was later transported to Australia as a tribute to Captain James Cook&#x27;s family. Although the famous explorer never resided here, his father built the cottage. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">37.8145&deg; S / 144.9794&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="23"
+                    aria-labelledby="place-title-24"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_24.avif" alt="Fitzroy Gardens" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">24</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-24" class="places-stage__title">Fitzroy Gardens</h3>
+                        <p class="places-stage__text">Fitzroy Gardens is a public park in Melbourne, Australia. Paths, lawns, and shaded areas make up the main public facilities. Fitzroy Gardens remains part of the public visitor circuit in Melbourne. Local maps identify Fitzroy Gardens within Melbourne, Australia.</p>
+                        <p class="places-stage__coords">37.8127&deg; S / 144.9801&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="24"
+                    aria-labelledby="place-title-25"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_25.avif" alt="Treasury Gardens" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">25</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-25" class="places-stage__title">Treasury Gardens</h3>
+                        <p class="places-stage__text">Treasury Gardens is a public park in Melbourne, Australia. It hosts community events and private functions while serving as a recreational facility for those living on the east side of the CBD. Paths, lawns, and shaded areas make up the main public facilities.</p>
+                        <p class="places-stage__coords">37.8143&deg; S / 144.9760&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="25"
+                    aria-labelledby="place-title-26"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_26.avif" alt="SEA LIFE Melbourne Aquarium" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">26</span>
+                            <span class="places-stage__admission"><span>Admission</span>A$39</span>
+                        </p>
+                        <h3 id="place-title-26" class="places-stage__title">SEA LIFE Melbourne Aquarium</h3>
+                        <p class="places-stage__text">SEA LIFE Melbourne Aquarium is a visitor site in Melbourne, Australia. SEA LIFE Melbourne Aquarium is a popular attraction for families and travelers in Melbourne. It houses over 10,000 marine animals, including sharks, crocodiles, penguins, and colorful fish. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">37.8206&deg; S / 144.9582&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="26"
+                    aria-labelledby="place-title-27"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_27.avif" alt="Rialto" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">27</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-27" class="places-stage__title">Rialto</h3>
+                        <p class="places-stage__text">Rialto is a visitor site in Melbourne, Australia. Rialto Towers, celebrating its 30th anniversary, is an part of Melbourne&#x27;s skyline. The South Tower stands at 251m and is the seventh tallest building in Australia, while the North Tower reaches 185 meters. Visitors can enjoy ground-level coffee shops and eateries as well as views from the top floors. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">37.8183&deg; S / 144.9576&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="27"
+                    aria-labelledby="place-title-28"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_28.avif" alt="St Kilda Botanical Gardens" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">28</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-28" class="places-stage__title">St Kilda Botanical Gardens</h3>
+                        <p class="places-stage__text">St Kilda Botanical Gardens is a public park in Melbourne, Australia. Records associated with the site include 1857. St Kilda Botanical Gardens, established in 1857, cover 16 acres and offer a more intimate and community-oriented experience compared to the larger Royal Botanic Garden. Paths, lawns, and shaded areas make up the main public facilities.</p>
+                        <p class="places-stage__coords">37.8709&deg; S / 144.9840&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="28"
+                    aria-labelledby="place-title-29"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_29.avif" alt="Palais Theatre" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">29</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-29" class="places-stage__title">Palais Theatre</h3>
+                        <p class="places-stage__text">The Palais Theatre, a classic 1920s picture house turned live entertainment venue, is an landmark on the St Kilda foreshore in Melbourne. This beautifully restored art deco building has hosted a wide range of events over its 90-plus-year history, from mainstream musical acts to ballet and comedy shows. With its rich history and architecture, the theatre attracts both local talent and international superstars.</p>
+                        <p class="places-stage__coords">37.8676&deg; S / 144.9760&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="29"
+                    aria-labelledby="place-title-30"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_30.avif" alt="St Kilda Pier" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">30</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-30" class="places-stage__title">St Kilda Pier</h3>
+                        <p class="places-stage__text">St Kilda Pier is a popular spot in Melbourne, offering views of the city skyline and Port Phillip Bay. During the day, visitors can take a leisurely stroll along the pier, bask in the sunshine, and admire the panoramic vistas. The heritage-listed St Kilda Pier Kiosk at the end of the pier provides a chance to grab a coffee or snack. As evening falls, it becomes an ideal location for spotting Little Penguins as they make their way back home.</p>
+                        <p class="places-stage__coords">37.8648&deg; S / 144.9659&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="30"
+                    aria-labelledby="place-title-31"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_31.avif" alt="Rippon Lea Estate" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">31</span>
+                            <span class="places-stage__admission"><span>Admission</span>A$15</span>
+                        </p>
+                        <h3 id="place-title-31" class="places-stage__title">Rippon Lea Estate</h3>
+                        <p class="places-stage__text">Rippon Lea Estate is a grand 19th-century mansion set within expansive manicured gardens, offering guided tours and a cafe. Originally built in 1868 for businessman Frederick Sargood, the estate now welcomes visitors to explore its opulent interiors and lush grounds spanning 14 acres. The estate hosts various events throughout the year, from high tea and markets to themed parties.</p>
+                        <p class="places-stage__coords">37.8786&deg; S / 144.9978&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="31"
+                    aria-labelledby="place-title-32"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_32.avif" alt="Point Ormond Lookout" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">32</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-32" class="places-stage__title">Point Ormond Lookout</h3>
+                        <p class="places-stage__text">Point Ormond Lookout, located at Elwood Beach in Australia, is a popular spot for photographers seeking views of the city skyline during sunset and sunrise. The lookout offers vistas of the bay, making it an ideal location for capturing dramatic seascapes under various weather conditions. Visitors can also enjoy walking or cycling along the continuous Bay trail adorned with interesting artwork and information.</p>
+                        <p class="places-stage__coords">37.8820&deg; S / 144.9762&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="32"
+                    aria-labelledby="place-title-33"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_33.avif" alt="Caulfield Racecourse" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">33</span>
+                            <span class="places-stage__admission"><span>Admission</span>A$25</span>
+                        </p>
+                        <h3 id="place-title-33" class="places-stage__title">Caulfield Racecourse</h3>
+                        <p class="places-stage__text">Caulfield Racecourse is a visitor site in Melbourne, Australia. Caulfield Racecourse, located in Melbourne, is a popular destination for horse racing enthusiasts and visitors. The grounds and principal structures are the main points of interest. Caulfield Racecourse remains part of the public visitor circuit in Melbourne.</p>
+                        <p class="places-stage__coords">37.8776&deg; S / 145.0384&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="33"
+                    aria-labelledby="place-title-34"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_34.avif" alt="Princes Pier" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">34</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-34" class="places-stage__title">Princes Pier</h3>
+                        <p class="places-stage__text">Princes Pier, located in Port Melbourne, is a historic and photogenic landmark that stretches 560 meters into Port Phillip Bay. Originally built in 1915 to accommodate large cruise liners and serve as an arrival point for immigrants, it has since become a beloved spot for locals and tourists. The pier offers bay views, plenty of photo opportunities, and a rich sense of history.</p>
+                        <p class="places-stage__coords">37.8410&deg; S / 144.9270&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="34"
+                    aria-labelledby="place-title-35"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_35.avif" alt="Edinburgh Gardens" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">35</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-35" class="places-stage__title">Edinburgh Gardens</h3>
+                        <p class="places-stage__text">Edinburgh Gardens is a public park in Melbourne, Australia. Edinburgh Gardens is a vast 24-hectare park in North Fitzroy, offering an array of facilities for visitors to enjoy. It&#x27;s a popular spot for picnics with its expansive lawns, shaded areas, and picnic and barbecue spots. Paths, lawns, and shaded areas make up the main public facilities.</p>
+                        <p class="places-stage__coords">37.7874&deg; S / 144.9830&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="35"
+                    aria-labelledby="place-title-36"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_36.avif" alt="Victoria Park" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">36</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-36" class="places-stage__title">Victoria Park</h3>
+                        <p class="places-stage__text">Victoria Park is a public park in Melbourne, Australia. Records associated with the site include 1892, 1999. Just north of the city, Victoria Park is a cherished landmark that once served as the home ground for the Collingwood Football Club from 1892 until 1999. This historic site has transformed into a community hub where locals can enjoy various recreational activities. Paths, lawns, and shaded areas make up the main public facilities.</p>
+                        <p class="places-stage__coords">37.7984&deg; S / 144.9964&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="36"
+                    aria-labelledby="place-title-37"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_37.avif" alt="Collingwood Children&#x27;s Farm" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">37</span>
+                            <span class="places-stage__admission"><span>Admission</span>A$20</span>
+                        </p>
+                        <h3 id="place-title-37" class="places-stage__title">Collingwood Children&#x27;s Farm</h3>
+                        <p class="places-stage__text">Collingwood Children&#x27;s Farm is a visitor site in Melbourne, Australia. Located in the inner-city suburb of Abbotsford, Collingwood Children&#x27;s Farm is a beloved nonprofit working farm offering hands-on experiences with various friendly animals. Visitors can feed chickens, cuddle goats and guinea pigs, milk cows like Heather, and enjoy pony or tractor rides. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">37.8026&deg; S / 145.0053&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="37"
+                    aria-labelledby="place-title-38"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_38.avif" alt="Quang Minh Buddhist Temple" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">38</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-38" class="places-stage__title">Quang Minh Buddhist Temple</h3>
+                        <p class="places-stage__text">Quang Minh Buddhist Temple is a visitor site in Melbourne. The art center in Footscray is an gallery that presents a wide variety of local talent. The artwork displayed is not only visually but also thought-provoking and emotionally engaging. It celebrates diversity by featuring works from Indigenous artists and individuals of different cultural backgrounds, showing both emerging and established artists alike.</p>
+                        <p class="places-stage__coords">37.7742&deg; S / 144.8510&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="38"
+                    aria-labelledby="place-title-39"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_39.avif" alt="Melbourne Zoo" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">39</span>
+                            <span class="places-stage__admission"><span>Admission</span>A$45</span>
+                        </p>
+                        <h3 id="place-title-39" class="places-stage__title">Melbourne Zoo</h3>
+                        <p class="places-stage__text">Melbourne Zoo, established in 1862, is one of the world&#x27;s oldest zoos and a family-friendly destination. It houses over 320 animal species from around the world, totaling more than 5,000 individual creatures. Visitors can explore attractions such as the Reptile House, Butterfly House, Gorilla Rainforest, and Caterpillar Greenhouse. The award-winning Trail of the Elephants provides a chance to interact with these majestic animals in a recreated Asian village setting.</p>
+                        <p class="places-stage__coords">37.7841&deg; S / 144.9515&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="39"
+                    aria-labelledby="place-title-40"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/melbourne_40.avif" alt="Melbourne Cricket Ground" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">40</span>
+                            <span class="places-stage__admission"><span>Admission</span>A$34</span>
+                        </p>
+                        <h3 id="place-title-40" class="places-stage__title">Melbourne Cricket Ground</h3>
+                        <p class="places-stage__text">The Melbourne Cricket Ground (MCG) is an sports venue with a rich history dating back to 1853. It has been the main stadium for the 1956 Summer Olympics and is known as the home of Australian football. With a capacity of 100,000 people, it&#x27;s one of Melbourne&#x27;s top tourist destinations. The MCG offers daily tours that provide visitors with insights into its storied past and significance in Australian sports history.</p>
+                        <p class="places-stage__coords">37.8200&deg; S / 144.9834&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="site-footer">
         <div class="page-shell">
             <div class="site-footer__bar">
-                <a href="../../index.html" class="site-footer__brand" aria-label="Global Explorer home">
-                    <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
+                <a href="../../index.html" class="site-footer__mark" aria-label="Global Explorer home">
+                    <svg width="24" height="24" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
-                    <span class="site-footer__brand-name font-display">Global Explorer</span>
+                    Global Explorer
                 </a>
-                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides <span>Melbourne: 40 places across East Coast.</span></p>
             </div>
         </div>
     </footer>
 
     <button id="scrollTopBtn" type="button" aria-label="Scroll to top">
-        <i class="ph ph-arrow-up" aria-hidden="true"></i>
+        <svg viewBox="0 0 24 24" width="1.15em" height="1.15em" aria-hidden="true" focusable="false">
+            <path d="M12 5.25 V18.75 M12 5.25 L6.75 10.5 M12 5.25 L17.25 10.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
     </button>
 
     <script defer src="../../assets/dev-destination-toggle.js"></script>
     <script defer src="../../assets/tg-page-chrome.js"></script>
     <script defer src="../../assets/tg-destination-map.js"></script>
+    <script defer src="../../assets/tg-destination-places.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const map = L.map('map').setView([-37.824955, 144.968303], 14);
+            const map = L.map('map');
             L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
                 attribution: '&copy; Google Maps',
                 maxZoom: 20
             }).addTo(map);
-            const locations = [{"name": "South Melbourne Market", "lat": -37.832011, "lng": 144.955939}, {"name": "Shrine of Remembrance", "lat": -37.830516, "lng": 144.973432}, {"name": "Royal Botanic Gardens Victoria - Melbourne Gardens", "lat": -37.830244, "lng": 144.98015}, {"name": "Royal Exhibition Building", "lat": -37.804689, "lng": 144.97165}, {"name": "Carlton Gardens", "lat": -37.805431, "lng": 144.971412}, {"name": "DFO South Wharf", "lat": -37.824617, "lng": 144.949931}, {"name": "Brighton Bathing Boxes", "lat": -37.917991, "lng": 144.986795}, {"name": "Melbourne Central", "lat": -37.810236, "lng": 144.962765}, {"name": "St Francis’ Church", "lat": -37.811657, "lng": 144.962396}, {"name": "Chinatown Melbourne", "lat": -37.812006, "lng": 144.966804}, {"name": "Her Majesty's Theatre", "lat": -37.810926, "lng": 144.969601}, {"name": "Queen Victoria Market", "lat": -37.80758, "lng": 144.956785}, {"name": "Flagstaff Gardens", "lat": -37.810558, "lng": 144.95452}, {"name": "Melbourne Skydeck", "lat": -37.821334, "lng": 144.964698}, {"name": "Hamer Hall", "lat": -37.820145, "lng": 144.967995}, {"name": "Flinders Street", "lat": -37.818271, "lng": 144.967062}, {"name": "St Paul's Cathedral, Melbourne", "lat": -37.817029, "lng": 144.967687}, {"name": "Regent Theatre", "lat": -37.815899, "lng": 144.967911}, {"name": "Melbourne Town Hall", "lat": -37.815086, "lng": 144.966565}, {"name": "Forum Melbourne", "lat": -37.816627, "lng": 144.969576}, {"name": "Melbourne Star Observation Wheel", "lat": -37.8118, "lng": 144.937437}, {"name": "Sidney Myer Music Bowl", "lat": -37.824038, "lng": 144.973522}, {"name": "Cooks' Cottage", "lat": -37.814501, "lng": 144.979448}, {"name": "Fitzroy Gardens", "lat": -37.812721, "lng": 144.980068}, {"name": "Treasury Gardens", "lat": -37.814333, "lng": 144.975984}, {"name": "SEA LIFE Melbourne Aquarium", "lat": -37.820627, "lng": 144.95822}, {"name": "Rialto", "lat": -37.818274, "lng": 144.957646}, {"name": "St Kilda Botanical Gardens", "lat": -37.87086, "lng": 144.983954}, {"name": "Palais Theatre", "lat": -37.867583, "lng": 144.976035}, {"name": "St Kilda Pier", "lat": -37.864754, "lng": 144.965916}, {"name": "Rippon Lea Estate", "lat": -37.878604, "lng": 144.997848}, {"name": "Point Ormond Lookout", "lat": -37.881955, "lng": 144.976231}, {"name": "Caulfield Racecourse", "lat": -37.877592, "lng": 145.038412}, {"name": "Princes Pier", "lat": -37.841012, "lng": 144.926952}, {"name": "Edinburgh Gardens", "lat": -37.787369, "lng": 144.983}, {"name": "Victoria Park", "lat": -37.798367, "lng": 144.996424}, {"name": "Collingwood Children's Farm", "lat": -37.802605, "lng": 145.005305}, {"name": "Quang Minh Buddhist Temple", "lat": -37.774237, "lng": 144.851035}, {"name": "Melbourne Zoo", "lat": -37.784135, "lng": 144.951547}, {"name": "Melbourne Cricket Ground", "lat": -37.819967, "lng": 144.983449}];
+            const locations = Array.from(document.querySelectorAll('[data-place-option]')).map((el) => ({
+                name: el.dataset.placeName || '',
+                lat: Number(el.dataset.placeLat),
+                lng: Number(el.dataset.placeLng),
+            }));
             const customIcon = L.icon({
                 iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
                 iconSize: [32, 32],
@@ -666,14 +1761,45 @@
                 popupAnchor: [0, -32],
             });
             const destinationCenter = [-37.824955, 144.968303];
-            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.093036, "maxCenterLng": 0.117268};
-            locations.forEach((location) => {
-                L.marker([location.lat, location.lng], { icon: customIcon })
+            const mapContext = {"denseUrban": true};
+            const markers = locations.map((location) => {
+                const marker = L.marker([location.lat, location.lng], { icon: customIcon })
                     .addTo(map)
                     .bindPopup(`<strong>${location.name}</strong>`);
+                return marker;
             });
             window.TGDestinationMap?.fitToLocations(map, locations, destinationCenter, mapContext);
             window.TGDestinationMap?.bindMobileScrollGuard(map, 'map');
+            window.TGDestinationMap?.registerMarkers(map, markers);
+
+            const heroImage = document.querySelector('[data-destination-hero-image]');
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (heroImage && !reduceMotion) {
+                let framePending = false;
+                let scrolling = false;
+                let scrollEndTimer = 0;
+                const updateHeroPosition = () => {
+                    const offset = Math.min(window.scrollY, window.innerHeight * 1.15) * 0.075;
+                    heroImage.style.transform = `translate3d(0, ${offset}px, 0) scale(1.055)`;
+                    framePending = false;
+                };
+                window.addEventListener('scroll', () => {
+                    if (!scrolling) {
+                        scrolling = true;
+                        heroImage.style.willChange = 'transform';
+                    }
+                    window.clearTimeout(scrollEndTimer);
+                    scrollEndTimer = window.setTimeout(() => {
+                        scrolling = false;
+                        heroImage.style.willChange = 'auto';
+                    }, 150);
+                    if (!framePending) {
+                        window.requestAnimationFrame(updateHeroPosition);
+                        framePending = true;
+                    }
+                }, { passive: true });
+                updateHeroPosition();
+            }
         });
     </script>
 </body>

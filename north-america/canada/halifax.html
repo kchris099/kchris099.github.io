@@ -6,269 +6,584 @@
     <meta name="description" content="Plan a visit to Halifax with a concise history, interactive attractions map, prices, and curated highlights across the destination.">
     <meta name="theme-color" content="#121417">
     <title>Halifax Guide | Global Explorer Guides</title>
-    <link rel="stylesheet" href="../../assets/tailwind.css">
-    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
     <link rel="stylesheet" href="../../assets/newindex-fonts.css">
     <link rel="stylesheet" href="../../assets/tg-theme.css">
     <link rel="stylesheet" href="../../assets/tg-site-chrome.css">
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
     <link rel="stylesheet" href="../../assets/tg-modern-polish.css">
+    <link rel="stylesheet" href="../../assets/tg-country-page.css">
+    <link rel="stylesheet" href="../../assets/tg-destination-page-v3.css">
     <script defer src="../../assets/lenis.min.js"></script>
     <script defer src="../../assets/tg-smooth-scroll.js"></script>
     <link rel="preload" as="image" href="images/halifax_hero.avif" type="image/avif" fetchpriority="high">
     <script defer src="../../assets/leaflet/leaflet.js"></script>
 </head>
-<body class="tg-theme tg-destination-page tg-modern">
-    <header id="site-header" class="header-glass fixed top-0 left-0 right-0 z-50">
+<body class="tg-theme tg-modern tg-country-v2 tg-destination-v3">
+    <a class="skip-link" href="#main-content">Skip to Halifax guide</a>
+    <header id="site-header" class="header-glass">
         <div class="page-shell header-glass__inner">
-            <a href="../../index.html" class="font-display site-brand" style="display:flex;align-items:center;gap:0.75rem;text-decoration:none;color:inherit;font-size:1.25rem;" aria-label="Global Explorer home">
+            <a href="../../index.html" class="site-brand" aria-label="Global Explorer home">
                 <span class="site-brand__mark" aria-hidden="true">
                     <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
-                        <circle cx="14" cy="14" r="2" fill="#E8B14F"/>
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
                 </span>
                 Global Explorer
             </a>
-            <nav class="header-glass__nav-mobile" aria-label="Mobile navigation">
-                <a href="../../index.html" class="header-glass__icon-link" aria-label="Home">
-                    <i class="ph ph-house" aria-hidden="true"></i>
-                </a>
-                <a href="canada.html" class="header-glass__icon-link" aria-label="Back to Canada">
-                    <i class="ph ph-arrow-left" aria-hidden="true"></i>
-                </a>
-            </nav>
             <nav class="header-glass__nav" aria-label="Primary">
-                <a href="../../index.html" class="nav-link">Home</a>
-                <a href="halifax.html" class="nav-link" aria-current="page">Halifax</a>
+                <a href="#main-content" class="nav-link" aria-current="page">Halifax</a>
+                <a href="#atlas" class="nav-link">Atlas</a>
+                <a href="#places" class="nav-link">Places</a>
                 <a href="canada.html" class="nav-link">Canada</a>
-                <a href="../../index.html#map" class="nav-link">Atlas</a>
             </nav>
         </div>
     </header>
-    <main>
-        <div class="tg-destination-hero-zone">
-            <div class="tg-destination-hero" aria-hidden="true">
-                <div class="tg-destination-hero__image" style="background-image: url('images/halifax_hero.avif')"></div>
-                <div class="tg-destination-hero__fade"></div>
-            </div>
-            <div class="page-shell tg-destination-hero-zone__content">
-        <nav class="tg-toolbar tg-toolbar--compact" aria-label="Breadcrumb">
-            <div class="tg-breadcrumb">
-                <img src="../../assets/flags/w40/ca.png" alt="" class="w-6 h-auto rounded-[2px]" aria-hidden="true">
-                <span>Canada</span>
-                <span class="tg-breadcrumb__sep" aria-hidden="true">&rsaquo;</span>
-                <span class="tg-breadcrumb__current">Atlantic Canada</span>
-            </div>
-        </nav>
+    <main id="main-content" tabindex="-1">
+        <section class="destination-hero" aria-labelledby="destination-title">
+            <img class="destination-hero__media" data-destination-hero-image src="images/halifax_hero.avif" alt="" width="1600" height="1067" fetchpriority="high" decoding="sync">
+            <div class="destination-hero__shade" aria-hidden="true"></div>
+            <div class="page-shell destination-hero__content">
+                <button
+                    type="button"
+                    id="destination-active-toggle"
+                    class="country-active-toggle country-active-toggle--inactive"
+                    data-iso2="CA"
+                    data-slug="halifax"
+                    data-active="false"
+                    data-interactive="true"
+                    aria-label="Toggle Halifax visibility on Canada guide"
+                    aria-pressed="false"
+                >
+                    <img src="../../assets/flags/w80/ca.png" alt="" aria-hidden="true">
+                    <span class="country-toggle__copy" aria-hidden="true">
+                        <span class="country-toggle__label">Halifax guide</span>
+                        <strong class="country-toggle__state"></strong>
+                    </span>
+                </button>
 
-        <header class="tg-page-header">
-            <button
-        type="button"
-        id="destination-active-toggle"
-        class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
-        data-iso2="CA"
-        data-slug="halifax"
-        data-active="false"
-        data-interactive="true"
-        aria-label="Toggle Halifax visibility on Canada guide"
-        aria-pressed="false"
-    >
-        <i class="ph ph-map-pin text-4xl pointer-events-none" aria-hidden="true"></i>
-    </button>
-            <span class="tg-page-header__eyebrow">Destination Guide — Atlantic Canada</span>
-            <h1 class="tg-page-title font-display">Explore <em>Halifax</em></h1>
-            <div class="glass-card frosted-panel tg-panel">
-                <h2 class="tg-panel__title font-display">
-                    <i class="ph ph-scroll" aria-hidden="true"></i> A Brief History
-                </h2>
-                <p class="tg-panel__body">Halifax is in Canada. Established as a regional settlement beyond an older fortified core, the city developed through industrialization in the late 19th century, post-war reconstruction, and modern civic expansion that reshaped its public spaces, markets, and surrounding landscape. Museums, markets, and street plans in Halifax still show layers from those periods.</p>
-            </div>
-        </header>
+                <div class="hero__route" aria-label="Destination route and coordinates">
+                    <span>Canada / Atlantic Canada</span>
+                    <span>44.6453&deg; N / 63.5724&deg; W</span>
+                </div>
 
-        <div class="tg-section__header tg-section__header--map-end">
-            <span class="tg-section__eyebrow">Map</span>
-            <h2 class="tg-section__title font-display">Attractions Map</h2>
-        </div>
-            </div>
-        </div>
-
-        <div class="page-shell tg-main tg-main--below-hero">
-        <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Halifax attractions"></div>
-        <section class="tg-section">
-            <div class="tg-section__header">
-                <span class="tg-section__eyebrow">Highlights</span>
-                <h2 class="tg-section__title font-display">Top Sights &amp; Activities</h2>
-            </div>
-            <div class="tg-sights-list">
-            
-            <!-- 1. Halifax Public Gardens -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/halifax_1.avif" alt="Halifax Public Gardens" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                <h1 id="destination-title" class="destination-hero__title" style="--destination-title-chars: 7">Halifax</h1>
+                <div class="destination-hero__history">
+                    <p>Britain founded Halifax in 1749 on Mi&#x27;kma&#x27;ki territory as a naval counterweight in the North Atlantic. The 1917 harbour explosion flattened the north end and forced a wholesale rebuild. Citadel Hill, convoy-era piers, and the Maritime Museum document a city whose importance was military and maritime long before it was provincial capital alone. Pier 21 processed immigrants through the same harbour the navy once convoyed.</p>
+                </div>
+                <dl class="destination-hero__facts" aria-label="Halifax guide facts">
+                    <div>
+                        <dt>Country</dt>
+                        <dd>Canada</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Halifax Public Gardens</h3>
-                    <p class="tg-sight-card__text">Halifax Public Gardens is a public park in Halifax, Canada. Records associated with the site include 1836, 1984. The Halifax Public Gardens, established in 1836 by the Nova Scotia Horticultural Society and designated as a National Historic Site in 1984, are a well-preserved example of Victorian gardens. Paths, lawns, and shaded areas make up the main public facilities.</p>
-                </div>
-            </div>
-            <!-- 2. Halifax Waterfront -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/halifax_2.avif" alt="Halifax Waterfront" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                    <div>
+                        <dt>Region</dt>
+                        <dd>Atlantic Canada</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Halifax Waterfront</h3>
-                    <p class="tg-sight-card__text">Halifax Waterfront is a busy hub with a working port and one of the world&#x27;s longest downtown boardwalks, stretching approximately 3km. The wooden boardwalk offers views of the city&#x27;s historic buildings, shops, and restaurants as well as its busy harbor activity. Popular dining spots include The Bicycle Thief and Garrison Brewing Company. Travellers can soak up the atmosphere while enjoying some nice sculpture/art along the waterfront.</p>
-                </div>
-            </div>
-            <!-- 3. York Redoubt National Historic Site -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/halifax_3.avif" alt="York Redoubt National Historic Site" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                    <div>
+                        <dt>Places</dt>
+                        <dd>10</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">York Redoubt National Historic Site</h3>
-                    <p class="tg-sight-card__text">York Redoubt National Historic Site is a visitor site in Halifax, Canada. Located just 12 km from downtown Halifax, York Redoubt National Historic Site is a historic fortress dating back to 1793. This defensive structure offers educational displays and water vistas, making it a destination for history enthusiasts and nature lovers alike. The main structures and grounds are the principal points of interest.</p>
-                </div>
-            </div>
-            <!-- 4. Halifax Citadel National Historic Site -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/halifax_4.avif" alt="Halifax Citadel National Historic Site" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> C$22
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Halifax Citadel National Historic Site</h3>
-                    <p class="tg-sight-card__text">Halifax Citadel National Historic Site is a fortified historic site in Halifax, Canada. Records associated with the site include 1749. The Halifax Citadel National Historic Site, established in 1749, is a star-shaped hilltop fort that offers guided tours and has a coffee bar and gift shop. Walls, courtyards, or towers form the main visitor route when the grounds are open.</p>
-                </div>
-            </div>
-            <!-- 5. Scotiabank Centre -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/halifax_5.avif" alt="Scotiabank Centre" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> C$50
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Scotiabank Centre</h3>
-                    <p class="tg-sight-card__text">Scotiabank Centre is a versatile venue that hosts a variety of events, from concerts like The Doobie Brothers&#x27; 50th Anniversary Tour and The Glorious Sons&#x27; North American tour to sports events such as the Halifax Thunderbirds games. Travellers have praised the facilities, noting comfortable seating and decent sound quality. While some experienced congestion in certain areas, others were impressed by the accommodating staff who ensured an enjoyable experience.</p>
-                </div>
-            </div>
-            <!-- 6. Grand Parade -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/halifax_6.avif" alt="Grand Parade" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Grand Parade</h3>
-                    <p class="tg-sight-card__text">Grand Parade is a visitor site in Halifax, Canada. Records associated with the site include 2024. The Grand Parade is the ultimate destination for ringing in the New Year, hosting the largest celebration in Halifax on December 31, 2024. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 7. Saint Mary&#x27;s Cathedral Basilica -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/halifax_7.avif" alt="Saint Mary&#x27;s Cathedral Basilica" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Saint Mary&#x27;s Cathedral Basilica</h3>
-                    <p class="tg-sight-card__text">Saint Mary&#x27;s Cathedral Basilica is a religious building in Halifax, Canada. Records associated with the site include 1820. Saint Mary&#x27;s Cathedral Basilica, located in downtown Halifax, is a example of neo-Gothic architecture. Originally designed as a smaller Georgian church in 1820, it was later transformed into a grand Victorian Gothic style during its construction in the 1860s and 1870s. The exterior and main interior spaces are usually viewable outside service times.</p>
-                </div>
-            </div>
-            <!-- 8. Neptune Theatre -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/halifax_8.avif" alt="Neptune Theatre" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> C$40
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Neptune Theatre</h3>
-                    <p class="tg-sight-card__text">Neptune Theatre is a theatre in Halifax, Canada. It is considered the cultural hub of the community and aims to connect and transform through live theatre and music. Public access is usually through ticketed performances or daytime visits. Neptune Theatre remains part of the public visitor circuit in Halifax.</p>
-                </div>
-            </div>
-            <!-- 9. Halifax Central Library -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/halifax_9.avif" alt="Halifax Central Library" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Halifax Central Library</h3>
-                    <p class="tg-sight-card__text">Halifax Central Library is a modern architectural gem In Halifax, Nova Scotia. Its contemporary design, featuring a mix of glass, steel, and wood elements, makes it an ideal backdrop for indoor photoshoots. The library&#x27;s open-plan layout and ample natural light create a bright and airy atmosphere that&#x27;s perfect for capturing photographs.</p>
-                </div>
-            </div>
-            <!-- 10. Fort Needham Memorial Park -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/halifax_10.avif" alt="Fort Needham Memorial Park" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Fort Needham Memorial Park</h3>
-                    <p class="tg-sight-card__text">Fort Needham Memorial Park is a fortified historic site in Halifax, Canada. Records associated with the site include 1917. Fort Needham Memorial Park, located in Dartmouth, is a tribute to the Halifax Explosion of 1917. It was established in the 1950s as part of the neighborhood&#x27;s rebuilding efforts after the devastation caused by the explosion. Walls, courtyards, or towers form the main visitor route when the grounds are open.</p>
-                </div>
-            </div>
+                </dl>
             </div>
         </section>
-        </div>
+
+        <section id="atlas" class="destination-atlas" aria-labelledby="atlas-title">
+            <div class="page-shell destination-atlas__layout">
+                <div class="destination-atlas__brief">
+                    <p class="destination-atlas__index">City atlas</p>
+                    <h2 id="atlas-title">Plot the city.</h2>
+                    <p class="destination-atlas__copy">Zoom, pan, and open any marker to focus that place in the catalog below.</p>
+                    <dl class="destination-atlas__facts" aria-label="Map coverage">
+                        <div>
+                            <dt>Plotted</dt>
+                            <dd>10 places</dd>
+                        </div>
+                        <div>
+                            <dt>Center</dt>
+                            <dd>44.6453&deg; N<br>63.5724&deg; W</dd>
+                        </div>
+                    </dl>
+                </div>
+                <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Halifax attractions"></div>
+            </div>
+        </section>
+
+        <section id="places" class="destination-places" aria-labelledby="places-title">
+            <div class="page-shell">
+                <div class="destination-chapter">
+                    <h2 id="places-title" class="destination-chapter__heading">10 ways into<br>Halifax.</h2>
+                    <p class="destination-chapter__copy">Browse the index, open a location, and read the essentials without scrolling through a long catalog. Each entry contains its image, admission note, and contextual guide.</p>
+                </div>
+                <div class="places-explorer" data-places-explorer>
+                    <aside class="places-explorer__rail" aria-label="Place index">
+                        <div class="places-explorer__toolbar">
+                            <label class="places-explorer__filter-label" for="places-filter">Filter places</label>
+                            <input
+                                id="places-filter"
+                                class="places-explorer__filter"
+                                type="search"
+                                data-places-filter
+                                placeholder="Search by name"
+                                autocomplete="off"
+                            >
+                            <p class="places-explorer__meta"><strong data-places-count>10</strong> of 10 shown</p>
+                        </div>
+                        <ul class="places-explorer__list" role="listbox" aria-label="Places in Halifax" data-places-list data-lenis-prevent data-tg-scroll-surface>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option is-active"
+                            role="option"
+                            id="place-option-1"
+                            data-place-option
+                            data-place-index="0"
+                            data-place-name="Halifax Public Gardens"
+                            data-place-lat="44.642761"
+                            data-place-lng="-63.582124"
+                            aria-selected="true"
+                            tabindex="0"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">01</span>
+                            <span class="places-explorer__option-name">Halifax Public Gardens</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-2"
+                            data-place-option
+                            data-place-index="1"
+                            data-place-name="Halifax Waterfront"
+                            data-place-lat="44.645724"
+                            data-place-lng="-63.569334"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">02</span>
+                            <span class="places-explorer__option-name">Halifax Waterfront</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-3"
+                            data-place-option
+                            data-place-index="2"
+                            data-place-name="York Redoubt National Historic Site"
+                            data-place-lat="44.596793"
+                            data-place-lng="-63.553184"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">03</span>
+                            <span class="places-explorer__option-name">York Redoubt National Historic Site</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-4"
+                            data-place-option
+                            data-place-index="3"
+                            data-place-name="Halifax Citadel National Historic Site"
+                            data-place-lat="44.647489"
+                            data-place-lng="-63.579604"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">04</span>
+                            <span class="places-explorer__option-name">Halifax Citadel National Historic Site</span>
+                            <span class="places-explorer__option-price">C$22</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-5"
+                            data-place-option
+                            data-place-index="4"
+                            data-place-name="Scotiabank Centre"
+                            data-place-lat="44.648373"
+                            data-place-lng="-63.576921"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">05</span>
+                            <span class="places-explorer__option-name">Scotiabank Centre</span>
+                            <span class="places-explorer__option-price">C$50</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-6"
+                            data-place-option
+                            data-place-index="5"
+                            data-place-name="Grand Parade"
+                            data-place-lat="44.648012"
+                            data-place-lng="-63.574819"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">06</span>
+                            <span class="places-explorer__option-name">Grand Parade</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-7"
+                            data-place-option
+                            data-place-index="6"
+                            data-place-name="Saint Mary&#x27;s Cathedral Basilica"
+                            data-place-lat="44.644178"
+                            data-place-lng="-63.57314"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">07</span>
+                            <span class="places-explorer__option-name">Saint Mary&#x27;s Cathedral Basilica</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-8"
+                            data-place-option
+                            data-place-index="7"
+                            data-place-name="Neptune Theatre"
+                            data-place-lat="44.645901"
+                            data-place-lng="-63.574066"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">08</span>
+                            <span class="places-explorer__option-name">Neptune Theatre</span>
+                            <span class="places-explorer__option-price">C$40</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-9"
+                            data-place-option
+                            data-place-index="8"
+                            data-place-name="Halifax Central Library"
+                            data-place-lat="44.642764"
+                            data-place-lng="-63.575184"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">09</span>
+                            <span class="places-explorer__option-name">Halifax Central Library</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-10"
+                            data-place-option
+                            data-place-index="9"
+                            data-place-name="Fort Needham Memorial Park"
+                            data-place-lat="44.664633"
+                            data-place-lng="-63.600014"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">10</span>
+                            <span class="places-explorer__option-name">Fort Needham Memorial Park</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                        </ul>
+                        <p class="places-explorer__empty" data-places-empty hidden>No places match that filter.</p>
+                    </aside>
+                    <div class="places-explorer__stage" data-places-stage>
+                    <nav class="places-stage__stepper" data-places-stepper aria-label="Browse places" hidden>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--prev" data-places-prev aria-label="Previous place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M14.75 5.25 L8.25 12 l6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M9.1 12 H17.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--next" data-places-next aria-label="Next place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M9.25 5.25 L15.75 12 l-6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M6.6 12 H14.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                    </nav>
+                <article
+                    class="places-stage__panel is-active"
+                    data-place-panel
+                    data-place-index="0"
+                    aria-labelledby="place-title-1"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/halifax_1.avif" alt="Halifax Public Gardens" width="1200" height="750" loading="eager" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">01</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-1" class="places-stage__title">Halifax Public Gardens</h3>
+                        <p class="places-stage__text">Halifax Public Gardens is a public park in Halifax, Canada. Records associated with the site include 1836, 1984. The Halifax Public Gardens, established in 1836 by the Nova Scotia Horticultural Society and designated as a National Historic Site in 1984, are a well-preserved example of Victorian gardens. Paths, lawns, and shaded areas make up the main public facilities.</p>
+                        <p class="places-stage__coords">44.6428&deg; N / 63.5821&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="1"
+                    aria-labelledby="place-title-2"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/halifax_2.avif" alt="Halifax Waterfront" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">02</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-2" class="places-stage__title">Halifax Waterfront</h3>
+                        <p class="places-stage__text">Halifax Waterfront is a busy hub with a working port and one of the world&#x27;s longest downtown boardwalks, stretching approximately 3km. The wooden boardwalk offers views of the city&#x27;s historic buildings, shops, and restaurants as well as its busy harbor activity. Popular dining spots include The Bicycle Thief and Garrison Brewing Company. Travellers can soak up the atmosphere while enjoying some nice sculpture/art along the waterfront.</p>
+                        <p class="places-stage__coords">44.6457&deg; N / 63.5693&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="2"
+                    aria-labelledby="place-title-3"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/halifax_3.avif" alt="York Redoubt National Historic Site" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">03</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-3" class="places-stage__title">York Redoubt National Historic Site</h3>
+                        <p class="places-stage__text">York Redoubt National Historic Site is a visitor site in Halifax, Canada. Located just 12 km from downtown Halifax, York Redoubt National Historic Site is a historic fortress dating back to 1793. This defensive structure offers educational displays and water vistas, making it a destination for history enthusiasts and nature lovers alike. The main structures and grounds are the principal points of interest.</p>
+                        <p class="places-stage__coords">44.5968&deg; N / 63.5532&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="3"
+                    aria-labelledby="place-title-4"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/halifax_4.avif" alt="Halifax Citadel National Historic Site" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">04</span>
+                            <span class="places-stage__admission"><span>Admission</span>C$22</span>
+                        </p>
+                        <h3 id="place-title-4" class="places-stage__title">Halifax Citadel National Historic Site</h3>
+                        <p class="places-stage__text">Halifax Citadel National Historic Site is a fortified historic site in Halifax, Canada. Records associated with the site include 1749. The Halifax Citadel National Historic Site, established in 1749, is a star-shaped hilltop fort that offers guided tours and has a coffee bar and gift shop. Walls, courtyards, or towers form the main visitor route when the grounds are open.</p>
+                        <p class="places-stage__coords">44.6475&deg; N / 63.5796&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="4"
+                    aria-labelledby="place-title-5"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/halifax_5.avif" alt="Scotiabank Centre" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">05</span>
+                            <span class="places-stage__admission"><span>Admission</span>C$50</span>
+                        </p>
+                        <h3 id="place-title-5" class="places-stage__title">Scotiabank Centre</h3>
+                        <p class="places-stage__text">Scotiabank Centre is a versatile venue that hosts a variety of events, from concerts like The Doobie Brothers&#x27; 50th Anniversary Tour and The Glorious Sons&#x27; North American tour to sports events such as the Halifax Thunderbirds games. Travellers have praised the facilities, noting comfortable seating and decent sound quality. While some experienced congestion in certain areas, others were impressed by the accommodating staff who ensured an enjoyable experience.</p>
+                        <p class="places-stage__coords">44.6484&deg; N / 63.5769&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="5"
+                    aria-labelledby="place-title-6"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/halifax_6.avif" alt="Grand Parade" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">06</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-6" class="places-stage__title">Grand Parade</h3>
+                        <p class="places-stage__text">Grand Parade is a visitor site in Halifax, Canada. Records associated with the site include 2024. The Grand Parade is the ultimate destination for ringing in the New Year, hosting the largest celebration in Halifax on December 31, 2024. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">44.6480&deg; N / 63.5748&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="6"
+                    aria-labelledby="place-title-7"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/halifax_7.avif" alt="Saint Mary&#x27;s Cathedral Basilica" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">07</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-7" class="places-stage__title">Saint Mary&#x27;s Cathedral Basilica</h3>
+                        <p class="places-stage__text">Saint Mary&#x27;s Cathedral Basilica is a religious building in Halifax, Canada. Records associated with the site include 1820. Saint Mary&#x27;s Cathedral Basilica, located in downtown Halifax, is a example of neo-Gothic architecture. Originally designed as a smaller Georgian church in 1820, it was later transformed into a grand Victorian Gothic style during its construction in the 1860s and 1870s. The exterior and main interior spaces are usually viewable outside service times.</p>
+                        <p class="places-stage__coords">44.6442&deg; N / 63.5731&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="7"
+                    aria-labelledby="place-title-8"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/halifax_8.avif" alt="Neptune Theatre" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">08</span>
+                            <span class="places-stage__admission"><span>Admission</span>C$40</span>
+                        </p>
+                        <h3 id="place-title-8" class="places-stage__title">Neptune Theatre</h3>
+                        <p class="places-stage__text">Neptune Theatre is a theatre in Halifax, Canada. It is considered the cultural hub of the community and aims to connect and transform through live theatre and music. Public access is usually through ticketed performances or daytime visits. Neptune Theatre remains part of the public visitor circuit in Halifax.</p>
+                        <p class="places-stage__coords">44.6459&deg; N / 63.5741&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="8"
+                    aria-labelledby="place-title-9"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/halifax_9.avif" alt="Halifax Central Library" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">09</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-9" class="places-stage__title">Halifax Central Library</h3>
+                        <p class="places-stage__text">Halifax Central Library is a modern architectural gem In Halifax, Nova Scotia. Its contemporary design, featuring a mix of glass, steel, and wood elements, makes it an ideal backdrop for indoor photoshoots. The library&#x27;s open-plan layout and ample natural light create a bright and airy atmosphere that&#x27;s perfect for capturing photographs.</p>
+                        <p class="places-stage__coords">44.6428&deg; N / 63.5752&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="9"
+                    aria-labelledby="place-title-10"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/halifax_10.avif" alt="Fort Needham Memorial Park" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">10</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-10" class="places-stage__title">Fort Needham Memorial Park</h3>
+                        <p class="places-stage__text">Fort Needham Memorial Park is a fortified historic site in Halifax, Canada. Records associated with the site include 1917. Fort Needham Memorial Park, located in Dartmouth, is a tribute to the Halifax Explosion of 1917. It was established in the 1950s as part of the neighborhood&#x27;s rebuilding efforts after the devastation caused by the explosion. Walls, courtyards, or towers form the main visitor route when the grounds are open.</p>
+                        <p class="places-stage__coords">44.6646&deg; N / 63.6000&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="site-footer">
         <div class="page-shell">
             <div class="site-footer__bar">
-                <a href="../../index.html" class="site-footer__brand" aria-label="Global Explorer home">
-                    <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
+                <a href="../../index.html" class="site-footer__mark" aria-label="Global Explorer home">
+                    <svg width="24" height="24" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
-                    <span class="site-footer__brand-name font-display">Global Explorer</span>
+                    Global Explorer
                 </a>
-                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides <span>Halifax: 10 places across Atlantic Canada.</span></p>
             </div>
         </div>
     </footer>
 
     <button id="scrollTopBtn" type="button" aria-label="Scroll to top">
-        <i class="ph ph-arrow-up" aria-hidden="true"></i>
+        <svg viewBox="0 0 24 24" width="1.15em" height="1.15em" aria-hidden="true" focusable="false">
+            <path d="M12 5.25 V18.75 M12 5.25 L6.75 10.5 M12 5.25 L17.25 10.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
     </button>
 
     <script defer src="../../assets/dev-destination-toggle.js"></script>
     <script defer src="../../assets/tg-page-chrome.js"></script>
     <script defer src="../../assets/tg-destination-map.js"></script>
+    <script defer src="../../assets/tg-destination-places.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const map = L.map('map').setView([44.645330, -63.572390], 14);
+            const map = L.map('map');
             L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
                 attribution: '&copy; Google Maps',
                 maxZoom: 20
             }).addTo(map);
-            const locations = [{"name": "Halifax Public Gardens", "lat": 44.642761, "lng": -63.582124}, {"name": "Halifax Waterfront", "lat": 44.645724, "lng": -63.569334}, {"name": "York Redoubt National Historic Site", "lat": 44.596793, "lng": -63.553184}, {"name": "Halifax Citadel National Historic Site", "lat": 44.647489, "lng": -63.579604}, {"name": "Scotiabank Centre", "lat": 44.648373, "lng": -63.576921}, {"name": "Grand Parade", "lat": 44.648012, "lng": -63.574819}, {"name": "Saint Mary's Cathedral Basilica", "lat": 44.644178, "lng": -63.57314}, {"name": "Neptune Theatre", "lat": 44.645901, "lng": -63.574066}, {"name": "Halifax Central Library", "lat": 44.642764, "lng": -63.575184}, {"name": "Fort Needham Memorial Park", "lat": 44.664633, "lng": -63.600014}];
+            const locations = Array.from(document.querySelectorAll('[data-place-option]')).map((el) => ({
+                name: el.dataset.placeName || '',
+                lat: Number(el.dataset.placeLat),
+                lng: Number(el.dataset.placeLng),
+            }));
             const customIcon = L.icon({
                 iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
                 iconSize: [32, 32],
@@ -276,14 +591,45 @@
                 popupAnchor: [0, -32],
             });
             const destinationCenter = [44.645330, -63.572390];
-            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.048537, "maxCenterLng": 0.027624};
-            locations.forEach((location) => {
-                L.marker([location.lat, location.lng], { icon: customIcon })
+            const mapContext = {"denseUrban": true};
+            const markers = locations.map((location) => {
+                const marker = L.marker([location.lat, location.lng], { icon: customIcon })
                     .addTo(map)
                     .bindPopup(`<strong>${location.name}</strong>`);
+                return marker;
             });
             window.TGDestinationMap?.fitToLocations(map, locations, destinationCenter, mapContext);
             window.TGDestinationMap?.bindMobileScrollGuard(map, 'map');
+            window.TGDestinationMap?.registerMarkers(map, markers);
+
+            const heroImage = document.querySelector('[data-destination-hero-image]');
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (heroImage && !reduceMotion) {
+                let framePending = false;
+                let scrolling = false;
+                let scrollEndTimer = 0;
+                const updateHeroPosition = () => {
+                    const offset = Math.min(window.scrollY, window.innerHeight * 1.15) * 0.075;
+                    heroImage.style.transform = `translate3d(0, ${offset}px, 0) scale(1.055)`;
+                    framePending = false;
+                };
+                window.addEventListener('scroll', () => {
+                    if (!scrolling) {
+                        scrolling = true;
+                        heroImage.style.willChange = 'transform';
+                    }
+                    window.clearTimeout(scrollEndTimer);
+                    scrollEndTimer = window.setTimeout(() => {
+                        scrolling = false;
+                        heroImage.style.willChange = 'auto';
+                    }, 150);
+                    if (!framePending) {
+                        window.requestAnimationFrame(updateHeroPosition);
+                        framePending = true;
+                    }
+                }, { passive: true });
+                updateHeroPosition();
+            }
         });
     </script>
 </body>

@@ -6,282 +6,623 @@
     <meta name="description" content="Plan a visit to Delhi with a concise history, interactive attractions map, prices, and curated highlights across the destination.">
     <meta name="theme-color" content="#121417">
     <title>Delhi Guide | Global Explorer Guides</title>
-    <link rel="stylesheet" href="../../assets/tailwind.css">
-    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
     <link rel="stylesheet" href="../../assets/newindex-fonts.css">
     <link rel="stylesheet" href="../../assets/tg-theme.css">
     <link rel="stylesheet" href="../../assets/tg-site-chrome.css">
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
     <link rel="stylesheet" href="../../assets/tg-modern-polish.css">
+    <link rel="stylesheet" href="../../assets/tg-country-page.css">
+    <link rel="stylesheet" href="../../assets/tg-destination-page-v3.css">
     <script defer src="../../assets/lenis.min.js"></script>
     <script defer src="../../assets/tg-smooth-scroll.js"></script>
     <link rel="preload" as="image" href="images/delhi_hero.avif" type="image/avif" fetchpriority="high">
     <script defer src="../../assets/leaflet/leaflet.js"></script>
 </head>
-<body class="tg-theme tg-destination-page tg-modern">
-    <header id="site-header" class="header-glass fixed top-0 left-0 right-0 z-50">
+<body class="tg-theme tg-modern tg-country-v2 tg-destination-v3">
+    <a class="skip-link" href="#main-content">Skip to Delhi guide</a>
+    <header id="site-header" class="header-glass">
         <div class="page-shell header-glass__inner">
-            <a href="../../index.html" class="font-display site-brand" style="display:flex;align-items:center;gap:0.75rem;text-decoration:none;color:inherit;font-size:1.25rem;" aria-label="Global Explorer home">
+            <a href="../../index.html" class="site-brand" aria-label="Global Explorer home">
                 <span class="site-brand__mark" aria-hidden="true">
                     <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
-                        <circle cx="14" cy="14" r="2" fill="#E8B14F"/>
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
                 </span>
                 Global Explorer
             </a>
-            <nav class="header-glass__nav-mobile" aria-label="Mobile navigation">
-                <a href="../../index.html" class="header-glass__icon-link" aria-label="Home">
-                    <i class="ph ph-house" aria-hidden="true"></i>
-                </a>
-                <a href="india.html" class="header-glass__icon-link" aria-label="Back to India">
-                    <i class="ph ph-arrow-left" aria-hidden="true"></i>
-                </a>
-            </nav>
             <nav class="header-glass__nav" aria-label="Primary">
-                <a href="../../index.html" class="nav-link">Home</a>
-                <a href="delhi.html" class="nav-link" aria-current="page">Delhi</a>
+                <a href="#main-content" class="nav-link" aria-current="page">Delhi</a>
+                <a href="#atlas" class="nav-link">Atlas</a>
+                <a href="#places" class="nav-link">Places</a>
                 <a href="india.html" class="nav-link">India</a>
-                <a href="../../index.html#map" class="nav-link">Atlas</a>
             </nav>
         </div>
     </header>
-    <main>
-        <div class="tg-destination-hero-zone">
-            <div class="tg-destination-hero" aria-hidden="true">
-                <div class="tg-destination-hero__image" style="background-image: url('images/delhi_hero.avif')"></div>
-                <div class="tg-destination-hero__fade"></div>
-            </div>
-            <div class="page-shell tg-destination-hero-zone__content">
-        <nav class="tg-toolbar tg-toolbar--compact" aria-label="Breadcrumb">
-            <div class="tg-breadcrumb">
-                <img src="../../assets/flags/w40/in.png" alt="" class="w-6 h-auto rounded-[2px]" aria-hidden="true">
-                <span>India</span>
-                <span class="tg-breadcrumb__sep" aria-hidden="true">&rsaquo;</span>
-                <span class="tg-breadcrumb__current">North India</span>
-            </div>
-        </nav>
+    <main id="main-content" tabindex="-1">
+        <section class="destination-hero" aria-labelledby="destination-title">
+            <img class="destination-hero__media" data-destination-hero-image src="images/delhi_hero.avif" alt="" width="1600" height="1067" fetchpriority="high" decoding="sync">
+            <div class="destination-hero__shade" aria-hidden="true"></div>
+            <div class="page-shell destination-hero__content">
+                <button
+                    type="button"
+                    id="destination-active-toggle"
+                    class="country-active-toggle country-active-toggle--inactive"
+                    data-iso2="IN"
+                    data-slug="delhi"
+                    data-active="false"
+                    data-interactive="true"
+                    aria-label="Toggle Delhi visibility on India guide"
+                    aria-pressed="false"
+                >
+                    <img src="../../assets/flags/w80/in.png" alt="" aria-hidden="true">
+                    <span class="country-toggle__copy" aria-hidden="true">
+                        <span class="country-toggle__label">Delhi guide</span>
+                        <strong class="country-toggle__state"></strong>
+                    </span>
+                </button>
 
-        <header class="tg-page-header">
-            <button
-        type="button"
-        id="destination-active-toggle"
-        class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
-        data-iso2="IN"
-        data-slug="delhi"
-        data-active="false"
-        data-interactive="true"
-        aria-label="Toggle Delhi visibility on India guide"
-        aria-pressed="false"
-    >
-        <i class="ph ph-map-pin text-4xl pointer-events-none" aria-hidden="true"></i>
-    </button>
-            <span class="tg-page-header__eyebrow">Destination Guide — North India</span>
-            <h1 class="tg-page-title font-display">Explore <em>Delhi</em></h1>
-            <div class="glass-card frosted-panel tg-panel">
-                <h2 class="tg-panel__title font-display">
-                    <i class="ph ph-scroll" aria-hidden="true"></i> A Brief History
-                </h2>
-                <p class="tg-panel__body">Delhi layers Rajput, Sultanate, Mughal, and British imperial capitals on the Yamuna River. Red Fort, Humayun&#x27;s Tomb, and Qutub Minar record successive conquests and architectural patronage, while New Delhi&#x27;s ceremonial axis reflects twentieth-century colonial planning and independent India&#x27;s government seat. Lotus Temple and Lodi Garden tombs extend Mughal and colonial layers across the capital&#x27;s metropolitan sprawl.</p>
-            </div>
-        </header>
+                <div class="hero__route" aria-label="Destination route and coordinates">
+                    <span>India / North India</span>
+                    <span>28.6405&deg; N / 77.2111&deg; E</span>
+                </div>
 
-        <div class="tg-section__header tg-section__header--map-end">
-            <span class="tg-section__eyebrow">Map</span>
-            <h2 class="tg-section__title font-display">Attractions Map</h2>
-        </div>
-            </div>
-        </div>
-
-        <div class="page-shell tg-main tg-main--below-hero">
-        <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Delhi attractions"></div>
-        <section class="tg-section">
-            <div class="tg-section__header">
-                <span class="tg-section__eyebrow">Highlights</span>
-                <h2 class="tg-section__title font-display">Top Sights &amp; Activities</h2>
-            </div>
-            <div class="tg-sights-list">
-            
-            <!-- 1. Red Fort -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/delhi_1.avif" alt="Red Fort" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> ₹550
+                <h1 id="destination-title" class="destination-hero__title" style="--destination-title-chars: 5">Delhi</h1>
+                <div class="destination-hero__history">
+                    <p>Delhi layers Rajput, Sultanate, Mughal, and British imperial capitals on the Yamuna River. Red Fort, Humayun&#x27;s Tomb, and Qutub Minar record successive conquests and architectural patronage, while New Delhi&#x27;s ceremonial axis reflects twentieth-century colonial planning and independent India&#x27;s government seat. Lotus Temple and Lodi Garden tombs extend Mughal and colonial layers across the capital&#x27;s metropolitan sprawl.</p>
+                </div>
+                <dl class="destination-hero__facts" aria-label="Delhi guide facts">
+                    <div>
+                        <dt>Country</dt>
+                        <dd>India</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Red Fort</h3>
-                    <p class="tg-sight-card__text">The Red Fort, located in Old Delhi, India, is a 17th-century Mughal fortress made of red sandstone. It was the main residence of the Mughal Emperors and was commissioned by Emperor Shah Jahan in 1638. The fort&#x27;s design is credited to Ustad Ahmad Lahori, who also built the Taj Mahal.</p>
-                </div>
-            </div>
-            <!-- 2. Jama Masjid -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/delhi_2.avif" alt="Jama Masjid" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                    <div>
+                        <dt>Region</dt>
+                        <dd>North India</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Jama Masjid</h3>
-                    <p class="tg-sight-card__text">Jama Masjid is a visitor site in Delhi, India. Jama Masjid, a 17th-century Mughal-style mosque located in India, is a example of Mughal architecture. The grounds and principal structures are the main points of interest. Jama Masjid remains part of the public visitor circuit in Delhi.</p>
-                </div>
-            </div>
-            <!-- 3. Fatehpuri Masjid -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/delhi_3.avif" alt="Fatehpuri Masjid" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                    <div>
+                        <dt>Places</dt>
+                        <dd>11</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Fatehpuri Masjid</h3>
-                    <p class="tg-sight-card__text">Fatehpuri Masjid, constructed in 1650 for Fatehpuri Begum, one of Shah Jahan&#x27;s wives, is a red sandstone mosque In Old Delhi. This historical site showcases Mughal architecture and holds significance as a symbol of the city&#x27;s and religious heritage. Documented dates associated with the site include 1650.</p>
-                </div>
-            </div>
-            <!-- 4. Agrasen ki Baoli -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/delhi_4.avif" alt="Agrasen ki Baoli" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Agrasen ki Baoli</h3>
-                    <p class="tg-sight-card__text">Agrasen ki Baoli is a visitor site in Delhi, India. Ugrasen ki Baoli is a 10th-century stepwell adorned with detailed stone work, featuring towering arched walls and alcoves. This historical site spans 60 meters in length and 15 meters in width. Believed to have been built by Maharaja Agrasen and reconstructed in the 14th century, this ancient water reservoir is safeguarded by the Archeological Survey of India. The main structures and grounds are the principal points of interest.</p>
-                </div>
-            </div>
-            <!-- 5. Gurdwara Bangla Sahib -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/delhi_5.avif" alt="Gurdwara Bangla Sahib" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Gurdwara Bangla Sahib</h3>
-                    <p class="tg-sight-card__text">Gurdwara Bangla Sahib is a visitor site in Delhi, India. Gurudwara Sri Bangla Sahib, located near Connaught Place in New Delhi, is a significant Sikh place of worship. The water in this lake is considered sacred and has purported healing properties. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 6. Cathedral Church of The Redemption (C.N.I.) -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/delhi_6.avif" alt="Cathedral Church of The Redemption (C.N.I.)" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Cathedral Church of The Redemption (C.N.I.)</h3>
-                    <p class="tg-sight-card__text">Located Delhi, the Cathedral Church of The Redemption, also affectionately known as Viceroy Church, is a example of 1930s British colonial architecture. Its design draws inspiration from known architects Lutyens and Palladio, showing an elegant blend of red sandstone exteriors that reflect simplicity and class.</p>
-                </div>
-            </div>
-            <!-- 7. Rashtrapati Bhavan -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/delhi_7.avif" alt="Rashtrapati Bhavan" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Rashtrapati Bhavan</h3>
-                    <p class="tg-sight-card__text">Rashtrapati Bhavan, the official residence of the President of India, is a must-visit for every Indian. The grand estate includes elegant Mughal gardens and a newly inaugurated museum showing its rich history. Built between 1912 and 1929, this 340-room building served as the British Viceroys House before India gained independence. Its architecture reflects a blend of Indo-Saracenic, Mauryan, Mughal, and regional styles.</p>
-                </div>
-            </div>
-            <!-- 8. Rashtrapati Bhavan Museum New Delhi -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/delhi_8.avif" alt="Rashtrapati Bhavan Museum New Delhi" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> ₹50
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Rashtrapati Bhavan Museum New Delhi</h3>
-                    <p class="tg-sight-card__text">Rashtrapati Bhavan Museum New Delhi is a museum in Delhi, India. Records associated with the site include 2014. Inaugurated in 2014 by President Pranab Mukherjee, this museum showcases an collection of memorabilia from various presidencies, including unique gifts received by Indian presidents over the years. Galleries and public rooms are open on posted hours in Delhi.</p>
-                </div>
-            </div>
-            <!-- 9. Talkatora Garden -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/delhi_9.avif" alt="Talkatora Garden" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Talkatora Garden</h3>
-                    <p class="tg-sight-card__text">Talkatora Garden is a public park in Delhi, India. Paths, lawns, and shaded areas make up the main public facilities. Local maps identify Talkatora Garden within Delhi, India. Posted signs mark approaches and opening information for Talkatora Garden.</p>
-                </div>
-            </div>
-            <!-- 10. Shri Laxmi Narayan Temple (Birla Mandir) -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/delhi_10.avif" alt="Shri Laxmi Narayan Temple (Birla Mandir)" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Shri Laxmi Narayan Temple (Birla Mandir)</h3>
-                    <p class="tg-sight-card__text">Shri Laxmi Narayan Temple, also known as Birla Mandir, is a large Hindu temple complex spanning over 3 hectares. Situated near Connaught Place in New Delhi, it was constructed by the known Birla family and inaugurated by Mahatma Gandhi in 1939. The temple is dedicated to Goddess Laxmi and Lord Vishnu, collectively known as Laxminarayan.</p>
-                </div>
-            </div>
-            <!-- 11. Coronation Park -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/delhi_11.avif" alt="Coronation Park" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Coronation Park</h3>
-                    <p class="tg-sight-card__text">Coronation Park is a public park in Delhi, India. Records associated with the site include 1911. Established to commemorate the centenary of the 1911 Delhi Durbar, this park was once a hub for royal celebrations where Indian dignitaries gathered under British rule. Paths, lawns, and shaded areas make up the main public facilities.</p>
-                </div>
-            </div>
+                </dl>
             </div>
         </section>
-        </div>
+
+        <section id="atlas" class="destination-atlas" aria-labelledby="atlas-title">
+            <div class="page-shell destination-atlas__layout">
+                <div class="destination-atlas__brief">
+                    <p class="destination-atlas__index">City atlas</p>
+                    <h2 id="atlas-title">Plot the city.</h2>
+                    <p class="destination-atlas__copy">Zoom, pan, and open any marker to focus that place in the catalog below.</p>
+                    <dl class="destination-atlas__facts" aria-label="Map coverage">
+                        <div>
+                            <dt>Plotted</dt>
+                            <dd>11 places</dd>
+                        </div>
+                        <div>
+                            <dt>Center</dt>
+                            <dd>28.6405&deg; N<br>77.2111&deg; E</dd>
+                        </div>
+                    </dl>
+                </div>
+                <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Delhi attractions"></div>
+            </div>
+        </section>
+
+        <section id="places" class="destination-places" aria-labelledby="places-title">
+            <div class="page-shell">
+                <div class="destination-chapter">
+                    <h2 id="places-title" class="destination-chapter__heading">11 ways into<br>Delhi.</h2>
+                    <p class="destination-chapter__copy">Browse the index, open a location, and read the essentials without scrolling through a long catalog. Each entry contains its image, admission note, and contextual guide.</p>
+                </div>
+                <div class="places-explorer" data-places-explorer>
+                    <aside class="places-explorer__rail" aria-label="Place index">
+                        <div class="places-explorer__toolbar">
+                            <label class="places-explorer__filter-label" for="places-filter">Filter places</label>
+                            <input
+                                id="places-filter"
+                                class="places-explorer__filter"
+                                type="search"
+                                data-places-filter
+                                placeholder="Search by name"
+                                autocomplete="off"
+                            >
+                            <p class="places-explorer__meta"><strong data-places-count>11</strong> of 11 shown</p>
+                        </div>
+                        <ul class="places-explorer__list" role="listbox" aria-label="Places in Delhi" data-places-list data-lenis-prevent data-tg-scroll-surface>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option is-active"
+                            role="option"
+                            id="place-option-1"
+                            data-place-option
+                            data-place-index="0"
+                            data-place-name="Red Fort"
+                            data-place-lat="28.656159"
+                            data-place-lng="77.24102"
+                            aria-selected="true"
+                            tabindex="0"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">01</span>
+                            <span class="places-explorer__option-name">Red Fort</span>
+                            <span class="places-explorer__option-price">₹550</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-2"
+                            data-place-option
+                            data-place-index="1"
+                            data-place-name="Jama Masjid"
+                            data-place-lat="28.650679"
+                            data-place-lng="77.233442"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">02</span>
+                            <span class="places-explorer__option-name">Jama Masjid</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-3"
+                            data-place-option
+                            data-place-index="2"
+                            data-place-name="Fatehpuri Masjid"
+                            data-place-lat="28.656649"
+                            data-place-lng="77.222771"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">03</span>
+                            <span class="places-explorer__option-name">Fatehpuri Masjid</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-4"
+                            data-place-option
+                            data-place-index="3"
+                            data-place-name="Agrasen ki Baoli"
+                            data-place-lat="28.626062"
+                            data-place-lng="77.225037"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">04</span>
+                            <span class="places-explorer__option-name">Agrasen ki Baoli</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-5"
+                            data-place-option
+                            data-place-index="4"
+                            data-place-name="Gurdwara Bangla Sahib"
+                            data-place-lat="28.625865"
+                            data-place-lng="77.208952"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">05</span>
+                            <span class="places-explorer__option-name">Gurdwara Bangla Sahib</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-6"
+                            data-place-option
+                            data-place-index="5"
+                            data-place-name="Cathedral Church of The Redemption (C.N.I.)"
+                            data-place-lat="28.617985"
+                            data-place-lng="77.202095"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">06</span>
+                            <span class="places-explorer__option-name">Cathedral Church of The Redemption (C.N.I.)</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-7"
+                            data-place-option
+                            data-place-index="6"
+                            data-place-name="Rashtrapati Bhavan"
+                            data-place-lat="28.614348"
+                            data-place-lng="77.19943"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">07</span>
+                            <span class="places-explorer__option-name">Rashtrapati Bhavan</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-8"
+                            data-place-option
+                            data-place-index="7"
+                            data-place-name="Rashtrapati Bhavan Museum New Delhi"
+                            data-place-lat="28.61886"
+                            data-place-lng="77.196674"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">08</span>
+                            <span class="places-explorer__option-name">Rashtrapati Bhavan Museum New Delhi</span>
+                            <span class="places-explorer__option-price">₹50</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-9"
+                            data-place-option
+                            data-place-index="8"
+                            data-place-name="Talkatora Garden"
+                            data-place-lat="28.623361"
+                            data-place-lng="77.195013"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">09</span>
+                            <span class="places-explorer__option-name">Talkatora Garden</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-10"
+                            data-place-option
+                            data-place-index="9"
+                            data-place-name="Shri Laxmi Narayan Temple (Birla Mandir)"
+                            data-place-lat="28.632667"
+                            data-place-lng="77.198996"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">10</span>
+                            <span class="places-explorer__option-name">Shri Laxmi Narayan Temple (Birla Mandir)</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-11"
+                            data-place-option
+                            data-place-index="10"
+                            data-place-name="Coronation Park"
+                            data-place-lat="28.722319"
+                            data-place-lng="77.198913"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">11</span>
+                            <span class="places-explorer__option-name">Coronation Park</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                        </ul>
+                        <p class="places-explorer__empty" data-places-empty hidden>No places match that filter.</p>
+                    </aside>
+                    <div class="places-explorer__stage" data-places-stage>
+                    <nav class="places-stage__stepper" data-places-stepper aria-label="Browse places" hidden>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--prev" data-places-prev aria-label="Previous place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M14.75 5.25 L8.25 12 l6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M9.1 12 H17.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--next" data-places-next aria-label="Next place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M9.25 5.25 L15.75 12 l-6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M6.6 12 H14.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                    </nav>
+                <article
+                    class="places-stage__panel is-active"
+                    data-place-panel
+                    data-place-index="0"
+                    aria-labelledby="place-title-1"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/delhi_1.avif" alt="Red Fort" width="1200" height="750" loading="eager" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">01</span>
+                            <span class="places-stage__admission"><span>Admission</span>₹550</span>
+                        </p>
+                        <h3 id="place-title-1" class="places-stage__title">Red Fort</h3>
+                        <p class="places-stage__text">The Red Fort, located in Old Delhi, India, is a 17th-century Mughal fortress made of red sandstone. It was the main residence of the Mughal Emperors and was commissioned by Emperor Shah Jahan in 1638. The fort&#x27;s design is credited to Ustad Ahmad Lahori, who also built the Taj Mahal.</p>
+                        <p class="places-stage__coords">28.6562&deg; N / 77.2410&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="1"
+                    aria-labelledby="place-title-2"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/delhi_2.avif" alt="Jama Masjid" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">02</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-2" class="places-stage__title">Jama Masjid</h3>
+                        <p class="places-stage__text">Jama Masjid is a visitor site in Delhi, India. Jama Masjid, a 17th-century Mughal-style mosque located in India, is a example of Mughal architecture. The grounds and principal structures are the main points of interest. Jama Masjid remains part of the public visitor circuit in Delhi.</p>
+                        <p class="places-stage__coords">28.6507&deg; N / 77.2334&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="2"
+                    aria-labelledby="place-title-3"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/delhi_3.avif" alt="Fatehpuri Masjid" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">03</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-3" class="places-stage__title">Fatehpuri Masjid</h3>
+                        <p class="places-stage__text">Fatehpuri Masjid, constructed in 1650 for Fatehpuri Begum, one of Shah Jahan&#x27;s wives, is a red sandstone mosque In Old Delhi. This historical site showcases Mughal architecture and holds significance as a symbol of the city&#x27;s and religious heritage. Documented dates associated with the site include 1650.</p>
+                        <p class="places-stage__coords">28.6566&deg; N / 77.2228&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="3"
+                    aria-labelledby="place-title-4"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/delhi_4.avif" alt="Agrasen ki Baoli" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">04</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-4" class="places-stage__title">Agrasen ki Baoli</h3>
+                        <p class="places-stage__text">Agrasen ki Baoli is a visitor site in Delhi, India. Ugrasen ki Baoli is a 10th-century stepwell adorned with detailed stone work, featuring towering arched walls and alcoves. This historical site spans 60 meters in length and 15 meters in width. Believed to have been built by Maharaja Agrasen and reconstructed in the 14th century, this ancient water reservoir is safeguarded by the Archeological Survey of India. The main structures and grounds are the principal points of interest.</p>
+                        <p class="places-stage__coords">28.6261&deg; N / 77.2250&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="4"
+                    aria-labelledby="place-title-5"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/delhi_5.avif" alt="Gurdwara Bangla Sahib" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">05</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-5" class="places-stage__title">Gurdwara Bangla Sahib</h3>
+                        <p class="places-stage__text">Gurdwara Bangla Sahib is a visitor site in Delhi, India. Gurudwara Sri Bangla Sahib, located near Connaught Place in New Delhi, is a significant Sikh place of worship. The water in this lake is considered sacred and has purported healing properties. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">28.6259&deg; N / 77.2090&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="5"
+                    aria-labelledby="place-title-6"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/delhi_6.avif" alt="Cathedral Church of The Redemption (C.N.I.)" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">06</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-6" class="places-stage__title">Cathedral Church of The Redemption (C.N.I.)</h3>
+                        <p class="places-stage__text">Located Delhi, the Cathedral Church of The Redemption, also affectionately known as Viceroy Church, is a example of 1930s British colonial architecture. Its design draws inspiration from known architects Lutyens and Palladio, showing an elegant blend of red sandstone exteriors that reflect simplicity and class.</p>
+                        <p class="places-stage__coords">28.6180&deg; N / 77.2021&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="6"
+                    aria-labelledby="place-title-7"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/delhi_7.avif" alt="Rashtrapati Bhavan" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">07</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-7" class="places-stage__title">Rashtrapati Bhavan</h3>
+                        <p class="places-stage__text">Rashtrapati Bhavan, the official residence of the President of India, is a must-visit for every Indian. The grand estate includes elegant Mughal gardens and a newly inaugurated museum showing its rich history. Built between 1912 and 1929, this 340-room building served as the British Viceroys House before India gained independence. Its architecture reflects a blend of Indo-Saracenic, Mauryan, Mughal, and regional styles.</p>
+                        <p class="places-stage__coords">28.6143&deg; N / 77.1994&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="7"
+                    aria-labelledby="place-title-8"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/delhi_8.avif" alt="Rashtrapati Bhavan Museum New Delhi" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">08</span>
+                            <span class="places-stage__admission"><span>Admission</span>₹50</span>
+                        </p>
+                        <h3 id="place-title-8" class="places-stage__title">Rashtrapati Bhavan Museum New Delhi</h3>
+                        <p class="places-stage__text">Rashtrapati Bhavan Museum New Delhi is a museum in Delhi, India. Records associated with the site include 2014. Inaugurated in 2014 by President Pranab Mukherjee, this museum showcases an collection of memorabilia from various presidencies, including unique gifts received by Indian presidents over the years. Galleries and public rooms are open on posted hours in Delhi.</p>
+                        <p class="places-stage__coords">28.6189&deg; N / 77.1967&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="8"
+                    aria-labelledby="place-title-9"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/delhi_9.avif" alt="Talkatora Garden" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">09</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-9" class="places-stage__title">Talkatora Garden</h3>
+                        <p class="places-stage__text">Talkatora Garden is a public park in Delhi, India. Paths, lawns, and shaded areas make up the main public facilities. Local maps identify Talkatora Garden within Delhi, India. Posted signs mark approaches and opening information for Talkatora Garden.</p>
+                        <p class="places-stage__coords">28.6234&deg; N / 77.1950&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="9"
+                    aria-labelledby="place-title-10"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/delhi_10.avif" alt="Shri Laxmi Narayan Temple (Birla Mandir)" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">10</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-10" class="places-stage__title">Shri Laxmi Narayan Temple (Birla Mandir)</h3>
+                        <p class="places-stage__text">Shri Laxmi Narayan Temple, also known as Birla Mandir, is a large Hindu temple complex spanning over 3 hectares. Situated near Connaught Place in New Delhi, it was constructed by the known Birla family and inaugurated by Mahatma Gandhi in 1939. The temple is dedicated to Goddess Laxmi and Lord Vishnu, collectively known as Laxminarayan.</p>
+                        <p class="places-stage__coords">28.6327&deg; N / 77.1990&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="10"
+                    aria-labelledby="place-title-11"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/delhi_11.avif" alt="Coronation Park" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">11</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-11" class="places-stage__title">Coronation Park</h3>
+                        <p class="places-stage__text">Coronation Park is a public park in Delhi, India. Records associated with the site include 1911. Established to commemorate the centenary of the 1911 Delhi Durbar, this park was once a hub for royal celebrations where Indian dignitaries gathered under British rule. Paths, lawns, and shaded areas make up the main public facilities.</p>
+                        <p class="places-stage__coords">28.7223&deg; N / 77.1989&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="site-footer">
         <div class="page-shell">
             <div class="site-footer__bar">
-                <a href="../../index.html" class="site-footer__brand" aria-label="Global Explorer home">
-                    <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
+                <a href="../../index.html" class="site-footer__mark" aria-label="Global Explorer home">
+                    <svg width="24" height="24" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
-                    <span class="site-footer__brand-name font-display">Global Explorer</span>
+                    Global Explorer
                 </a>
-                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides <span>Delhi: 11 places across North India.</span></p>
             </div>
         </div>
     </footer>
 
     <button id="scrollTopBtn" type="button" aria-label="Scroll to top">
-        <i class="ph ph-arrow-up" aria-hidden="true"></i>
+        <svg viewBox="0 0 24 24" width="1.15em" height="1.15em" aria-hidden="true" focusable="false">
+            <path d="M12 5.25 V18.75 M12 5.25 L6.75 10.5 M12 5.25 L17.25 10.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
     </button>
 
     <script defer src="../../assets/dev-destination-toggle.js"></script>
     <script defer src="../../assets/tg-page-chrome.js"></script>
     <script defer src="../../assets/tg-destination-map.js"></script>
+    <script defer src="../../assets/tg-destination-places.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const map = L.map('map').setView([28.640450, 77.211122], 14);
+            const map = L.map('map');
             L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
                 attribution: '&copy; Google Maps',
                 maxZoom: 20
             }).addTo(map);
-            const locations = [{"name": "Red Fort", "lat": 28.656159, "lng": 77.24102}, {"name": "Jama Masjid", "lat": 28.650679, "lng": 77.233442}, {"name": "Fatehpuri Masjid", "lat": 28.656649, "lng": 77.222771}, {"name": "Agrasen ki Baoli", "lat": 28.626062, "lng": 77.225037}, {"name": "Gurdwara Bangla Sahib", "lat": 28.625865, "lng": 77.208952}, {"name": "Cathedral Church of The Redemption (C.N.I.)", "lat": 28.617985, "lng": 77.202095}, {"name": "Rashtrapati Bhavan", "lat": 28.614348, "lng": 77.19943}, {"name": "Rashtrapati Bhavan Museum New Delhi", "lat": 28.61886, "lng": 77.196674}, {"name": "Talkatora Garden", "lat": 28.623361, "lng": 77.195013}, {"name": "Shri Laxmi Narayan Temple (Birla Mandir)", "lat": 28.632667, "lng": 77.198996}, {"name": "Coronation Park", "lat": 28.722319, "lng": 77.198913}];
+            const locations = Array.from(document.querySelectorAll('[data-place-option]')).map((el) => ({
+                name: el.dataset.placeName || '',
+                lat: Number(el.dataset.placeLat),
+                lng: Number(el.dataset.placeLng),
+            }));
             const customIcon = L.icon({
                 iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
                 iconSize: [32, 32],
@@ -289,14 +630,45 @@
                 popupAnchor: [0, -32],
             });
             const destinationCenter = [28.640450, 77.211122];
-            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.081869, "maxCenterLng": 0.029898};
-            locations.forEach((location) => {
-                L.marker([location.lat, location.lng], { icon: customIcon })
+            const mapContext = {"denseUrban": true};
+            const markers = locations.map((location) => {
+                const marker = L.marker([location.lat, location.lng], { icon: customIcon })
                     .addTo(map)
                     .bindPopup(`<strong>${location.name}</strong>`);
+                return marker;
             });
             window.TGDestinationMap?.fitToLocations(map, locations, destinationCenter, mapContext);
             window.TGDestinationMap?.bindMobileScrollGuard(map, 'map');
+            window.TGDestinationMap?.registerMarkers(map, markers);
+
+            const heroImage = document.querySelector('[data-destination-hero-image]');
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (heroImage && !reduceMotion) {
+                let framePending = false;
+                let scrolling = false;
+                let scrollEndTimer = 0;
+                const updateHeroPosition = () => {
+                    const offset = Math.min(window.scrollY, window.innerHeight * 1.15) * 0.075;
+                    heroImage.style.transform = `translate3d(0, ${offset}px, 0) scale(1.055)`;
+                    framePending = false;
+                };
+                window.addEventListener('scroll', () => {
+                    if (!scrolling) {
+                        scrolling = true;
+                        heroImage.style.willChange = 'transform';
+                    }
+                    window.clearTimeout(scrollEndTimer);
+                    scrollEndTimer = window.setTimeout(() => {
+                        scrolling = false;
+                        heroImage.style.willChange = 'auto';
+                    }, 150);
+                    if (!framePending) {
+                        window.requestAnimationFrame(updateHeroPosition);
+                        framePending = true;
+                    }
+                }, { passive: true });
+                updateHeroPosition();
+            }
         });
     </script>
 </body>

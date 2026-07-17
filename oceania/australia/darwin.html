@@ -6,269 +6,584 @@
     <meta name="description" content="Plan a visit to Darwin with a concise history, interactive attractions map, prices, and curated highlights across the destination.">
     <meta name="theme-color" content="#121417">
     <title>Darwin Guide | Global Explorer Guides</title>
-    <link rel="stylesheet" href="../../assets/tailwind.css">
-    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
     <link rel="stylesheet" href="../../assets/newindex-fonts.css">
     <link rel="stylesheet" href="../../assets/tg-theme.css">
     <link rel="stylesheet" href="../../assets/tg-site-chrome.css">
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
     <link rel="stylesheet" href="../../assets/tg-modern-polish.css">
+    <link rel="stylesheet" href="../../assets/tg-country-page.css">
+    <link rel="stylesheet" href="../../assets/tg-destination-page-v3.css">
     <script defer src="../../assets/lenis.min.js"></script>
     <script defer src="../../assets/tg-smooth-scroll.js"></script>
     <link rel="preload" as="image" href="images/darwin_hero.avif" type="image/avif" fetchpriority="high">
     <script defer src="../../assets/leaflet/leaflet.js"></script>
 </head>
-<body class="tg-theme tg-destination-page tg-modern">
-    <header id="site-header" class="header-glass fixed top-0 left-0 right-0 z-50">
+<body class="tg-theme tg-modern tg-country-v2 tg-destination-v3">
+    <a class="skip-link" href="#main-content">Skip to Darwin guide</a>
+    <header id="site-header" class="header-glass">
         <div class="page-shell header-glass__inner">
-            <a href="../../index.html" class="font-display site-brand" style="display:flex;align-items:center;gap:0.75rem;text-decoration:none;color:inherit;font-size:1.25rem;" aria-label="Global Explorer home">
+            <a href="../../index.html" class="site-brand" aria-label="Global Explorer home">
                 <span class="site-brand__mark" aria-hidden="true">
                     <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
-                        <circle cx="14" cy="14" r="2" fill="#E8B14F"/>
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
                 </span>
                 Global Explorer
             </a>
-            <nav class="header-glass__nav-mobile" aria-label="Mobile navigation">
-                <a href="../../index.html" class="header-glass__icon-link" aria-label="Home">
-                    <i class="ph ph-house" aria-hidden="true"></i>
-                </a>
-                <a href="australia.html" class="header-glass__icon-link" aria-label="Back to Australia">
-                    <i class="ph ph-arrow-left" aria-hidden="true"></i>
-                </a>
-            </nav>
             <nav class="header-glass__nav" aria-label="Primary">
-                <a href="../../index.html" class="nav-link">Home</a>
-                <a href="darwin.html" class="nav-link" aria-current="page">Darwin</a>
+                <a href="#main-content" class="nav-link" aria-current="page">Darwin</a>
+                <a href="#atlas" class="nav-link">Atlas</a>
+                <a href="#places" class="nav-link">Places</a>
                 <a href="australia.html" class="nav-link">Australia</a>
-                <a href="../../index.html#map" class="nav-link">Atlas</a>
             </nav>
         </div>
     </header>
-    <main>
-        <div class="tg-destination-hero-zone">
-            <div class="tg-destination-hero" aria-hidden="true">
-                <div class="tg-destination-hero__image" style="background-image: url('images/darwin_hero.avif')"></div>
-                <div class="tg-destination-hero__fade"></div>
-            </div>
-            <div class="page-shell tg-destination-hero-zone__content">
-        <nav class="tg-toolbar tg-toolbar--compact" aria-label="Breadcrumb">
-            <div class="tg-breadcrumb">
-                <img src="../../assets/flags/w40/au.png" alt="" class="w-6 h-auto rounded-[2px]" aria-hidden="true">
-                <span>Australia</span>
-                <span class="tg-breadcrumb__sep" aria-hidden="true">&rsaquo;</span>
-                <span class="tg-breadcrumb__current">Northern Territory</span>
-            </div>
-        </nav>
+    <main id="main-content" tabindex="-1">
+        <section class="destination-hero" aria-labelledby="destination-title">
+            <img class="destination-hero__media" data-destination-hero-image src="images/darwin_hero.avif" alt="" width="1600" height="1067" fetchpriority="high" decoding="sync">
+            <div class="destination-hero__shade" aria-hidden="true"></div>
+            <div class="page-shell destination-hero__content">
+                <button
+                    type="button"
+                    id="destination-active-toggle"
+                    class="country-active-toggle country-active-toggle--inactive"
+                    data-iso2="AU"
+                    data-slug="darwin"
+                    data-active="false"
+                    data-interactive="true"
+                    aria-label="Toggle Darwin visibility on Australia guide"
+                    aria-pressed="false"
+                >
+                    <img src="../../assets/flags/w80/au.png" alt="" aria-hidden="true">
+                    <span class="country-toggle__copy" aria-hidden="true">
+                        <span class="country-toggle__label">Darwin guide</span>
+                        <strong class="country-toggle__state"></strong>
+                    </span>
+                </button>
 
-        <header class="tg-page-header">
-            <button
-        type="button"
-        id="destination-active-toggle"
-        class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
-        data-iso2="AU"
-        data-slug="darwin"
-        data-active="false"
-        data-interactive="true"
-        aria-label="Toggle Darwin visibility on Australia guide"
-        aria-pressed="false"
-    >
-        <i class="ph ph-map-pin text-4xl pointer-events-none" aria-hidden="true"></i>
-    </button>
-            <span class="tg-page-header__eyebrow">Destination Guide — Northern Territory</span>
-            <h1 class="tg-page-title font-display">Explore <em>Darwin</em></h1>
-            <div class="glass-card frosted-panel tg-panel">
-                <h2 class="tg-panel__title font-display">
-                    <i class="ph ph-scroll" aria-hidden="true"></i> A Brief History
-                </h2>
-                <p class="tg-panel__body">Settled in 1869 as an isolated northern outpost, Darwin endured near-total destruction by Japanese bombing in 1942 and Cyclone Tracy in 1974. Continually rebuilt, the resilient port city emerged as Australia&#x27;s multicultural gateway to Southeast Asia and the Top End. Visitors today can clearly trace the detailed layers of this unique heritage throughout the preserved streets and monuments.</p>
-            </div>
-        </header>
+                <div class="hero__route" aria-label="Destination route and coordinates">
+                    <span>Australia / Northern Territory</span>
+                    <span>12.4329&deg; S / 130.8455&deg; E</span>
+                </div>
 
-        <div class="tg-section__header tg-section__header--map-end">
-            <span class="tg-section__eyebrow">Map</span>
-            <h2 class="tg-section__title font-display">Attractions Map</h2>
-        </div>
-            </div>
-        </div>
-
-        <div class="page-shell tg-main tg-main--below-hero">
-        <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Darwin attractions"></div>
-        <section class="tg-section">
-            <div class="tg-section__header">
-                <span class="tg-section__eyebrow">Highlights</span>
-                <h2 class="tg-section__title font-display">Top Sights &amp; Activities</h2>
-            </div>
-            <div class="tg-sights-list">
-            
-            <!-- 1. Darwin Aviation Museum -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/darwin_1.avif" alt="Darwin Aviation Museum" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> A$20
+                <h1 id="destination-title" class="destination-hero__title" style="--destination-title-chars: 6">Darwin</h1>
+                <div class="destination-hero__history">
+                    <p>Settled in 1869 as an isolated northern outpost, Darwin endured near-total destruction by Japanese bombing in 1942 and Cyclone Tracy in 1974. Continually rebuilt, the resilient port city emerged as Australia&#x27;s multicultural gateway to Southeast Asia and the Top End. Visitors today can clearly trace the detailed layers of this unique heritage throughout the preserved streets and monuments.</p>
+                </div>
+                <dl class="destination-hero__facts" aria-label="Darwin guide facts">
+                    <div>
+                        <dt>Country</dt>
+                        <dd>Australia</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Darwin Aviation Museum</h3>
-                    <p class="tg-sight-card__text">The Darwin Aviation Museum is a treasure trove for aviation aficionados and history lovers, showing an extensive array of vintage military aircraft and fascinating artifacts. This museum highlights Darwin&#x27;s significant contributions during World War II, featuring a striking B-52 bomber on loan from the U.S. Air Force as its centerpiece.</p>
-                </div>
-            </div>
-            <!-- 2. Darwin Waterfront Precinct -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/darwin_2.avif" alt="Darwin Waterfront Precinct" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free (Wave Lagoon A$8)
+                    <div>
+                        <dt>Region</dt>
+                        <dd>Northern Territory</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Darwin Waterfront Precinct</h3>
-                    <p class="tg-sight-card__text">The Darwin Waterfront Precinct is a active bayside development featuring an array of restaurants, bars, and recreational activities. It offers a wave pool and sandy beach for swimming, making it a safe and enjoyable destination for tourists and locals alike. The area also presents unique photo opportunities with industrial-looking walls lining walkways against the backdrop of the bay.</p>
-                </div>
-            </div>
-            <!-- 3. Crocosaurus Cove -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/darwin_3.avif" alt="Crocosaurus Cove" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> A$42
+                    <div>
+                        <dt>Places</dt>
+                        <dd>10</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Crocosaurus Cove</h3>
-                    <p class="tg-sight-card__text">Crocosaurus Cove, located in downtown Darwin, is a wildlife haven showing the world&#x27;s largest display of Australian reptiles, including the infamous saltwater crocodile. Visitors can witness these creatures from 3 months to 80 years old in purpose-designed displays that offer 360-degree viewing on all three levels. The Cove offers various activities such as the Big Croc Feed Show and Fishing for Crocs platform where visitors can feed and interact with these fascinating animals.</p>
-                </div>
-            </div>
-            <!-- 4. Mindil Beach Sunset Market -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/darwin_4.avif" alt="Mindil Beach Sunset Market" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Mindil Beach Sunset Market</h3>
-                    <p class="tg-sight-card__text">Mindil Beach Sunset Market is a active hub that draws both locals and tourists alike, offering an eclectic mix of over 300 food stalls featuring global cuisines. From delectable Hong Kong dishes to Greek souvlaki, paella, burgers, and desserts like ice cream and sorbet, there&#x27;s something for every palate.</p>
-                </div>
-            </div>
-            <!-- 5. George Brown Darwin Botanic Gardens -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/darwin_5.avif" alt="George Brown Darwin Botanic Gardens" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">George Brown Darwin Botanic Gardens</h3>
-                    <p class="tg-sight-card__text">George Brown Darwin Botanic Gardens is a public park in Darwin, Australia. Records associated with the site include 1886. The George Brown Darwin Botanic Gardens cover 42 hectares and showcase the diverse flora of northern Australia and other tropical environments. Established in 1886, the gardens has extensive collections of palms, cycads, orchids, and baobabs. Paths, lawns, and shaded areas make up the main public facilities.</p>
-                </div>
-            </div>
-            <!-- 6. Museum and Art Gallery of the Northern Territory -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/darwin_6.avif" alt="Museum and Art Gallery of the Northern Territory" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Museum and Art Gallery of the Northern Territory</h3>
-                    <p class="tg-sight-card__text">Museum and Art Gallery of the Northern Territory is a museum in Darwin, Australia. Located on Larrakia Land overlooking Fannie Bay, the Museum and Art Gallery of the Northern Territory (MAGNT) is a top attraction in Darwin. The museum offers engaging public programs such as creative workshops, artist talks, and guided tours of its acclaimed exhibitions. Galleries and public rooms are open on posted hours in Darwin.</p>
-                </div>
-            </div>
-            <!-- 7. Parap Village Markets -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/darwin_7.avif" alt="Parap Village Markets" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Parap Village Markets</h3>
-                    <p class="tg-sight-card__text">Parap Village Markets is a popular weekend market featuring a variety of vendors selling clothing, crafts, and food. The market offers an array of tropical fruits, Asian greens, and fresh produce from Filipino, Tamil, Thai, Vietnamese and Chinese growers. It&#x27;s known for its busy atmosphere with live music and food stalls offering diverse options such as Cambodian rice balls, laksa, donuts, lemonade, and satay squid.</p>
-                </div>
-            </div>
-            <!-- 8. Cullen Bay Marina -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/darwin_8.avif" alt="Cullen Bay Marina" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Cullen Bay Marina</h3>
-                    <p class="tg-sight-card__text">Cullen Bay Marina is a modern and active marina located just a short distance from Darwin&#x27;s city centre. It offers a relaxing atmosphere with views of the bay filled with boats. The area has top seafood restaurants where visitors can enjoy an eclectic blend of flavors or savor fresh local fish and chips, it is an affluent area with exclusive homes and provides opportunities for leisurely walks, dining at various eateries, and enjoying sunset views.</p>
-                </div>
-            </div>
-            <!-- 9. Nightcliff Jetty -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/darwin_9.avif" alt="Nightcliff Jetty" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Nightcliff Jetty</h3>
-                    <p class="tg-sight-card__text">Nightcliff Jetty, located in the neighborhood of Nightcliff in the north of Darwin, is a beloved spot for both locals and tourists. It offers uninterrupted views of the famous Darwin sunsets that light up the sky with a glorious orange glow, making it a popular location for wedding photos during the sunset. The old wooden jetty is a favorite among locals for fishing, while others prefer to relax on the rocks nearby to take in the sunset views.</p>
-                </div>
-            </div>
-            <!-- 10. Rapid Creek Markets -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/darwin_10.avif" alt="Rapid Creek Markets" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Rapid Creek Markets</h3>
-                    <p class="tg-sight-card__text">Rapid Creek Markets is a market in Darwin, Australia. Rapid Creek Markets in Darwin is a busy and active market that offers a wide variety of tropical fruits, vegetables, and Asian delicacies. It primarily is a farmers market where locals gather to purchase their weekly supply of fresh produce and indulge in delectable curries and samosas. Stalls sell food and goods during regular market hours.</p>
-                </div>
-            </div>
+                </dl>
             </div>
         </section>
-        </div>
+
+        <section id="atlas" class="destination-atlas" aria-labelledby="atlas-title">
+            <div class="page-shell destination-atlas__layout">
+                <div class="destination-atlas__brief">
+                    <p class="destination-atlas__index">City atlas</p>
+                    <h2 id="atlas-title">Plot the city.</h2>
+                    <p class="destination-atlas__copy">Zoom, pan, and open any marker to focus that place in the catalog below.</p>
+                    <dl class="destination-atlas__facts" aria-label="Map coverage">
+                        <div>
+                            <dt>Plotted</dt>
+                            <dd>10 places</dd>
+                        </div>
+                        <div>
+                            <dt>Center</dt>
+                            <dd>12.4329&deg; S<br>130.8455&deg; E</dd>
+                        </div>
+                    </dl>
+                </div>
+                <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Darwin attractions"></div>
+            </div>
+        </section>
+
+        <section id="places" class="destination-places" aria-labelledby="places-title">
+            <div class="page-shell">
+                <div class="destination-chapter">
+                    <h2 id="places-title" class="destination-chapter__heading">10 ways into<br>Darwin.</h2>
+                    <p class="destination-chapter__copy">Browse the index, open a location, and read the essentials without scrolling through a long catalog. Each entry contains its image, admission note, and contextual guide.</p>
+                </div>
+                <div class="places-explorer" data-places-explorer>
+                    <aside class="places-explorer__rail" aria-label="Place index">
+                        <div class="places-explorer__toolbar">
+                            <label class="places-explorer__filter-label" for="places-filter">Filter places</label>
+                            <input
+                                id="places-filter"
+                                class="places-explorer__filter"
+                                type="search"
+                                data-places-filter
+                                placeholder="Search by name"
+                                autocomplete="off"
+                            >
+                            <p class="places-explorer__meta"><strong data-places-count>10</strong> of 10 shown</p>
+                        </div>
+                        <ul class="places-explorer__list" role="listbox" aria-label="Places in Darwin" data-places-list data-lenis-prevent data-tg-scroll-surface>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option is-active"
+                            role="option"
+                            id="place-option-1"
+                            data-place-option
+                            data-place-index="0"
+                            data-place-name="Darwin Aviation Museum"
+                            data-place-lat="-12.425324"
+                            data-place-lng="130.895676"
+                            aria-selected="true"
+                            tabindex="0"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">01</span>
+                            <span class="places-explorer__option-name">Darwin Aviation Museum</span>
+                            <span class="places-explorer__option-price">A$20</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-2"
+                            data-place-option
+                            data-place-index="1"
+                            data-place-name="Darwin Waterfront Precinct"
+                            data-place-lat="-12.46732"
+                            data-place-lng="130.846749"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">02</span>
+                            <span class="places-explorer__option-name">Darwin Waterfront Precinct</span>
+                            <span class="places-explorer__option-price">Free (Wave Lagoon A$8)</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-3"
+                            data-place-option
+                            data-place-index="2"
+                            data-place-name="Crocosaurus Cove"
+                            data-place-lat="-12.462332"
+                            data-place-lng="130.839161"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">03</span>
+                            <span class="places-explorer__option-name">Crocosaurus Cove</span>
+                            <span class="places-explorer__option-price">A$42</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-4"
+                            data-place-option
+                            data-place-index="3"
+                            data-place-name="Mindil Beach Sunset Market"
+                            data-place-lat="-12.444145"
+                            data-place-lng="130.832153"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">04</span>
+                            <span class="places-explorer__option-name">Mindil Beach Sunset Market</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-5"
+                            data-place-option
+                            data-place-index="4"
+                            data-place-name="George Brown Darwin Botanic Gardens"
+                            data-place-lat="-12.4447682"
+                            data-place-lng="130.8366054"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">05</span>
+                            <span class="places-explorer__option-name">George Brown Darwin Botanic Gardens</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-6"
+                            data-place-option
+                            data-place-index="5"
+                            data-place-name="Museum and Art Gallery of the Northern Territory"
+                            data-place-lat="-12.437149"
+                            data-place-lng="130.833437"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">06</span>
+                            <span class="places-explorer__option-name">Museum and Art Gallery of the Northern Territory</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-7"
+                            data-place-option
+                            data-place-index="6"
+                            data-place-name="Parap Village Markets"
+                            data-place-lat="-12.43161"
+                            data-place-lng="130.844614"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">07</span>
+                            <span class="places-explorer__option-name">Parap Village Markets</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-8"
+                            data-place-option
+                            data-place-index="7"
+                            data-place-name="Cullen Bay Marina"
+                            data-place-lat="-12.451312"
+                            data-place-lng="130.822255"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">08</span>
+                            <span class="places-explorer__option-name">Cullen Bay Marina</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-9"
+                            data-place-option
+                            data-place-index="8"
+                            data-place-name="Nightcliff Jetty"
+                            data-place-lat="-12.378533"
+                            data-place-lng="130.841895"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">09</span>
+                            <span class="places-explorer__option-name">Nightcliff Jetty</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-10"
+                            data-place-option
+                            data-place-index="9"
+                            data-place-name="Rapid Creek Markets"
+                            data-place-lat="-12.386673"
+                            data-place-lng="130.862444"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">10</span>
+                            <span class="places-explorer__option-name">Rapid Creek Markets</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                        </ul>
+                        <p class="places-explorer__empty" data-places-empty hidden>No places match that filter.</p>
+                    </aside>
+                    <div class="places-explorer__stage" data-places-stage>
+                    <nav class="places-stage__stepper" data-places-stepper aria-label="Browse places" hidden>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--prev" data-places-prev aria-label="Previous place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M14.75 5.25 L8.25 12 l6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M9.1 12 H17.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--next" data-places-next aria-label="Next place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M9.25 5.25 L15.75 12 l-6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M6.6 12 H14.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                    </nav>
+                <article
+                    class="places-stage__panel is-active"
+                    data-place-panel
+                    data-place-index="0"
+                    aria-labelledby="place-title-1"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/darwin_1.avif" alt="Darwin Aviation Museum" width="1200" height="750" loading="eager" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">01</span>
+                            <span class="places-stage__admission"><span>Admission</span>A$20</span>
+                        </p>
+                        <h3 id="place-title-1" class="places-stage__title">Darwin Aviation Museum</h3>
+                        <p class="places-stage__text">The Darwin Aviation Museum is a treasure trove for aviation aficionados and history lovers, showing an extensive array of vintage military aircraft and fascinating artifacts. This museum highlights Darwin&#x27;s significant contributions during World War II, featuring a striking B-52 bomber on loan from the U.S. Air Force as its centerpiece.</p>
+                        <p class="places-stage__coords">12.4253&deg; S / 130.8957&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="1"
+                    aria-labelledby="place-title-2"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/darwin_2.avif" alt="Darwin Waterfront Precinct" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">02</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free (Wave Lagoon A$8)</span>
+                        </p>
+                        <h3 id="place-title-2" class="places-stage__title">Darwin Waterfront Precinct</h3>
+                        <p class="places-stage__text">The Darwin Waterfront Precinct is a active bayside development featuring an array of restaurants, bars, and recreational activities. It offers a wave pool and sandy beach for swimming, making it a safe and enjoyable destination for tourists and locals alike. The area also presents unique photo opportunities with industrial-looking walls lining walkways against the backdrop of the bay.</p>
+                        <p class="places-stage__coords">12.4673&deg; S / 130.8467&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="2"
+                    aria-labelledby="place-title-3"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/darwin_3.avif" alt="Crocosaurus Cove" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">03</span>
+                            <span class="places-stage__admission"><span>Admission</span>A$42</span>
+                        </p>
+                        <h3 id="place-title-3" class="places-stage__title">Crocosaurus Cove</h3>
+                        <p class="places-stage__text">Crocosaurus Cove, located in downtown Darwin, is a wildlife haven showing the world&#x27;s largest display of Australian reptiles, including the infamous saltwater crocodile. Visitors can witness these creatures from 3 months to 80 years old in purpose-designed displays that offer 360-degree viewing on all three levels. The Cove offers various activities such as the Big Croc Feed Show and Fishing for Crocs platform where visitors can feed and interact with these fascinating animals.</p>
+                        <p class="places-stage__coords">12.4623&deg; S / 130.8392&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="3"
+                    aria-labelledby="place-title-4"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/darwin_4.avif" alt="Mindil Beach Sunset Market" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">04</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-4" class="places-stage__title">Mindil Beach Sunset Market</h3>
+                        <p class="places-stage__text">Mindil Beach Sunset Market is a active hub that draws both locals and tourists alike, offering an eclectic mix of over 300 food stalls featuring global cuisines. From delectable Hong Kong dishes to Greek souvlaki, paella, burgers, and desserts like ice cream and sorbet, there&#x27;s something for every palate.</p>
+                        <p class="places-stage__coords">12.4441&deg; S / 130.8322&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="4"
+                    aria-labelledby="place-title-5"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/darwin_5.avif" alt="George Brown Darwin Botanic Gardens" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">05</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-5" class="places-stage__title">George Brown Darwin Botanic Gardens</h3>
+                        <p class="places-stage__text">George Brown Darwin Botanic Gardens is a public park in Darwin, Australia. Records associated with the site include 1886. The George Brown Darwin Botanic Gardens cover 42 hectares and showcase the diverse flora of northern Australia and other tropical environments. Established in 1886, the gardens has extensive collections of palms, cycads, orchids, and baobabs. Paths, lawns, and shaded areas make up the main public facilities.</p>
+                        <p class="places-stage__coords">12.4448&deg; S / 130.8366&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="5"
+                    aria-labelledby="place-title-6"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/darwin_6.avif" alt="Museum and Art Gallery of the Northern Territory" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">06</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-6" class="places-stage__title">Museum and Art Gallery of the Northern Territory</h3>
+                        <p class="places-stage__text">Museum and Art Gallery of the Northern Territory is a museum in Darwin, Australia. Located on Larrakia Land overlooking Fannie Bay, the Museum and Art Gallery of the Northern Territory (MAGNT) is a top attraction in Darwin. The museum offers engaging public programs such as creative workshops, artist talks, and guided tours of its acclaimed exhibitions. Galleries and public rooms are open on posted hours in Darwin.</p>
+                        <p class="places-stage__coords">12.4371&deg; S / 130.8334&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="6"
+                    aria-labelledby="place-title-7"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/darwin_7.avif" alt="Parap Village Markets" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">07</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-7" class="places-stage__title">Parap Village Markets</h3>
+                        <p class="places-stage__text">Parap Village Markets is a popular weekend market featuring a variety of vendors selling clothing, crafts, and food. The market offers an array of tropical fruits, Asian greens, and fresh produce from Filipino, Tamil, Thai, Vietnamese and Chinese growers. It&#x27;s known for its busy atmosphere with live music and food stalls offering diverse options such as Cambodian rice balls, laksa, donuts, lemonade, and satay squid.</p>
+                        <p class="places-stage__coords">12.4316&deg; S / 130.8446&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="7"
+                    aria-labelledby="place-title-8"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/darwin_8.avif" alt="Cullen Bay Marina" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">08</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-8" class="places-stage__title">Cullen Bay Marina</h3>
+                        <p class="places-stage__text">Cullen Bay Marina is a modern and active marina located just a short distance from Darwin&#x27;s city centre. It offers a relaxing atmosphere with views of the bay filled with boats. The area has top seafood restaurants where visitors can enjoy an eclectic blend of flavors or savor fresh local fish and chips, it is an affluent area with exclusive homes and provides opportunities for leisurely walks, dining at various eateries, and enjoying sunset views.</p>
+                        <p class="places-stage__coords">12.4513&deg; S / 130.8223&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="8"
+                    aria-labelledby="place-title-9"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/darwin_9.avif" alt="Nightcliff Jetty" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">09</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-9" class="places-stage__title">Nightcliff Jetty</h3>
+                        <p class="places-stage__text">Nightcliff Jetty, located in the neighborhood of Nightcliff in the north of Darwin, is a beloved spot for both locals and tourists. It offers uninterrupted views of the famous Darwin sunsets that light up the sky with a glorious orange glow, making it a popular location for wedding photos during the sunset. The old wooden jetty is a favorite among locals for fishing, while others prefer to relax on the rocks nearby to take in the sunset views.</p>
+                        <p class="places-stage__coords">12.3785&deg; S / 130.8419&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="9"
+                    aria-labelledby="place-title-10"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/darwin_10.avif" alt="Rapid Creek Markets" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">10</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-10" class="places-stage__title">Rapid Creek Markets</h3>
+                        <p class="places-stage__text">Rapid Creek Markets is a market in Darwin, Australia. Rapid Creek Markets in Darwin is a busy and active market that offers a wide variety of tropical fruits, vegetables, and Asian delicacies. It primarily is a farmers market where locals gather to purchase their weekly supply of fresh produce and indulge in delectable curries and samosas. Stalls sell food and goods during regular market hours.</p>
+                        <p class="places-stage__coords">12.3867&deg; S / 130.8624&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="site-footer">
         <div class="page-shell">
             <div class="site-footer__bar">
-                <a href="../../index.html" class="site-footer__brand" aria-label="Global Explorer home">
-                    <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
+                <a href="../../index.html" class="site-footer__mark" aria-label="Global Explorer home">
+                    <svg width="24" height="24" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
-                    <span class="site-footer__brand-name font-display">Global Explorer</span>
+                    Global Explorer
                 </a>
-                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides <span>Darwin: 10 places across Northern Territory.</span></p>
             </div>
         </div>
     </footer>
 
     <button id="scrollTopBtn" type="button" aria-label="Scroll to top">
-        <i class="ph ph-arrow-up" aria-hidden="true"></i>
+        <svg viewBox="0 0 24 24" width="1.15em" height="1.15em" aria-hidden="true" focusable="false">
+            <path d="M12 5.25 V18.75 M12 5.25 L6.75 10.5 M12 5.25 L17.25 10.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
     </button>
 
     <script defer src="../../assets/dev-destination-toggle.js"></script>
     <script defer src="../../assets/tg-page-chrome.js"></script>
     <script defer src="../../assets/tg-destination-map.js"></script>
+    <script defer src="../../assets/tg-destination-places.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const map = L.map('map').setView([-12.432917, 130.845499], 14);
+            const map = L.map('map');
             L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
                 attribution: '&copy; Google Maps',
                 maxZoom: 20
             }).addTo(map);
-            const locations = [{"name": "Darwin Aviation Museum", "lat": -12.425324, "lng": 130.895676}, {"name": "Darwin Waterfront Precinct", "lat": -12.46732, "lng": 130.846749}, {"name": "Crocosaurus Cove", "lat": -12.462332, "lng": 130.839161}, {"name": "Mindil Beach Sunset Market", "lat": -12.444145, "lng": 130.832153}, {"name": "George Brown Darwin Botanic Gardens", "lat": -12.4447682, "lng": 130.8366054}, {"name": "Museum and Art Gallery of the Northern Territory", "lat": -12.437149, "lng": 130.833437}, {"name": "Parap Village Markets", "lat": -12.43161, "lng": 130.844614}, {"name": "Cullen Bay Marina", "lat": -12.451312, "lng": 130.822255}, {"name": "Nightcliff Jetty", "lat": -12.378533, "lng": 130.841895}, {"name": "Rapid Creek Markets", "lat": -12.386673, "lng": 130.862444}];
+            const locations = Array.from(document.querySelectorAll('[data-place-option]')).map((el) => ({
+                name: el.dataset.placeName || '',
+                lat: Number(el.dataset.placeLat),
+                lng: Number(el.dataset.placeLng),
+            }));
             const customIcon = L.icon({
                 iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
                 iconSize: [32, 32],
@@ -276,14 +591,45 @@
                 popupAnchor: [0, -32],
             });
             const destinationCenter = [-12.432917, 130.845499];
-            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.054384, "maxCenterLng": 0.050177};
-            locations.forEach((location) => {
-                L.marker([location.lat, location.lng], { icon: customIcon })
+            const mapContext = {"denseUrban": true};
+            const markers = locations.map((location) => {
+                const marker = L.marker([location.lat, location.lng], { icon: customIcon })
                     .addTo(map)
                     .bindPopup(`<strong>${location.name}</strong>`);
+                return marker;
             });
             window.TGDestinationMap?.fitToLocations(map, locations, destinationCenter, mapContext);
             window.TGDestinationMap?.bindMobileScrollGuard(map, 'map');
+            window.TGDestinationMap?.registerMarkers(map, markers);
+
+            const heroImage = document.querySelector('[data-destination-hero-image]');
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (heroImage && !reduceMotion) {
+                let framePending = false;
+                let scrolling = false;
+                let scrollEndTimer = 0;
+                const updateHeroPosition = () => {
+                    const offset = Math.min(window.scrollY, window.innerHeight * 1.15) * 0.075;
+                    heroImage.style.transform = `translate3d(0, ${offset}px, 0) scale(1.055)`;
+                    framePending = false;
+                };
+                window.addEventListener('scroll', () => {
+                    if (!scrolling) {
+                        scrolling = true;
+                        heroImage.style.willChange = 'transform';
+                    }
+                    window.clearTimeout(scrollEndTimer);
+                    scrollEndTimer = window.setTimeout(() => {
+                        scrolling = false;
+                        heroImage.style.willChange = 'auto';
+                    }, 150);
+                    if (!framePending) {
+                        window.requestAnimationFrame(updateHeroPosition);
+                        framePending = true;
+                    }
+                }, { passive: true });
+                updateHeroPosition();
+            }
         });
     </script>
 </body>

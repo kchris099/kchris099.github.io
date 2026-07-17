@@ -6,347 +6,814 @@
     <meta name="description" content="Plan a visit to Bruges with a concise history, interactive attractions map, prices, and curated highlights across the destination.">
     <meta name="theme-color" content="#121417">
     <title>Bruges Guide | Global Explorer Guides</title>
-    <link rel="stylesheet" href="../../assets/tailwind.css">
-    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
     <link rel="stylesheet" href="../../assets/newindex-fonts.css">
     <link rel="stylesheet" href="../../assets/tg-theme.css">
     <link rel="stylesheet" href="../../assets/tg-site-chrome.css">
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
     <link rel="stylesheet" href="../../assets/tg-modern-polish.css">
+    <link rel="stylesheet" href="../../assets/tg-country-page.css">
+    <link rel="stylesheet" href="../../assets/tg-destination-page-v3.css">
     <script defer src="../../assets/lenis.min.js"></script>
     <script defer src="../../assets/tg-smooth-scroll.js"></script>
     <link rel="preload" as="image" href="images/bruges_hero.avif" type="image/avif" fetchpriority="high">
     <script defer src="../../assets/leaflet/leaflet.js"></script>
 </head>
-<body class="tg-theme tg-destination-page tg-modern">
-    <header id="site-header" class="header-glass fixed top-0 left-0 right-0 z-50">
+<body class="tg-theme tg-modern tg-country-v2 tg-destination-v3">
+    <a class="skip-link" href="#main-content">Skip to Bruges guide</a>
+    <header id="site-header" class="header-glass">
         <div class="page-shell header-glass__inner">
-            <a href="../../index.html" class="font-display site-brand" style="display:flex;align-items:center;gap:0.75rem;text-decoration:none;color:inherit;font-size:1.25rem;" aria-label="Global Explorer home">
+            <a href="../../index.html" class="site-brand" aria-label="Global Explorer home">
                 <span class="site-brand__mark" aria-hidden="true">
                     <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
-                        <circle cx="14" cy="14" r="2" fill="#E8B14F"/>
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
                 </span>
                 Global Explorer
             </a>
-            <nav class="header-glass__nav-mobile" aria-label="Mobile navigation">
-                <a href="../../index.html" class="header-glass__icon-link" aria-label="Home">
-                    <i class="ph ph-house" aria-hidden="true"></i>
-                </a>
-                <a href="belgium.html" class="header-glass__icon-link" aria-label="Back to Belgium">
-                    <i class="ph ph-arrow-left" aria-hidden="true"></i>
-                </a>
-            </nav>
             <nav class="header-glass__nav" aria-label="Primary">
-                <a href="../../index.html" class="nav-link">Home</a>
-                <a href="bruges.html" class="nav-link" aria-current="page">Bruges</a>
+                <a href="#main-content" class="nav-link" aria-current="page">Bruges</a>
+                <a href="#atlas" class="nav-link">Atlas</a>
+                <a href="#places" class="nav-link">Places</a>
                 <a href="belgium.html" class="nav-link">Belgium</a>
-                <a href="../../index.html#map" class="nav-link">Atlas</a>
             </nav>
         </div>
     </header>
-    <main>
-        <div class="tg-destination-hero-zone">
-            <div class="tg-destination-hero" aria-hidden="true">
-                <div class="tg-destination-hero__image" style="background-image: url('images/bruges_hero.avif')"></div>
-                <div class="tg-destination-hero__fade"></div>
-            </div>
-            <div class="page-shell tg-destination-hero-zone__content">
-        <nav class="tg-toolbar tg-toolbar--compact" aria-label="Breadcrumb">
-            <div class="tg-breadcrumb">
-                <img src="../../assets/flags/w40/be.png" alt="" class="w-6 h-auto rounded-[2px]" aria-hidden="true">
-                <span>Belgium</span>
-                <span class="tg-breadcrumb__sep" aria-hidden="true">&rsaquo;</span>
-                <span class="tg-breadcrumb__current">Bruges</span>
-            </div>
-        </nav>
+    <main id="main-content" tabindex="-1">
+        <section class="destination-hero" aria-labelledby="destination-title">
+            <img class="destination-hero__media" data-destination-hero-image src="images/bruges_hero.avif" alt="" width="1600" height="1067" fetchpriority="high" decoding="sync">
+            <div class="destination-hero__shade" aria-hidden="true"></div>
+            <div class="page-shell destination-hero__content">
+                <button
+                    type="button"
+                    id="destination-active-toggle"
+                    class="country-active-toggle country-active-toggle--inactive"
+                    data-iso2="BE"
+                    data-slug="bruges"
+                    data-active="false"
+                    data-interactive="true"
+                    aria-label="Toggle Bruges visibility on Belgium guide"
+                    aria-pressed="false"
+                >
+                    <img src="../../assets/flags/w80/be.png" alt="" aria-hidden="true">
+                    <span class="country-toggle__copy" aria-hidden="true">
+                        <span class="country-toggle__label">Bruges guide</span>
+                        <strong class="country-toggle__state"></strong>
+                    </span>
+                </button>
 
-        <header class="tg-page-header">
-            <button
-        type="button"
-        id="destination-active-toggle"
-        class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
-        data-iso2="BE"
-        data-slug="bruges"
-        data-active="false"
-        data-interactive="true"
-        aria-label="Toggle Bruges visibility on Belgium guide"
-        aria-pressed="false"
-    >
-        <i class="ph ph-map-pin text-4xl pointer-events-none" aria-hidden="true"></i>
-    </button>
-            <span class="tg-page-header__eyebrow">Destination Guide — Bruges</span>
-            <h1 class="tg-page-title font-display">Explore <em>Bruges</em></h1>
-            <div class="glass-card frosted-panel tg-panel">
-                <h2 class="tg-panel__title font-display">
-                    <i class="ph ph-scroll" aria-hidden="true"></i> A Brief History
-                </h2>
-                <p class="tg-panel__body">Bruges channelled Flemish cloth exports through its Zwin estuary in the thirteenth and fourteenth centuries, building belfries, hospitals, and the Béguinage that still structure the historic core. Hanseatic and Italian merchants stored goods in canalside warehouses before silting reduced the port&#x27;s reach. Revived tourism and lace workshops followed nineteenth-century rediscovery of its medieval streetscape, leaving a city where civic guilds and waterways once linked Flanders to the North Sea.</p>
-            </div>
-        </header>
+                <div class="hero__route" aria-label="Destination route and coordinates">
+                    <span>Belgium / Bruges</span>
+                    <span>51.2086&deg; N / 3.2268&deg; E</span>
+                </div>
 
-        <div class="tg-section__header tg-section__header--map-end">
-            <span class="tg-section__eyebrow">Map</span>
-            <h2 class="tg-section__title font-display">Attractions Map</h2>
-        </div>
-            </div>
-        </div>
-
-        <div class="page-shell tg-main tg-main--below-hero">
-        <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Bruges attractions"></div>
-        <section class="tg-section">
-            <div class="tg-section__header">
-                <span class="tg-section__eyebrow">Highlights</span>
-                <h2 class="tg-section__title font-display">Top Sights &amp; Activities</h2>
-            </div>
-            <div class="tg-sights-list">
-            
-            <!-- 1. Belfry of Bruges -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/bruges_1.avif" alt="Belfry of Bruges" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €16
+                <h1 id="destination-title" class="destination-hero__title" style="--destination-title-chars: 6">Bruges</h1>
+                <div class="destination-hero__history">
+                    <p>Cloth exports through the Zwin made Bruges a thirteenth- and fourteenth-century financial capital; belfries, the Béguinage, and canalside warehouses date from that boom. When the harbour silted, the city shrank until nineteenth-century antiquarians rediscovered the medieval streetscape and lace workshops returned around the old guild halls. The Markt and Burg squares concentrate that cloth-era civic architecture in a few blocks.</p>
+                </div>
+                <dl class="destination-hero__facts destination-hero__facts--no-region" aria-label="Bruges guide facts">
+                    <div>
+                        <dt>Country</dt>
+                        <dd>Belgium</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Belfry of Bruges</h3>
-                    <p class="tg-sight-card__text">Belfry of Bruges is a visitor site in Bruges, Belgium. It is a cherished landmark with a treasure chamber and houses a 47-belled carillon. Climbing its 366 steps rewards travellers with panoramic views of Bruges from the top. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 2. Market Square -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/bruges_2.avif" alt="Market Square" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                    <div>
+                        <dt>Places</dt>
+                        <dd>16</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Market Square</h3>
-                    <p class="tg-sight-card__text">Market Square, In Bruges, is a busy traffic-free square that underwent renovations in 1996. The square is home to the 13th-century Belfry and surrounded by other buildings such as the Provincial Palace and a statue honoring heroes from the Battle of the Golden Spurs. Travellers can also enjoy delicious fried potatoes from nearby vendors.</p>
-                </div>
-            </div>
-            <!-- 3. Basilica of the Holy Blood -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/bruges_3.avif" alt="Basilica of the Holy Blood" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free (museum €5)
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Basilica of the Holy Blood</h3>
-                    <p class="tg-sight-card__text">Basilica of the Holy Blood is a religious building in Bruges, Belgium. This 12th-century Romanesque basilica is situated in the Burg, an architectural center of Bruges. The exterior and main interior spaces are usually viewable outside service times.</p>
-                </div>
-            </div>
-            <!-- 4. De Burg -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/bruges_4.avif" alt="De Burg" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">De Burg</h3>
-                    <p class="tg-sight-card__text">De Burg, also known as the Burg Square, is a historic cobblestone plaza in Bruges surrounded by grand Gothic buildings, stores, bars, and eateries. It served as the administrative center of medieval Bruges and showcases Gothic architecture that reflects the city&#x27;s magnificence and wealth during that period. The square is home to significant landmarks such as Belgium&#x27;s oldest town hall, the Stadhuis, which has retained its original 1376 design.</p>
-                </div>
-            </div>
-            <!-- 5. Boniface Bridge -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/bruges_5.avif" alt="Boniface Bridge" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Boniface Bridge</h3>
-                    <p class="tg-sight-card__text">Boniface Bridge (Bonifaciusbrug) is a early-20th-century pedestrian bridge that offers romantic views of the canal and the town. Located near the Church of the Blessed Virgin Mary, it is one of Bruges&#x27; most photographed spots. The area around the bridge, including Arents Courtyard, provides scenes with its historic buildings and horse-drawn carriages.</p>
-                </div>
-            </div>
-            <!-- 6. Church of Our Lady -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/bruges_6.avif" alt="Church of Our Lady" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free (museum €10)
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Church of Our Lady</h3>
-                    <p class="tg-sight-card__text">The Church of Our Lady, located in Bruges, Belgium, is a example of Gothic architecture with a soaring tower that reaches 115.6 meters high. Dating back to the 13th century, it holds great historical and artistic significance. The church is home to several notable art pieces, including Michelangelo&#x27;s &#x27;Madonna and Child,&#x27; a rare work that left Italy during the artist&#x27;s lifetime.</p>
-                </div>
-            </div>
-            <!-- 7. Rosary Quay -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/bruges_7.avif" alt="Rosary Quay" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free (canal boat tour €15)
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Rosary Quay</h3>
-                    <p class="tg-sight-card__text">Rosary Quay in Bruges is a spot that captures the historic charm of the city. Named after the place where nuns used to sell rosaries, it offers views of canals, bridges, weeping willow trees, and medieval architecture. Travellers can stroll through a passageway under the Palace of the Liberty of Bruges to reach the canal and began on boat tours.</p>
-                </div>
-            </div>
-            <!-- 8. Kruispoort gate -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/bruges_8.avif" alt="Kruispoort gate" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Kruispoort gate</h3>
-                    <p class="tg-sight-card__text">Kruispoort gate is one of the four remaining medieval city gates in Bruges, Belgium. Dating back to the early 15th century, it has been well-preserved through various renovations. This historic structure was a vital entry point and played a significant role in the city&#x27;s defense system. The gate is situated along a canal that once served as both a moat and a connection to the sea.</p>
-                </div>
-            </div>
-            <!-- 9. Belgium Pier -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/bruges_9.avif" alt="Belgium Pier" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Belgium Pier</h3>
-                    <p class="tg-sight-card__text">Belgium Pier is a visitor site in Bruges, Belgium. Construction and early use date to around 1933. Originally constructed in 1933, this pier has a striking circular Art Deco structure that houses a brasserie and versatile events space. Travellers can indulge in mouthwatering dishes while soaking up sea views, making it an ideal spot for food lovers. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 10. Belgian Chocolate Workshop in Bruges -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/bruges_10.avif" alt="Belgian Chocolate Workshop in Bruges" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €42
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Belgian Chocolate Workshop in Bruges</h3>
-                    <p class="tg-sight-card__text">The Belgian Chocolate Workshop in Bruges offers an affordable and enjoyable experience where learn to make visitor own delicious Belgian chocolates. The workshop provides a fun activity for people of all ages, as evidenced by the positive experience of a 70-year-old couple who found it to be the thing they had tried. Participants get to create their own chocolates under the guidance of an engaging instructor, making it a perfect souvenir to take home from visitor trip.</p>
-                </div>
-            </div>
-            <!-- 11. Jan van Eyckplein -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/bruges_11.avif" alt="Jan van Eyckplein" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Jan van Eyckplein</h3>
-                    <p class="tg-sight-card__text">Jan van Eyckplein, also known as Jan Van Eyck Square, is a visitor site in Bruges, Belgium. The grounds and principal structures are the main points of interest. Jan van Eyckplein remains part of the public visitor circuit in Bruges. Local maps identify Jan van Eyckplein within Bruges, Belgium.</p>
-                </div>
-            </div>
-            <!-- 12. Ezelpoort -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/bruges_12.avif" alt="Ezelpoort" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Ezelpoort</h3>
-                    <p class="tg-sight-card__text">Ezelpoort is a visitor site in Bruges, Belgium. Ezelpoort is one of the four remaining medieval city gates in Bruges, each strategically positioned to control trade and traffic. These gates, including Ezelpoort, not only served as defensive structures but also regulated the flow of goods in and out of the city. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 13. Huisbrouwerij De Halve Maan -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/bruges_13.avif" alt="Huisbrouwerij De Halve Maan" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €16
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Huisbrouwerij De Halve Maan</h3>
-                    <p class="tg-sight-card__text">Huisbrouwerij De Halve Maan is a historic family-run brewery located in Bruges. Operating since 1856, it is famous for producing the Brugse Zot and Straffe Hendrik beers. Visitors can take guided tours of the facility, which include a visit to the modern brewing halls, the historic museum, and a panoramic view of the city from the brewery&#x27;s roof.</p>
-                </div>
-            </div>
-            <!-- 14. Sashuis -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/bruges_14.avif" alt="Sashuis" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Sashuis</h3>
-                    <p class="tg-sight-card__text">Sashuis, a gabled building dating back to 1519, is situated at the northern end of Minnewater lake near Begijnhof/Beguinage. It is the central information center for Handmade in Bruges, a project that showcases the city&#x27;s skilled craftworkers and artisan producers. Travellers can obtain a free leaflet or app for a guided tour to explore these talented individuals. The location offers scenery and leisurely strolls around the area.</p>
-                </div>
-            </div>
-            <!-- 15. Gunpowder Tower (Poertoren) -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/bruges_15.avif" alt="Gunpowder Tower (Poertoren)" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Gunpowder Tower (Poertoren)</h3>
-                    <p class="tg-sight-card__text">Gunpowder Tower (Poertoren) is an 18-meter-tall defensive tower located next to the Lovers&#x27; Bridge. Built in 1397/98 as part of a water gate, it later served as a gunpowder workshop and storage. The tower underwent restoration in 1989-1991, resulting in its current height and diameter of over 18 meters and 8 meters respectively, with walls approximately 1.30 meters thick.</p>
-                </div>
-            </div>
-            <!-- 16. Concertgebouw Brugge -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/bruges_16.avif" alt="Concertgebouw Brugge" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €15
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Concertgebouw Brugge</h3>
-                    <p class="tg-sight-card__text">Concertgebouw Brugge is a modern venue with sleek architecture that hosts a variety of events including concerts, dance performances, plays, and art exhibits. The large red concert hall was completed in 2002 during Bruges&#x27; time as the European Capital of Culture. Despite its controversial modern design, the venue is known for its high-quality programming.</p>
-                </div>
-            </div>
+                </dl>
             </div>
         </section>
-        </div>
+
+        <section id="atlas" class="destination-atlas" aria-labelledby="atlas-title">
+            <div class="page-shell destination-atlas__layout">
+                <div class="destination-atlas__brief">
+                    <p class="destination-atlas__index">City atlas</p>
+                    <h2 id="atlas-title">Plot the city.</h2>
+                    <p class="destination-atlas__copy">Zoom, pan, and open any marker to focus that place in the catalog below.</p>
+                    <dl class="destination-atlas__facts" aria-label="Map coverage">
+                        <div>
+                            <dt>Plotted</dt>
+                            <dd>16 places</dd>
+                        </div>
+                        <div>
+                            <dt>Center</dt>
+                            <dd>51.2086&deg; N<br>3.2268&deg; E</dd>
+                        </div>
+                    </dl>
+                </div>
+                <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Bruges attractions"></div>
+            </div>
+        </section>
+
+        <section id="places" class="destination-places" aria-labelledby="places-title">
+            <div class="page-shell">
+                <div class="destination-chapter">
+                    <h2 id="places-title" class="destination-chapter__heading">16 ways into<br>Bruges.</h2>
+                    <p class="destination-chapter__copy">Browse the index, open a location, and read the essentials without scrolling through a long catalog. Each entry contains its image, admission note, and contextual guide.</p>
+                </div>
+                <div class="places-explorer" data-places-explorer>
+                    <aside class="places-explorer__rail" aria-label="Place index">
+                        <div class="places-explorer__toolbar">
+                            <label class="places-explorer__filter-label" for="places-filter">Filter places</label>
+                            <input
+                                id="places-filter"
+                                class="places-explorer__filter"
+                                type="search"
+                                data-places-filter
+                                placeholder="Search by name"
+                                autocomplete="off"
+                            >
+                            <p class="places-explorer__meta"><strong data-places-count>16</strong> of 16 shown</p>
+                        </div>
+                        <ul class="places-explorer__list" role="listbox" aria-label="Places in Bruges" data-places-list data-lenis-prevent data-tg-scroll-surface>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option is-active"
+                            role="option"
+                            id="place-option-1"
+                            data-place-option
+                            data-place-index="0"
+                            data-place-name="Belfry of Bruges"
+                            data-place-lat="51.208147"
+                            data-place-lng="3.224801"
+                            aria-selected="true"
+                            tabindex="0"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">01</span>
+                            <span class="places-explorer__option-name">Belfry of Bruges</span>
+                            <span class="places-explorer__option-price">€16</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-2"
+                            data-place-option
+                            data-place-index="1"
+                            data-place-name="Market Square"
+                            data-place-lat="51.208688"
+                            data-place-lng="3.224408"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">02</span>
+                            <span class="places-explorer__option-name">Market Square</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-3"
+                            data-place-option
+                            data-place-index="2"
+                            data-place-name="Basilica of the Holy Blood"
+                            data-place-lat="51.208134"
+                            data-place-lng="3.226545"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">03</span>
+                            <span class="places-explorer__option-name">Basilica of the Holy Blood</span>
+                            <span class="places-explorer__option-price">Free (museum €5)</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-4"
+                            data-place-option
+                            data-place-index="3"
+                            data-place-name="De Burg"
+                            data-place-lat="51.208506"
+                            data-place-lng="3.226838"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">04</span>
+                            <span class="places-explorer__option-name">De Burg</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-5"
+                            data-place-option
+                            data-place-index="4"
+                            data-place-name="Boniface Bridge"
+                            data-place-lat="51.204912"
+                            data-place-lng="3.225349"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">05</span>
+                            <span class="places-explorer__option-name">Boniface Bridge</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-6"
+                            data-place-option
+                            data-place-index="5"
+                            data-place-name="Church of Our Lady"
+                            data-place-lat="51.20469"
+                            data-place-lng="3.224447"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">06</span>
+                            <span class="places-explorer__option-name">Church of Our Lady</span>
+                            <span class="places-explorer__option-price">Free (museum €10)</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-7"
+                            data-place-option
+                            data-place-index="6"
+                            data-place-name="Rosary Quay"
+                            data-place-lat="51.207375"
+                            data-place-lng="3.227868"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">07</span>
+                            <span class="places-explorer__option-name">Rosary Quay</span>
+                            <span class="places-explorer__option-price">Free (canal boat tour €15)</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-8"
+                            data-place-option
+                            data-place-index="7"
+                            data-place-name="Kruispoort gate"
+                            data-place-lat="51.212578"
+                            data-place-lng="3.240095"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">08</span>
+                            <span class="places-explorer__option-name">Kruispoort gate</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-9"
+                            data-place-option
+                            data-place-index="8"
+                            data-place-name="Belgium Pier"
+                            data-place-lat="51.321491"
+                            data-place-lng="3.136399"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">09</span>
+                            <span class="places-explorer__option-name">Belgium Pier</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-10"
+                            data-place-option
+                            data-place-index="9"
+                            data-place-name="Belgian Chocolate Workshop in Bruges"
+                            data-place-lat="51.211306"
+                            data-place-lng="3.222895"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">10</span>
+                            <span class="places-explorer__option-name">Belgian Chocolate Workshop in Bruges</span>
+                            <span class="places-explorer__option-price">€42</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-11"
+                            data-place-option
+                            data-place-index="10"
+                            data-place-name="Jan van Eyckplein"
+                            data-place-lat="51.21155"
+                            data-place-lng="3.225915"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">11</span>
+                            <span class="places-explorer__option-name">Jan van Eyckplein</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-12"
+                            data-place-option
+                            data-place-index="11"
+                            data-place-name="Ezelpoort"
+                            data-place-lat="51.215533"
+                            data-place-lng="3.215663"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">12</span>
+                            <span class="places-explorer__option-name">Ezelpoort</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-13"
+                            data-place-option
+                            data-place-index="12"
+                            data-place-name="Huisbrouwerij De Halve Maan"
+                            data-place-lat="51.2024504"
+                            data-place-lng="3.2241949"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">13</span>
+                            <span class="places-explorer__option-name">Huisbrouwerij De Halve Maan</span>
+                            <span class="places-explorer__option-price">€16</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-14"
+                            data-place-option
+                            data-place-index="13"
+                            data-place-name="Sashuis"
+                            data-place-lat="51.200495"
+                            data-place-lng="3.223765"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">14</span>
+                            <span class="places-explorer__option-name">Sashuis</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-15"
+                            data-place-option
+                            data-place-index="14"
+                            data-place-name="Gunpowder Tower (Poertoren)"
+                            data-place-lat="51.198584"
+                            data-place-lng="3.223622"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">15</span>
+                            <span class="places-explorer__option-name">Gunpowder Tower (Poertoren)</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-16"
+                            data-place-option
+                            data-place-index="15"
+                            data-place-name="Concertgebouw Brugge"
+                            data-place-lat="51.203838"
+                            data-place-lng="3.218528"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">16</span>
+                            <span class="places-explorer__option-name">Concertgebouw Brugge</span>
+                            <span class="places-explorer__option-price">€15</span>
+                        </button>
+                    </li>
+                        </ul>
+                        <p class="places-explorer__empty" data-places-empty hidden>No places match that filter.</p>
+                    </aside>
+                    <div class="places-explorer__stage" data-places-stage>
+                    <nav class="places-stage__stepper" data-places-stepper aria-label="Browse places" hidden>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--prev" data-places-prev aria-label="Previous place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M14.75 5.25 L8.25 12 l6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M9.1 12 H17.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--next" data-places-next aria-label="Next place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M9.25 5.25 L15.75 12 l-6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M6.6 12 H14.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                    </nav>
+                <article
+                    class="places-stage__panel is-active"
+                    data-place-panel
+                    data-place-index="0"
+                    aria-labelledby="place-title-1"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/bruges_1.avif" alt="Belfry of Bruges" width="1200" height="750" loading="eager" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">01</span>
+                            <span class="places-stage__admission"><span>Admission</span>€16</span>
+                        </p>
+                        <h3 id="place-title-1" class="places-stage__title">Belfry of Bruges</h3>
+                        <p class="places-stage__text">Belfry of Bruges is a visitor site in Bruges, Belgium. It is a cherished landmark with a treasure chamber and houses a 47-belled carillon. Climbing its 366 steps rewards travellers with panoramic views of Bruges from the top. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">51.2081&deg; N / 3.2248&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="1"
+                    aria-labelledby="place-title-2"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/bruges_2.avif" alt="Market Square" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">02</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-2" class="places-stage__title">Market Square</h3>
+                        <p class="places-stage__text">Market Square, In Bruges, is a busy traffic-free square that underwent renovations in 1996. The square is home to the 13th-century Belfry and surrounded by other buildings such as the Provincial Palace and a statue honoring heroes from the Battle of the Golden Spurs. Travellers can also enjoy delicious fried potatoes from nearby vendors.</p>
+                        <p class="places-stage__coords">51.2087&deg; N / 3.2244&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="2"
+                    aria-labelledby="place-title-3"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/bruges_3.avif" alt="Basilica of the Holy Blood" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">03</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free (museum €5)</span>
+                        </p>
+                        <h3 id="place-title-3" class="places-stage__title">Basilica of the Holy Blood</h3>
+                        <p class="places-stage__text">Basilica of the Holy Blood is a religious building in Bruges, Belgium. This 12th-century Romanesque basilica is situated in the Burg, an architectural center of Bruges. The exterior and main interior spaces are usually viewable outside service times.</p>
+                        <p class="places-stage__coords">51.2081&deg; N / 3.2265&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="3"
+                    aria-labelledby="place-title-4"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/bruges_4.avif" alt="De Burg" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">04</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-4" class="places-stage__title">De Burg</h3>
+                        <p class="places-stage__text">De Burg, also known as the Burg Square, is a historic cobblestone plaza in Bruges surrounded by grand Gothic buildings, stores, bars, and eateries. It served as the administrative center of medieval Bruges and showcases Gothic architecture that reflects the city&#x27;s magnificence and wealth during that period. The square is home to significant landmarks such as Belgium&#x27;s oldest town hall, the Stadhuis, which has retained its original 1376 design.</p>
+                        <p class="places-stage__coords">51.2085&deg; N / 3.2268&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="4"
+                    aria-labelledby="place-title-5"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/bruges_5.avif" alt="Boniface Bridge" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">05</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-5" class="places-stage__title">Boniface Bridge</h3>
+                        <p class="places-stage__text">Boniface Bridge (Bonifaciusbrug) is a early-20th-century pedestrian bridge that offers romantic views of the canal and the town. Located near the Church of the Blessed Virgin Mary, it is one of Bruges&#x27; most photographed spots. The area around the bridge, including Arents Courtyard, provides scenes with its historic buildings and horse-drawn carriages.</p>
+                        <p class="places-stage__coords">51.2049&deg; N / 3.2253&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="5"
+                    aria-labelledby="place-title-6"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/bruges_6.avif" alt="Church of Our Lady" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">06</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free (museum €10)</span>
+                        </p>
+                        <h3 id="place-title-6" class="places-stage__title">Church of Our Lady</h3>
+                        <p class="places-stage__text">The Church of Our Lady, located in Bruges, Belgium, is a example of Gothic architecture with a soaring tower that reaches 115.6 meters high. Dating back to the 13th century, it holds great historical and artistic significance. The church is home to several notable art pieces, including Michelangelo&#x27;s &#x27;Madonna and Child,&#x27; a rare work that left Italy during the artist&#x27;s lifetime.</p>
+                        <p class="places-stage__coords">51.2047&deg; N / 3.2244&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="6"
+                    aria-labelledby="place-title-7"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/bruges_7.avif" alt="Rosary Quay" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">07</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free (canal boat tour €15)</span>
+                        </p>
+                        <h3 id="place-title-7" class="places-stage__title">Rosary Quay</h3>
+                        <p class="places-stage__text">Rosary Quay in Bruges is a spot that captures the historic charm of the city. Named after the place where nuns used to sell rosaries, it offers views of canals, bridges, weeping willow trees, and medieval architecture. Travellers can stroll through a passageway under the Palace of the Liberty of Bruges to reach the canal and began on boat tours.</p>
+                        <p class="places-stage__coords">51.2074&deg; N / 3.2279&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="7"
+                    aria-labelledby="place-title-8"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/bruges_8.avif" alt="Kruispoort gate" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">08</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-8" class="places-stage__title">Kruispoort gate</h3>
+                        <p class="places-stage__text">Kruispoort gate is one of the four remaining medieval city gates in Bruges, Belgium. Dating back to the early 15th century, it has been well-preserved through various renovations. This historic structure was a vital entry point and played a significant role in the city&#x27;s defense system. The gate is situated along a canal that once served as both a moat and a connection to the sea.</p>
+                        <p class="places-stage__coords">51.2126&deg; N / 3.2401&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="8"
+                    aria-labelledby="place-title-9"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/bruges_9.avif" alt="Belgium Pier" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">09</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-9" class="places-stage__title">Belgium Pier</h3>
+                        <p class="places-stage__text">Belgium Pier is a visitor site in Bruges, Belgium. Construction and early use date to around 1933. Originally constructed in 1933, this pier has a striking circular Art Deco structure that houses a brasserie and versatile events space. Travellers can indulge in mouthwatering dishes while soaking up sea views, making it an ideal spot for food lovers. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">51.3215&deg; N / 3.1364&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="9"
+                    aria-labelledby="place-title-10"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/bruges_10.avif" alt="Belgian Chocolate Workshop in Bruges" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">10</span>
+                            <span class="places-stage__admission"><span>Admission</span>€42</span>
+                        </p>
+                        <h3 id="place-title-10" class="places-stage__title">Belgian Chocolate Workshop in Bruges</h3>
+                        <p class="places-stage__text">The Belgian Chocolate Workshop in Bruges offers an affordable and enjoyable experience where learn to make visitor own delicious Belgian chocolates. The workshop provides a fun activity for people of all ages, as evidenced by the positive experience of a 70-year-old couple who found it to be the thing they had tried. Participants get to create their own chocolates under the guidance of an engaging instructor, making it a perfect souvenir to take home from visitor trip.</p>
+                        <p class="places-stage__coords">51.2113&deg; N / 3.2229&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="10"
+                    aria-labelledby="place-title-11"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/bruges_11.avif" alt="Jan van Eyckplein" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">11</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-11" class="places-stage__title">Jan van Eyckplein</h3>
+                        <p class="places-stage__text">Jan van Eyckplein, also known as Jan Van Eyck Square, is a visitor site in Bruges, Belgium. The grounds and principal structures are the main points of interest. Jan van Eyckplein remains part of the public visitor circuit in Bruges. Local maps identify Jan van Eyckplein within Bruges, Belgium.</p>
+                        <p class="places-stage__coords">51.2116&deg; N / 3.2259&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="11"
+                    aria-labelledby="place-title-12"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/bruges_12.avif" alt="Ezelpoort" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">12</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-12" class="places-stage__title">Ezelpoort</h3>
+                        <p class="places-stage__text">Ezelpoort is a visitor site in Bruges, Belgium. Ezelpoort is one of the four remaining medieval city gates in Bruges, each strategically positioned to control trade and traffic. These gates, including Ezelpoort, not only served as defensive structures but also regulated the flow of goods in and out of the city. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">51.2155&deg; N / 3.2157&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="12"
+                    aria-labelledby="place-title-13"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/bruges_13.avif" alt="Huisbrouwerij De Halve Maan" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">13</span>
+                            <span class="places-stage__admission"><span>Admission</span>€16</span>
+                        </p>
+                        <h3 id="place-title-13" class="places-stage__title">Huisbrouwerij De Halve Maan</h3>
+                        <p class="places-stage__text">Huisbrouwerij De Halve Maan is a historic family-run brewery located in Bruges. Operating since 1856, it is famous for producing the Brugse Zot and Straffe Hendrik beers. Visitors can take guided tours of the facility, which include a visit to the modern brewing halls, the historic museum, and a panoramic view of the city from the brewery&#x27;s roof.</p>
+                        <p class="places-stage__coords">51.2025&deg; N / 3.2242&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="13"
+                    aria-labelledby="place-title-14"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/bruges_14.avif" alt="Sashuis" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">14</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-14" class="places-stage__title">Sashuis</h3>
+                        <p class="places-stage__text">Sashuis, a gabled building dating back to 1519, is situated at the northern end of Minnewater lake near Begijnhof/Beguinage. It is the central information center for Handmade in Bruges, a project that showcases the city&#x27;s skilled craftworkers and artisan producers. Travellers can obtain a free leaflet or app for a guided tour to explore these talented individuals. The location offers scenery and leisurely strolls around the area.</p>
+                        <p class="places-stage__coords">51.2005&deg; N / 3.2238&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="14"
+                    aria-labelledby="place-title-15"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/bruges_15.avif" alt="Gunpowder Tower (Poertoren)" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">15</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-15" class="places-stage__title">Gunpowder Tower (Poertoren)</h3>
+                        <p class="places-stage__text">Gunpowder Tower (Poertoren) is an 18-meter-tall defensive tower located next to the Lovers&#x27; Bridge. Built in 1397/98 as part of a water gate, it later served as a gunpowder workshop and storage. The tower underwent restoration in 1989-1991, resulting in its current height and diameter of over 18 meters and 8 meters respectively, with walls approximately 1.30 meters thick.</p>
+                        <p class="places-stage__coords">51.1986&deg; N / 3.2236&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="15"
+                    aria-labelledby="place-title-16"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/bruges_16.avif" alt="Concertgebouw Brugge" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">16</span>
+                            <span class="places-stage__admission"><span>Admission</span>€15</span>
+                        </p>
+                        <h3 id="place-title-16" class="places-stage__title">Concertgebouw Brugge</h3>
+                        <p class="places-stage__text">Concertgebouw Brugge is a modern venue with sleek architecture that hosts a variety of events including concerts, dance performances, plays, and art exhibits. The large red concert hall was completed in 2002 during Bruges&#x27; time as the European Capital of Culture. Despite its controversial modern design, the venue is known for its high-quality programming.</p>
+                        <p class="places-stage__coords">51.2038&deg; N / 3.2185&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="site-footer">
         <div class="page-shell">
             <div class="site-footer__bar">
-                <a href="../../index.html" class="site-footer__brand" aria-label="Global Explorer home">
-                    <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
+                <a href="../../index.html" class="site-footer__mark" aria-label="Global Explorer home">
+                    <svg width="24" height="24" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
-                    <span class="site-footer__brand-name font-display">Global Explorer</span>
+                    Global Explorer
                 </a>
-                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides <span>Bruges: 16 places across Bruges.</span></p>
             </div>
         </div>
     </footer>
 
     <button id="scrollTopBtn" type="button" aria-label="Scroll to top">
-        <i class="ph ph-arrow-up" aria-hidden="true"></i>
+        <svg viewBox="0 0 24 24" width="1.15em" height="1.15em" aria-hidden="true" focusable="false">
+            <path d="M12 5.25 V18.75 M12 5.25 L6.75 10.5 M12 5.25 L17.25 10.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
     </button>
 
     <script defer src="../../assets/dev-destination-toggle.js"></script>
     <script defer src="../../assets/tg-page-chrome.js"></script>
     <script defer src="../../assets/tg-destination-map.js"></script>
+    <script defer src="../../assets/tg-destination-places.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const map = L.map('map').setView([51.208553, 3.226772], 14);
+            const map = L.map('map');
             L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
                 attribution: '&copy; Google Maps',
                 maxZoom: 20
             }).addTo(map);
-            const locations = [{"name": "Belfry of Bruges", "lat": 51.208147, "lng": 3.224801}, {"name": "Market Square", "lat": 51.208688, "lng": 3.224408}, {"name": "Basilica of the Holy Blood", "lat": 51.208134, "lng": 3.226545}, {"name": "De Burg", "lat": 51.208506, "lng": 3.226838}, {"name": "Boniface Bridge", "lat": 51.204912, "lng": 3.225349}, {"name": "Church of Our Lady", "lat": 51.20469, "lng": 3.224447}, {"name": "Rosary Quay", "lat": 51.207375, "lng": 3.227868}, {"name": "Kruispoort gate", "lat": 51.212578, "lng": 3.240095}, {"name": "Belgium Pier", "lat": 51.321491, "lng": 3.136399}, {"name": "Belgian Chocolate Workshop in Bruges", "lat": 51.211306, "lng": 3.222895}, {"name": "Jan van Eyckplein", "lat": 51.21155, "lng": 3.225915}, {"name": "Ezelpoort", "lat": 51.215533, "lng": 3.215663}, {"name": "Huisbrouwerij De Halve Maan", "lat": 51.2024504, "lng": 3.2241949}, {"name": "Sashuis", "lat": 51.200495, "lng": 3.223765}, {"name": "Gunpowder Tower (Poertoren)", "lat": 51.198584, "lng": 3.223622}, {"name": "Concertgebouw Brugge", "lat": 51.203838, "lng": 3.218528}];
+            const locations = Array.from(document.querySelectorAll('[data-place-option]')).map((el) => ({
+                name: el.dataset.placeName || '',
+                lat: Number(el.dataset.placeLat),
+                lng: Number(el.dataset.placeLng),
+            }));
             const customIcon = L.icon({
                 iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
                 iconSize: [32, 32],
@@ -354,14 +821,45 @@
                 popupAnchor: [0, -32],
             });
             const destinationCenter = [51.208553, 3.226772];
-            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.112938, "maxCenterLng": 0.090373};
-            locations.forEach((location) => {
-                L.marker([location.lat, location.lng], { icon: customIcon })
+            const mapContext = {"denseUrban": true};
+            const markers = locations.map((location) => {
+                const marker = L.marker([location.lat, location.lng], { icon: customIcon })
                     .addTo(map)
                     .bindPopup(`<strong>${location.name}</strong>`);
+                return marker;
             });
             window.TGDestinationMap?.fitToLocations(map, locations, destinationCenter, mapContext);
             window.TGDestinationMap?.bindMobileScrollGuard(map, 'map');
+            window.TGDestinationMap?.registerMarkers(map, markers);
+
+            const heroImage = document.querySelector('[data-destination-hero-image]');
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (heroImage && !reduceMotion) {
+                let framePending = false;
+                let scrolling = false;
+                let scrollEndTimer = 0;
+                const updateHeroPosition = () => {
+                    const offset = Math.min(window.scrollY, window.innerHeight * 1.15) * 0.075;
+                    heroImage.style.transform = `translate3d(0, ${offset}px, 0) scale(1.055)`;
+                    framePending = false;
+                };
+                window.addEventListener('scroll', () => {
+                    if (!scrolling) {
+                        scrolling = true;
+                        heroImage.style.willChange = 'transform';
+                    }
+                    window.clearTimeout(scrollEndTimer);
+                    scrollEndTimer = window.setTimeout(() => {
+                        scrolling = false;
+                        heroImage.style.willChange = 'auto';
+                    }, 150);
+                    if (!framePending) {
+                        window.requestAnimationFrame(updateHeroPosition);
+                        framePending = true;
+                    }
+                }, { passive: true });
+                updateHeroPosition();
+            }
         });
     </script>
 </body>

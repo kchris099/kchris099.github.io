@@ -1,0 +1,1064 @@
+/*
+ * Editorial destination guide presentation.
+ * Destination-specific data and imagery remain in each generated document.
+ * Site chrome and the color system are inherited from tg-country-page.css.
+ */
+
+html:has(body.tg-destination-v3) {
+    scroll-padding-top: 7rem;
+    background: var(--basalt);
+}
+
+body.tg-destination-v3 {
+    min-width: 320px;
+    overflow-x: hidden;
+    background: var(--basalt);
+}
+
+/* Full-screen photographic opening.
+ * Stack above following sections (same as country-hero) so the bottom mask
+ * soft-fades over the atlas instead of being hard-cut by it. */
+body.tg-destination-v3 .destination-hero {
+    position: relative;
+    z-index: 30;
+    min-height: max(900px, 100svh);
+    isolation: isolate;
+    display: grid;
+    overflow: visible;
+    background: transparent;
+}
+
+body.tg-destination-v3 .destination-hero__media,
+body.tg-destination-v3 .destination-hero__shade {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    /* Start the dissolve earlier so it clears before the atlas air gap. */
+    -webkit-mask-image: linear-gradient(
+        to bottom,
+        #000 0%,
+        #000 45%,
+        rgba(0, 0, 0, .91) 55%,
+        rgba(0, 0, 0, .68) 65%,
+        rgba(0, 0, 0, .37) 75%,
+        rgba(0, 0, 0, .11) 85%,
+        transparent 93%
+    );
+    mask-image: linear-gradient(
+        to bottom,
+        #000 0%,
+        #000 45%,
+        rgba(0, 0, 0, .91) 55%,
+        rgba(0, 0, 0, .68) 65%,
+        rgba(0, 0, 0, .37) 75%,
+        rgba(0, 0, 0, .11) 85%,
+        transparent 93%
+    );
+}
+
+body.tg-destination-v3 .destination-hero__media {
+    z-index: -2;
+    width: 100%;
+    height: 116%;
+    object-fit: cover;
+    object-position: center 42%;
+    transform: translate3d(0, 0, 0) scale(1.055);
+    transform-origin: center top;
+}
+
+body.tg-destination-v3 .destination-hero__shade {
+    z-index: -1;
+    background:
+        linear-gradient(90deg, rgba(11, 12, 14, .7) 0%, rgba(11, 12, 14, .24) 52%, rgba(11, 12, 14, .5) 100%),
+        linear-gradient(180deg, rgba(11, 12, 14, .34) 0%, rgba(11, 12, 14, .08) 30%, rgba(18, 19, 22, .34) 51%, rgba(18, 19, 22, .14) 69%, transparent 85%);
+}
+
+body.tg-destination-v3 .destination-hero__content {
+    min-height: inherit;
+    padding-top: clamp(8.5rem, 14vh, 11rem);
+    padding-bottom: clamp(3rem, 7vh, 5rem);
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: auto 1fr auto auto;
+    column-gap: clamp(.8rem, 1.6vw, 1.5rem);
+    row-gap: clamp(1.25rem, 3vh, 2.25rem);
+    container-type: inline-size;
+}
+
+body.tg-destination-v3 .destination-hero__content > .country-active-toggle {
+    grid-column: 1 / 6;
+    grid-row: 1;
+    align-self: start;
+}
+
+body.tg-destination-v3 .destination-hero__content > .hero__route {
+    grid-column: 7 / 13;
+    grid-row: 1;
+    align-self: start;
+    justify-self: end;
+}
+
+body.tg-destination-v3 .destination-hero__title {
+    grid-column: 1 / 13;
+    grid-row: 2;
+    align-self: center;
+    margin: 0;
+    color: var(--paper);
+    font-family: var(--font-display);
+    font-size: clamp(7rem, 17.2vw, 17rem);
+    font-size: clamp(2.7rem, min(17.2vw, calc(100cqi / (var(--destination-title-chars, 9) * .5))), 17rem);
+    font-weight: 500;
+    line-height: .8;
+    letter-spacing: -.072em;
+    white-space: nowrap;
+    text-shadow: 0 5px 22px rgba(0, 0, 0, .3);
+}
+
+body.tg-destination-v3 .destination-hero__history {
+    grid-column: 1 / 13;
+    grid-row: 3;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: clamp(1rem, 1.6vw, 1.5rem);
+    align-items: start;
+}
+
+body.tg-destination-v3 .destination-hero__history p {
+    grid-column: 5 / 13;
+    max-width: 62rem;
+    margin: 0;
+    color: var(--paper);
+    font-size: clamp(.94rem, 1.2vw, 1.08rem);
+    line-height: 1.68;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, .58);
+}
+
+body.tg-destination-v3 .destination-hero__facts {
+    grid-column: 1 / 13;
+    width: min(100%, 760px);
+    justify-self: center;
+    text-align: center;
+    grid-row: 4;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1rem, 2.5vw, 2.5rem);
+}
+
+/* Keep Country (col 1) and Places (col 3) when Region is absent. */
+body.tg-destination-v3 .destination-hero__facts--no-region > *:last-child {
+    grid-column: 3;
+}
+
+body.tg-destination-v3 .destination-hero__facts div { min-width: 0; }
+body.tg-destination-v3 .destination-hero__facts dt {
+    margin: 0 0 .25rem;
+    color: var(--terrain);
+    font-size: .72rem;
+    font-weight: 620;
+}
+body.tg-destination-v3 .destination-hero__facts dd {
+    margin: 0;
+    color: var(--paper);
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 1.7vw, 1.6rem);
+    line-height: 1.15;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, .48);
+}
+
+/* Shared editorial chapter header */
+body.tg-destination-v3 .destination-chapter {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: clamp(1rem, 2.2vw, 2rem);
+    align-items: start;
+}
+
+body.tg-destination-v3 .destination-chapter__index {
+    grid-column: 1 / 3;
+    margin: -.12em 0 0;
+    color: var(--brass);
+    font-family: var(--font-display);
+    font-size: clamp(4.75rem, 8vw, 8rem);
+    font-weight: 400;
+    line-height: .85;
+    letter-spacing: -.06em;
+}
+
+body.tg-destination-v3 .destination-chapter__heading {
+    grid-column: 1 / 7;
+    margin: 0;
+    color: var(--paper);
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 5.6vw, 5.8rem);
+    font-weight: 500;
+    line-height: .96;
+    letter-spacing: -.05em;
+    text-wrap: balance;
+}
+
+body.tg-destination-v3 .destination-chapter__copy {
+    grid-column: 9 / 13;
+    margin: .35rem 0 0;
+    color: var(--fog);
+    font-size: 1rem;
+    line-height: 1.75;
+}
+
+/* Atlas: match Japan country-map-section air above/below.
+ * Keep below the hero so the hero mask fades over this section. */
+body.tg-destination-v3 .destination-atlas {
+    position: relative;
+    z-index: 4;
+    margin: clamp(6rem, 10vw, 10rem) 0 0;
+    padding: clamp(6rem, 10vw, 10rem) 0 clamp(6rem, 10vw, 10rem);
+    background: var(--basalt);
+    scroll-margin-top: 7rem;
+}
+
+body.tg-destination-v3 .destination-atlas__layout {
+    display: grid;
+    grid-template-columns: minmax(14rem, 3fr) minmax(0, 9fr);
+    min-height: min(640px, calc(100svh - 8rem));
+    align-items: stretch;
+}
+
+body.tg-destination-v3 .destination-atlas__brief {
+    padding: clamp(1.75rem, 3vw, 3rem) clamp(1.5rem, 2.6vw, 2.75rem);
+    display: flex;
+    flex-direction: column;
+    color: var(--paper);
+    background: var(--basalt-raised);
+}
+
+body.tg-destination-v3 .destination-atlas__index {
+    margin: 0 0 auto;
+    color: var(--brass);
+    font-size: .76rem;
+    font-weight: 650;
+}
+
+body.tg-destination-v3 .destination-atlas__brief h2 {
+    max-width: 7ch;
+    margin: clamp(2rem, 7vh, 5rem) 0 1.25rem;
+    color: var(--paper);
+    font-family: var(--font-display);
+    font-size: clamp(2.75rem, 4.4vw, 5rem);
+    font-weight: 500;
+    line-height: .92;
+    letter-spacing: -.055em;
+}
+
+body.tg-destination-v3 .destination-atlas__copy {
+    max-width: 27rem;
+    margin: 0;
+    color: var(--fog);
+    font-size: .92rem;
+    line-height: 1.65;
+}
+
+body.tg-destination-v3 .destination-atlas__facts {
+    margin: clamp(2rem, 6vh, 4rem) 0 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+body.tg-destination-v3 .destination-atlas__facts dt {
+    margin: 0 0 .3rem;
+    color: var(--terrain);
+    font-size: .7rem;
+    font-weight: 620;
+}
+
+body.tg-destination-v3 .destination-atlas__facts dd {
+    margin: 0;
+    color: var(--paper);
+    font-family: var(--font-display);
+    font-size: clamp(1rem, 1.4vw, 1.3rem);
+    line-height: 1.25;
+}
+
+body.tg-theme.tg-modern.tg-destination-v3 .tg-map-frame {
+    width: 100%;
+    height: 100%;
+    min-height: min(640px, calc(100svh - 8rem));
+    border: 0;
+    border-radius: 0;
+    box-shadow: none !important;
+    clip-path: polygon(0 0, calc(100% - 30px) 0, 100% 30px, 100% 100%, 0 100%);
+    background: var(--basalt-raised);
+}
+
+body.tg-destination-v3 .leaflet-container { background: var(--basalt-raised); }
+body.tg-destination-v3 .leaflet-control-zoom a,
+body.tg-destination-v3 .leaflet-control-zoom button,
+body.tg-destination-v3 .leaflet-control-attribution {
+    color: var(--paper);
+    background: rgba(18, 19, 22, .92);
+}
+body.tg-destination-v3 .leaflet-control-zoom { border: 0; box-shadow: none; }
+body.tg-destination-v3 .leaflet-control-zoom a,
+body.tg-destination-v3 .leaflet-control-zoom button {
+    border-color: rgba(240, 239, 235, .14);
+}
+body.tg-destination-v3 .leaflet-control-zoom a:hover,
+body.tg-destination-v3 .leaflet-control-zoom button:hover {
+    color: var(--basalt);
+    background: var(--brass);
+}
+body.tg-destination-v3 .leaflet-control-zoom-reset {
+    font-size: 18px;
+    line-height: 26px;
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    border-bottom: 1px solid rgba(240, 239, 235, .14);
+    border-radius: 0;
+    cursor: pointer;
+    appearance: none;
+    display: block;
+    text-align: center;
+}
+body.tg-destination-v3 .leaflet-touch .leaflet-control-zoom-reset {
+    font-size: 22px;
+    line-height: 30px;
+    width: 30px;
+    height: 30px;
+}
+
+/* Places Explorer: sticky stage + searchable index.
+   Vertical rhythm mirrors Japan .regions-section / .country-map-section. */
+body.tg-destination-v3 .destination-places {
+    position: relative;
+    z-index: 4;
+    padding: clamp(7rem, 12vw, 12rem) 0 clamp(7rem, 11vw, 11rem);
+    background: var(--basalt-deep);
+    scroll-margin-top: 7rem;
+}
+
+body.tg-destination-v3 .destination-places .destination-chapter { margin-bottom: clamp(2.5rem, 5vw, 4rem); }
+body.tg-destination-v3 .destination-places .destination-chapter__copy { color: var(--terrain); }
+
+body.tg-destination-v3 .places-explorer {
+    display: grid;
+    grid-template-columns: minmax(16rem, .92fr) minmax(0, 1.45fr);
+    gap: clamp(1.5rem, 3vw, 2.75rem);
+    align-items: start;
+    min-height: min(720px, calc(100svh - 8rem));
+}
+
+body.tg-destination-v3 .places-explorer__rail {
+    position: sticky;
+    top: 6.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-height: calc(100svh - 8rem);
+    min-height: 0;
+    overflow: hidden;
+    padding: 1.15rem 1rem 1rem;
+    background: var(--basalt-raised);
+    border: 1px solid rgba(240, 239, 235, .08);
+}
+
+body.tg-destination-v3 .places-explorer__toolbar {
+    display: grid;
+    gap: .65rem;
+}
+
+body.tg-destination-v3 .places-explorer__filter-label {
+    margin: 0;
+    color: var(--terrain);
+    font-size: .72rem;
+    font-weight: 620;
+}
+
+body.tg-destination-v3 .places-explorer__filter {
+    width: 100%;
+    margin: 0;
+    padding: .7rem .85rem;
+    color: var(--paper);
+    background: rgba(11, 12, 14, .55);
+    border: 1px solid rgba(240, 239, 235, .12);
+    border-radius: 0;
+    font: inherit;
+    font-size: .92rem;
+    outline: none;
+    transition: background-color 180ms ease, box-shadow 180ms ease;
+}
+
+/* Match country search-bar focus: single brass inset edge, no double ring */
+body.tg-destination-v3 .places-explorer__filter:focus,
+body.tg-destination-v3 .places-explorer__filter:focus-visible {
+    outline: none;
+    border-color: rgba(240, 239, 235, .12);
+    background: rgba(31, 34, 39, .98);
+    box-shadow: inset 0 2px var(--brass);
+}
+
+body.tg-destination-v3 .places-explorer__filter::placeholder { color: var(--terrain); }
+
+body.tg-destination-v3 .places-explorer__meta {
+    margin: 0;
+    color: var(--fog);
+    font-size: .78rem;
+}
+
+body.tg-destination-v3 .places-explorer__meta strong {
+    color: var(--brass);
+    font-weight: 650;
+}
+
+body.tg-destination-v3 .places-explorer__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
+    min-height: 0;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    gap: .2rem;
+}
+
+body.tg-destination-v3 .places-explorer__option {
+    width: 100%;
+    margin: 0;
+    padding: .72rem .7rem;
+    display: grid;
+    grid-template-columns: 2.1rem minmax(0, 1fr) auto;
+    gap: .65rem;
+    align-items: baseline;
+    text-align: left;
+    color: var(--fog);
+    background: transparent;
+    border: 0;
+    border-left: 2px solid transparent;
+    border-radius: 0;
+    cursor: pointer;
+    font: inherit;
+}
+
+/* Author display:grid beats the UA [hidden] rule; keep filtered rows collapsed. */
+body.tg-destination-v3 .places-explorer__list > li[hidden],
+body.tg-destination-v3 .places-explorer__option[hidden] {
+    display: none !important;
+}
+
+body.tg-destination-v3 .places-explorer__option:hover,
+body.tg-destination-v3 .places-explorer__option:focus-visible {
+    color: var(--paper);
+    background: rgba(240, 239, 235, .04);
+}
+
+body.tg-destination-v3 .places-explorer__option:focus-visible {
+    outline: 2px solid var(--brass);
+    outline-offset: -2px;
+}
+
+body.tg-destination-v3 .places-explorer__option.is-active {
+    color: var(--paper);
+    background: rgba(209, 172, 112, .08);
+    border-left-color: var(--brass);
+}
+
+body.tg-destination-v3 .places-explorer__option-index {
+    color: var(--brass);
+    font-size: .72rem;
+    font-weight: 650;
+    letter-spacing: .02em;
+}
+
+body.tg-destination-v3 .places-explorer__option-name {
+    min-width: 0;
+    color: inherit;
+    font-size: .92rem;
+    line-height: 1.35;
+    text-wrap: balance;
+}
+
+body.tg-destination-v3 .places-explorer__option-price {
+    color: var(--terrain);
+    font-size: .72rem;
+    font-weight: 620;
+    white-space: nowrap;
+}
+
+body.tg-destination-v3 .places-explorer__option.is-active .places-explorer__option-price {
+    color: var(--sunlit);
+}
+
+body.tg-destination-v3 .places-explorer__empty {
+    margin: .5rem 0 0;
+    color: var(--terrain);
+    font-size: .86rem;
+}
+
+body.tg-destination-v3 .places-explorer__stage {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+    overscroll-behavior-x: none;
+    /* Panel height changes must not drag the page via scroll anchoring. */
+    overflow-anchor: none;
+}
+
+body.tg-destination-v3 .places-stage__panel {
+    display: grid;
+    gap: 1.35rem;
+    overflow-anchor: none;
+}
+
+/* Avoid laying out all panels before places JS enhances the explorer.
+   No-JS browsers (scripting: none) keep the stacked catalog. */
+@media (scripting: enabled) {
+    body.tg-destination-v3 .places-explorer .places-stage__panel:not(.is-active) {
+        display: none;
+    }
+}
+
+body.tg-destination-v3 .places-explorer.is-enhanced .places-stage__panel { display: none; }
+body.tg-destination-v3 .places-explorer.is-enhanced .places-stage__panel.is-active { display: grid; }
+
+body.tg-destination-v3 .places-stage__media {
+    position: relative;
+    overflow: hidden;
+    background: var(--basalt-raised);
+    clip-path: polygon(0 0, calc(100% - 28px) 0, 100% 28px, 100% 100%, 0 100%);
+    touch-action: pan-y;
+    overscroll-behavior-x: none;
+    user-select: none;
+    -webkit-user-select: none;
+    /* Native scrollIntoView fallback: clear fixed header (matches html scroll-padding). */
+    scroll-margin-top: 7rem;
+}
+
+body.tg-destination-v3 .places-stage__media-peek {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+body.tg-destination-v3 .places-stage__media-peek img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: saturate(.9) contrast(1.03);
+    transform: translate3d(var(--places-peek-x, 100%), 0, 0);
+    transition: none;
+    -webkit-user-drag: none;
+}
+
+/* Outgoing photo cover used for non-VT arrow/swipe slides. */
+body.tg-destination-v3 .places-stage__media-cover {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+body.tg-destination-v3 .places-stage__media-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: saturate(.9) contrast(1.03);
+    transform: translate3d(var(--places-cover-x, 0%), 0, 0);
+    transition: none;
+    -webkit-user-drag: none;
+}
+
+body.tg-destination-v3 .places-stage__media.is-media-slide > img,
+body.tg-destination-v3 .places-stage__media.is-media-slide .places-stage__media-cover img {
+    transition: none;
+}
+
+body.tg-destination-v3 .places-stage__media.is-media-slide-on > img,
+body.tg-destination-v3 .places-stage__media.is-media-slide-on .places-stage__media-cover img {
+    transition: transform var(--tg-places-ms, 420ms) cubic-bezier(.22, 1, .36, 1);
+}
+
+body.tg-destination-v3 .places-stage__media > img {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 10;
+    display: block;
+    object-fit: cover;
+    filter: saturate(.9) contrast(1.03);
+    transform: translate3d(var(--places-drag-x, 0px), 0, 0);
+    transition: transform 280ms cubic-bezier(.22, 1, .36, 1);
+    -webkit-user-drag: none;
+    pointer-events: none;
+}
+
+body.tg-destination-v3 .places-stage__media.is-dragging > img {
+    transition: none;
+    will-change: transform;
+}
+
+body.tg-destination-v3 .places-stage__media.is-bouncing > img {
+    will-change: transform;
+    transition: transform 320ms cubic-bezier(.18, .9, .28, 1.15);
+}
+
+body.tg-destination-v3 .places-stage__media.is-swiping-lock {
+    touch-action: none;
+}
+
+/* Stage stepper: glass rails over the photo, chamfered to match the media cut */
+body.tg-destination-v3 .places-stage__stepper {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+}
+
+body.tg-destination-v3 .places-stage__arrow {
+    pointer-events: auto;
+    position: absolute;
+    top: 50%;
+    translate: 0 -50%;
+    width: 2.85rem;
+    height: 2.85rem;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    color: var(--paper);
+    background: rgba(18, 19, 22, .46);
+    border: 1px solid rgba(240, 239, 235, .16);
+    border-radius: 0;
+    cursor: pointer;
+    font: inherit;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    backdrop-filter: blur(14px) saturate(1.2);
+    box-shadow: inset 0 1px 0 rgba(240, 239, 235, .2);
+    transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease;
+}
+
+body.tg-destination-v3 .places-stage__arrow--prev {
+    left: .85rem;
+}
+
+body.tg-destination-v3 .places-stage__arrow--next {
+    right: .85rem;
+}
+
+body.tg-destination-v3 .places-stage__arrow svg {
+    width: 1.05rem;
+    height: 1.05rem;
+    display: block;
+    transition: transform 180ms ease;
+}
+
+/* Press highlight matches desktop hover (brass). Snap on/off with the press —
+   no ease-in, no timed post-click flash. `.is-pressed` mirrors :active on touch. */
+body.tg-destination-v3 .places-stage__arrow:active,
+body.tg-destination-v3 .places-stage__arrow.is-pressed {
+    transition: none;
+    color: var(--basalt);
+    background: var(--brass);
+    border-color: rgba(209, 172, 112, .55);
+}
+
+body.tg-destination-v3 .places-stage__arrow--prev:active svg,
+body.tg-destination-v3 .places-stage__arrow--prev.is-pressed svg {
+    transition: none;
+    transform: translateX(-2px);
+}
+
+body.tg-destination-v3 .places-stage__arrow--next:active svg,
+body.tg-destination-v3 .places-stage__arrow--next.is-pressed svg {
+    transition: none;
+    transform: translateX(2px);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    body.tg-destination-v3 .places-stage__arrow:hover {
+        color: var(--basalt);
+        background: var(--brass);
+        border-color: rgba(209, 172, 112, .55);
+    }
+
+    body.tg-destination-v3 .places-stage__arrow--prev:hover svg {
+        transform: translateX(-2px);
+    }
+
+    body.tg-destination-v3 .places-stage__arrow--next:hover svg {
+        transform: translateX(2px);
+    }
+}
+
+body.tg-destination-v3 .places-stage__arrow:focus-visible {
+    color: var(--basalt);
+    background: var(--brass);
+    border-color: rgba(209, 172, 112, .55);
+    outline: 2px solid var(--brass);
+    outline-offset: 2px;
+    box-shadow: inset 0 1px 0 rgba(240, 239, 235, .28);
+}
+
+body.tg-destination-v3 .places-stage__arrow--prev:focus-visible svg {
+    transform: translateX(-2px);
+}
+
+body.tg-destination-v3 .places-stage__arrow--next:focus-visible svg {
+    transform: translateX(2px);
+}
+
+body.tg-destination-v3 .places-stage__arrow:disabled {
+    opacity: .34;
+    cursor: default;
+    pointer-events: none;
+}
+
+body.tg-destination-v3 .places-stage__arrow:disabled svg {
+    transform: none;
+}
+
+/* View Transitions intentionally unused for place steps — they ghost prior copy.
+   Keep header named only if some other VT runs on the page. */
+@supports (view-transition-name: none) {
+    body.tg-destination-v3 #site-header {
+        view-transition-name: tg-site-header;
+    }
+}
+
+::view-transition-group(tg-site-header) {
+    z-index: 20;
+    animation: none;
+}
+
+::view-transition-old(tg-site-header),
+::view-transition-new(tg-site-header) {
+    animation: none;
+}
+
+body.tg-destination-v3 .places-stage__body {
+    max-width: 40rem;
+}
+
+@media (min-width: 1024px) {
+    body.tg-destination-v3 .places-stage__body {
+        max-width: none;
+    }
+}
+
+body.tg-destination-v3 .places-stage__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: .35rem 0;
+    margin: 0 0 .85rem;
+}
+
+body.tg-destination-v3 .places-stage__index {
+    margin: 0;
+    color: var(--brass);
+    font-size: .9rem;
+    font-weight: 650;
+}
+
+body.tg-destination-v3 .places-stage__admission {
+    margin: 0;
+    color: var(--fog);
+    font-size: .9rem;
+    font-weight: 620;
+    letter-spacing: .01em;
+}
+
+body.tg-destination-v3 .places-stage__admission::before {
+    content: "·";
+    margin: 0 .65rem;
+    color: var(--terrain);
+}
+
+body.tg-destination-v3 .places-stage__admission span {
+    color: var(--terrain);
+    font-weight: 620;
+}
+
+body.tg-destination-v3 .places-stage__admission span::after {
+    content: " · ";
+    color: var(--terrain);
+}
+
+body.tg-destination-v3 .places-stage__title {
+    margin: 0 0 1rem;
+    color: var(--paper);
+    font-family: var(--font-display);
+    font-size: clamp(2.1rem, 4vw, 3.8rem);
+    font-weight: 500;
+    line-height: .98;
+    letter-spacing: -.045em;
+    text-wrap: balance;
+}
+
+body.tg-destination-v3 .places-stage__text {
+    margin: 0 0 1.25rem;
+    color: var(--fog);
+    font-size: .98rem;
+    line-height: 1.75;
+}
+
+body.tg-destination-v3 .places-stage__coords {
+    margin: 0 0 1.15rem;
+    color: var(--terrain);
+    font-size: .82rem;
+    letter-spacing: .01em;
+}
+
+body.tg-destination-v3 .places-stage__map-link {
+    margin: 0;
+    padding: 0;
+    color: var(--brass);
+    background: none;
+    border: 0;
+    border-radius: 0;
+    cursor: pointer;
+    font: inherit;
+    font-size: .88rem;
+    font-weight: 650;
+}
+
+body.tg-destination-v3 .places-stage__map-link:hover,
+body.tg-destination-v3 .places-stage__map-link:focus-visible {
+    color: var(--sunlit);
+}
+
+body.tg-destination-v3 .places-stage__map-link:focus-visible {
+    outline: 2px solid var(--brass);
+    outline-offset: 3px;
+}
+
+body.tg-destination-v3 .leaflet-marker-icon.tg-map-marker--active {
+    filter: brightness(1.15) saturate(1.1);
+}
+
+@media (max-width: 1023px) {
+    body.tg-destination-v3 .destination-hero__title {
+        font-size: clamp(6rem, 18vw, 11rem);
+        font-size: clamp(2.7rem, min(18vw, calc(100cqi / (var(--destination-title-chars, 9) * .5))), 11rem);
+    }
+    body.tg-destination-v3 .destination-hero__history p { grid-column: 4 / 13; }
+    body.tg-destination-v3 .destination-hero__facts { grid-column: 1 / 13; }
+
+    body.tg-destination-v3 .destination-atlas__layout {
+        grid-template-columns: minmax(13rem, 4fr) minmax(0, 8fr);
+        min-height: min(560px, calc(100svh - 7rem));
+    }
+    body.tg-theme.tg-modern.tg-destination-v3 .tg-map-frame {
+        min-height: min(560px, calc(100svh - 7rem));
+    }
+
+    body.tg-destination-v3 .destination-chapter__heading { grid-column: 1 / 8; }
+    body.tg-destination-v3 .destination-chapter__copy { grid-column: 9 / 13; }
+
+    body.tg-destination-v3 .places-explorer {
+        grid-template-columns: minmax(14rem, .95fr) minmax(0, 1.35fr);
+        min-height: 0;
+    }
+}
+
+@media (max-width: 980px) {
+    body.tg-destination-v3 .destination-hero__content { padding-top: 9.5rem; }
+
+    body.tg-destination-v3 .places-explorer {
+        grid-template-columns: 1fr;
+        gap: 1.75rem;
+    }
+    body.tg-destination-v3 .places-explorer__rail {
+        position: static;
+        max-height: none;
+        overflow: visible;
+    }
+    body.tg-destination-v3 .places-explorer__list {
+        max-height: min(280px, 42svh);
+    }
+    body.tg-destination-v3 .places-explorer__stage { order: -1; }
+}
+
+@media (max-width: 767px) {
+    body.tg-destination-v3 .destination-hero { min-height: max(940px, 100svh); }
+    body.tg-destination-v3 .destination-hero__content {
+        padding-top: 9.5rem;
+        padding-bottom: 2.5rem;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        /* Match country hero: title flexes, then intro → control → coords spacer */
+        grid-template-rows: auto 1fr auto auto auto;
+        column-gap: .65rem;
+        row-gap: 1.5rem;
+    }
+    body.tg-destination-v3 .destination-hero__content > .country-active-toggle {
+        grid-column: 1 / 4;
+        grid-row: 1;
+    }
+    body.tg-destination-v3 .destination-hero__content > .hero__route {
+        grid-column: 4 / 7;
+        grid-row: 1;
+        justify-self: end;
+        align-self: start;
+        justify-content: flex-end;
+        text-align: right;
+    }
+    body.tg-destination-v3 .destination-hero__content > .hero__route span:not(:first-child) {
+        display: none;
+    }
+    body.tg-destination-v3 .destination-hero__title {
+        grid-column: 1 / 7;
+        grid-row: 2;
+        align-self: center;
+        font-size: clamp(5.4rem, 26vw, 8rem);
+        font-size: clamp(2.25rem, min(26vw, calc(100cqi / (var(--destination-title-chars, 9) * .5))), 8rem);
+        line-height: .8;
+        letter-spacing: -.065em;
+    }
+    body.tg-destination-v3 .destination-hero__history {
+        grid-column: 1 / 7;
+        grid-row: 3;
+        display: block;
+    }
+    body.tg-destination-v3 .destination-hero__history p {
+        grid-column: 1 / 7;
+        max-width: 39rem;
+        margin: 0 0 .25rem;
+        font-size: clamp(.95rem, 1.25vw, 1.08rem);
+        line-height: 1.72;
+    }
+    body.tg-destination-v3 .destination-hero__facts {
+        grid-column: 1 / 7;
+        grid-row: 4;
+        width: 100%;
+        /* Match body.tg-theme .search-wrap margin-top so history sits with country intro */
+        margin-top: 3rem;
+        min-height: 4.15rem;
+        align-content: end;
+        gap: .75rem;
+    }
+    body.tg-destination-v3 .destination-hero__facts dt { font-size: .67rem; }
+    body.tg-destination-v3 .destination-hero__facts dd { font-size: 1.1rem; }
+    /* Spacer matching country .hero__coordinates so facts sit on the search-bar band */
+    body.tg-destination-v3 .destination-hero__content::after {
+        content: "";
+        grid-column: 1 / 7;
+        grid-row: 5;
+        min-height: 1.15em;
+        font-size: .66rem;
+        pointer-events: none;
+    }
+
+    body.tg-destination-v3 .destination-atlas {
+        margin-top: 4rem;
+        padding-block: 6rem;
+    }
+    body.tg-destination-v3 .destination-places {
+        padding: 7rem 0 8rem;
+    }
+    body.tg-destination-v3 .destination-atlas__layout {
+        grid-template-columns: 1fr;
+        min-height: 0;
+    }
+    body.tg-destination-v3 .destination-atlas__brief {
+        padding: 1.35rem 1.25rem 1.5rem;
+    }
+    body.tg-destination-v3 .destination-atlas__index { margin-bottom: .8rem; }
+    body.tg-destination-v3 .destination-atlas__brief h2 {
+        max-width: none;
+        margin: 0 0 .75rem;
+        font-size: clamp(2.45rem, 12vw, 3.4rem);
+    }
+    body.tg-destination-v3 .destination-atlas__copy {
+        max-width: 34rem;
+        font-size: .86rem;
+        line-height: 1.55;
+    }
+    body.tg-destination-v3 .destination-atlas__facts {
+        margin-top: 1.25rem;
+        gap: .75rem;
+    }
+
+    body.tg-destination-v3 .destination-chapter { grid-template-columns: repeat(6, minmax(0, 1fr)); row-gap: 2rem; }
+    body.tg-destination-v3 .destination-chapter__index { grid-column: 1 / 3; }
+    body.tg-destination-v3 .destination-chapter__heading { grid-column: 1 / 7; }
+    body.tg-destination-v3 .destination-chapter__copy { grid-column: 1 / 7; }
+    body.tg-theme.tg-modern.tg-destination-v3 .tg-map-frame {
+        height: clamp(300px, 44svh, 380px);
+        min-height: 300px;
+        clip-path: polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 0 100%);
+    }
+
+    body.tg-destination-v3 .places-explorer__rail { padding: 1rem .85rem; }
+    body.tg-destination-v3 .places-stage__title { font-size: clamp(1.9rem, 9vw, 2.8rem); }
+    body.tg-destination-v3 .places-stage__media {
+        clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 0 100%);
+    }
+    body.tg-destination-v3 .places-stage__arrow {
+        width: 2.6rem;
+        height: 2.6rem;
+    }
+    body.tg-destination-v3 .places-stage__arrow--prev { left: .65rem; }
+    body.tg-destination-v3 .places-stage__arrow--next { right: .65rem; }
+}
+
+@media (max-width: 700px) {
+    body.tg-destination-v3 .destination-hero__content {
+        padding-top: 9rem;
+        padding-bottom: 3.75rem;
+        column-gap: .6rem;
+        row-gap: 1.25rem;
+    }
+    body.tg-destination-v3 .destination-hero__content > .country-active-toggle {
+        padding-right: .55rem;
+    }
+    body.tg-destination-v3 .country-toggle__label { display: none; }
+    body.tg-destination-v3 .country-toggle__state { margin-top: 0; font-size: .7rem; }
+}
+
+@media (max-width: 420px) {
+    body.tg-destination-v3 .destination-hero__title {
+        font-size: clamp(4.65rem, 25vw, 6.5rem);
+        font-size: clamp(2.15rem, min(25vw, calc(100cqi / (var(--destination-title-chars, 9) * .5))), 6.5rem);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.tg-destination-v3 .destination-hero__media { transform: scale(1.035) !important; will-change: auto; }
+
+    body.tg-destination-v3 .places-stage__media img,
+    body.tg-destination-v3 .places-stage__arrow,
+    body.tg-destination-v3 .places-stage__arrow svg {
+        transition: none;
+    }
+
+    ::view-transition-group(tg-site-header),
+    ::view-transition-old(tg-site-header),
+    ::view-transition-new(tg-site-header) {
+        animation: none !important;
+    }
+
+    body.tg-destination-v3 .places-stage__media.is-media-slide-on > img,
+    body.tg-destination-v3 .places-stage__media.is-media-slide-on .places-stage__media-cover img {
+        transition: none !important;
+    }
+}
+
+@media (forced-colors: active) {
+    body.tg-destination-v3 .destination-hero__shade { background: rgba(0, 0, 0, .64); }
+    body.tg-destination-v3 .tg-map-frame,
+    body.tg-destination-v3 .places-stage__media { clip-path: none; }
+}

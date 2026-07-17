@@ -6,659 +6,1754 @@
     <meta name="description" content="Plan a visit to Porto with a concise history, interactive attractions map, prices, and curated highlights across the destination.">
     <meta name="theme-color" content="#121417">
     <title>Porto Guide | Global Explorer Guides</title>
-    <link rel="stylesheet" href="../../assets/tailwind.css">
-    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
     <link rel="stylesheet" href="../../assets/newindex-fonts.css">
     <link rel="stylesheet" href="../../assets/tg-theme.css">
     <link rel="stylesheet" href="../../assets/tg-site-chrome.css">
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
     <link rel="stylesheet" href="../../assets/tg-modern-polish.css">
+    <link rel="stylesheet" href="../../assets/tg-country-page.css">
+    <link rel="stylesheet" href="../../assets/tg-destination-page-v3.css">
     <script defer src="../../assets/lenis.min.js"></script>
     <script defer src="../../assets/tg-smooth-scroll.js"></script>
     <link rel="preload" as="image" href="images/porto_hero.avif" type="image/avif" fetchpriority="high">
     <script defer src="../../assets/leaflet/leaflet.js"></script>
 </head>
-<body class="tg-theme tg-destination-page tg-modern">
-    <header id="site-header" class="header-glass fixed top-0 left-0 right-0 z-50">
+<body class="tg-theme tg-modern tg-country-v2 tg-destination-v3">
+    <a class="skip-link" href="#main-content">Skip to Porto guide</a>
+    <header id="site-header" class="header-glass">
         <div class="page-shell header-glass__inner">
-            <a href="../../index.html" class="font-display site-brand" style="display:flex;align-items:center;gap:0.75rem;text-decoration:none;color:inherit;font-size:1.25rem;" aria-label="Global Explorer home">
+            <a href="../../index.html" class="site-brand" aria-label="Global Explorer home">
                 <span class="site-brand__mark" aria-hidden="true">
                     <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
-                        <circle cx="14" cy="14" r="2" fill="#E8B14F"/>
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
                 </span>
                 Global Explorer
             </a>
-            <nav class="header-glass__nav-mobile" aria-label="Mobile navigation">
-                <a href="../../index.html" class="header-glass__icon-link" aria-label="Home">
-                    <i class="ph ph-house" aria-hidden="true"></i>
-                </a>
-                <a href="portugal.html" class="header-glass__icon-link" aria-label="Back to Portugal">
-                    <i class="ph ph-arrow-left" aria-hidden="true"></i>
-                </a>
-            </nav>
             <nav class="header-glass__nav" aria-label="Primary">
-                <a href="../../index.html" class="nav-link">Home</a>
-                <a href="porto.html" class="nav-link" aria-current="page">Porto</a>
+                <a href="#main-content" class="nav-link" aria-current="page">Porto</a>
+                <a href="#atlas" class="nav-link">Atlas</a>
+                <a href="#places" class="nav-link">Places</a>
                 <a href="portugal.html" class="nav-link">Portugal</a>
-                <a href="../../index.html#map" class="nav-link">Atlas</a>
             </nav>
         </div>
     </header>
-    <main>
-        <div class="tg-destination-hero-zone">
-            <div class="tg-destination-hero" aria-hidden="true">
-                <div class="tg-destination-hero__image" style="background-image: url('images/porto_hero.avif')"></div>
-                <div class="tg-destination-hero__fade"></div>
-            </div>
-            <div class="page-shell tg-destination-hero-zone__content">
-        <nav class="tg-toolbar tg-toolbar--compact" aria-label="Breadcrumb">
-            <div class="tg-breadcrumb">
-                <img src="../../assets/flags/w40/pt.png" alt="" class="w-6 h-auto rounded-[2px]" aria-hidden="true">
-                <span>Portugal</span>
-                <span class="tg-breadcrumb__sep" aria-hidden="true">&rsaquo;</span>
-                <span class="tg-breadcrumb__current">Northern Portugal</span>
-            </div>
-        </nav>
+    <main id="main-content" tabindex="-1">
+        <section class="destination-hero" aria-labelledby="destination-title">
+            <img class="destination-hero__media" data-destination-hero-image src="images/porto_hero.avif" alt="" width="1600" height="1067" fetchpriority="high" decoding="sync">
+            <div class="destination-hero__shade" aria-hidden="true"></div>
+            <div class="page-shell destination-hero__content">
+                <button
+                    type="button"
+                    id="destination-active-toggle"
+                    class="country-active-toggle country-active-toggle--active"
+                    data-iso2="PT"
+                    data-slug="porto"
+                    data-active="true"
+                    data-interactive="true"
+                    aria-label="Toggle Porto visibility on Portugal guide"
+                    aria-pressed="true"
+                >
+                    <img src="../../assets/flags/w80/pt.png" alt="" aria-hidden="true">
+                    <span class="country-toggle__copy" aria-hidden="true">
+                        <span class="country-toggle__label">Porto guide</span>
+                        <strong class="country-toggle__state"></strong>
+                    </span>
+                </button>
 
-        <header class="tg-page-header">
-            <button
-        type="button"
-        id="destination-active-toggle"
-        class="country-active-toggle country-active-toggle--active country-active-toggle--readonly"
-        data-iso2="PT"
-        data-slug="porto"
-        data-active="true"
-        data-interactive="true"
-        aria-label="Toggle Porto visibility on Portugal guide"
-        aria-pressed="true"
-    >
-        <i class="ph ph-map-pin text-4xl pointer-events-none" aria-hidden="true"></i>
-    </button>
-            <span class="tg-page-header__eyebrow">Destination Guide — Northern Portugal</span>
-            <h1 class="tg-page-title font-display">Explore <em>Porto</em></h1>
-            <div class="glass-card frosted-panel tg-panel">
-                <h2 class="tg-panel__title font-display">
-                    <i class="ph ph-scroll" aria-hidden="true"></i> A Brief History
-                </h2>
-                <p class="tg-panel__body">Porto lies on the Douro River estuary and gave its name to Portugal. Medieval trade and wine export from the upper Douro shaped its economy. The historic center with the cathedral, Ribeira quays, and Dom Luís I bridge was inscribed as a UNESCO World Heritage site in 1996. Port wine cellars in Vila Nova de Gaia aged barrels for British merchants from the 18th century onward.</p>
-            </div>
-        </header>
+                <div class="hero__route" aria-label="Destination route and coordinates">
+                    <span>Portugal / Northern Portugal</span>
+                    <span>41.1579&deg; N / 8.6291&deg; W</span>
+                </div>
 
-        <div class="tg-section__header tg-section__header--map-end">
-            <span class="tg-section__eyebrow">Map</span>
-            <h2 class="tg-section__title font-display">Attractions Map</h2>
-        </div>
-            </div>
-        </div>
-
-        <div class="page-shell tg-main tg-main--below-hero">
-        <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Porto attractions"></div>
-        <section class="tg-section">
-            <div class="tg-section__header">
-                <span class="tg-section__eyebrow">Highlights</span>
-                <h2 class="tg-section__title font-display">Top Sights &amp; Activities</h2>
-            </div>
-            <div class="tg-sights-list">
-            
-            <!-- 1. Porto Cathedral -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_1.avif" alt="Porto Cathedral" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free (cloisters €3)
+                <h1 id="destination-title" class="destination-hero__title" style="--destination-title-chars: 5">Porto</h1>
+                <div class="destination-hero__history">
+                    <p>Porto lies on the Douro River estuary and gave its name to Portugal. Medieval trade and wine export from the upper Douro shaped its economy. The historic center with the cathedral, Ribeira quays, and Dom Luís I bridge was inscribed as a UNESCO World Heritage site in 1996. Port wine cellars in Vila Nova de Gaia aged barrels for British merchants from the 18th century onward.</p>
+                </div>
+                <dl class="destination-hero__facts" aria-label="Porto guide facts">
+                    <div>
+                        <dt>Country</dt>
+                        <dd>Portugal</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Porto Cathedral</h3>
-                    <p class="tg-sight-card__text">Porto Cathedral is a Romanesque fortress-church on the highest point of the historic centre, begun in the 12th century and enlarged through the Gothic period. Its cloister walls are lined with 18th-century blue-and-white azulejo panels narrating religious scenes. Terraces beside the cathedral look down over the Ribeira rooftops and the Douro gorge.</p>
-                </div>
-            </div>
-            <!-- 2. Chapel of Souls -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_2.avif" alt="Chapel of Souls" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                    <div>
+                        <dt>Region</dt>
+                        <dd>Northern Portugal</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Chapel of Souls</h3>
-                    <p class="tg-sight-card__text">The Chapel of Santa Catarina, also known as the Chapel of Souls, is a chapel located on the shopping street of Rua de Santa Catarina, in the former parish of Santo Ildefonso, in the city of Porto, in Portugal. It is particularly noted for the blue azulejo tiles on its exterior walls.</p>
-                </div>
-            </div>
-            <!-- 3. Bolhão Market -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_3.avif" alt="Bolhão Market" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                    <div>
+                        <dt>Places</dt>
+                        <dd>40</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Bolhão Market</h3>
-                    <p class="tg-sight-card__text">Bolhão Market is Porto&#x27;s neoclassical covered market hall on Rua Formosa, opened in 1914 and restored in 2022 after years under scaffolding. Vendors sell fresh fish, produce, flowers, and northern Portuguese specialities under iron framing and granite arches. The hall remains a working market and a benchmark for tripe stew, presunto, and seasonal Douro vegetables.</p>
-                </div>
-            </div>
-            <!-- 4. Jardins do Palacio de Cristal -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_4.avif" alt="Jardins do Palacio de Cristal" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Jardins do Palacio de Cristal</h3>
-                    <p class="tg-sight-card__text">Jardins do Palacio de Cristal is a visitor site in Porto. The Crystal Palace in Portugal&#x27;s second largest city of Porto was inspired by The Crystal Palace in London. It was inaugurated in 1865 to host the 1865 International Exhibition. Eventually falling into disrepair, it was demolished in 1951 to make way for a Sports Pavilion, today known as the Rosa Mota Pavilion, named after the Portuguese marathon runner.</p>
-                </div>
-            </div>
-            <!-- 5. Miradouro da Ponte da Arrábida -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_5.avif" alt="Miradouro da Ponte da Arrábida" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Miradouro da Ponte da Arrábida</h3>
-                    <p class="tg-sight-card__text">The Miradouro da Ponte da Arrábida is a riverside viewpoint beside Porto&#x27;s Arrábida bridge, opened in 1963 as one of Europe&#x27;s largest concrete arches. Terraces and steps below the span look across the Douro toward Vila Nova de Gaia&#x27;s wine lodges and the Atlantic gorge. The belvedere is a common sunset stop on walks west from the historic centre.</p>
-                </div>
-            </div>
-            <!-- 6. Cais da Ribeira -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_6.avif" alt="Cais da Ribeira" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Cais da Ribeira</h3>
-                    <p class="tg-sight-card__text">Cais da Ribeira is Porto&#x27;s colour-washed riverside quay in the UNESCO-listed Ribeira district, where narrow lanes descend to café terraces and boat landings on the Douro. The stone embankment faces Vila Nova de Gaia&#x27;s port wine lodges across the water. It remains the city&#x27;s most photographed waterfront and a starting point for river cruises.</p>
-                </div>
-            </div>
-            <!-- 7. Luís I Bridge -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_7.avif" alt="Luís I Bridge" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Luís I Bridge</h3>
-                    <p class="tg-sight-card__text">The Luiz I Bridge, commonly known as Dom Luís I Bridge, is a double-deck metal arch bridge that spans the river Douro between the cities of Porto and Vila Nova de Gaia in Portugal. At its construction, its 172 metres span was the longest of its type in the world. It can be confused with the nearby Maria Pia Bridge, a railway bridge that was built 9 years earlier to the east), which is similar in aspect to the Luiz I bridge.</p>
-                </div>
-            </div>
-            <!-- 8. Clérigos Church -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_8.avif" alt="Clérigos Church" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €10
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Clérigos Church</h3>
-                    <p class="tg-sight-card__text">The Clérigos Church is a Baroque landmark on Rua dos Clérigos, built for the Brotherhood of Clerics in the 18th century to a design by Nicolau Nasoni. Its 75-metre Torre dos Clérigos bell tower rises in a corkscrew profile visible across central Porto. Visitors can climb the tower for panoramic views over the granite rooftops toward the Douro.</p>
-                </div>
-            </div>
-            <!-- 9. Estádio do Dragão -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_9.avif" alt="Estádio do Dragão" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Estádio do Dragão</h3>
-                    <p class="tg-sight-card__text">Estádio do Dragão is a must-visit for football enthusiasts, offering guided tours of FC Porto&#x27;s 50,000-seat stadium and a dedicated museum showing the club&#x27;s rich history. The stadium has witnessed numerous victories, including in the UEFA Champions League. Even if visitors are not a football fan, experiencing the active atmosphere of this modern stadium is recommended.</p>
-                </div>
-            </div>
-            <!-- 10. Mercado do Bolhão -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_13.avif" alt="Mercado do Bolhão" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Mercado do Bolhão</h3>
-                    <p class="tg-sight-card__text">Mercado do Bolhão is a historic, two-level market housed in a neoclassical building that opened in central Porto in 1917. It has become an city landmark with its faded grandeur and family-run stalls offering fresh produce, meats, fish, sausages, flowers, and local crafts. Travellers can enjoy a multisensory experience as they wander through narrow corridors filled with colorful sights and enticing aromas.</p>
-                </div>
-            </div>
-            <!-- 11. Torre dos Clérigos -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_27.avif" alt="Torre dos Clérigos" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €10
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Torre dos Clérigos</h3>
-                    <p class="tg-sight-card__text">Rising 76 meters high, Torre dos Clérigos is a prominent baroque bell tower in Porto. Climbing its 225 steps rewards travellers with panoramic views of the city, including landmarks like Praca da Liberdade, Livraria Lello bookshop, and the Douro valley. This historic structure offers a bird&#x27;s-eye perspective of Porto and is a must-visit for first-time sightseers looking to orient themselves in Portugal&#x27;s second largest city.</p>
-                </div>
-            </div>
-            <!-- 12. Castelo do Queijo -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_22.avif" alt="Castelo do Queijo" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Castelo do Queijo</h3>
-                    <p class="tg-sight-card__text">Castelo do Queijo, also known as the Fort of Sao Francisco do Queijo, is a 17th-century fort located in Matosinhos, Porto. Positioned on a prominent rock overlooking the beach, this turreted fort offers views of the North Atlantic Ocean. The fort&#x27;s trapezoidal shape and pentagonal facades with triangular corbels showcase its historical significance. Travellers can explore the castle&#x27;s architecture and enjoy exhibitions inside while taking in the gorgeous ocean view.</p>
-                </div>
-            </div>
-            <!-- 13. Felgueiras Lighthouse -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_18.avif" alt="Felgueiras Lighthouse" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Felgueiras Lighthouse</h3>
-                    <p class="tg-sight-card__text">Farolim de Felgueiras, a 19th-century hexagonal lighthouse made of granite, stands tall at 10 meters on the Douro River. Walking along the river from Porto&#x27;s Ribeira district to Foz offers a less crowded but equally rewarding experience compared to taking the old trams.</p>
-                </div>
-            </div>
-            <!-- 14. Pérgola da Nevogilde -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_21.avif" alt="Pérgola da Nevogilde" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Pérgola da Nevogilde</h3>
-                    <p class="tg-sight-card__text">Pérgola da Nevogilde, located in Foz do Porto, is a romantic and spot by the sea. The golden yellow structure of the pergola creates a effect when illuminated by sunlight. Travellers can enjoy coastal views while strolling through the arched promenade walkway, especially during sunset. It&#x27;s recommended to visit during the day for photo opportunities and to experience the cool sea breeze. The area also offers cafes with great sunset views along the beach.</p>
-                </div>
-            </div>
-            <!-- 15. Praia da Memória -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_15.avif" alt="Praia da Memória" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Praia da Memória</h3>
-                    <p class="tg-sight-card__text">Praia da Memória is a wide, sandy beach favored by surfers and families with children due to its waves and tide pools. It holds historical significance as the site of King D. Pedro IV&#x27;s army landing in 1822 to rid Portugal of his brother&#x27;s despotic rule. This and clean beach offers ample free parking spaces, an view, and a cozy restaurant serving good food.</p>
-                </div>
-            </div>
-            <!-- 16. St. John the Baptist of Foz Fort -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_19.avif" alt="St. John the Baptist of Foz Fort" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">St. John the Baptist of Foz Fort</h3>
-                    <p class="tg-sight-card__text">Forte de São João Baptista da Foz, constructed in the late 16th century, is a heavily fortified installation aimed at protecting the coast and the mouth of the Douro River. Today, it houses the Regional Office of the National Defense Institute. While lacking interpretive information, travellers can freely explore this historical site with a great view of the river and surrounding sand bars.</p>
-                </div>
-            </div>
-            <!-- 17. Capela do Senhor da Pedra -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_16.avif" alt="Capela do Senhor da Pedra" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Capela do Senhor da Pedra</h3>
-                    <p class="tg-sight-card__text">Capela do Senhor da Pedra is a oceanfront chapel located in Miramar, near Porto, Portugal. Perched on a rocky outcrop overlooking the Atlantic Ocean, this 17th-century Baroque chapel offers views of the beach and sunsets. Its unique location makes it a spot for photography enthusiasts and travellers seeking a mystical atmosphere by the sea.</p>
-                </div>
-            </div>
-            <!-- 18. El Corte Inglés Gaia Porto -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_17.avif" alt="El Corte Inglés Gaia Porto" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">El Corte Inglés Gaia Porto</h3>
-                    <p class="tg-sight-card__text">El Corte Inglés Gaia Porto is a top shopping destination in Vila Nova de Gaia, offering a wide range of products from fashion and electronics to gourmet food. It&#x27;s known for its high-quality items and excellent service, although prices may be on the higher side. Keep an eye out for discounts, especially in August or December. The store stands out for its service and unique retail experience. Travellers can also enjoy the festive decorations during Christmas.</p>
-                </div>
-            </div>
-            <!-- 19. Anemone -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_24.avif" alt="Anemone" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Anemone</h3>
-                    <p class="tg-sight-card__text">Anemone is a visitor site in Porto. She Changes is a striking seaside installation in Matosinhos, designed as an homage to the local fishermen. The sculpture resembles a fishing net and is located in the middle of a roundabout, offering changing shadows and swaying movements that evoke the sea breeze. This known artwork by architect Siza Vieira is a when visiting Matosinhos. It&#x27;s situated near the beach, making it an ideal spot to catch the sunset and observe surf schools in the sea behind it.</p>
-                </div>
-            </div>
-            <!-- 20. Casa da Música -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_34.avif" alt="Casa da Música" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Casa da Música</h3>
-                    <p class="tg-sight-card__text">Located at the Boavista roundabout, Casa da Música is a striking 12-floor concert hall that is a evidence of modern architecture. Designed by known Dutch architect Rem Koolhaas and completed in 2005, this venue was created to embody Porto&#x27;s innovative cultural vision during its time as the European Capital of Culture in 2001.</p>
-                </div>
-            </div>
-            <!-- 21. FC Porto Museum -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_10.avif" alt="FC Porto Museum" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">FC Porto Museum</h3>
-                    <p class="tg-sight-card__text">FC Porto Museum is a museum in Porto, Portugal. The FC Porto Museum, also known as the FC Porto Museum by BMG, is a recent soccer museum located at Estadio do Dragao in Porto, Portugal. Permanent galleries and temporary displays are open on posted hours.</p>
-                </div>
-            </div>
-            <!-- 22. Mosteiro Santo Agostinho da Serra do Pilar -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_30.avif" alt="Mosteiro Santo Agostinho da Serra do Pilar" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Mosteiro Santo Agostinho da Serra do Pilar</h3>
-                    <p class="tg-sight-card__text">Mosteiro Santo Agostinho da Serra do Pilar is a visitor site in Porto, Portugal. Mosteiro da Serra do Pilar, a former monastery dating back to the 1500s, is situated on a hilltop overlooking the Douro River in Vila Nova de Gaia. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 23. Miradouro da Vitória -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_38.avif" alt="Miradouro da Vitória" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Miradouro da Vitória</h3>
-                    <p class="tg-sight-card__text">Miradouro da Vitória is a historic square in Porto that offers a unique romantic experience with its views of the cityscape, river Douro, and terracotta rooftops. Despite the surrounding abandoned buildings, it is considered spots to witness a sunset in Portugal.</p>
-                </div>
-            </div>
-            <!-- 24. São João National Theater -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_25.avif" alt="São João National Theater" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">São João National Theater</h3>
-                    <p class="tg-sight-card__text">São João National Theater is a theatre in Porto, Portugal. São João National Theater is a significant landmark in Porto, Portugal, known for its rich history and cultural significance. Public access is usually through ticketed performances or daytime visits.</p>
-                </div>
-            </div>
-            <!-- 25. Church of Saint Ildefonso -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_26.avif" alt="Church of Saint Ildefonso" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Church of Saint Ildefonso</h3>
-                    <p class="tg-sight-card__text">Church of Saint Ildefonso is an elegant 18th-century church located in the Baixa district of Porto. Its facade is adorned with blue and white tiles, known as azulejos, depicting scenes from the life of St. Ildefonso and stories from the gospel. Created by artist Jorge Colaço, over 11,000 tiles make up this facade. The church stands alone in Praca da Batalha and is a head-turner with its graceful twin towers.</p>
-                </div>
-            </div>
-            <!-- 26. Jardim do Morro -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_32.avif" alt="Jardim do Morro" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Jardim do Morro</h3>
-                    <p class="tg-sight-card__text">Jardim do Morro is a hilltop green space in Porto that offers panoramic views of the city and the distant Atlantic. Travellers can reach this spot by taking a scenic cable car ride or walking across the Ponte de Dom Luis. The park is popular among locals and tourists alike, especially during late afternoon when people gather to watch the sunset over the river.</p>
-                </div>
-            </div>
-            <!-- 27. Igreja do Carmo -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_28.avif" alt="Igreja do Carmo" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Igreja do Carmo</h3>
-                    <p class="tg-sight-card__text">Igreja do Carmo, also known as the Church of Lady of Mount Carmel, is a baroque church in the Baixa district. Its exterior is adorned with detailed tile mosaics depicting scenes related to the founding of the Carmelite Order. Connected to its twin church by a narrow residence, it houses numerous oil paintings and elaborate gilt altars inside. The church&#x27;s neo-gothic architecture and traditional market nearby make it a popular destination for travellers exploring this area.</p>
-                </div>
-            </div>
-            <!-- 28. Ribeira do Porto -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_33.avif" alt="Ribeira do Porto" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Ribeira do Porto</h3>
-                    <p class="tg-sight-card__text">The Ribeira is the historic and most district of Porto, situated along the banks of the Douro River. Characterized by its narrow, winding medieval streets and colorful, tiled houses, the area is a UNESCO World Heritage site. The active riverfront promenade is lined with cafes and offers classic views of the traditional Rabelo boats and the well known Dom Luís I Bridge.</p>
-                </div>
-            </div>
-            <!-- 29. Igreja da Lapa -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_37.avif" alt="Igreja da Lapa" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Igreja da Lapa</h3>
-                    <p class="tg-sight-card__text">Igreja da Lapa is a visitor site in Porto, Portugal. The church holds historical significance as it was the chosen location for King Pedro IV&#x27;s heart to be bestowed upon his death. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 30. Miradouro da Serra do Pilar -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_31.avif" alt="Miradouro da Serra do Pilar" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Miradouro da Serra do Pilar</h3>
-                    <p class="tg-sight-card__text">The Miradouro da Serra do Pilar, situated in Vila Nova de Gaia, offers panoramic views of the illuminated city of Porto from across the river. This vantage point allows travellers to admire the scenery, including the river and the Luis Bridge. Miradouro da Serra do Pilar is a visitor site in Porto, Portugal with public access during posted hours.</p>
-                </div>
-            </div>
-            <!-- 31. Porto Bridge Climb -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_36.avif" alt="Porto Bridge Climb" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Porto Bridge Climb</h3>
-                    <p class="tg-sight-card__text">The Porto Bridge Climb offers a unique experience to ascend the Arrábida Bridge, providing views of Porto and the Douro River estuary. This landmark bridge spans 270 meters over the river, with a maximum height of 70 meters, making it an architectural feat. Participants are equipped with harnesses and secure lifelines for a guided tour that involves scaling the lofty heights safely.</p>
-                </div>
-            </div>
-            <!-- 32. Miradouro das Fontainhas -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_40.avif" alt="Miradouro das Fontainhas" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Miradouro das Fontainhas</h3>
-                    <p class="tg-sight-card__text">Miradouro das Fontainhas, located near Ponte do Infante, offers a panoramic view of the Douro landscape, Vila Nova de Gaia, and part of Porto city. It provides a vantage point to see four out of the six bridges in Porto. The area is versatile, suitable for picnics, sports activities, or simply relaxing with friends.</p>
-                </div>
-            </div>
-            <!-- 33. Porto City Hall -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_14.avif" alt="Porto City Hall" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Porto City Hall</h3>
-                    <p class="tg-sight-card__text">Porto City Hall is a neoclassical 1900s building with a black-marble entrance hall and a clocktower offering panoramic city views. It&#x27;s located in the Baixa district, near attractions like Torre dos Clerigos, Igreja do Carmo, Mercado do Bolhao, and Livraria Lello. The city hall is open to the public for tours during the day and offers an interactive map for virtual tours.</p>
-                </div>
-            </div>
-            <!-- 34. Jardim Botânico do Porto | Museu de História Natural e da Ciência da U.Porto -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_35.avif" alt="Jardim Botânico do Porto | Museu de História Natural e da Ciência da U.Porto" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Jardim Botânico do Porto | Museu de História Natural e da Ciência da U.Porto</h3>
-                    <p class="tg-sight-card__text">Jardim Botânico do Porto | Museu de História Natural e da Ciência da U.Porto sits within the Casa da Música area of Porto, documented in local heritage registers for its civic or cultural role. Visitors approach from the main access road and combine the visit with neighbouring heritage buildings and public spaces in the district.</p>
-                </div>
-            </div>
-            <!-- 35. Porto Historical Customs Building -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_41.avif" alt="Porto Historical Customs Building" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Porto Historical Customs Building</h3>
-                    <p class="tg-sight-card__text">The Alfândega Nova on the Douro waterfront, a neoclassical customs house from the nineteenth century. Restored for offices and event space, its long facade faces gaia and the river. Exhibitions on city history occasionally open in the ground-floor halls.</p>
-                </div>
-            </div>
-            <!-- 36. Mosteiro de Leça do Balio -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_42.avif" alt="Mosteiro de Leça do Balio" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Mosteiro de Leça do Balio</h3>
-                    <p class="tg-sight-card__text">A medieval monastery and hospital complex on the pilgrimage route to Santiago, managed by the Order of Malta. Romanesque and Gothic elements mix in the church and cloister ruins. It sits between Porto and the coast at Leça do Balio along the northern suburban rail line.</p>
-                </div>
-            </div>
-            <!-- 37. SEA LIFE Centre Porto -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_23.avif" alt="SEA LIFE Centre Porto" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">SEA LIFE Centre Porto</h3>
-                    <p class="tg-sight-card__text">SEA LIFE Centre Porto is a top choice for families, offering a variety of sea creatures and play areas. It&#x27;s an museum that provides a rare chance to see sharks, colorful sea horses, and rays up close. Travellers can even witness the feeding of these aquatic animals at specific times. The center also is an educational platform for children to learn about important topics such as life preservation and recycling in a fun and interactive manner.</p>
-                </div>
-            </div>
-            <!-- 38. Jardim do Passeio Alegre -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_20.avif" alt="Jardim do Passeio Alegre" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Jardim do Passeio Alegre</h3>
-                    <p class="tg-sight-card__text">Jardim do Passeio Alegre is a 1800s garden located in Foz, Porto. This park is home to a Franciscan convent, an extravagant fountain, and an Art Nouveau-tiled restroom. Travellers can stroll through a palm tree-lined avenue where parakeets nest at the treetops and enjoy activities such as mini-golf for children and a designer market on Sundays.</p>
-                </div>
-            </div>
-            <!-- 39. Igreja de Santa Clara -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_12.avif" alt="Igreja de Santa Clara" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Igreja de Santa Clara</h3>
-                    <p class="tg-sight-card__text">Igreja de Santa Clara, also known as St, is a visitor site in Porto, Portugal. Clara Church, is a 15th-century Catholic place of worship located in Porto. However, the interior is where the true splendor lies, with elaborate gold-plated design work that creates a and opulent atmosphere. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 40. Muralhas Fernandinas do Porto -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/porto_11.avif" alt="Muralhas Fernandinas do Porto" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Muralhas Fernandinas do Porto</h3>
-                    <p class="tg-sight-card__text">Muralhas Fernandinas do Porto is a waterfront area in Porto, Portugal. Quays and embankment paths form the main walking route. Muralhas Fernandinas do Porto remains part of the public visitor circuit in Porto. Local maps identify Muralhas Fernandinas do Porto within Porto, Portugal.</p>
-                </div>
-            </div>
+                </dl>
             </div>
         </section>
-        </div>
+
+        <section id="atlas" class="destination-atlas" aria-labelledby="atlas-title">
+            <div class="page-shell destination-atlas__layout">
+                <div class="destination-atlas__brief">
+                    <p class="destination-atlas__index">City atlas</p>
+                    <h2 id="atlas-title">Plot the city.</h2>
+                    <p class="destination-atlas__copy">Zoom, pan, and open any marker to focus that place in the catalog below.</p>
+                    <dl class="destination-atlas__facts" aria-label="Map coverage">
+                        <div>
+                            <dt>Plotted</dt>
+                            <dd>40 places</dd>
+                        </div>
+                        <div>
+                            <dt>Center</dt>
+                            <dd>41.1579&deg; N<br>8.6291&deg; W</dd>
+                        </div>
+                    </dl>
+                </div>
+                <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Porto attractions"></div>
+            </div>
+        </section>
+
+        <section id="places" class="destination-places" aria-labelledby="places-title">
+            <div class="page-shell">
+                <div class="destination-chapter">
+                    <h2 id="places-title" class="destination-chapter__heading">40 ways into<br>Porto.</h2>
+                    <p class="destination-chapter__copy">Browse the index, open a location, and read the essentials without scrolling through a long catalog. Each entry contains its image, admission note, and contextual guide.</p>
+                </div>
+                <div class="places-explorer" data-places-explorer>
+                    <aside class="places-explorer__rail" aria-label="Place index">
+                        <div class="places-explorer__toolbar">
+                            <label class="places-explorer__filter-label" for="places-filter">Filter places</label>
+                            <input
+                                id="places-filter"
+                                class="places-explorer__filter"
+                                type="search"
+                                data-places-filter
+                                placeholder="Search by name"
+                                autocomplete="off"
+                            >
+                            <p class="places-explorer__meta"><strong data-places-count>40</strong> of 40 shown</p>
+                        </div>
+                        <ul class="places-explorer__list" role="listbox" aria-label="Places in Porto" data-places-list data-lenis-prevent data-tg-scroll-surface>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option is-active"
+                            role="option"
+                            id="place-option-1"
+                            data-place-option
+                            data-place-index="0"
+                            data-place-name="Porto Cathedral"
+                            data-place-lat="41.1428"
+                            data-place-lng="-8.6111"
+                            aria-selected="true"
+                            tabindex="0"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">01</span>
+                            <span class="places-explorer__option-name">Porto Cathedral</span>
+                            <span class="places-explorer__option-price">Free (cloisters €3)</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-2"
+                            data-place-option
+                            data-place-index="1"
+                            data-place-name="Chapel of Souls"
+                            data-place-lat="41.1498"
+                            data-place-lng="-8.6053"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">02</span>
+                            <span class="places-explorer__option-name">Chapel of Souls</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-3"
+                            data-place-option
+                            data-place-index="2"
+                            data-place-name="Bolhão Market"
+                            data-place-lat="41.1493"
+                            data-place-lng="-8.6067"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">03</span>
+                            <span class="places-explorer__option-name">Bolhão Market</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-4"
+                            data-place-option
+                            data-place-index="3"
+                            data-place-name="Jardins do Palacio de Cristal"
+                            data-place-lat="41.1481"
+                            data-place-lng="-8.6258"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">04</span>
+                            <span class="places-explorer__option-name">Jardins do Palacio de Cristal</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-5"
+                            data-place-option
+                            data-place-index="4"
+                            data-place-name="Miradouro da Ponte da Arrábida"
+                            data-place-lat="41.1472"
+                            data-place-lng="-8.6385"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">05</span>
+                            <span class="places-explorer__option-name">Miradouro da Ponte da Arrábida</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-6"
+                            data-place-option
+                            data-place-index="5"
+                            data-place-name="Cais da Ribeira"
+                            data-place-lat="41.1404"
+                            data-place-lng="-8.612"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">06</span>
+                            <span class="places-explorer__option-name">Cais da Ribeira</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-7"
+                            data-place-option
+                            data-place-index="6"
+                            data-place-name="Luís I Bridge"
+                            data-place-lat="41.1399"
+                            data-place-lng="-8.6094"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">07</span>
+                            <span class="places-explorer__option-name">Luís I Bridge</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-8"
+                            data-place-option
+                            data-place-index="7"
+                            data-place-name="Clérigos Church"
+                            data-place-lat="41.1458"
+                            data-place-lng="-8.6146"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">08</span>
+                            <span class="places-explorer__option-name">Clérigos Church</span>
+                            <span class="places-explorer__option-price">€10</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-9"
+                            data-place-option
+                            data-place-index="8"
+                            data-place-name="Estádio do Dragão"
+                            data-place-lat="41.16177"
+                            data-place-lng="-8.583591"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">09</span>
+                            <span class="places-explorer__option-name">Estádio do Dragão</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-10"
+                            data-place-option
+                            data-place-index="9"
+                            data-place-name="Mercado do Bolhão"
+                            data-place-lat="41.149386"
+                            data-place-lng="-8.607117"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">10</span>
+                            <span class="places-explorer__option-name">Mercado do Bolhão</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-11"
+                            data-place-option
+                            data-place-index="10"
+                            data-place-name="Torre dos Clérigos"
+                            data-place-lat="41.145671"
+                            data-place-lng="-8.614598"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">11</span>
+                            <span class="places-explorer__option-name">Torre dos Clérigos</span>
+                            <span class="places-explorer__option-price">€10</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-12"
+                            data-place-option
+                            data-place-index="11"
+                            data-place-name="Castelo do Queijo"
+                            data-place-lat="41.168577"
+                            data-place-lng="-8.689921"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">12</span>
+                            <span class="places-explorer__option-name">Castelo do Queijo</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-13"
+                            data-place-option
+                            data-place-index="12"
+                            data-place-name="Felgueiras Lighthouse"
+                            data-place-lat="41.146759"
+                            data-place-lng="-8.677305"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">13</span>
+                            <span class="places-explorer__option-name">Felgueiras Lighthouse</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-14"
+                            data-place-option
+                            data-place-index="13"
+                            data-place-name="Pérgola da Nevogilde"
+                            data-place-lat="41.15778"
+                            data-place-lng="-8.683018"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">14</span>
+                            <span class="places-explorer__option-name">Pérgola da Nevogilde</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-15"
+                            data-place-option
+                            data-place-index="14"
+                            data-place-name="Praia da Memória"
+                            data-place-lat="41.231682"
+                            data-place-lng="-8.722313"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">15</span>
+                            <span class="places-explorer__option-name">Praia da Memória</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-16"
+                            data-place-option
+                            data-place-index="15"
+                            data-place-name="St. John the Baptist of Foz Fort"
+                            data-place-lat="41.14901"
+                            data-place-lng="-8.674492"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">16</span>
+                            <span class="places-explorer__option-name">St. John the Baptist of Foz Fort</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-17"
+                            data-place-option
+                            data-place-index="16"
+                            data-place-name="Capela do Senhor da Pedra"
+                            data-place-lat="41.068752"
+                            data-place-lng="-8.658594"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">17</span>
+                            <span class="places-explorer__option-name">Capela do Senhor da Pedra</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-18"
+                            data-place-option
+                            data-place-index="17"
+                            data-place-name="El Corte Inglés Gaia Porto"
+                            data-place-lat="41.125628"
+                            data-place-lng="-8.604808"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">18</span>
+                            <span class="places-explorer__option-name">El Corte Inglés Gaia Porto</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-19"
+                            data-place-option
+                            data-place-index="18"
+                            data-place-name="Anemone"
+                            data-place-lat="41.17335"
+                            data-place-lng="-8.688735"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">19</span>
+                            <span class="places-explorer__option-name">Anemone</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-20"
+                            data-place-option
+                            data-place-index="19"
+                            data-place-name="Casa da Música"
+                            data-place-lat="41.158847"
+                            data-place-lng="-8.630737"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">20</span>
+                            <span class="places-explorer__option-name">Casa da Música</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-21"
+                            data-place-option
+                            data-place-index="20"
+                            data-place-name="FC Porto Museum"
+                            data-place-lat="41.160769"
+                            data-place-lng="-8.582716"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">21</span>
+                            <span class="places-explorer__option-name">FC Porto Museum</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-22"
+                            data-place-option
+                            data-place-index="21"
+                            data-place-name="Mosteiro Santo Agostinho da Serra do Pilar"
+                            data-place-lat="41.138298"
+                            data-place-lng="-8.607526"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">22</span>
+                            <span class="places-explorer__option-name">Mosteiro Santo Agostinho da Serra do Pilar</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-23"
+                            data-place-option
+                            data-place-index="22"
+                            data-place-name="Miradouro da Vitória"
+                            data-place-lat="41.143083"
+                            data-place-lng="-8.615832"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">23</span>
+                            <span class="places-explorer__option-name">Miradouro da Vitória</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-24"
+                            data-place-option
+                            data-place-index="23"
+                            data-place-name="São João National Theater"
+                            data-place-lat="41.144673"
+                            data-place-lng="-8.607422"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">24</span>
+                            <span class="places-explorer__option-name">São João National Theater</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-25"
+                            data-place-option
+                            data-place-index="24"
+                            data-place-name="Church of Saint Ildefonso"
+                            data-place-lat="41.1461"
+                            data-place-lng="-8.606699"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">25</span>
+                            <span class="places-explorer__option-name">Church of Saint Ildefonso</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-26"
+                            data-place-option
+                            data-place-index="25"
+                            data-place-name="Jardim do Morro"
+                            data-place-lat="41.137146"
+                            data-place-lng="-8.609293"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">26</span>
+                            <span class="places-explorer__option-name">Jardim do Morro</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-27"
+                            data-place-option
+                            data-place-index="26"
+                            data-place-name="Igreja do Carmo"
+                            data-place-lat="41.147356"
+                            data-place-lng="-8.616273"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">27</span>
+                            <span class="places-explorer__option-name">Igreja do Carmo</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-28"
+                            data-place-option
+                            data-place-index="27"
+                            data-place-name="Ribeira do Porto"
+                            data-place-lat="41.1404099"
+                            data-place-lng="-8.612566400000002"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">28</span>
+                            <span class="places-explorer__option-name">Ribeira do Porto</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-29"
+                            data-place-option
+                            data-place-index="28"
+                            data-place-name="Igreja da Lapa"
+                            data-place-lat="41.157163"
+                            data-place-lng="-8.612001"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">29</span>
+                            <span class="places-explorer__option-name">Igreja da Lapa</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-30"
+                            data-place-option
+                            data-place-index="29"
+                            data-place-name="Miradouro da Serra do Pilar"
+                            data-place-lat="41.138291"
+                            data-place-lng="-8.608561"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">30</span>
+                            <span class="places-explorer__option-name">Miradouro da Serra do Pilar</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-31"
+                            data-place-option
+                            data-place-index="30"
+                            data-place-name="Porto Bridge Climb"
+                            data-place-lat="41.148397"
+                            data-place-lng="-8.64131"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">31</span>
+                            <span class="places-explorer__option-name">Porto Bridge Climb</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-32"
+                            data-place-option
+                            data-place-index="31"
+                            data-place-name="Miradouro das Fontainhas"
+                            data-place-lat="41.142599"
+                            data-place-lng="-8.6013"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">32</span>
+                            <span class="places-explorer__option-name">Miradouro das Fontainhas</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-33"
+                            data-place-option
+                            data-place-index="32"
+                            data-place-name="Porto City Hall"
+                            data-place-lat="41.149908"
+                            data-place-lng="-8.610702"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">33</span>
+                            <span class="places-explorer__option-name">Porto City Hall</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-34"
+                            data-place-option
+                            data-place-index="33"
+                            data-place-name="Jardim Botânico do Porto | Museu de História Natural e da Ciência da U.Porto"
+                            data-place-lat="41.1537575"
+                            data-place-lng="-8.6425514"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">34</span>
+                            <span class="places-explorer__option-name">Jardim Botânico do Porto | Museu de História Natural e da Ciência da U.Porto</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-35"
+                            data-place-option
+                            data-place-index="34"
+                            data-place-name="Porto Historical Customs Building"
+                            data-place-lat="41.14338"
+                            data-place-lng="-8.621779"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">35</span>
+                            <span class="places-explorer__option-name">Porto Historical Customs Building</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-36"
+                            data-place-option
+                            data-place-index="35"
+                            data-place-name="Mosteiro de Leça do Balio"
+                            data-place-lat="41.209955"
+                            data-place-lng="-8.623573"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">36</span>
+                            <span class="places-explorer__option-name">Mosteiro de Leça do Balio</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-37"
+                            data-place-option
+                            data-place-index="36"
+                            data-place-name="SEA LIFE Centre Porto"
+                            data-place-lat="41.168675"
+                            data-place-lng="-8.687473"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">37</span>
+                            <span class="places-explorer__option-name">SEA LIFE Centre Porto</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-38"
+                            data-place-option
+                            data-place-index="37"
+                            data-place-name="Jardim do Passeio Alegre"
+                            data-place-lat="41.148206"
+                            data-place-lng="-8.670801"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">38</span>
+                            <span class="places-explorer__option-name">Jardim do Passeio Alegre</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-39"
+                            data-place-option
+                            data-place-index="38"
+                            data-place-name="Igreja de Santa Clara"
+                            data-place-lat="41.14259"
+                            data-place-lng="-8.609248"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">39</span>
+                            <span class="places-explorer__option-name">Igreja de Santa Clara</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-40"
+                            data-place-option
+                            data-place-index="39"
+                            data-place-name="Muralhas Fernandinas do Porto"
+                            data-place-lat="41.141544"
+                            data-place-lng="-8.609466"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">40</span>
+                            <span class="places-explorer__option-name">Muralhas Fernandinas do Porto</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                        </ul>
+                        <p class="places-explorer__empty" data-places-empty hidden>No places match that filter.</p>
+                    </aside>
+                    <div class="places-explorer__stage" data-places-stage>
+                    <nav class="places-stage__stepper" data-places-stepper aria-label="Browse places" hidden>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--prev" data-places-prev aria-label="Previous place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M14.75 5.25 L8.25 12 l6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M9.1 12 H17.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--next" data-places-next aria-label="Next place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M9.25 5.25 L15.75 12 l-6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M6.6 12 H14.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                    </nav>
+                <article
+                    class="places-stage__panel is-active"
+                    data-place-panel
+                    data-place-index="0"
+                    aria-labelledby="place-title-1"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_1.avif" alt="Porto Cathedral" width="1200" height="750" loading="eager" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">01</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free (cloisters €3)</span>
+                        </p>
+                        <h3 id="place-title-1" class="places-stage__title">Porto Cathedral</h3>
+                        <p class="places-stage__text">Porto Cathedral is a Romanesque fortress-church on the highest point of the historic centre, begun in the 12th century and enlarged through the Gothic period. Its cloister walls are lined with 18th-century blue-and-white azulejo panels narrating religious scenes. Terraces beside the cathedral look down over the Ribeira rooftops and the Douro gorge.</p>
+                        <p class="places-stage__coords">41.1428&deg; N / 8.6111&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="1"
+                    aria-labelledby="place-title-2"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_2.avif" alt="Chapel of Souls" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">02</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-2" class="places-stage__title">Chapel of Souls</h3>
+                        <p class="places-stage__text">The Chapel of Santa Catarina, also known as the Chapel of Souls, is a chapel located on the shopping street of Rua de Santa Catarina, in the former parish of Santo Ildefonso, in the city of Porto, in Portugal. It is particularly noted for the blue azulejo tiles on its exterior walls.</p>
+                        <p class="places-stage__coords">41.1498&deg; N / 8.6053&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="2"
+                    aria-labelledby="place-title-3"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_3.avif" alt="Bolhão Market" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">03</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-3" class="places-stage__title">Bolhão Market</h3>
+                        <p class="places-stage__text">Bolhão Market is Porto&#x27;s neoclassical covered market hall on Rua Formosa, opened in 1914 and restored in 2022 after years under scaffolding. Vendors sell fresh fish, produce, flowers, and northern Portuguese specialities under iron framing and granite arches. The hall remains a working market and a benchmark for tripe stew, presunto, and seasonal Douro vegetables.</p>
+                        <p class="places-stage__coords">41.1493&deg; N / 8.6067&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="3"
+                    aria-labelledby="place-title-4"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_4.avif" alt="Jardins do Palacio de Cristal" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">04</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-4" class="places-stage__title">Jardins do Palacio de Cristal</h3>
+                        <p class="places-stage__text">Jardins do Palacio de Cristal is a visitor site in Porto. The Crystal Palace in Portugal&#x27;s second largest city of Porto was inspired by The Crystal Palace in London. It was inaugurated in 1865 to host the 1865 International Exhibition. Eventually falling into disrepair, it was demolished in 1951 to make way for a Sports Pavilion, today known as the Rosa Mota Pavilion, named after the Portuguese marathon runner.</p>
+                        <p class="places-stage__coords">41.1481&deg; N / 8.6258&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="4"
+                    aria-labelledby="place-title-5"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_5.avif" alt="Miradouro da Ponte da Arrábida" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">05</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-5" class="places-stage__title">Miradouro da Ponte da Arrábida</h3>
+                        <p class="places-stage__text">The Miradouro da Ponte da Arrábida is a riverside viewpoint beside Porto&#x27;s Arrábida bridge, opened in 1963 as one of Europe&#x27;s largest concrete arches. Terraces and steps below the span look across the Douro toward Vila Nova de Gaia&#x27;s wine lodges and the Atlantic gorge. The belvedere is a common sunset stop on walks west from the historic centre.</p>
+                        <p class="places-stage__coords">41.1472&deg; N / 8.6385&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="5"
+                    aria-labelledby="place-title-6"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_6.avif" alt="Cais da Ribeira" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">06</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-6" class="places-stage__title">Cais da Ribeira</h3>
+                        <p class="places-stage__text">Cais da Ribeira is Porto&#x27;s colour-washed riverside quay in the UNESCO-listed Ribeira district, where narrow lanes descend to café terraces and boat landings on the Douro. The stone embankment faces Vila Nova de Gaia&#x27;s port wine lodges across the water. It remains the city&#x27;s most photographed waterfront and a starting point for river cruises.</p>
+                        <p class="places-stage__coords">41.1404&deg; N / 8.6120&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="6"
+                    aria-labelledby="place-title-7"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_7.avif" alt="Luís I Bridge" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">07</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-7" class="places-stage__title">Luís I Bridge</h3>
+                        <p class="places-stage__text">The Luiz I Bridge, commonly known as Dom Luís I Bridge, is a double-deck metal arch bridge that spans the river Douro between the cities of Porto and Vila Nova de Gaia in Portugal. At its construction, its 172 metres span was the longest of its type in the world. It can be confused with the nearby Maria Pia Bridge, a railway bridge that was built 9 years earlier to the east), which is similar in aspect to the Luiz I bridge.</p>
+                        <p class="places-stage__coords">41.1399&deg; N / 8.6094&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="7"
+                    aria-labelledby="place-title-8"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_8.avif" alt="Clérigos Church" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">08</span>
+                            <span class="places-stage__admission"><span>Admission</span>€10</span>
+                        </p>
+                        <h3 id="place-title-8" class="places-stage__title">Clérigos Church</h3>
+                        <p class="places-stage__text">The Clérigos Church is a Baroque landmark on Rua dos Clérigos, built for the Brotherhood of Clerics in the 18th century to a design by Nicolau Nasoni. Its 75-metre Torre dos Clérigos bell tower rises in a corkscrew profile visible across central Porto. Visitors can climb the tower for panoramic views over the granite rooftops toward the Douro.</p>
+                        <p class="places-stage__coords">41.1458&deg; N / 8.6146&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="8"
+                    aria-labelledby="place-title-9"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_9.avif" alt="Estádio do Dragão" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">09</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-9" class="places-stage__title">Estádio do Dragão</h3>
+                        <p class="places-stage__text">Estádio do Dragão is a must-visit for football enthusiasts, offering guided tours of FC Porto&#x27;s 50,000-seat stadium and a dedicated museum showing the club&#x27;s rich history. The stadium has witnessed numerous victories, including in the UEFA Champions League. Even if visitors are not a football fan, experiencing the active atmosphere of this modern stadium is recommended.</p>
+                        <p class="places-stage__coords">41.1618&deg; N / 8.5836&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="9"
+                    aria-labelledby="place-title-10"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_13.avif" alt="Mercado do Bolhão" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">10</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-10" class="places-stage__title">Mercado do Bolhão</h3>
+                        <p class="places-stage__text">Mercado do Bolhão is a historic, two-level market housed in a neoclassical building that opened in central Porto in 1917. It has become an city landmark with its faded grandeur and family-run stalls offering fresh produce, meats, fish, sausages, flowers, and local crafts. Travellers can enjoy a multisensory experience as they wander through narrow corridors filled with colorful sights and enticing aromas.</p>
+                        <p class="places-stage__coords">41.1494&deg; N / 8.6071&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="10"
+                    aria-labelledby="place-title-11"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_27.avif" alt="Torre dos Clérigos" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">11</span>
+                            <span class="places-stage__admission"><span>Admission</span>€10</span>
+                        </p>
+                        <h3 id="place-title-11" class="places-stage__title">Torre dos Clérigos</h3>
+                        <p class="places-stage__text">Rising 76 meters high, Torre dos Clérigos is a prominent baroque bell tower in Porto. Climbing its 225 steps rewards travellers with panoramic views of the city, including landmarks like Praca da Liberdade, Livraria Lello bookshop, and the Douro valley. This historic structure offers a bird&#x27;s-eye perspective of Porto and is a must-visit for first-time sightseers looking to orient themselves in Portugal&#x27;s second largest city.</p>
+                        <p class="places-stage__coords">41.1457&deg; N / 8.6146&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="11"
+                    aria-labelledby="place-title-12"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_22.avif" alt="Castelo do Queijo" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">12</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-12" class="places-stage__title">Castelo do Queijo</h3>
+                        <p class="places-stage__text">Castelo do Queijo, also known as the Fort of Sao Francisco do Queijo, is a 17th-century fort located in Matosinhos, Porto. Positioned on a prominent rock overlooking the beach, this turreted fort offers views of the North Atlantic Ocean. The fort&#x27;s trapezoidal shape and pentagonal facades with triangular corbels showcase its historical significance. Travellers can explore the castle&#x27;s architecture and enjoy exhibitions inside while taking in the gorgeous ocean view.</p>
+                        <p class="places-stage__coords">41.1686&deg; N / 8.6899&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="12"
+                    aria-labelledby="place-title-13"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_18.avif" alt="Felgueiras Lighthouse" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">13</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-13" class="places-stage__title">Felgueiras Lighthouse</h3>
+                        <p class="places-stage__text">Farolim de Felgueiras, a 19th-century hexagonal lighthouse made of granite, stands tall at 10 meters on the Douro River. Walking along the river from Porto&#x27;s Ribeira district to Foz offers a less crowded but equally rewarding experience compared to taking the old trams.</p>
+                        <p class="places-stage__coords">41.1468&deg; N / 8.6773&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="13"
+                    aria-labelledby="place-title-14"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_21.avif" alt="Pérgola da Nevogilde" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">14</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-14" class="places-stage__title">Pérgola da Nevogilde</h3>
+                        <p class="places-stage__text">Pérgola da Nevogilde, located in Foz do Porto, is a romantic and spot by the sea. The golden yellow structure of the pergola creates a effect when illuminated by sunlight. Travellers can enjoy coastal views while strolling through the arched promenade walkway, especially during sunset. It&#x27;s recommended to visit during the day for photo opportunities and to experience the cool sea breeze. The area also offers cafes with great sunset views along the beach.</p>
+                        <p class="places-stage__coords">41.1578&deg; N / 8.6830&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="14"
+                    aria-labelledby="place-title-15"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_15.avif" alt="Praia da Memória" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">15</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-15" class="places-stage__title">Praia da Memória</h3>
+                        <p class="places-stage__text">Praia da Memória is a wide, sandy beach favored by surfers and families with children due to its waves and tide pools. It holds historical significance as the site of King D. Pedro IV&#x27;s army landing in 1822 to rid Portugal of his brother&#x27;s despotic rule. This and clean beach offers ample free parking spaces, an view, and a cozy restaurant serving good food.</p>
+                        <p class="places-stage__coords">41.2317&deg; N / 8.7223&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="15"
+                    aria-labelledby="place-title-16"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_19.avif" alt="St. John the Baptist of Foz Fort" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">16</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-16" class="places-stage__title">St. John the Baptist of Foz Fort</h3>
+                        <p class="places-stage__text">Forte de São João Baptista da Foz, constructed in the late 16th century, is a heavily fortified installation aimed at protecting the coast and the mouth of the Douro River. Today, it houses the Regional Office of the National Defense Institute. While lacking interpretive information, travellers can freely explore this historical site with a great view of the river and surrounding sand bars.</p>
+                        <p class="places-stage__coords">41.1490&deg; N / 8.6745&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="16"
+                    aria-labelledby="place-title-17"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_16.avif" alt="Capela do Senhor da Pedra" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">17</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-17" class="places-stage__title">Capela do Senhor da Pedra</h3>
+                        <p class="places-stage__text">Capela do Senhor da Pedra is a oceanfront chapel located in Miramar, near Porto, Portugal. Perched on a rocky outcrop overlooking the Atlantic Ocean, this 17th-century Baroque chapel offers views of the beach and sunsets. Its unique location makes it a spot for photography enthusiasts and travellers seeking a mystical atmosphere by the sea.</p>
+                        <p class="places-stage__coords">41.0688&deg; N / 8.6586&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="17"
+                    aria-labelledby="place-title-18"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_17.avif" alt="El Corte Inglés Gaia Porto" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">18</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-18" class="places-stage__title">El Corte Inglés Gaia Porto</h3>
+                        <p class="places-stage__text">El Corte Inglés Gaia Porto is a top shopping destination in Vila Nova de Gaia, offering a wide range of products from fashion and electronics to gourmet food. It&#x27;s known for its high-quality items and excellent service, although prices may be on the higher side. Keep an eye out for discounts, especially in August or December. The store stands out for its service and unique retail experience. Travellers can also enjoy the festive decorations during Christmas.</p>
+                        <p class="places-stage__coords">41.1256&deg; N / 8.6048&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="18"
+                    aria-labelledby="place-title-19"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_24.avif" alt="Anemone" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">19</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-19" class="places-stage__title">Anemone</h3>
+                        <p class="places-stage__text">Anemone is a visitor site in Porto. She Changes is a striking seaside installation in Matosinhos, designed as an homage to the local fishermen. The sculpture resembles a fishing net and is located in the middle of a roundabout, offering changing shadows and swaying movements that evoke the sea breeze. This known artwork by architect Siza Vieira is a when visiting Matosinhos. It&#x27;s situated near the beach, making it an ideal spot to catch the sunset and observe surf schools in the sea behind it.</p>
+                        <p class="places-stage__coords">41.1733&deg; N / 8.6887&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="19"
+                    aria-labelledby="place-title-20"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_34.avif" alt="Casa da Música" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">20</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-20" class="places-stage__title">Casa da Música</h3>
+                        <p class="places-stage__text">Located at the Boavista roundabout, Casa da Música is a striking 12-floor concert hall that is a evidence of modern architecture. Designed by known Dutch architect Rem Koolhaas and completed in 2005, this venue was created to embody Porto&#x27;s innovative cultural vision during its time as the European Capital of Culture in 2001.</p>
+                        <p class="places-stage__coords">41.1588&deg; N / 8.6307&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="20"
+                    aria-labelledby="place-title-21"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_10.avif" alt="FC Porto Museum" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">21</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-21" class="places-stage__title">FC Porto Museum</h3>
+                        <p class="places-stage__text">FC Porto Museum is a museum in Porto, Portugal. The FC Porto Museum, also known as the FC Porto Museum by BMG, is a recent soccer museum located at Estadio do Dragao in Porto, Portugal. Permanent galleries and temporary displays are open on posted hours.</p>
+                        <p class="places-stage__coords">41.1608&deg; N / 8.5827&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="21"
+                    aria-labelledby="place-title-22"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_30.avif" alt="Mosteiro Santo Agostinho da Serra do Pilar" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">22</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-22" class="places-stage__title">Mosteiro Santo Agostinho da Serra do Pilar</h3>
+                        <p class="places-stage__text">Mosteiro Santo Agostinho da Serra do Pilar is a visitor site in Porto, Portugal. Mosteiro da Serra do Pilar, a former monastery dating back to the 1500s, is situated on a hilltop overlooking the Douro River in Vila Nova de Gaia. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">41.1383&deg; N / 8.6075&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="22"
+                    aria-labelledby="place-title-23"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_38.avif" alt="Miradouro da Vitória" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">23</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-23" class="places-stage__title">Miradouro da Vitória</h3>
+                        <p class="places-stage__text">Miradouro da Vitória is a historic square in Porto that offers a unique romantic experience with its views of the cityscape, river Douro, and terracotta rooftops. Despite the surrounding abandoned buildings, it is considered spots to witness a sunset in Portugal.</p>
+                        <p class="places-stage__coords">41.1431&deg; N / 8.6158&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="23"
+                    aria-labelledby="place-title-24"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_25.avif" alt="São João National Theater" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">24</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-24" class="places-stage__title">São João National Theater</h3>
+                        <p class="places-stage__text">São João National Theater is a theatre in Porto, Portugal. São João National Theater is a significant landmark in Porto, Portugal, known for its rich history and cultural significance. Public access is usually through ticketed performances or daytime visits.</p>
+                        <p class="places-stage__coords">41.1447&deg; N / 8.6074&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="24"
+                    aria-labelledby="place-title-25"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_26.avif" alt="Church of Saint Ildefonso" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">25</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-25" class="places-stage__title">Church of Saint Ildefonso</h3>
+                        <p class="places-stage__text">Church of Saint Ildefonso is an elegant 18th-century church located in the Baixa district of Porto. Its facade is adorned with blue and white tiles, known as azulejos, depicting scenes from the life of St. Ildefonso and stories from the gospel. Created by artist Jorge Colaço, over 11,000 tiles make up this facade. The church stands alone in Praca da Batalha and is a head-turner with its graceful twin towers.</p>
+                        <p class="places-stage__coords">41.1461&deg; N / 8.6067&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="25"
+                    aria-labelledby="place-title-26"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_32.avif" alt="Jardim do Morro" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">26</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-26" class="places-stage__title">Jardim do Morro</h3>
+                        <p class="places-stage__text">Jardim do Morro is a hilltop green space in Porto that offers panoramic views of the city and the distant Atlantic. Travellers can reach this spot by taking a scenic cable car ride or walking across the Ponte de Dom Luis. The park is popular among locals and tourists alike, especially during late afternoon when people gather to watch the sunset over the river.</p>
+                        <p class="places-stage__coords">41.1371&deg; N / 8.6093&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="26"
+                    aria-labelledby="place-title-27"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_28.avif" alt="Igreja do Carmo" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">27</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-27" class="places-stage__title">Igreja do Carmo</h3>
+                        <p class="places-stage__text">Igreja do Carmo, also known as the Church of Lady of Mount Carmel, is a baroque church in the Baixa district. Its exterior is adorned with detailed tile mosaics depicting scenes related to the founding of the Carmelite Order. Connected to its twin church by a narrow residence, it houses numerous oil paintings and elaborate gilt altars inside. The church&#x27;s neo-gothic architecture and traditional market nearby make it a popular destination for travellers exploring this area.</p>
+                        <p class="places-stage__coords">41.1474&deg; N / 8.6163&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="27"
+                    aria-labelledby="place-title-28"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_33.avif" alt="Ribeira do Porto" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">28</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-28" class="places-stage__title">Ribeira do Porto</h3>
+                        <p class="places-stage__text">The Ribeira is the historic and most district of Porto, situated along the banks of the Douro River. Characterized by its narrow, winding medieval streets and colorful, tiled houses, the area is a UNESCO World Heritage site. The active riverfront promenade is lined with cafes and offers classic views of the traditional Rabelo boats and the well known Dom Luís I Bridge.</p>
+                        <p class="places-stage__coords">41.1404&deg; N / 8.6126&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="28"
+                    aria-labelledby="place-title-29"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_37.avif" alt="Igreja da Lapa" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">29</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-29" class="places-stage__title">Igreja da Lapa</h3>
+                        <p class="places-stage__text">Igreja da Lapa is a visitor site in Porto, Portugal. The church holds historical significance as it was the chosen location for King Pedro IV&#x27;s heart to be bestowed upon his death. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">41.1572&deg; N / 8.6120&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="29"
+                    aria-labelledby="place-title-30"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_31.avif" alt="Miradouro da Serra do Pilar" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">30</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-30" class="places-stage__title">Miradouro da Serra do Pilar</h3>
+                        <p class="places-stage__text">The Miradouro da Serra do Pilar, situated in Vila Nova de Gaia, offers panoramic views of the illuminated city of Porto from across the river. This vantage point allows travellers to admire the scenery, including the river and the Luis Bridge. Miradouro da Serra do Pilar is a visitor site in Porto, Portugal with public access during posted hours.</p>
+                        <p class="places-stage__coords">41.1383&deg; N / 8.6086&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="30"
+                    aria-labelledby="place-title-31"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_36.avif" alt="Porto Bridge Climb" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">31</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-31" class="places-stage__title">Porto Bridge Climb</h3>
+                        <p class="places-stage__text">The Porto Bridge Climb offers a unique experience to ascend the Arrábida Bridge, providing views of Porto and the Douro River estuary. This landmark bridge spans 270 meters over the river, with a maximum height of 70 meters, making it an architectural feat. Participants are equipped with harnesses and secure lifelines for a guided tour that involves scaling the lofty heights safely.</p>
+                        <p class="places-stage__coords">41.1484&deg; N / 8.6413&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="31"
+                    aria-labelledby="place-title-32"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_40.avif" alt="Miradouro das Fontainhas" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">32</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-32" class="places-stage__title">Miradouro das Fontainhas</h3>
+                        <p class="places-stage__text">Miradouro das Fontainhas, located near Ponte do Infante, offers a panoramic view of the Douro landscape, Vila Nova de Gaia, and part of Porto city. It provides a vantage point to see four out of the six bridges in Porto. The area is versatile, suitable for picnics, sports activities, or simply relaxing with friends.</p>
+                        <p class="places-stage__coords">41.1426&deg; N / 8.6013&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="32"
+                    aria-labelledby="place-title-33"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_14.avif" alt="Porto City Hall" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">33</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-33" class="places-stage__title">Porto City Hall</h3>
+                        <p class="places-stage__text">Porto City Hall is a neoclassical 1900s building with a black-marble entrance hall and a clocktower offering panoramic city views. It&#x27;s located in the Baixa district, near attractions like Torre dos Clerigos, Igreja do Carmo, Mercado do Bolhao, and Livraria Lello. The city hall is open to the public for tours during the day and offers an interactive map for virtual tours.</p>
+                        <p class="places-stage__coords">41.1499&deg; N / 8.6107&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="33"
+                    aria-labelledby="place-title-34"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_35.avif" alt="Jardim Botânico do Porto | Museu de História Natural e da Ciência da U.Porto" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">34</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-34" class="places-stage__title">Jardim Botânico do Porto | Museu de História Natural e da Ciência da U.Porto</h3>
+                        <p class="places-stage__text">Jardim Botânico do Porto | Museu de História Natural e da Ciência da U.Porto sits within the Casa da Música area of Porto, documented in local heritage registers for its civic or cultural role. Visitors approach from the main access road and combine the visit with neighbouring heritage buildings and public spaces in the district.</p>
+                        <p class="places-stage__coords">41.1538&deg; N / 8.6426&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="34"
+                    aria-labelledby="place-title-35"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_41.avif" alt="Porto Historical Customs Building" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">35</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-35" class="places-stage__title">Porto Historical Customs Building</h3>
+                        <p class="places-stage__text">The Alfândega Nova on the Douro waterfront, a neoclassical customs house from the nineteenth century. Restored for offices and event space, its long facade faces gaia and the river. Exhibitions on city history occasionally open in the ground-floor halls.</p>
+                        <p class="places-stage__coords">41.1434&deg; N / 8.6218&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="35"
+                    aria-labelledby="place-title-36"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_42.avif" alt="Mosteiro de Leça do Balio" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">36</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-36" class="places-stage__title">Mosteiro de Leça do Balio</h3>
+                        <p class="places-stage__text">A medieval monastery and hospital complex on the pilgrimage route to Santiago, managed by the Order of Malta. Romanesque and Gothic elements mix in the church and cloister ruins. It sits between Porto and the coast at Leça do Balio along the northern suburban rail line.</p>
+                        <p class="places-stage__coords">41.2100&deg; N / 8.6236&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="36"
+                    aria-labelledby="place-title-37"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_23.avif" alt="SEA LIFE Centre Porto" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">37</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-37" class="places-stage__title">SEA LIFE Centre Porto</h3>
+                        <p class="places-stage__text">SEA LIFE Centre Porto is a top choice for families, offering a variety of sea creatures and play areas. It&#x27;s an museum that provides a rare chance to see sharks, colorful sea horses, and rays up close. Travellers can even witness the feeding of these aquatic animals at specific times. The center also is an educational platform for children to learn about important topics such as life preservation and recycling in a fun and interactive manner.</p>
+                        <p class="places-stage__coords">41.1687&deg; N / 8.6875&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="37"
+                    aria-labelledby="place-title-38"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_20.avif" alt="Jardim do Passeio Alegre" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">38</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-38" class="places-stage__title">Jardim do Passeio Alegre</h3>
+                        <p class="places-stage__text">Jardim do Passeio Alegre is a 1800s garden located in Foz, Porto. This park is home to a Franciscan convent, an extravagant fountain, and an Art Nouveau-tiled restroom. Travellers can stroll through a palm tree-lined avenue where parakeets nest at the treetops and enjoy activities such as mini-golf for children and a designer market on Sundays.</p>
+                        <p class="places-stage__coords">41.1482&deg; N / 8.6708&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="38"
+                    aria-labelledby="place-title-39"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_12.avif" alt="Igreja de Santa Clara" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">39</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-39" class="places-stage__title">Igreja de Santa Clara</h3>
+                        <p class="places-stage__text">Igreja de Santa Clara, also known as St, is a visitor site in Porto, Portugal. Clara Church, is a 15th-century Catholic place of worship located in Porto. However, the interior is where the true splendor lies, with elaborate gold-plated design work that creates a and opulent atmosphere. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">41.1426&deg; N / 8.6092&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="39"
+                    aria-labelledby="place-title-40"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/porto_11.avif" alt="Muralhas Fernandinas do Porto" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">40</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-40" class="places-stage__title">Muralhas Fernandinas do Porto</h3>
+                        <p class="places-stage__text">Muralhas Fernandinas do Porto is a waterfront area in Porto, Portugal. Quays and embankment paths form the main walking route. Muralhas Fernandinas do Porto remains part of the public visitor circuit in Porto. Local maps identify Muralhas Fernandinas do Porto within Porto, Portugal.</p>
+                        <p class="places-stage__coords">41.1415&deg; N / 8.6095&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="site-footer">
         <div class="page-shell">
             <div class="site-footer__bar">
-                <a href="../../index.html" class="site-footer__brand" aria-label="Global Explorer home">
-                    <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
+                <a href="../../index.html" class="site-footer__mark" aria-label="Global Explorer home">
+                    <svg width="24" height="24" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
-                    <span class="site-footer__brand-name font-display">Global Explorer</span>
+                    Global Explorer
                 </a>
-                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides <span>Porto: 40 places across Northern Portugal.</span></p>
             </div>
         </div>
     </footer>
 
     <button id="scrollTopBtn" type="button" aria-label="Scroll to top">
-        <i class="ph ph-arrow-up" aria-hidden="true"></i>
+        <svg viewBox="0 0 24 24" width="1.15em" height="1.15em" aria-hidden="true" focusable="false">
+            <path d="M12 5.25 V18.75 M12 5.25 L6.75 10.5 M12 5.25 L17.25 10.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
     </button>
 
     <script defer src="../../assets/dev-destination-toggle.js"></script>
     <script defer src="../../assets/tg-page-chrome.js"></script>
     <script defer src="../../assets/tg-destination-map.js"></script>
+    <script defer src="../../assets/tg-destination-places.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const map = L.map('map').setView([41.157944, -8.629105], 14);
+            const map = L.map('map');
             L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
                 attribution: '&copy; Google Maps',
                 maxZoom: 20
             }).addTo(map);
-            const locations = [{"name": "Porto Cathedral", "lat": 41.1428, "lng": -8.6111}, {"name": "Chapel of Souls", "lat": 41.1498, "lng": -8.6053}, {"name": "Bolhão Market", "lat": 41.1493, "lng": -8.6067}, {"name": "Jardins do Palacio de Cristal", "lat": 41.1481, "lng": -8.6258}, {"name": "Miradouro da Ponte da Arrábida", "lat": 41.1472, "lng": -8.6385}, {"name": "Cais da Ribeira", "lat": 41.1404, "lng": -8.612}, {"name": "Luís I Bridge", "lat": 41.1399, "lng": -8.6094}, {"name": "Clérigos Church", "lat": 41.1458, "lng": -8.6146}, {"name": "Estádio do Dragão", "lat": 41.16177, "lng": -8.583591}, {"name": "Mercado do Bolhão", "lat": 41.149386, "lng": -8.607117}, {"name": "Torre dos Clérigos", "lat": 41.145671, "lng": -8.614598}, {"name": "Castelo do Queijo", "lat": 41.168577, "lng": -8.689921}, {"name": "Felgueiras Lighthouse", "lat": 41.146759, "lng": -8.677305}, {"name": "Pérgola da Nevogilde", "lat": 41.15778, "lng": -8.683018}, {"name": "Praia da Memória", "lat": 41.231682, "lng": -8.722313}, {"name": "St. John the Baptist of Foz Fort", "lat": 41.14901, "lng": -8.674492}, {"name": "Capela do Senhor da Pedra", "lat": 41.068752, "lng": -8.658594}, {"name": "El Corte Inglés Gaia Porto", "lat": 41.125628, "lng": -8.604808}, {"name": "Anemone", "lat": 41.17335, "lng": -8.688735}, {"name": "Casa da Música", "lat": 41.158847, "lng": -8.630737}, {"name": "FC Porto Museum", "lat": 41.160769, "lng": -8.582716}, {"name": "Mosteiro Santo Agostinho da Serra do Pilar", "lat": 41.138298, "lng": -8.607526}, {"name": "Miradouro da Vitória", "lat": 41.143083, "lng": -8.615832}, {"name": "São João National Theater", "lat": 41.144673, "lng": -8.607422}, {"name": "Church of Saint Ildefonso", "lat": 41.1461, "lng": -8.606699}, {"name": "Jardim do Morro", "lat": 41.137146, "lng": -8.609293}, {"name": "Igreja do Carmo", "lat": 41.147356, "lng": -8.616273}, {"name": "Ribeira do Porto", "lat": 41.1404099, "lng": -8.612566400000002}, {"name": "Igreja da Lapa", "lat": 41.157163, "lng": -8.612001}, {"name": "Miradouro da Serra do Pilar", "lat": 41.138291, "lng": -8.608561}, {"name": "Porto Bridge Climb", "lat": 41.148397, "lng": -8.64131}, {"name": "Miradouro das Fontainhas", "lat": 41.142599, "lng": -8.6013}, {"name": "Porto City Hall", "lat": 41.149908, "lng": -8.610702}, {"name": "Jardim Botânico do Porto | Museu de História Natural e da Ciência da U.Porto", "lat": 41.1537575, "lng": -8.6425514}, {"name": "Porto Historical Customs Building", "lat": 41.14338, "lng": -8.621779}, {"name": "Mosteiro de Leça do Balio", "lat": 41.209955, "lng": -8.623573}, {"name": "SEA LIFE Centre Porto", "lat": 41.168675, "lng": -8.687473}, {"name": "Jardim do Passeio Alegre", "lat": 41.148206, "lng": -8.670801}, {"name": "Igreja de Santa Clara", "lat": 41.14259, "lng": -8.609248}, {"name": "Muralhas Fernandinas do Porto", "lat": 41.141544, "lng": -8.609466}];
+            const locations = Array.from(document.querySelectorAll('[data-place-option]')).map((el) => ({
+                name: el.dataset.placeName || '',
+                lat: Number(el.dataset.placeLat),
+                lng: Number(el.dataset.placeLng),
+            }));
             const customIcon = L.icon({
                 iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
                 iconSize: [32, 32],
@@ -666,14 +1761,45 @@
                 popupAnchor: [0, -32],
             });
             const destinationCenter = [41.157944, -8.629105];
-            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.089192, "maxCenterLng": 0.093208};
-            locations.forEach((location) => {
-                L.marker([location.lat, location.lng], { icon: customIcon })
+            const mapContext = {"denseUrban": true};
+            const markers = locations.map((location) => {
+                const marker = L.marker([location.lat, location.lng], { icon: customIcon })
                     .addTo(map)
                     .bindPopup(`<strong>${location.name}</strong>`);
+                return marker;
             });
             window.TGDestinationMap?.fitToLocations(map, locations, destinationCenter, mapContext);
             window.TGDestinationMap?.bindMobileScrollGuard(map, 'map');
+            window.TGDestinationMap?.registerMarkers(map, markers);
+
+            const heroImage = document.querySelector('[data-destination-hero-image]');
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (heroImage && !reduceMotion) {
+                let framePending = false;
+                let scrolling = false;
+                let scrollEndTimer = 0;
+                const updateHeroPosition = () => {
+                    const offset = Math.min(window.scrollY, window.innerHeight * 1.15) * 0.075;
+                    heroImage.style.transform = `translate3d(0, ${offset}px, 0) scale(1.055)`;
+                    framePending = false;
+                };
+                window.addEventListener('scroll', () => {
+                    if (!scrolling) {
+                        scrolling = true;
+                        heroImage.style.willChange = 'transform';
+                    }
+                    window.clearTimeout(scrollEndTimer);
+                    scrollEndTimer = window.setTimeout(() => {
+                        scrolling = false;
+                        heroImage.style.willChange = 'auto';
+                    }, 150);
+                    if (!framePending) {
+                        window.requestAnimationFrame(updateHeroPosition);
+                        framePending = true;
+                    }
+                }, { passive: true });
+                updateHeroPosition();
+            }
         });
     </script>
 </body>

@@ -6,334 +6,775 @@
     <meta name="description" content="Plan a visit to Rotterdam with a concise history, interactive attractions map, prices, and curated highlights across the destination.">
     <meta name="theme-color" content="#121417">
     <title>Rotterdam Guide | Global Explorer Guides</title>
-    <link rel="stylesheet" href="../../assets/tailwind.css">
-    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
     <link rel="stylesheet" href="../../assets/newindex-fonts.css">
     <link rel="stylesheet" href="../../assets/tg-theme.css">
     <link rel="stylesheet" href="../../assets/tg-site-chrome.css">
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
     <link rel="stylesheet" href="../../assets/tg-modern-polish.css">
+    <link rel="stylesheet" href="../../assets/tg-country-page.css">
+    <link rel="stylesheet" href="../../assets/tg-destination-page-v3.css">
     <script defer src="../../assets/lenis.min.js"></script>
     <script defer src="../../assets/tg-smooth-scroll.js"></script>
     <link rel="preload" as="image" href="images/rotterdam_hero.avif" type="image/avif" fetchpriority="high">
     <script defer src="../../assets/leaflet/leaflet.js"></script>
 </head>
-<body class="tg-theme tg-destination-page tg-modern">
-    <header id="site-header" class="header-glass fixed top-0 left-0 right-0 z-50">
+<body class="tg-theme tg-modern tg-country-v2 tg-destination-v3">
+    <a class="skip-link" href="#main-content">Skip to Rotterdam guide</a>
+    <header id="site-header" class="header-glass">
         <div class="page-shell header-glass__inner">
-            <a href="../../index.html" class="font-display site-brand" style="display:flex;align-items:center;gap:0.75rem;text-decoration:none;color:inherit;font-size:1.25rem;" aria-label="Global Explorer home">
+            <a href="../../index.html" class="site-brand" aria-label="Global Explorer home">
                 <span class="site-brand__mark" aria-hidden="true">
                     <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
-                        <circle cx="14" cy="14" r="2" fill="#E8B14F"/>
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
                 </span>
                 Global Explorer
             </a>
-            <nav class="header-glass__nav-mobile" aria-label="Mobile navigation">
-                <a href="../../index.html" class="header-glass__icon-link" aria-label="Home">
-                    <i class="ph ph-house" aria-hidden="true"></i>
-                </a>
-                <a href="netherlands.html" class="header-glass__icon-link" aria-label="Back to Netherlands">
-                    <i class="ph ph-arrow-left" aria-hidden="true"></i>
-                </a>
-            </nav>
             <nav class="header-glass__nav" aria-label="Primary">
-                <a href="../../index.html" class="nav-link">Home</a>
-                <a href="rotterdam.html" class="nav-link" aria-current="page">Rotterdam</a>
+                <a href="#main-content" class="nav-link" aria-current="page">Rotterdam</a>
+                <a href="#atlas" class="nav-link">Atlas</a>
+                <a href="#places" class="nav-link">Places</a>
                 <a href="netherlands.html" class="nav-link">Netherlands</a>
-                <a href="../../index.html#map" class="nav-link">Atlas</a>
             </nav>
         </div>
     </header>
-    <main>
-        <div class="tg-destination-hero-zone">
-            <div class="tg-destination-hero" aria-hidden="true">
-                <div class="tg-destination-hero__image" style="background-image: url('images/rotterdam_hero.avif')"></div>
-                <div class="tg-destination-hero__fade"></div>
-            </div>
-            <div class="page-shell tg-destination-hero-zone__content">
-        <nav class="tg-toolbar tg-toolbar--compact" aria-label="Breadcrumb">
-            <div class="tg-breadcrumb">
-                <img src="../../assets/flags/w40/nl.png" alt="" class="w-6 h-auto rounded-[2px]" aria-hidden="true">
-                <span>Netherlands</span>
-                <span class="tg-breadcrumb__sep" aria-hidden="true">&rsaquo;</span>
-                <span class="tg-breadcrumb__current">Rotterdam</span>
-            </div>
-        </nav>
+    <main id="main-content" tabindex="-1">
+        <section class="destination-hero" aria-labelledby="destination-title">
+            <img class="destination-hero__media" data-destination-hero-image src="images/rotterdam_hero.avif" alt="" width="1600" height="1067" fetchpriority="high" decoding="sync">
+            <div class="destination-hero__shade" aria-hidden="true"></div>
+            <div class="page-shell destination-hero__content">
+                <button
+                    type="button"
+                    id="destination-active-toggle"
+                    class="country-active-toggle country-active-toggle--inactive"
+                    data-iso2="NL"
+                    data-slug="rotterdam"
+                    data-active="false"
+                    data-interactive="true"
+                    aria-label="Toggle Rotterdam visibility on Netherlands guide"
+                    aria-pressed="false"
+                >
+                    <img src="../../assets/flags/w80/nl.png" alt="" aria-hidden="true">
+                    <span class="country-toggle__copy" aria-hidden="true">
+                        <span class="country-toggle__label">Rotterdam guide</span>
+                        <strong class="country-toggle__state"></strong>
+                    </span>
+                </button>
 
-        <header class="tg-page-header">
-            <button
-        type="button"
-        id="destination-active-toggle"
-        class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
-        data-iso2="NL"
-        data-slug="rotterdam"
-        data-active="false"
-        data-interactive="true"
-        aria-label="Toggle Rotterdam visibility on Netherlands guide"
-        aria-pressed="false"
-    >
-        <i class="ph ph-map-pin text-4xl pointer-events-none" aria-hidden="true"></i>
-    </button>
-            <span class="tg-page-header__eyebrow">Destination Guide — Rotterdam</span>
-            <h1 class="tg-page-title font-display">Explore <em>Rotterdam</em></h1>
-            <div class="glass-card frosted-panel tg-panel">
-                <h2 class="tg-panel__title font-display">
-                    <i class="ph ph-scroll" aria-hidden="true"></i> A Brief History
-                </h2>
-                <p class="tg-panel__body">Rotterdam rebuilt after 1940 bombing into Europe&#x27;s largest port, with modernist bridges, cube houses, and maritime museums on the Maas River. Medieval Delfshaven survives as a reminder of Pilgrim embarkation and pre-war harbour life in South Holland. Euromast views and Erasmus Bridge spans extend rebuilt harbour districts across the Maas delta. Walking routes through the historic centre help visitors relate these monuments to wider patterns of settlement and civic life in Netherlands.</p>
-            </div>
-        </header>
+                <div class="hero__route" aria-label="Destination route and coordinates">
+                    <span>Netherlands / Rotterdam</span>
+                    <span>51.9420&deg; N / 4.4452&deg; E</span>
+                </div>
 
-        <div class="tg-section__header tg-section__header--map-end">
-            <span class="tg-section__eyebrow">Map</span>
-            <h2 class="tg-section__title font-display">Attractions Map</h2>
-        </div>
-            </div>
-        </div>
-
-        <div class="page-shell tg-main tg-main--below-hero">
-        <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Rotterdam attractions"></div>
-        <section class="tg-section">
-            <div class="tg-section__header">
-                <span class="tg-section__eyebrow">Highlights</span>
-                <h2 class="tg-section__title font-display">Top Sights &amp; Activities</h2>
-            </div>
-            <div class="tg-sights-list">
-            
-            <!-- 1. Euromast -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/rotterdam_1.avif" alt="Euromast" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €24
+                <h1 id="destination-title" class="destination-hero__title" style="--destination-title-chars: 9">Rotterdam</h1>
+                <div class="destination-hero__history">
+                    <p>Rotterdam rebuilt after 1940 bombing into Europe&#x27;s largest port, with modernist bridges, cube houses, and maritime museums on the Maas River. Medieval Delfshaven survives as a reminder of Pilgrim embarkation and pre-war harbour life in South Holland. Euromast views and Erasmus Bridge spans extend rebuilt harbour districts across the Maas delta. Walking routes through the historic centre help visitors relate these monuments to wider patterns of settlement and civic life in Netherlands.</p>
+                </div>
+                <dl class="destination-hero__facts destination-hero__facts--no-region" aria-label="Rotterdam guide facts">
+                    <div>
+                        <dt>Country</dt>
+                        <dd>Netherlands</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Euromast</h3>
-                    <p class="tg-sight-card__text">Euromast is a visitor site in Rotterdam, Netherlands. Euromast is a must-visit TV tower in Rotterdam, offering 360-degree views of the city. The tour around Euromast includes exploring various residential typologies, IT and media compounds, educational facilities, and sustainable projects such as the SAWA housing tower. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 2. SS Rotterdam -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/rotterdam_2.avif" alt="SS Rotterdam" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €32
+                    <div>
+                        <dt>Places</dt>
+                        <dd>15</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">SS Rotterdam</h3>
-                    <p class="tg-sight-card__text">The S.S. Rotterdam offers a unique experience as a hotel, restaurant, and tourist attraction all in one. This former cruise ship turned hotel provides colorful rooms, free breakfast, and an outdoor pool for guests to enjoy. Visitors can book tickets for a dinnertime cruise on the pancake boat to get an overview of the city and its port. The Museum Rotterdam offers insight into the city&#x27;s history with a one-hour overview.</p>
-                </div>
-            </div>
-            <!-- 3. Feyenoord Stadium (De Kuip) -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/rotterdam_3.avif" alt="Feyenoord Stadium (De Kuip)" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €19
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Feyenoord Stadium (De Kuip)</h3>
-                    <p class="tg-sight-card__text">Feyenoord Stadium, also known as De Kuip, is a 51,000-seat multi-purpose stadium located in Rotterdam. It is the current home to Feyenoord FC and has been a venue for rock concerts. The stadium offers tours that allow visitors to get close to the pitch, visit the changing rooms, and explore the museum showing European cups and Dutch championships won by Feyenoord.</p>
-                </div>
-            </div>
-            <!-- 4. Erasmusbrug -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/rotterdam_4.avif" alt="Erasmusbrug" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Erasmusbrug</h3>
-                    <p class="tg-sight-card__text">Erasmusbrug, also known as &quot;The Swan,&quot; is a modern suspension bridge in Rotterdam designed by Ben van Berkel and opened in 1996. It spans the Nieuwe Maas River, connecting the northern and southern parts of the city. The bridge has become an symbol of Rotterdam&#x27;s skyline and has been featured in various events such as the start of the Tour de France and Red Bull Air races.</p>
-                </div>
-            </div>
-            <!-- 5. Nieuwe Luxor Theater -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/rotterdam_5.avif" alt="Nieuwe Luxor Theater" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €25
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Nieuwe Luxor Theater</h3>
-                    <p class="tg-sight-card__text">The Nieuwe Luxor Theater in Rotterdam was built as a result of an architectural competition held by the Rotterdams Luxor Theater in 1996. The winning design successfully combines traditional cinema architecture with modern structural elements. It is known for hosting musicals, cabaret, opera, and shows. The theater offers comfortable seating with great views from almost every angle and convenient facilities and bars.</p>
-                </div>
-            </div>
-            <!-- 6. Rotterdam Zoo -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/rotterdam_6.avif" alt="Rotterdam Zoo" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €28
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Rotterdam Zoo</h3>
-                    <p class="tg-sight-card__text">Rotterdam Zoo, also known as Diergaarde Blijdorp, is a visitor site in Rotterdam, Netherlands. Records associated with the site include 1857. Rotterdam Zoo, also known as Diergaarde Blijdorp, is a historic zoo established in 1857 and for its successful breeding programs. Visitors can observe various wildlife including rhinos, lions, tigers, giraffes, gorillas, polar bears, penguins and elephants. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 7. Van Nelle Factory BV -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/rotterdam_7.avif" alt="Van Nelle Factory BV" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free (guided tour €15)
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Van Nelle Factory BV</h3>
-                    <p class="tg-sight-card__text">The Van Nelle Factory BV is a modernist 1930s factory in Rotterdam that has been transformed into an arts hub, housing creative companies and serving as an event venue. During Rotterdam Art Week, the city comes alive with major art and design fairs like Art Rotterdam and Object Rotterdam, attracting numerous art enthusiasts. The factory, originally a tobacco factory, is considered a pinnacle of Dutch industrial heritage and was designated as a UNESCO World Heritage site in 2014.</p>
-                </div>
-            </div>
-            <!-- 8. Oostpoort -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/rotterdam_8.avif" alt="Oostpoort" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Oostpoort</h3>
-                    <p class="tg-sight-card__text">Oostpoort, also known as the Eastern Gate, is a visitor site in Rotterdam, Netherlands. It is the only remaining entrance from the old city wall and offers views of the surrounding canals. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 9. Nieuwe Church -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/rotterdam_9.avif" alt="Nieuwe Church" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Nieuwe Church</h3>
-                    <p class="tg-sight-card__text">Nieuwe Church is a religious building in Rotterdam, Netherlands. Nieuwe Church, located in Delft, is a Protestant place of worship constructed in the shape of a cross. The church&#x27;s 109-meter tower offers panoramic views but is not accessible to children under five due to its 376 narrow, spiraling steps. The exterior and main interior spaces are usually viewable outside service times.</p>
-                </div>
-            </div>
-            <!-- 10. Old Church -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/rotterdam_10.avif" alt="Old Church" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Old Church</h3>
-                    <p class="tg-sight-card__text">The Old Church, also known as Oude Kerk, is a 13th-century church located along the banks of the old Oude Delft canal in Delft, Holland. It is known for its 75-meter-tall leaning brick tower and a 9-tonne bell. The church has undergone several enlargements and renovations over the years to accommodate a growing number of worshippers.</p>
-                </div>
-            </div>
-            <!-- 11. Museum Prinsenhof Delft -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/rotterdam_11.avif" alt="Museum Prinsenhof Delft" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €15
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Museum Prinsenhof Delft</h3>
-                    <p class="tg-sight-card__text">Museum Prinsenhof Delft, once a convent of St. Agatha, holds great historical significance as the former residence of Prince William the Silent, a key figure in the creation of the Dutch Republic. The museum showcases 17th-century arts and crafts alongside exhibits on William&#x27;s role in the Spanish Revolt. The tragic event that took place here, where William was assassinated by Balthasar Gerard in 1584, is commemorated throughout the museum.</p>
-                </div>
-            </div>
-            <!-- 12. Miniworld Rotterdam -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/rotterdam_12.avif" alt="Miniworld Rotterdam" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €15
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Miniworld Rotterdam</h3>
-                    <p class="tg-sight-card__text">Miniworld Rotterdam is a visitor site in Rotterdam, Netherlands. The exhibit showcases famous landmarks and attractions of the Netherlands on a small scale, including a detailed replica of the Rotterdam Port and Water Port. Visitors can marvel at the 2. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 13. Kijk-Kubus Museum-house -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/rotterdam_13.avif" alt="Kijk-Kubus Museum-house" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €4
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Kijk-Kubus Museum-house</h3>
-                    <p class="tg-sight-card__text">The Kijk-Kubus Museum-house is a fascinating destination in Rotterdam that showcases the innovative design of architect Piet Blom&#x27;s cube houses. This unique museum has an immersive experience, allowing them to step inside one of these distinctive homes and explore their layout, purpose, and historical significance. While many cube houses are privately owned, the Kijk-Kubus stands out as a public space dedicated to celebrating this notable building.</p>
-                </div>
-            </div>
-            <!-- 14. statue The Destroyed City by Ossip Zadkine -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/rotterdam_14.avif" alt="statue The Destroyed City by Ossip Zadkine" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">statue The Destroyed City by Ossip Zadkine</h3>
-                    <p class="tg-sight-card__text">&quot;The Destroyed City&quot; is a striking bronze monument and war memorial in Rotterdam, created by the known artist Ossip Zadkine. It symbolizes the city&#x27;s devastation during World War II when it was severely damaged by German forces. The sculpture is a fitting tribute to the resilience of Rotterdam, which rebuilt itself after the devastating Blitz. Visitors are encouraged to explore nearby landmarks such as Markthal and Marathonbeeld before concluding their tour at this powerful monument.</p>
-                </div>
-            </div>
-            <!-- 15. Plaswijckpark -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/rotterdam_15.avif" alt="Plaswijckpark" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €18
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Plaswijckpark</h3>
-                    <p class="tg-sight-card__text">Plaswijckpark is a family park located just an 8-minute drive from Rotterdam&#x27;s city center. It offers a range of attractions including an adventure playground, boat and train trips, as well as a zoo featuring monkeys and wallabies. The park also has a theater, gentle mechanical games in the playground, and nature paths for hiking. Families can enjoy a meal at the on-site restaurant which offers a variety of dishes catering to both adults and children.</p>
-                </div>
-            </div>
+                </dl>
             </div>
         </section>
-        </div>
+
+        <section id="atlas" class="destination-atlas" aria-labelledby="atlas-title">
+            <div class="page-shell destination-atlas__layout">
+                <div class="destination-atlas__brief">
+                    <p class="destination-atlas__index">City atlas</p>
+                    <h2 id="atlas-title">Plot the city.</h2>
+                    <p class="destination-atlas__copy">Zoom, pan, and open any marker to focus that place in the catalog below.</p>
+                    <dl class="destination-atlas__facts" aria-label="Map coverage">
+                        <div>
+                            <dt>Plotted</dt>
+                            <dd>15 places</dd>
+                        </div>
+                        <div>
+                            <dt>Center</dt>
+                            <dd>51.9420&deg; N<br>4.4452&deg; E</dd>
+                        </div>
+                    </dl>
+                </div>
+                <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Rotterdam attractions"></div>
+            </div>
+        </section>
+
+        <section id="places" class="destination-places" aria-labelledby="places-title">
+            <div class="page-shell">
+                <div class="destination-chapter">
+                    <h2 id="places-title" class="destination-chapter__heading">15 ways into<br>Rotterdam.</h2>
+                    <p class="destination-chapter__copy">Browse the index, open a location, and read the essentials without scrolling through a long catalog. Each entry contains its image, admission note, and contextual guide.</p>
+                </div>
+                <div class="places-explorer" data-places-explorer>
+                    <aside class="places-explorer__rail" aria-label="Place index">
+                        <div class="places-explorer__toolbar">
+                            <label class="places-explorer__filter-label" for="places-filter">Filter places</label>
+                            <input
+                                id="places-filter"
+                                class="places-explorer__filter"
+                                type="search"
+                                data-places-filter
+                                placeholder="Search by name"
+                                autocomplete="off"
+                            >
+                            <p class="places-explorer__meta"><strong data-places-count>15</strong> of 15 shown</p>
+                        </div>
+                        <ul class="places-explorer__list" role="listbox" aria-label="Places in Rotterdam" data-places-list data-lenis-prevent data-tg-scroll-surface>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option is-active"
+                            role="option"
+                            id="place-option-1"
+                            data-place-option
+                            data-place-index="0"
+                            data-place-name="Euromast"
+                            data-place-lat="51.905444"
+                            data-place-lng="4.466637"
+                            aria-selected="true"
+                            tabindex="0"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">01</span>
+                            <span class="places-explorer__option-name">Euromast</span>
+                            <span class="places-explorer__option-price">€24</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-2"
+                            data-place-option
+                            data-place-index="1"
+                            data-place-name="SS Rotterdam"
+                            data-place-lat="51.897691"
+                            data-place-lng="4.473385"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">02</span>
+                            <span class="places-explorer__option-name">SS Rotterdam</span>
+                            <span class="places-explorer__option-price">€32</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-3"
+                            data-place-option
+                            data-place-index="2"
+                            data-place-name="Feyenoord Stadium (De Kuip)"
+                            data-place-lat="51.893865"
+                            data-place-lng="4.523191"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">03</span>
+                            <span class="places-explorer__option-name">Feyenoord Stadium (De Kuip)</span>
+                            <span class="places-explorer__option-price">€19</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-4"
+                            data-place-option
+                            data-place-index="3"
+                            data-place-name="Erasmusbrug"
+                            data-place-lat="51.909004"
+                            data-place-lng="4.487123"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">04</span>
+                            <span class="places-explorer__option-name">Erasmusbrug</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-5"
+                            data-place-option
+                            data-place-index="4"
+                            data-place-name="Nieuwe Luxor Theater"
+                            data-place-lat="51.907128"
+                            data-place-lng="4.490932"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">05</span>
+                            <span class="places-explorer__option-name">Nieuwe Luxor Theater</span>
+                            <span class="places-explorer__option-price">€25</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-6"
+                            data-place-option
+                            data-place-index="5"
+                            data-place-name="Rotterdam Zoo"
+                            data-place-lat="51.928158"
+                            data-place-lng="4.444026"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">06</span>
+                            <span class="places-explorer__option-name">Rotterdam Zoo</span>
+                            <span class="places-explorer__option-price">€28</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-7"
+                            data-place-option
+                            data-place-index="6"
+                            data-place-name="Van Nelle Factory BV"
+                            data-place-lat="51.923207"
+                            data-place-lng="4.433472"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">07</span>
+                            <span class="places-explorer__option-name">Van Nelle Factory BV</span>
+                            <span class="places-explorer__option-price">Free (guided tour €15)</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-8"
+                            data-place-option
+                            data-place-index="7"
+                            data-place-name="Oostpoort"
+                            data-place-lat="52.010908"
+                            data-place-lng="4.368391"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">08</span>
+                            <span class="places-explorer__option-name">Oostpoort</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-9"
+                            data-place-option
+                            data-place-index="8"
+                            data-place-name="Nieuwe Church"
+                            data-place-lat="52.012418"
+                            data-place-lng="4.360918"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">09</span>
+                            <span class="places-explorer__option-name">Nieuwe Church</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-10"
+                            data-place-option
+                            data-place-index="9"
+                            data-place-name="Old Church"
+                            data-place-lat="52.012638"
+                            data-place-lng="4.35605"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">10</span>
+                            <span class="places-explorer__option-name">Old Church</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-11"
+                            data-place-option
+                            data-place-index="10"
+                            data-place-name="Museum Prinsenhof Delft"
+                            data-place-lat="52.012117"
+                            data-place-lng="4.354629"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">11</span>
+                            <span class="places-explorer__option-name">Museum Prinsenhof Delft</span>
+                            <span class="places-explorer__option-price">€15</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-12"
+                            data-place-option
+                            data-place-index="11"
+                            data-place-name="Miniworld Rotterdam"
+                            data-place-lat="51.922816"
+                            data-place-lng="4.465164"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">12</span>
+                            <span class="places-explorer__option-name">Miniworld Rotterdam</span>
+                            <span class="places-explorer__option-price">€15</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-13"
+                            data-place-option
+                            data-place-index="12"
+                            data-place-name="Kijk-Kubus Museum-house"
+                            data-place-lat="51.920188"
+                            data-place-lng="4.490575"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">13</span>
+                            <span class="places-explorer__option-name">Kijk-Kubus Museum-house</span>
+                            <span class="places-explorer__option-price">€4</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-14"
+                            data-place-option
+                            data-place-index="13"
+                            data-place-name="statue The Destroyed City by Ossip Zadkine"
+                            data-place-lat="51.917648"
+                            data-place-lng="4.48306"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">14</span>
+                            <span class="places-explorer__option-name">statue The Destroyed City by Ossip Zadkine</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-15"
+                            data-place-option
+                            data-place-index="14"
+                            data-place-name="Plaswijckpark"
+                            data-place-lat="51.957312"
+                            data-place-lng="4.480246"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">15</span>
+                            <span class="places-explorer__option-name">Plaswijckpark</span>
+                            <span class="places-explorer__option-price">€18</span>
+                        </button>
+                    </li>
+                        </ul>
+                        <p class="places-explorer__empty" data-places-empty hidden>No places match that filter.</p>
+                    </aside>
+                    <div class="places-explorer__stage" data-places-stage>
+                    <nav class="places-stage__stepper" data-places-stepper aria-label="Browse places" hidden>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--prev" data-places-prev aria-label="Previous place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M14.75 5.25 L8.25 12 l6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M9.1 12 H17.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--next" data-places-next aria-label="Next place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M9.25 5.25 L15.75 12 l-6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M6.6 12 H14.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                    </nav>
+                <article
+                    class="places-stage__panel is-active"
+                    data-place-panel
+                    data-place-index="0"
+                    aria-labelledby="place-title-1"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/rotterdam_1.avif" alt="Euromast" width="1200" height="750" loading="eager" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">01</span>
+                            <span class="places-stage__admission"><span>Admission</span>€24</span>
+                        </p>
+                        <h3 id="place-title-1" class="places-stage__title">Euromast</h3>
+                        <p class="places-stage__text">Euromast is a visitor site in Rotterdam, Netherlands. Euromast is a must-visit TV tower in Rotterdam, offering 360-degree views of the city. The tour around Euromast includes exploring various residential typologies, IT and media compounds, educational facilities, and sustainable projects such as the SAWA housing tower. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">51.9054&deg; N / 4.4666&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="1"
+                    aria-labelledby="place-title-2"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/rotterdam_2.avif" alt="SS Rotterdam" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">02</span>
+                            <span class="places-stage__admission"><span>Admission</span>€32</span>
+                        </p>
+                        <h3 id="place-title-2" class="places-stage__title">SS Rotterdam</h3>
+                        <p class="places-stage__text">The S.S. Rotterdam offers a unique experience as a hotel, restaurant, and tourist attraction all in one. This former cruise ship turned hotel provides colorful rooms, free breakfast, and an outdoor pool for guests to enjoy. Visitors can book tickets for a dinnertime cruise on the pancake boat to get an overview of the city and its port. The Museum Rotterdam offers insight into the city&#x27;s history with a one-hour overview.</p>
+                        <p class="places-stage__coords">51.8977&deg; N / 4.4734&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="2"
+                    aria-labelledby="place-title-3"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/rotterdam_3.avif" alt="Feyenoord Stadium (De Kuip)" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">03</span>
+                            <span class="places-stage__admission"><span>Admission</span>€19</span>
+                        </p>
+                        <h3 id="place-title-3" class="places-stage__title">Feyenoord Stadium (De Kuip)</h3>
+                        <p class="places-stage__text">Feyenoord Stadium, also known as De Kuip, is a 51,000-seat multi-purpose stadium located in Rotterdam. It is the current home to Feyenoord FC and has been a venue for rock concerts. The stadium offers tours that allow visitors to get close to the pitch, visit the changing rooms, and explore the museum showing European cups and Dutch championships won by Feyenoord.</p>
+                        <p class="places-stage__coords">51.8939&deg; N / 4.5232&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="3"
+                    aria-labelledby="place-title-4"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/rotterdam_4.avif" alt="Erasmusbrug" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">04</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-4" class="places-stage__title">Erasmusbrug</h3>
+                        <p class="places-stage__text">Erasmusbrug, also known as &quot;The Swan,&quot; is a modern suspension bridge in Rotterdam designed by Ben van Berkel and opened in 1996. It spans the Nieuwe Maas River, connecting the northern and southern parts of the city. The bridge has become an symbol of Rotterdam&#x27;s skyline and has been featured in various events such as the start of the Tour de France and Red Bull Air races.</p>
+                        <p class="places-stage__coords">51.9090&deg; N / 4.4871&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="4"
+                    aria-labelledby="place-title-5"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/rotterdam_5.avif" alt="Nieuwe Luxor Theater" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">05</span>
+                            <span class="places-stage__admission"><span>Admission</span>€25</span>
+                        </p>
+                        <h3 id="place-title-5" class="places-stage__title">Nieuwe Luxor Theater</h3>
+                        <p class="places-stage__text">The Nieuwe Luxor Theater in Rotterdam was built as a result of an architectural competition held by the Rotterdams Luxor Theater in 1996. The winning design successfully combines traditional cinema architecture with modern structural elements. It is known for hosting musicals, cabaret, opera, and shows. The theater offers comfortable seating with great views from almost every angle and convenient facilities and bars.</p>
+                        <p class="places-stage__coords">51.9071&deg; N / 4.4909&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="5"
+                    aria-labelledby="place-title-6"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/rotterdam_6.avif" alt="Rotterdam Zoo" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">06</span>
+                            <span class="places-stage__admission"><span>Admission</span>€28</span>
+                        </p>
+                        <h3 id="place-title-6" class="places-stage__title">Rotterdam Zoo</h3>
+                        <p class="places-stage__text">Rotterdam Zoo, also known as Diergaarde Blijdorp, is a visitor site in Rotterdam, Netherlands. Records associated with the site include 1857. Rotterdam Zoo, also known as Diergaarde Blijdorp, is a historic zoo established in 1857 and for its successful breeding programs. Visitors can observe various wildlife including rhinos, lions, tigers, giraffes, gorillas, polar bears, penguins and elephants. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">51.9282&deg; N / 4.4440&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="6"
+                    aria-labelledby="place-title-7"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/rotterdam_7.avif" alt="Van Nelle Factory BV" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">07</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free (guided tour €15)</span>
+                        </p>
+                        <h3 id="place-title-7" class="places-stage__title">Van Nelle Factory BV</h3>
+                        <p class="places-stage__text">The Van Nelle Factory BV is a modernist 1930s factory in Rotterdam that has been transformed into an arts hub, housing creative companies and serving as an event venue. During Rotterdam Art Week, the city comes alive with major art and design fairs like Art Rotterdam and Object Rotterdam, attracting numerous art enthusiasts. The factory, originally a tobacco factory, is considered a pinnacle of Dutch industrial heritage and was designated as a UNESCO World Heritage site in 2014.</p>
+                        <p class="places-stage__coords">51.9232&deg; N / 4.4335&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="7"
+                    aria-labelledby="place-title-8"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/rotterdam_8.avif" alt="Oostpoort" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">08</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-8" class="places-stage__title">Oostpoort</h3>
+                        <p class="places-stage__text">Oostpoort, also known as the Eastern Gate, is a visitor site in Rotterdam, Netherlands. It is the only remaining entrance from the old city wall and offers views of the surrounding canals. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">52.0109&deg; N / 4.3684&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="8"
+                    aria-labelledby="place-title-9"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/rotterdam_9.avif" alt="Nieuwe Church" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">09</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-9" class="places-stage__title">Nieuwe Church</h3>
+                        <p class="places-stage__text">Nieuwe Church is a religious building in Rotterdam, Netherlands. Nieuwe Church, located in Delft, is a Protestant place of worship constructed in the shape of a cross. The church&#x27;s 109-meter tower offers panoramic views but is not accessible to children under five due to its 376 narrow, spiraling steps. The exterior and main interior spaces are usually viewable outside service times.</p>
+                        <p class="places-stage__coords">52.0124&deg; N / 4.3609&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="9"
+                    aria-labelledby="place-title-10"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/rotterdam_10.avif" alt="Old Church" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">10</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-10" class="places-stage__title">Old Church</h3>
+                        <p class="places-stage__text">The Old Church, also known as Oude Kerk, is a 13th-century church located along the banks of the old Oude Delft canal in Delft, Holland. It is known for its 75-meter-tall leaning brick tower and a 9-tonne bell. The church has undergone several enlargements and renovations over the years to accommodate a growing number of worshippers.</p>
+                        <p class="places-stage__coords">52.0126&deg; N / 4.3560&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="10"
+                    aria-labelledby="place-title-11"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/rotterdam_11.avif" alt="Museum Prinsenhof Delft" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">11</span>
+                            <span class="places-stage__admission"><span>Admission</span>€15</span>
+                        </p>
+                        <h3 id="place-title-11" class="places-stage__title">Museum Prinsenhof Delft</h3>
+                        <p class="places-stage__text">Museum Prinsenhof Delft, once a convent of St. Agatha, holds great historical significance as the former residence of Prince William the Silent, a key figure in the creation of the Dutch Republic. The museum showcases 17th-century arts and crafts alongside exhibits on William&#x27;s role in the Spanish Revolt. The tragic event that took place here, where William was assassinated by Balthasar Gerard in 1584, is commemorated throughout the museum.</p>
+                        <p class="places-stage__coords">52.0121&deg; N / 4.3546&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="11"
+                    aria-labelledby="place-title-12"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/rotterdam_12.avif" alt="Miniworld Rotterdam" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">12</span>
+                            <span class="places-stage__admission"><span>Admission</span>€15</span>
+                        </p>
+                        <h3 id="place-title-12" class="places-stage__title">Miniworld Rotterdam</h3>
+                        <p class="places-stage__text">Miniworld Rotterdam is a visitor site in Rotterdam, Netherlands. The exhibit showcases famous landmarks and attractions of the Netherlands on a small scale, including a detailed replica of the Rotterdam Port and Water Port. Visitors can marvel at the 2. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">51.9228&deg; N / 4.4652&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="12"
+                    aria-labelledby="place-title-13"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/rotterdam_13.avif" alt="Kijk-Kubus Museum-house" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">13</span>
+                            <span class="places-stage__admission"><span>Admission</span>€4</span>
+                        </p>
+                        <h3 id="place-title-13" class="places-stage__title">Kijk-Kubus Museum-house</h3>
+                        <p class="places-stage__text">The Kijk-Kubus Museum-house is a fascinating destination in Rotterdam that showcases the innovative design of architect Piet Blom&#x27;s cube houses. This unique museum has an immersive experience, allowing them to step inside one of these distinctive homes and explore their layout, purpose, and historical significance. While many cube houses are privately owned, the Kijk-Kubus stands out as a public space dedicated to celebrating this notable building.</p>
+                        <p class="places-stage__coords">51.9202&deg; N / 4.4906&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="13"
+                    aria-labelledby="place-title-14"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/rotterdam_14.avif" alt="statue The Destroyed City by Ossip Zadkine" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">14</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-14" class="places-stage__title">statue The Destroyed City by Ossip Zadkine</h3>
+                        <p class="places-stage__text">&quot;The Destroyed City&quot; is a striking bronze monument and war memorial in Rotterdam, created by the known artist Ossip Zadkine. It symbolizes the city&#x27;s devastation during World War II when it was severely damaged by German forces. The sculpture is a fitting tribute to the resilience of Rotterdam, which rebuilt itself after the devastating Blitz. Visitors are encouraged to explore nearby landmarks such as Markthal and Marathonbeeld before concluding their tour at this powerful monument.</p>
+                        <p class="places-stage__coords">51.9176&deg; N / 4.4831&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="14"
+                    aria-labelledby="place-title-15"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/rotterdam_15.avif" alt="Plaswijckpark" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">15</span>
+                            <span class="places-stage__admission"><span>Admission</span>€18</span>
+                        </p>
+                        <h3 id="place-title-15" class="places-stage__title">Plaswijckpark</h3>
+                        <p class="places-stage__text">Plaswijckpark is a family park located just an 8-minute drive from Rotterdam&#x27;s city center. It offers a range of attractions including an adventure playground, boat and train trips, as well as a zoo featuring monkeys and wallabies. The park also has a theater, gentle mechanical games in the playground, and nature paths for hiking. Families can enjoy a meal at the on-site restaurant which offers a variety of dishes catering to both adults and children.</p>
+                        <p class="places-stage__coords">51.9573&deg; N / 4.4802&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="site-footer">
         <div class="page-shell">
             <div class="site-footer__bar">
-                <a href="../../index.html" class="site-footer__brand" aria-label="Global Explorer home">
-                    <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
+                <a href="../../index.html" class="site-footer__mark" aria-label="Global Explorer home">
+                    <svg width="24" height="24" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
-                    <span class="site-footer__brand-name font-display">Global Explorer</span>
+                    Global Explorer
                 </a>
-                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides <span>Rotterdam: 15 places across Rotterdam.</span></p>
             </div>
         </div>
     </footer>
 
     <button id="scrollTopBtn" type="button" aria-label="Scroll to top">
-        <i class="ph ph-arrow-up" aria-hidden="true"></i>
+        <svg viewBox="0 0 24 24" width="1.15em" height="1.15em" aria-hidden="true" focusable="false">
+            <path d="M12 5.25 V18.75 M12 5.25 L6.75 10.5 M12 5.25 L17.25 10.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
     </button>
 
     <script defer src="../../assets/dev-destination-toggle.js"></script>
     <script defer src="../../assets/tg-page-chrome.js"></script>
     <script defer src="../../assets/tg-destination-map.js"></script>
+    <script defer src="../../assets/tg-destination-places.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const map = L.map('map').setView([51.942036, 4.445187], 14);
+            const map = L.map('map');
             L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
                 attribution: '&copy; Google Maps',
                 maxZoom: 20
             }).addTo(map);
-            const locations = [{"name": "Euromast", "lat": 51.905444, "lng": 4.466637}, {"name": "SS Rotterdam", "lat": 51.897691, "lng": 4.473385}, {"name": "Feyenoord Stadium (De Kuip)", "lat": 51.893865, "lng": 4.523191}, {"name": "Erasmusbrug", "lat": 51.909004, "lng": 4.487123}, {"name": "Nieuwe Luxor Theater", "lat": 51.907128, "lng": 4.490932}, {"name": "Rotterdam Zoo", "lat": 51.928158, "lng": 4.444026}, {"name": "Van Nelle Factory BV", "lat": 51.923207, "lng": 4.433472}, {"name": "Oostpoort", "lat": 52.010908, "lng": 4.368391}, {"name": "Nieuwe Church", "lat": 52.012418, "lng": 4.360918}, {"name": "Old Church", "lat": 52.012638, "lng": 4.35605}, {"name": "Museum Prinsenhof Delft", "lat": 52.012117, "lng": 4.354629}, {"name": "Miniworld Rotterdam", "lat": 51.922816, "lng": 4.465164}, {"name": "Kijk-Kubus Museum-house", "lat": 51.920188, "lng": 4.490575}, {"name": "statue The Destroyed City by Ossip Zadkine", "lat": 51.917648, "lng": 4.48306}, {"name": "Plaswijckpark", "lat": 51.957312, "lng": 4.480246}];
+            const locations = Array.from(document.querySelectorAll('[data-place-option]')).map((el) => ({
+                name: el.dataset.placeName || '',
+                lat: Number(el.dataset.placeLat),
+                lng: Number(el.dataset.placeLng),
+            }));
             const customIcon = L.icon({
                 iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
                 iconSize: [32, 32],
@@ -341,14 +782,45 @@
                 popupAnchor: [0, -32],
             });
             const destinationCenter = [51.942036, 4.445187];
-            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.070602, "maxCenterLng": 0.090558};
-            locations.forEach((location) => {
-                L.marker([location.lat, location.lng], { icon: customIcon })
+            const mapContext = {"denseUrban": true};
+            const markers = locations.map((location) => {
+                const marker = L.marker([location.lat, location.lng], { icon: customIcon })
                     .addTo(map)
                     .bindPopup(`<strong>${location.name}</strong>`);
+                return marker;
             });
             window.TGDestinationMap?.fitToLocations(map, locations, destinationCenter, mapContext);
             window.TGDestinationMap?.bindMobileScrollGuard(map, 'map');
+            window.TGDestinationMap?.registerMarkers(map, markers);
+
+            const heroImage = document.querySelector('[data-destination-hero-image]');
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (heroImage && !reduceMotion) {
+                let framePending = false;
+                let scrolling = false;
+                let scrollEndTimer = 0;
+                const updateHeroPosition = () => {
+                    const offset = Math.min(window.scrollY, window.innerHeight * 1.15) * 0.075;
+                    heroImage.style.transform = `translate3d(0, ${offset}px, 0) scale(1.055)`;
+                    framePending = false;
+                };
+                window.addEventListener('scroll', () => {
+                    if (!scrolling) {
+                        scrolling = true;
+                        heroImage.style.willChange = 'transform';
+                    }
+                    window.clearTimeout(scrollEndTimer);
+                    scrollEndTimer = window.setTimeout(() => {
+                        scrolling = false;
+                        heroImage.style.willChange = 'auto';
+                    }, 150);
+                    if (!framePending) {
+                        window.requestAnimationFrame(updateHeroPosition);
+                        framePending = true;
+                    }
+                }, { passive: true });
+                updateHeroPosition();
+            }
         });
     </script>
 </body>

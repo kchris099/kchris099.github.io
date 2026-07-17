@@ -8,6 +8,7 @@
     function fitToLocations(map, locations, destinationCenter, mapContext = {}) {
         if (!map || !Array.isArray(locations) || locations.length === 0) {
             if (map && destinationCenter) map.setView(destinationCenter, 14);
+            if (map) attachViewResetControl(map, locations, destinationCenter, mapContext);
             return;
         }
 
@@ -83,6 +84,66 @@
         }
 
         map.fitBounds(bounds, fitOptions);
+        attachViewResetControl(map, locations, destinationCenter, mapContext);
+    }
+
+    /**
+     * Leaflet's +/- controls use <a href="#">. Neutralize the hash so a missed
+     * preventDefault cannot jump the page to the top (common on mobile).
+     */
+    function hardenZoomControlAnchors(map) {
+        const container = map?.zoomControl?.getContainer?.();
+        if (!container || map._tgZoomAnchorsHardened) {
+            return;
+        }
+        map._tgZoomAnchorsHardened = true;
+        container.querySelectorAll("a[href='#']").forEach((anchor) => {
+            anchor.addEventListener(
+                "click",
+                (event) => {
+                    event.preventDefault();
+                },
+                true,
+            );
+        });
+    }
+
+    /**
+     * Append a turnaround (↺) control under Leaflet's +/- zoom buttons.
+     * Restores the page default view via fitToLocations.
+     */
+    function attachViewResetControl(map, locations, destinationCenter, mapContext = {}) {
+        if (!map) {
+            return;
+        }
+
+        map._tgResetView = { locations, destinationCenter, mapContext };
+
+        if (map._tgResetControlAttached) {
+            return;
+        }
+
+        const container = map.zoomControl?.getContainer?.();
+        if (!container || typeof L === "undefined") {
+            return;
+        }
+
+        map._tgResetControlAttached = true;
+        hardenZoomControlAnchors(map);
+
+        // Use <button>, not <a href="#"> — hash links scroll to top when the
+        // mobile scroll-guard stops propagation before Leaflet can preventDefault.
+        const button = L.DomUtil.create("button", "leaflet-control-zoom-reset", container);
+        button.type = "button";
+        button.title = "Reset map view";
+        button.setAttribute("aria-label", "Reset map view");
+        button.innerHTML = '<span aria-hidden="true">&#8634;</span>';
+
+        L.DomEvent.disableClickPropagation(button);
+        L.DomEvent.on(button, "click", L.DomEvent.stop).on(button, "click", () => {
+            const args = map._tgResetView || {};
+            fitToLocations(map, args.locations, args.destinationCenter, args.mapContext || {});
+        });
     }
 
     function bindMobileScrollGuard(map, frameId) {
@@ -93,6 +154,10 @@
 
         const mq = window.matchMedia(MOBILE_QUERY);
         let active = false;
+
+        const isMapControlTarget = (target) =>
+            target instanceof Element &&
+            Boolean(target.closest(".leaflet-control, .leaflet-control-zoom-reset"));
 
         const lock = () => {
             map.dragging.disable();
@@ -124,10 +189,25 @@
             }
         };
 
+        // Capture-phase: while locked, a bare stopPropagation on control taps
+        // blocked Leaflet's preventDefault, so <a href="#"> scrolled to top.
         frame.addEventListener(
             "click",
             (event) => {
-                if (!mq.matches || active) {
+                if (!mq.matches) {
+                    return;
+                }
+
+                if (isMapControlTarget(event.target)) {
+                    event.preventDefault();
+                    if (!active) {
+                        unlock();
+                    }
+                    // Do not stopPropagation — let +/- / reset handlers run.
+                    return;
+                }
+
+                if (active) {
                     return;
                 }
                 event.stopPropagation();
@@ -145,10 +225,69 @@
 
         mq.addEventListener("change", applyMode);
         applyMode();
+        hardenZoomControlAnchors(map);
+    }
+
+    let registeredMap = null;
+    let registeredMarkers = [];
+
+    function registerMarkers(map, markers) {
+        registeredMap = map || null;
+        registeredMarkers = Array.isArray(markers) ? markers : [];
+    }
+
+    function focusPlace(index, { openPopup = false } = {}) {
+        const marker = registeredMarkers[Number(index)];
+        if (!registeredMap || !marker) {
+            return;
+        }
+
+        const latLng = marker.getLatLng();
+        const placeIndex = Number(index);
+
+        const highlight = () => {
+            registeredMarkers.forEach((entry, i) => {
+                const el = entry.getElement?.();
+                if (!el) {
+                    return;
+                }
+                el.classList.toggle("tg-map-marker--active", i === placeIndex);
+            });
+        };
+
+        const reveal = () => {
+            registeredMap.invalidateSize?.();
+            highlight();
+            if (openPopup) {
+                marker.openPopup();
+            }
+        };
+
+        // Opening a popup mid-pan often loses to the animation (or keeps the
+        // previous marker's popup). Wait for moveend; if already centered,
+        // moveend may not fire so reveal immediately.
+        const center = registeredMap.getCenter();
+        const alreadyCentered =
+            Math.abs(center.lat - latLng.lat) < 1e-6 &&
+            Math.abs(center.lng - latLng.lng) < 1e-6;
+
+        if (openPopup && !alreadyCentered) {
+            registeredMap.once("moveend", reveal);
+            registeredMap.panTo(latLng, { animate: true });
+            return;
+        }
+
+        if (!alreadyCentered) {
+            registeredMap.panTo(latLng, { animate: true });
+        }
+        reveal();
     }
 
     window.TGDestinationMap = {
+        attachViewResetControl,
         bindMobileScrollGuard,
         fitToLocations,
+        registerMarkers,
+        focusPlace,
     };
 })();

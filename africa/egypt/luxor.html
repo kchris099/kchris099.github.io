@@ -6,269 +6,580 @@
     <meta name="description" content="Plan a visit to Luxor with a concise history, interactive attractions map, prices, and curated highlights across the destination.">
     <meta name="theme-color" content="#121417">
     <title>Luxor Guide | Global Explorer Guides</title>
-    <link rel="stylesheet" href="../../assets/tailwind.css">
-    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
     <link rel="stylesheet" href="../../assets/newindex-fonts.css">
     <link rel="stylesheet" href="../../assets/tg-theme.css">
     <link rel="stylesheet" href="../../assets/tg-site-chrome.css">
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
     <link rel="stylesheet" href="../../assets/tg-modern-polish.css">
+    <link rel="stylesheet" href="../../assets/tg-country-page.css">
+    <link rel="stylesheet" href="../../assets/tg-destination-page-v3.css">
     <script defer src="../../assets/lenis.min.js"></script>
     <script defer src="../../assets/tg-smooth-scroll.js"></script>
     <link rel="preload" as="image" href="images/luxor_hero.avif" type="image/avif" fetchpriority="high">
     <script defer src="../../assets/leaflet/leaflet.js"></script>
 </head>
-<body class="tg-theme tg-destination-page tg-modern">
-    <header id="site-header" class="header-glass fixed top-0 left-0 right-0 z-50">
+<body class="tg-theme tg-modern tg-country-v2 tg-destination-v3">
+    <a class="skip-link" href="#main-content">Skip to Luxor guide</a>
+    <header id="site-header" class="header-glass">
         <div class="page-shell header-glass__inner">
-            <a href="../../index.html" class="font-display site-brand" style="display:flex;align-items:center;gap:0.75rem;text-decoration:none;color:inherit;font-size:1.25rem;" aria-label="Global Explorer home">
+            <a href="../../index.html" class="site-brand" aria-label="Global Explorer home">
                 <span class="site-brand__mark" aria-hidden="true">
                     <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
-                        <circle cx="14" cy="14" r="2" fill="#E8B14F"/>
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
                 </span>
                 Global Explorer
             </a>
-            <nav class="header-glass__nav-mobile" aria-label="Mobile navigation">
-                <a href="../../index.html" class="header-glass__icon-link" aria-label="Home">
-                    <i class="ph ph-house" aria-hidden="true"></i>
-                </a>
-                <a href="egypt.html" class="header-glass__icon-link" aria-label="Back to Egypt">
-                    <i class="ph ph-arrow-left" aria-hidden="true"></i>
-                </a>
-            </nav>
             <nav class="header-glass__nav" aria-label="Primary">
-                <a href="../../index.html" class="nav-link">Home</a>
-                <a href="luxor.html" class="nav-link" aria-current="page">Luxor</a>
+                <a href="#main-content" class="nav-link" aria-current="page">Luxor</a>
+                <a href="#atlas" class="nav-link">Atlas</a>
+                <a href="#places" class="nav-link">Places</a>
                 <a href="egypt.html" class="nav-link">Egypt</a>
-                <a href="../../index.html#map" class="nav-link">Atlas</a>
             </nav>
         </div>
     </header>
-    <main>
-        <div class="tg-destination-hero-zone">
-            <div class="tg-destination-hero" aria-hidden="true">
-                <div class="tg-destination-hero__image" style="background-image: url('images/luxor_hero.avif')"></div>
-                <div class="tg-destination-hero__fade"></div>
-            </div>
-            <div class="page-shell tg-destination-hero-zone__content">
-        <nav class="tg-toolbar tg-toolbar--compact" aria-label="Breadcrumb">
-            <div class="tg-breadcrumb">
-                <img src="../../assets/flags/w40/eg.png" alt="" class="w-6 h-auto rounded-[2px]" aria-hidden="true">
-                <span>Egypt</span>
-                <span class="tg-breadcrumb__sep" aria-hidden="true">&rsaquo;</span>
-                <span class="tg-breadcrumb__current">Luxor</span>
-            </div>
-        </nav>
+    <main id="main-content" tabindex="-1">
+        <section class="destination-hero" aria-labelledby="destination-title">
+            <img class="destination-hero__media" data-destination-hero-image src="images/luxor_hero.avif" alt="" width="1600" height="1067" fetchpriority="high" decoding="sync">
+            <div class="destination-hero__shade" aria-hidden="true"></div>
+            <div class="page-shell destination-hero__content">
+                <button
+                    type="button"
+                    id="destination-active-toggle"
+                    class="country-active-toggle country-active-toggle--inactive"
+                    data-iso2="EG"
+                    data-slug="luxor"
+                    data-active="false"
+                    data-interactive="true"
+                    aria-label="Toggle Luxor visibility on Egypt guide"
+                    aria-pressed="false"
+                >
+                    <img src="../../assets/flags/w80/eg.png" alt="" aria-hidden="true">
+                    <span class="country-toggle__copy" aria-hidden="true">
+                        <span class="country-toggle__label">Luxor guide</span>
+                        <strong class="country-toggle__state"></strong>
+                    </span>
+                </button>
 
-        <header class="tg-page-header">
-            <button
-        type="button"
-        id="destination-active-toggle"
-        class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
-        data-iso2="EG"
-        data-slug="luxor"
-        data-active="false"
-        data-interactive="true"
-        aria-label="Toggle Luxor visibility on Egypt guide"
-        aria-pressed="false"
-    >
-        <i class="ph ph-map-pin text-4xl pointer-events-none" aria-hidden="true"></i>
-    </button>
-            <span class="tg-page-header__eyebrow">Destination Guide — Luxor</span>
-            <h1 class="tg-page-title font-display">Explore <em>Luxor</em></h1>
-            <div class="glass-card frosted-panel tg-panel">
-                <h2 class="tg-panel__title font-display">
-                    <i class="ph ph-scroll" aria-hidden="true"></i> A Brief History
-                </h2>
-                <p class="tg-panel__body">Luxor occupies ancient Thebes, capital of Egypt&#x27;s New Kingdom from the sixteenth to eleventh centuries BCE. Pharaohs raised temples at Karnak and Luxor, royal tombs in the Valley of the Kings, and mortuary shrines on the west bank. The Avenue of Sphinxes and surviving colossi record how Theban priests and kings projected divine authority along the Nile.</p>
-            </div>
-        </header>
+                <div class="hero__route" aria-label="Destination route and coordinates">
+                    <span>Egypt / Luxor</span>
+                    <span>25.7208&deg; N / 32.6298&deg; E</span>
+                </div>
 
-        <div class="tg-section__header tg-section__header--map-end">
-            <span class="tg-section__eyebrow">Map</span>
-            <h2 class="tg-section__title font-display">Attractions Map</h2>
-        </div>
-            </div>
-        </div>
-
-        <div class="page-shell tg-main tg-main--below-hero">
-        <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Luxor attractions"></div>
-        <section class="tg-section">
-            <div class="tg-section__header">
-                <span class="tg-section__eyebrow">Highlights</span>
-                <h2 class="tg-section__title font-display">Top Sights &amp; Activities</h2>
-            </div>
-            <div class="tg-sights-list">
-            
-            <!-- 1. Luxor Temple -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/luxor_1.avif" alt="Luxor Temple" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> EGP 500
+                <h1 id="destination-title" class="destination-hero__title" style="--destination-title-chars: 5">Luxor</h1>
+                <div class="destination-hero__history">
+                    <p>Luxor occupies ancient Thebes, capital of Egypt&#x27;s New Kingdom from the sixteenth to eleventh centuries BCE. Pharaohs raised temples at Karnak and Luxor, royal tombs in the Valley of the Kings, and mortuary shrines on the west bank. The Avenue of Sphinxes and surviving colossi record how Theban priests and kings projected divine authority along the Nile.</p>
+                </div>
+                <dl class="destination-hero__facts destination-hero__facts--no-region" aria-label="Luxor guide facts">
+                    <div>
+                        <dt>Country</dt>
+                        <dd>Egypt</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Luxor Temple</h3>
-                    <p class="tg-sight-card__text">Luxor Temple is a complex that was primarily built under the reigns of Amenhotep III and Ramesses II, with contributions from Tutankhamun and others. Situated on the West Bank of Luxor, it is part of a collection of historical attractions that offer insight into Egypt&#x27;s rich history.</p>
-                </div>
-            </div>
-            <!-- 2. Avenue of Sphinxes -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/luxor_2.avif" alt="Avenue of Sphinxes" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free (Karnak admission EGP 600)
+                    <div>
+                        <dt>Places</dt>
+                        <dd>10</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Avenue of Sphinxes</h3>
-                    <p class="tg-sight-card__text">Avenue of Sphinxes is a visitor site in Luxor, Egypt. The Windsor Hotel, In Luxor city, is a convenient accommodation option for travelers. Situated just 40 meters from Sphinx Avenue, it offers easy access to attractions such as Luxor Temple and Karnak Temple. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 3. Mortuary Temple of Hatshepsut -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/luxor_3.avif" alt="Mortuary Temple of Hatshepsut" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> EGP 440
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Mortuary Temple of Hatshepsut</h3>
-                    <p class="tg-sight-card__text">The Mortuary Temple of Hatshepsut, also known as the &#x27;Valley of the Gates of the Kings,&#x27; is an reconstructed temple located beneath the cliffs at Deir el-Bahari in Egypt. This site was used for 500 years between the 16th and 11th centuries BC to build tombs for pharaohs and nobles.</p>
-                </div>
-            </div>
-            <!-- 4. Valley of the Kings -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/luxor_4.avif" alt="Valley of the Kings" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> EGP 750
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Valley of the Kings</h3>
-                    <p class="tg-sight-card__text">Valley of the Kings is a ruins in Luxor, Egypt. Valley of the Kings is a visitor site in Luxor, Egypt. Open remains and interpretive signs guide a typical visit. Local maps mark Valley of the Kings inside Luxor. Approaches are signed from nearby streets in Luxor, Egypt.</p>
-                </div>
-            </div>
-            <!-- 5. Deir el-Medina -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/luxor_5.avif" alt="Deir el-Medina" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> E£150
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Deir el-Medina</h3>
-                    <p class="tg-sight-card__text">Deir el-Medina is an ancient village established around 1492 BCE, where workers who built royal tombs and a Ptolemaic temple resided. It&#x27;s a well-preserved gem that offers insight into the daily lives of ordinary Egyptians. The narrow streets and simple dwellings stand in contrast to the lavish tombs they helped create in the nearby Valley of the Kings.</p>
-                </div>
-            </div>
-            <!-- 6. Colossi of Memnon -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/luxor_6.avif" alt="Colossi of Memnon" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Colossi of Memnon</h3>
-                    <p class="tg-sight-card__text">The Colossi of Memnon, a pair of massive Egyptian statues, are the only remnants of the ancient temple dedicated to King Amenhotep III. These colossal figures were built around 1350 BC and stand as a evidence of the power and grandeur of the 18th dynasty in ancient Egypt.</p>
-                </div>
-            </div>
-            <!-- 7. Mortuary Temple of Seti I -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/luxor_7.avif" alt="Mortuary Temple of Seti I" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> EGP 120
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Mortuary Temple of Seti I</h3>
-                    <p class="tg-sight-card__text">The Mortuary Temple of Seti I is an ancient temple built for a pharaoh, featuring detailed columns and stone carvings. The highlight of the temple is the display of two royal mummies, including Ahmose and possibly Ramses, showcased without their wrappings in dark rooms. The displays also illustrate Thebes&#x27; military might during the New Kingdom, showing chariots and weapons, there are scenes depicting daily life and technology used during that era on the upper floor.</p>
-                </div>
-            </div>
-            <!-- 8. Karnak -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/luxor_8.avif" alt="Karnak" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> EGP 600
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Karnak</h3>
-                    <p class="tg-sight-card__text">Karnak is a massive temple complex in Luxor, Egypt, featuring well-preserved ancient ruins and over 200 structures, including the imposing Amen-Ra temple. The site offers private tours with pick-up services from hotels in Luxor, guided by knowledgeable Egyptologists. Visitors can explore the Valley of the Kings, Hatshepsut Temple, and Colossi of Memnon on this approximately 5-hour excursion.</p>
-                </div>
-            </div>
-            <!-- 9. Precinct of Amun-Re -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/luxor_9.avif" alt="Precinct of Amun-Re" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> E£600
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Precinct of Amun-Re</h3>
-                    <p class="tg-sight-card__text">Precinct of Amun-Re is a visitor site in Luxor, Egypt. This precinct is part of a larger complex that also includes the Precinct of Mut, Precinct of Montu, and the dismantled Temple of Amenhotep IV. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 10. Mut Temple -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/luxor_10.avif" alt="Mut Temple" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> EGP 200
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Mut Temple</h3>
-                    <p class="tg-sight-card__text">Mut Temple is a restored temple complex dedicated to Mut, an Egyptian sky goddess and the consort of Amun-Ra. Located in Luxor, it reflects the city&#x27;s deep religious significance as the city of Amun during ancient times. The Karnak temple served as the official place for worship, housing shrines for various gods including Amun-Re and Mut. The area surrounding the Karnak Complex was revered by ancient Egyptians as &#x27;Ipet-isu,&#x27; or the most selected of places.</p>
-                </div>
-            </div>
+                </dl>
             </div>
         </section>
-        </div>
+
+        <section id="atlas" class="destination-atlas" aria-labelledby="atlas-title">
+            <div class="page-shell destination-atlas__layout">
+                <div class="destination-atlas__brief">
+                    <p class="destination-atlas__index">City atlas</p>
+                    <h2 id="atlas-title">Plot the city.</h2>
+                    <p class="destination-atlas__copy">Zoom, pan, and open any marker to focus that place in the catalog below.</p>
+                    <dl class="destination-atlas__facts" aria-label="Map coverage">
+                        <div>
+                            <dt>Plotted</dt>
+                            <dd>10 places</dd>
+                        </div>
+                        <div>
+                            <dt>Center</dt>
+                            <dd>25.7208&deg; N<br>32.6298&deg; E</dd>
+                        </div>
+                    </dl>
+                </div>
+                <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Luxor attractions"></div>
+            </div>
+        </section>
+
+        <section id="places" class="destination-places" aria-labelledby="places-title">
+            <div class="page-shell">
+                <div class="destination-chapter">
+                    <h2 id="places-title" class="destination-chapter__heading">10 ways into<br>Luxor.</h2>
+                    <p class="destination-chapter__copy">Browse the index, open a location, and read the essentials without scrolling through a long catalog. Each entry contains its image, admission note, and contextual guide.</p>
+                </div>
+                <div class="places-explorer" data-places-explorer>
+                    <aside class="places-explorer__rail" aria-label="Place index">
+                        <div class="places-explorer__toolbar">
+                            <label class="places-explorer__filter-label" for="places-filter">Filter places</label>
+                            <input
+                                id="places-filter"
+                                class="places-explorer__filter"
+                                type="search"
+                                data-places-filter
+                                placeholder="Search by name"
+                                autocomplete="off"
+                            >
+                            <p class="places-explorer__meta"><strong data-places-count>10</strong> of 10 shown</p>
+                        </div>
+                        <ul class="places-explorer__list" role="listbox" aria-label="Places in Luxor" data-places-list data-lenis-prevent data-tg-scroll-surface>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option is-active"
+                            role="option"
+                            id="place-option-1"
+                            data-place-option
+                            data-place-index="0"
+                            data-place-name="Luxor Temple"
+                            data-place-lat="25.699502"
+                            data-place-lng="32.639051"
+                            aria-selected="true"
+                            tabindex="0"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">01</span>
+                            <span class="places-explorer__option-name">Luxor Temple</span>
+                            <span class="places-explorer__option-price">EGP 500</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-2"
+                            data-place-option
+                            data-place-index="1"
+                            data-place-name="Avenue of Sphinxes"
+                            data-place-lat="25.701017"
+                            data-place-lng="32.640525"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">02</span>
+                            <span class="places-explorer__option-name">Avenue of Sphinxes</span>
+                            <span class="places-explorer__option-price">Free (Karnak admission EGP 600)</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-3"
+                            data-place-option
+                            data-place-index="2"
+                            data-place-name="Mortuary Temple of Hatshepsut"
+                            data-place-lat="25.738277"
+                            data-place-lng="32.606491"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">03</span>
+                            <span class="places-explorer__option-name">Mortuary Temple of Hatshepsut</span>
+                            <span class="places-explorer__option-price">EGP 440</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-4"
+                            data-place-option
+                            data-place-index="3"
+                            data-place-name="Valley of the Kings"
+                            data-place-lat="25.7401643"
+                            data-place-lng="32.601411"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">04</span>
+                            <span class="places-explorer__option-name">Valley of the Kings</span>
+                            <span class="places-explorer__option-price">EGP 750</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-5"
+                            data-place-option
+                            data-place-index="4"
+                            data-place-name="Deir el-Medina"
+                            data-place-lat="25.728044"
+                            data-place-lng="32.601425"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">05</span>
+                            <span class="places-explorer__option-name">Deir el-Medina</span>
+                            <span class="places-explorer__option-price">E£150</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-6"
+                            data-place-option
+                            data-place-index="5"
+                            data-place-name="Colossi of Memnon"
+                            data-place-lat="25.720398"
+                            data-place-lng="32.610428"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">06</span>
+                            <span class="places-explorer__option-name">Colossi of Memnon</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-7"
+                            data-place-option
+                            data-place-index="6"
+                            data-place-name="Mortuary Temple of Seti I"
+                            data-place-lat="25.732665"
+                            data-place-lng="32.62816"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">07</span>
+                            <span class="places-explorer__option-name">Mortuary Temple of Seti I</span>
+                            <span class="places-explorer__option-price">EGP 120</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-8"
+                            data-place-option
+                            data-place-index="7"
+                            data-place-name="Karnak"
+                            data-place-lat="25.718835"
+                            data-place-lng="32.65727"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">08</span>
+                            <span class="places-explorer__option-name">Karnak</span>
+                            <span class="places-explorer__option-price">EGP 600</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-9"
+                            data-place-option
+                            data-place-index="8"
+                            data-place-name="Precinct of Amun-Re"
+                            data-place-lat="25.7178"
+                            data-place-lng="32.658031"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">09</span>
+                            <span class="places-explorer__option-name">Precinct of Amun-Re</span>
+                            <span class="places-explorer__option-price">E£600</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-10"
+                            data-place-option
+                            data-place-index="9"
+                            data-place-name="Mut Temple"
+                            data-place-lat="25.711662"
+                            data-place-lng="32.655212"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">10</span>
+                            <span class="places-explorer__option-name">Mut Temple</span>
+                            <span class="places-explorer__option-price">EGP 200</span>
+                        </button>
+                    </li>
+                        </ul>
+                        <p class="places-explorer__empty" data-places-empty hidden>No places match that filter.</p>
+                    </aside>
+                    <div class="places-explorer__stage" data-places-stage>
+                    <nav class="places-stage__stepper" data-places-stepper aria-label="Browse places" hidden>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--prev" data-places-prev aria-label="Previous place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M14.75 5.25 L8.25 12 l6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M9.1 12 H17.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--next" data-places-next aria-label="Next place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M9.25 5.25 L15.75 12 l-6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M6.6 12 H14.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                    </nav>
+                <article
+                    class="places-stage__panel is-active"
+                    data-place-panel
+                    data-place-index="0"
+                    aria-labelledby="place-title-1"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/luxor_1.avif" alt="Luxor Temple" width="1200" height="750" loading="eager" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">01</span>
+                            <span class="places-stage__admission"><span>Admission</span>EGP 500</span>
+                        </p>
+                        <h3 id="place-title-1" class="places-stage__title">Luxor Temple</h3>
+                        <p class="places-stage__text">Luxor Temple is a complex that was primarily built under the reigns of Amenhotep III and Ramesses II, with contributions from Tutankhamun and others. Situated on the West Bank of Luxor, it is part of a collection of historical attractions that offer insight into Egypt&#x27;s rich history.</p>
+                        <p class="places-stage__coords">25.6995&deg; N / 32.6391&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="1"
+                    aria-labelledby="place-title-2"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/luxor_2.avif" alt="Avenue of Sphinxes" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">02</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free (Karnak admission EGP 600)</span>
+                        </p>
+                        <h3 id="place-title-2" class="places-stage__title">Avenue of Sphinxes</h3>
+                        <p class="places-stage__text">Avenue of Sphinxes is a visitor site in Luxor, Egypt. The Windsor Hotel, In Luxor city, is a convenient accommodation option for travelers. Situated just 40 meters from Sphinx Avenue, it offers easy access to attractions such as Luxor Temple and Karnak Temple. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">25.7010&deg; N / 32.6405&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="2"
+                    aria-labelledby="place-title-3"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/luxor_3.avif" alt="Mortuary Temple of Hatshepsut" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">03</span>
+                            <span class="places-stage__admission"><span>Admission</span>EGP 440</span>
+                        </p>
+                        <h3 id="place-title-3" class="places-stage__title">Mortuary Temple of Hatshepsut</h3>
+                        <p class="places-stage__text">The Mortuary Temple of Hatshepsut, also known as the &#x27;Valley of the Gates of the Kings,&#x27; is an reconstructed temple located beneath the cliffs at Deir el-Bahari in Egypt. This site was used for 500 years between the 16th and 11th centuries BC to build tombs for pharaohs and nobles.</p>
+                        <p class="places-stage__coords">25.7383&deg; N / 32.6065&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="3"
+                    aria-labelledby="place-title-4"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/luxor_4.avif" alt="Valley of the Kings" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">04</span>
+                            <span class="places-stage__admission"><span>Admission</span>EGP 750</span>
+                        </p>
+                        <h3 id="place-title-4" class="places-stage__title">Valley of the Kings</h3>
+                        <p class="places-stage__text">Valley of the Kings is a ruins in Luxor, Egypt. Valley of the Kings is a visitor site in Luxor, Egypt. Open remains and interpretive signs guide a typical visit. Local maps mark Valley of the Kings inside Luxor. Approaches are signed from nearby streets in Luxor, Egypt.</p>
+                        <p class="places-stage__coords">25.7402&deg; N / 32.6014&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="4"
+                    aria-labelledby="place-title-5"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/luxor_5.avif" alt="Deir el-Medina" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">05</span>
+                            <span class="places-stage__admission"><span>Admission</span>E£150</span>
+                        </p>
+                        <h3 id="place-title-5" class="places-stage__title">Deir el-Medina</h3>
+                        <p class="places-stage__text">Deir el-Medina is an ancient village established around 1492 BCE, where workers who built royal tombs and a Ptolemaic temple resided. It&#x27;s a well-preserved gem that offers insight into the daily lives of ordinary Egyptians. The narrow streets and simple dwellings stand in contrast to the lavish tombs they helped create in the nearby Valley of the Kings.</p>
+                        <p class="places-stage__coords">25.7280&deg; N / 32.6014&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="5"
+                    aria-labelledby="place-title-6"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/luxor_6.avif" alt="Colossi of Memnon" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">06</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-6" class="places-stage__title">Colossi of Memnon</h3>
+                        <p class="places-stage__text">The Colossi of Memnon, a pair of massive Egyptian statues, are the only remnants of the ancient temple dedicated to King Amenhotep III. These colossal figures were built around 1350 BC and stand as a evidence of the power and grandeur of the 18th dynasty in ancient Egypt.</p>
+                        <p class="places-stage__coords">25.7204&deg; N / 32.6104&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="6"
+                    aria-labelledby="place-title-7"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/luxor_7.avif" alt="Mortuary Temple of Seti I" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">07</span>
+                            <span class="places-stage__admission"><span>Admission</span>EGP 120</span>
+                        </p>
+                        <h3 id="place-title-7" class="places-stage__title">Mortuary Temple of Seti I</h3>
+                        <p class="places-stage__text">The Mortuary Temple of Seti I is an ancient temple built for a pharaoh, featuring detailed columns and stone carvings. The highlight of the temple is the display of two royal mummies, including Ahmose and possibly Ramses, showcased without their wrappings in dark rooms. The displays also illustrate Thebes&#x27; military might during the New Kingdom, showing chariots and weapons, there are scenes depicting daily life and technology used during that era on the upper floor.</p>
+                        <p class="places-stage__coords">25.7327&deg; N / 32.6282&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="7"
+                    aria-labelledby="place-title-8"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/luxor_8.avif" alt="Karnak" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">08</span>
+                            <span class="places-stage__admission"><span>Admission</span>EGP 600</span>
+                        </p>
+                        <h3 id="place-title-8" class="places-stage__title">Karnak</h3>
+                        <p class="places-stage__text">Karnak is a massive temple complex in Luxor, Egypt, featuring well-preserved ancient ruins and over 200 structures, including the imposing Amen-Ra temple. The site offers private tours with pick-up services from hotels in Luxor, guided by knowledgeable Egyptologists. Visitors can explore the Valley of the Kings, Hatshepsut Temple, and Colossi of Memnon on this approximately 5-hour excursion.</p>
+                        <p class="places-stage__coords">25.7188&deg; N / 32.6573&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="8"
+                    aria-labelledby="place-title-9"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/luxor_9.avif" alt="Precinct of Amun-Re" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">09</span>
+                            <span class="places-stage__admission"><span>Admission</span>E£600</span>
+                        </p>
+                        <h3 id="place-title-9" class="places-stage__title">Precinct of Amun-Re</h3>
+                        <p class="places-stage__text">Precinct of Amun-Re is a visitor site in Luxor, Egypt. This precinct is part of a larger complex that also includes the Precinct of Mut, Precinct of Montu, and the dismantled Temple of Amenhotep IV. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">25.7178&deg; N / 32.6580&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="9"
+                    aria-labelledby="place-title-10"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/luxor_10.avif" alt="Mut Temple" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">10</span>
+                            <span class="places-stage__admission"><span>Admission</span>EGP 200</span>
+                        </p>
+                        <h3 id="place-title-10" class="places-stage__title">Mut Temple</h3>
+                        <p class="places-stage__text">Mut Temple is a restored temple complex dedicated to Mut, an Egyptian sky goddess and the consort of Amun-Ra. Located in Luxor, it reflects the city&#x27;s deep religious significance as the city of Amun during ancient times. The Karnak temple served as the official place for worship, housing shrines for various gods including Amun-Re and Mut. The area surrounding the Karnak Complex was revered by ancient Egyptians as &#x27;Ipet-isu,&#x27; or the most selected of places.</p>
+                        <p class="places-stage__coords">25.7117&deg; N / 32.6552&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="site-footer">
         <div class="page-shell">
             <div class="site-footer__bar">
-                <a href="../../index.html" class="site-footer__brand" aria-label="Global Explorer home">
-                    <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
+                <a href="../../index.html" class="site-footer__mark" aria-label="Global Explorer home">
+                    <svg width="24" height="24" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
-                    <span class="site-footer__brand-name font-display">Global Explorer</span>
+                    Global Explorer
                 </a>
-                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides <span>Luxor: 10 places across Luxor.</span></p>
             </div>
         </div>
     </footer>
 
     <button id="scrollTopBtn" type="button" aria-label="Scroll to top">
-        <i class="ph ph-arrow-up" aria-hidden="true"></i>
+        <svg viewBox="0 0 24 24" width="1.15em" height="1.15em" aria-hidden="true" focusable="false">
+            <path d="M12 5.25 V18.75 M12 5.25 L6.75 10.5 M12 5.25 L17.25 10.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
     </button>
 
     <script defer src="../../assets/dev-destination-toggle.js"></script>
     <script defer src="../../assets/tg-page-chrome.js"></script>
     <script defer src="../../assets/tg-destination-map.js"></script>
+    <script defer src="../../assets/tg-destination-places.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const map = L.map('map').setView([25.720836, 32.629800], 14);
+            const map = L.map('map');
             L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
                 attribution: '&copy; Google Maps',
                 maxZoom: 20
             }).addTo(map);
-            const locations = [{"name": "Luxor Temple", "lat": 25.699502, "lng": 32.639051}, {"name": "Avenue of Sphinxes", "lat": 25.701017, "lng": 32.640525}, {"name": "Mortuary Temple of Hatshepsut", "lat": 25.738277, "lng": 32.606491}, {"name": "Valley of the Kings", "lat": 25.7401643, "lng": 32.601411}, {"name": "Deir el-Medina", "lat": 25.728044, "lng": 32.601425}, {"name": "Colossi of Memnon", "lat": 25.720398, "lng": 32.610428}, {"name": "Mortuary Temple of Seti I", "lat": 25.732665, "lng": 32.62816}, {"name": "Karnak", "lat": 25.718835, "lng": 32.65727}, {"name": "Precinct of Amun-Re", "lat": 25.7178, "lng": 32.658031}, {"name": "Mut Temple", "lat": 25.711662, "lng": 32.655212}];
+            const locations = Array.from(document.querySelectorAll('[data-place-option]')).map((el) => ({
+                name: el.dataset.placeName || '',
+                lat: Number(el.dataset.placeLat),
+                lng: Number(el.dataset.placeLng),
+            }));
             const customIcon = L.icon({
                 iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
                 iconSize: [32, 32],
@@ -276,14 +587,45 @@
                 popupAnchor: [0, -32],
             });
             const destinationCenter = [25.720836, 32.629800];
-            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.021334, "maxCenterLng": 0.028389};
-            locations.forEach((location) => {
-                L.marker([location.lat, location.lng], { icon: customIcon })
+            const mapContext = {"denseUrban": true};
+            const markers = locations.map((location) => {
+                const marker = L.marker([location.lat, location.lng], { icon: customIcon })
                     .addTo(map)
                     .bindPopup(`<strong>${location.name}</strong>`);
+                return marker;
             });
             window.TGDestinationMap?.fitToLocations(map, locations, destinationCenter, mapContext);
             window.TGDestinationMap?.bindMobileScrollGuard(map, 'map');
+            window.TGDestinationMap?.registerMarkers(map, markers);
+
+            const heroImage = document.querySelector('[data-destination-hero-image]');
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (heroImage && !reduceMotion) {
+                let framePending = false;
+                let scrolling = false;
+                let scrollEndTimer = 0;
+                const updateHeroPosition = () => {
+                    const offset = Math.min(window.scrollY, window.innerHeight * 1.15) * 0.075;
+                    heroImage.style.transform = `translate3d(0, ${offset}px, 0) scale(1.055)`;
+                    framePending = false;
+                };
+                window.addEventListener('scroll', () => {
+                    if (!scrolling) {
+                        scrolling = true;
+                        heroImage.style.willChange = 'transform';
+                    }
+                    window.clearTimeout(scrollEndTimer);
+                    scrollEndTimer = window.setTimeout(() => {
+                        scrolling = false;
+                        heroImage.style.willChange = 'auto';
+                    }, 150);
+                    if (!framePending) {
+                        window.requestAnimationFrame(updateHeroPosition);
+                        framePending = true;
+                    }
+                }, { passive: true });
+                updateHeroPosition();
+            }
         });
     </script>
 </body>

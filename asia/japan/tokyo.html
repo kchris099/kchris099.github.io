@@ -6,659 +6,1754 @@
     <meta name="description" content="Plan a visit to Tokyo with a concise history, interactive attractions map, prices, and curated highlights across the destination.">
     <meta name="theme-color" content="#121417">
     <title>Tokyo Guide | Global Explorer Guides</title>
-    <link rel="stylesheet" href="../../assets/tailwind.css">
-    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
     <link rel="stylesheet" href="../../assets/newindex-fonts.css">
     <link rel="stylesheet" href="../../assets/tg-theme.css">
     <link rel="stylesheet" href="../../assets/tg-site-chrome.css">
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
     <link rel="stylesheet" href="../../assets/tg-modern-polish.css">
+    <link rel="stylesheet" href="../../assets/tg-country-page.css">
+    <link rel="stylesheet" href="../../assets/tg-destination-page-v3.css">
     <script defer src="../../assets/lenis.min.js"></script>
     <script defer src="../../assets/tg-smooth-scroll.js"></script>
     <link rel="preload" as="image" href="images/tokyo_hero.avif" type="image/avif" fetchpriority="high">
     <script defer src="../../assets/leaflet/leaflet.js"></script>
 </head>
-<body class="tg-theme tg-destination-page tg-modern">
-    <header id="site-header" class="header-glass fixed top-0 left-0 right-0 z-50">
+<body class="tg-theme tg-modern tg-country-v2 tg-destination-v3">
+    <a class="skip-link" href="#main-content">Skip to Tokyo guide</a>
+    <header id="site-header" class="header-glass">
         <div class="page-shell header-glass__inner">
-            <a href="../../index.html" class="font-display site-brand" style="display:flex;align-items:center;gap:0.75rem;text-decoration:none;color:inherit;font-size:1.25rem;" aria-label="Global Explorer home">
+            <a href="../../index.html" class="site-brand" aria-label="Global Explorer home">
                 <span class="site-brand__mark" aria-hidden="true">
                     <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
-                        <circle cx="14" cy="14" r="2" fill="#E8B14F"/>
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
                 </span>
                 Global Explorer
             </a>
-            <nav class="header-glass__nav-mobile" aria-label="Mobile navigation">
-                <a href="../../index.html" class="header-glass__icon-link" aria-label="Home">
-                    <i class="ph ph-house" aria-hidden="true"></i>
-                </a>
-                <a href="japan.html" class="header-glass__icon-link" aria-label="Back to Japan">
-                    <i class="ph ph-arrow-left" aria-hidden="true"></i>
-                </a>
-            </nav>
             <nav class="header-glass__nav" aria-label="Primary">
-                <a href="../../index.html" class="nav-link">Home</a>
-                <a href="tokyo.html" class="nav-link" aria-current="page">Tokyo</a>
+                <a href="#main-content" class="nav-link" aria-current="page">Tokyo</a>
+                <a href="#atlas" class="nav-link">Atlas</a>
+                <a href="#places" class="nav-link">Places</a>
                 <a href="japan.html" class="nav-link">Japan</a>
-                <a href="../../index.html#map" class="nav-link">Atlas</a>
             </nav>
         </div>
     </header>
-    <main>
-        <div class="tg-destination-hero-zone">
-            <div class="tg-destination-hero" aria-hidden="true">
-                <div class="tg-destination-hero__image" style="background-image: url('images/tokyo_hero.avif')"></div>
-                <div class="tg-destination-hero__fade"></div>
-            </div>
-            <div class="page-shell tg-destination-hero-zone__content">
-        <nav class="tg-toolbar tg-toolbar--compact" aria-label="Breadcrumb">
-            <div class="tg-breadcrumb">
-                <img src="../../assets/flags/w40/jp.png" alt="" class="w-6 h-auto rounded-[2px]" aria-hidden="true">
-                <span>Japan</span>
-                <span class="tg-breadcrumb__sep" aria-hidden="true">&rsaquo;</span>
-                <span class="tg-breadcrumb__current">Kanto</span>
-            </div>
-        </nav>
+    <main id="main-content" tabindex="-1">
+        <section class="destination-hero" aria-labelledby="destination-title">
+            <img class="destination-hero__media" data-destination-hero-image src="images/tokyo_hero.avif" alt="" width="1600" height="1067" fetchpriority="high" decoding="sync">
+            <div class="destination-hero__shade" aria-hidden="true"></div>
+            <div class="page-shell destination-hero__content">
+                <button
+                    type="button"
+                    id="destination-active-toggle"
+                    class="country-active-toggle country-active-toggle--active"
+                    data-iso2="JP"
+                    data-slug="tokyo"
+                    data-active="true"
+                    data-interactive="true"
+                    aria-label="Toggle Tokyo visibility on Japan guide"
+                    aria-pressed="true"
+                >
+                    <img src="../../assets/flags/w80/jp.png" alt="" aria-hidden="true">
+                    <span class="country-toggle__copy" aria-hidden="true">
+                        <span class="country-toggle__label">Tokyo guide</span>
+                        <strong class="country-toggle__state"></strong>
+                    </span>
+                </button>
 
-        <header class="tg-page-header">
-            <button
-        type="button"
-        id="destination-active-toggle"
-        class="country-active-toggle country-active-toggle--active country-active-toggle--readonly"
-        data-iso2="JP"
-        data-slug="tokyo"
-        data-active="true"
-        data-interactive="true"
-        aria-label="Toggle Tokyo visibility on Japan guide"
-        aria-pressed="true"
-    >
-        <i class="ph ph-map-pin text-4xl pointer-events-none" aria-hidden="true"></i>
-    </button>
-            <span class="tg-page-header__eyebrow">Destination Guide — Kanto</span>
-            <h1 class="tg-page-title font-display">Explore <em>Tokyo</em></h1>
-            <div class="glass-card frosted-panel tg-panel">
-                <h2 class="tg-panel__title font-display">
-                    <i class="ph ph-scroll" aria-hidden="true"></i> A Brief History
-                </h2>
-                <p class="tg-panel__body">Tokyo began as the castle town of Edo under the Tokugawa shogunate from 1603, replacing Kyoto as the de facto capital. Meiji restoration in 1868 renamed the city and opened it to rapid modernization. Earthquake and fire in 1923 and bombing in 1945 destroyed large areas, followed by reconstruction for the 1964 Olympics. Today the metropolis spans former wards, harbors, and suburbs linked by rail.</p>
-            </div>
-        </header>
+                <div class="hero__route" aria-label="Destination route and coordinates">
+                    <span>Japan / Kanto</span>
+                    <span>35.6764&deg; N / 139.6500&deg; E</span>
+                </div>
 
-        <div class="tg-section__header tg-section__header--map-end">
-            <span class="tg-section__eyebrow">Map</span>
-            <h2 class="tg-section__title font-display">Attractions Map</h2>
-        </div>
-            </div>
-        </div>
-
-        <div class="page-shell tg-main tg-main--below-hero">
-        <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Tokyo attractions"></div>
-        <section class="tg-section">
-            <div class="tg-section__header">
-                <span class="tg-section__eyebrow">Highlights</span>
-                <h2 class="tg-section__title font-display">Top Sights &amp; Activities</h2>
-            </div>
-            <div class="tg-sights-list">
-            
-            <!-- 1. Imperial Palace East National Gardens -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_1.avif" alt="Imperial Palace East National Gardens" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                <h1 id="destination-title" class="destination-hero__title" style="--destination-title-chars: 5">Tokyo</h1>
+                <div class="destination-hero__history">
+                    <p>Tokyo began as the castle town of Edo under the Tokugawa shogunate from 1603, replacing Kyoto as the de facto capital. Meiji restoration in 1868 renamed the city and opened it to rapid modernization. Earthquake and fire in 1923 and bombing in 1945 destroyed large areas, followed by reconstruction for the 1964 Olympics. Today the metropolis spans former wards, harbors, and suburbs linked by rail.</p>
+                </div>
+                <dl class="destination-hero__facts" aria-label="Tokyo guide facts">
+                    <div>
+                        <dt>Country</dt>
+                        <dd>Japan</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Imperial Palace East National Gardens</h3>
-                    <p class="tg-sight-card__text">The Imperial Palace is the main residence of the emperor of Japan. It is a large park-like area located in the Chiyoda district of the Chiyoda ward of Tokyo and contains several buildings, including the Fukiage Palace, where the emperor has his living quarters; the main palace, where various ceremonies and receptions take place; some residences of the Imperial Family; an archive; and museums and administrative offices.</p>
-                </div>
-            </div>
-            <!-- 2. Wadakura Fountain Park -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_2.avif" alt="Wadakura Fountain Park" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                    <div>
+                        <dt>Region</dt>
+                        <dd>Kanto</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Wadakura Fountain Park</h3>
-                    <p class="tg-sight-card__text">Wadakura Fountain Park sits within the Tokyo area of Tokyo, documented in local heritage registers for its civic or cultural role. Visitors approach from the main access road and combine the visit with neighbouring heritage buildings and public spaces in the district.</p>
-                </div>
-            </div>
-            <!-- 3. Tokyo Tower -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_3.avif" alt="Tokyo Tower" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> ¥1,500
+                    <div>
+                        <dt>Places</dt>
+                        <dd>40</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Tokyo Tower</h3>
-                    <p class="tg-sight-card__text">Tokyo Tower, also known by its official name Japan Radio Tower is a communications and observation tower in the district of Shiba-koen in Minato, Tokyo, Japan, completed in 1958. At 332.9 meters, it was the tallest tower in Japan until the construction of Tokyo Skytree in 2012. It is a lattice tower inspired by the Eiffel Tower, and is painted white and international orange to comply with air safety regulations.</p>
-                </div>
-            </div>
-            <!-- 4. Zojo-ji -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_4.avif" alt="Zojo-ji" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free (treasure gallery ¥700)
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Zojo-ji</h3>
-                    <p class="tg-sight-card__text">Zojo-ji is a visitor site in Tokyo, Japan. A profound, historic Buddhist temple famously serving as the grand chief temple of the Jodo sect. It powerfully stands in brilliant, striking architectural contrast directly beneath the modern Tokyo Tower. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 5. Shibuya Crossing -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_5.avif" alt="Shibuya Crossing" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Shibuya Crossing</h3>
-                    <p class="tg-sight-card__text">Shibuya Scramble Crossing, commonly known as Shibuya Crossing, is a scramble crossing in Shibuya, Tokyo, Japan. It is located near Shibuya Station in Shibuya, a major commercial and entertainment district in Tokyo. It has been described as the world&#x27;s busiest pedestrian crossing, with as many as 3,000 people crossing during a single green light cycle.</p>
-                </div>
-            </div>
-            <!-- 6. Meiji Jingu -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_6.avif" alt="Meiji Jingu" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free (inner garden ¥500)
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Meiji Jingu</h3>
-                    <p class="tg-sight-card__text">Meiji Jingu is a visitor site in Tokyo, Japan. Meiji Shrine is a Shinto shrine in Shibuya, Tokyo, that is dedicated to the deified spirits of Emperor Meiji and his wife, Empress Shōken. The shrine does not contain the emperor&#x27;s grave, which is located at Fushimi-momoyama, south of Kyoto. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 7. Meiji Jingu Ichino Torii -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_7.avif" alt="Meiji Jingu Ichino Torii" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Meiji Jingu Ichino Torii</h3>
-                    <p class="tg-sight-card__text">Meiji Jingu Ichino Torii is a visitor site in Tokyo, Japan. Meiji Shrine is a Shinto shrine in Shibuya, Tokyo, that is dedicated to the deified spirits of Emperor Meiji and his wife, Empress Shōken. The shrine does not contain the emperor&#x27;s grave, which is located at Fushimi-momoyama, south of Kyoto. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 8. North Observation Deck, Tokyo Metropolitan Government Building -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_8.avif" alt="North Observation Deck, Tokyo Metropolitan Government Building" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">North Observation Deck, Tokyo Metropolitan Government Building</h3>
-                    <p class="tg-sight-card__text">The Tokyo Metropolitan Government Building, also referred to as the Tochō for short, is the seat of the Tokyo Metropolitan Government, which governs the special wards, cities, towns, and villages that constitute the Tokyo Metropolis. Located in Shinjuku ward, the building was designed by architect Kenzo Tange. It consists of a complex of three structures, each taking up a city block.</p>
-                </div>
-            </div>
-            <!-- 9. Senso-ji -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_9.avif" alt="Senso-ji" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Senso-ji</h3>
-                    <p class="tg-sight-card__text">Senso-ji, also known as Asakusa Kannon ), is a visitor site in Tokyo, Japan. Sensō-ji, also known as Asakusa Kannon ), is an ancient Buddhist temple in Asakusa, Tokyo, Japan. It is Tokyo&#x27;s oldest-established temple, and one of its most significant. It is dedicated to Kannon, the bodhisattva of compassion. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 10. Nakamise Shopping Street -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_10.avif" alt="Nakamise Shopping Street" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Nakamise Shopping Street</h3>
-                    <p class="tg-sight-card__text">Nakamise Shopping Street is one of the oldest shopping streets in Japan, forming the busy approach to Senso-ji Temple in Asakusa. The 250-meter-long pedestrian avenue is lined with nearly 90 traditional stalls selling a wide variety of Japanese souvenirs, traditional crafts, and local street food snacks, such as freshly baked ningyo-yaki and rice crackers.</p>
-                </div>
-            </div>
-            <!-- 11. Kaminarimon Gate -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_11.avif" alt="Kaminarimon Gate" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Kaminarimon Gate</h3>
-                    <p class="tg-sight-card__text">The Kaminarimon is the outer of two large entrance gates that ultimately leads to the Sensō-ji in Asakusa, Tokyo, Japan. The gate, with its lantern and statues, is popular with tourists. It stands at 11.7 m tall, 11.4 m wide and covers an area of 69.3 m2.</p>
-                </div>
-            </div>
-            <!-- 12. Sumida River Walk -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_12.avif" alt="Sumida River Walk" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Sumida River Walk</h3>
-                    <p class="tg-sight-card__text">Adachi is a special ward in the Tokyo Metropolis in Japan. It is located to the north of the Tokyo. The ward consists of two separate areas: a small strip of land between the Sumida River and Arakawa River and a larger area north of the Arakawa River.</p>
-                </div>
-            </div>
-            <!-- 13. Tokyo Skytree -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_13.avif" alt="Tokyo Skytree" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> ¥2,100
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Tokyo Skytree</h3>
-                    <p class="tg-sight-card__text">Tokyo Skytree, a.k.a Tokyo Sky Tree, is a broadcasting and observation tower, located in Sumida, Tokyo, Japan. It has been the tallest tower in Japan since opening in 2012, and reached its full height of 634 metres in early 2011, making it the tallest tower in the world, displacing the Canton Tower, and the third tallest structure in the world behind Merdeka 118 and Burj Khalifa.</p>
-                </div>
-            </div>
-            <!-- 14. Unicorn Gundam -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_14.avif" alt="Unicorn Gundam" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Unicorn Gundam</h3>
-                    <p class="tg-sight-card__text">In Tokyo&#x27;s Odaiba district stands the Unicorn Gundam Statue, a towering 20-meter tall tribute to the beloved Japanese manga and anime series Mobile Suit Gundam. This larger-than-life white statue comes alive at night with lights and music, making it a for fans and travellers alike. Situated outside the Divercity Tokyo Plaza Mall, this landmark has become an integral part of Odaiba&#x27;s active anime and manga culture.</p>
-                </div>
-            </div>
-            <!-- 15. Tokyo Dome -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_15.avif" alt="Tokyo Dome" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Tokyo Dome</h3>
-                    <p class="tg-sight-card__text">Tokyo Dome is a visitor site in Tokyo, Japan. This domed stadium is the home ground for the Yomiuri Giants and has welcomed legendary artists like Mick Jagger, Michael Jackson, and Madonna over the years. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 16. Hachiko Statue -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_16.avif" alt="Hachiko Statue" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Hachiko Statue</h3>
-                    <p class="tg-sight-card__text">The Hachikō Memorial Statue in Shibuya is a popular meeting spot featuring a bronze statue honoring Hachiko, the famously loyal Akita dog. The story of Hachiko and his unwavering loyalty has captured hearts worldwide, inspiring movies and gaining recognition as a symbol of canine devotion. This legendary dog would wait at Shibuya Station every day for his owner to return from work, continuing to do so for nine years after his owner&#x27;s passing.</p>
-                </div>
-            </div>
-            <!-- 17. Loft -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_17.avif" alt="Loft" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Loft</h3>
-                    <p class="tg-sight-card__text">Loft is a active shopping haven that caters to all visitor needs, whether for home, kitchen, office, or even travel. With a strong emphasis on design, Loft stands out by offering an eclectic mix of products ranging from quirky cartoon character merchandise like phone straps and stationery to modern interpretations of traditional Japanese items such as fans and ceramics.</p>
-                </div>
-            </div>
-            <!-- 18. Konno Hachiman-gu Shrine -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_18.avif" alt="Konno Hachiman-gu Shrine" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Konno Hachiman-gu Shrine</h3>
-                    <p class="tg-sight-card__text">Konno Hachiman-gu Shrine is a visitor site in Tokyo, Japan. Despite not being as grand as other shrines like Meiji, its resilience through WWII bombings and its historical significance make it a compelling attraction. Just a short walk from Shibuya Station, this Shinto shrine gives visitors an oasis of history amid the busy city. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 19. Kiddy Land -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_19.avif" alt="Kiddy Land" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Kiddy Land</h3>
-                    <p class="tg-sight-card__text">Kiddy Land, located in Harajuku, is a active retail store spread across four levels and offers an extensive collection of Japanese and American toys. The shop is a popular with fans of famous Japanese characters, with a five-story building dedicated to various character goods such as Snoopy, Rilakkuma, Disney, Star Wars, and Hello Kitty. It&#x27;s not just for kids; adults and even celebrities frequent the store.</p>
-                </div>
-            </div>
-            <!-- 20. Togo Shrine -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_20.avif" alt="Togo Shrine" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Togo Shrine</h3>
-                    <p class="tg-sight-card__text">Togo Shrine is a visitor site in Tokyo, Japan. Records associated with the site include 1905. While smaller than the nearby Meiji Shrine, it offers a peaceful escape from the busy city. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 21. Kiyomasa&#x27;s Well -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_21.avif" alt="Kiyomasa&#x27;s Well" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Kiyomasa&#x27;s Well</h3>
-                    <p class="tg-sight-card__text">Located within Meiji Jingu, Kiyomasa&#x27;s Well is a known &quot;power spot&quot; in Tokyo. It is believed to have been created by Kato Kiyomasa, a prominent feudal lord from the 16th and 17th centuries. The well&#x27;s pristine water attracts travellers who seek its positive energies. Although touching the water in the well is prohibited, travellers can touch the water around the small pond.</p>
-                </div>
-            </div>
-            <!-- 22. Hatonomori Hachiman Shrine -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_22.avif" alt="Hatonomori Hachiman Shrine" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Hatonomori Hachiman Shrine</h3>
-                    <p class="tg-sight-card__text">Hatonomori Hachiman Shrine is a visitor site in Tokyo, Japan. Hatonomori Hachiman Shrine, located in Shibuya Ward near Sendagaya station, is a centuries-old Shinto place of worship known for its hydrangeas in the summer. It is also depicted in the anime series &#x27;March Comes in Like a Lion,&#x27; where the protagonist often visits before his shogi matches. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 23. Shinjuku Gyoen National Garden -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_23.avif" alt="Shinjuku Gyoen National Garden" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> ¥500
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Shinjuku Gyoen National Garden</h3>
-                    <p class="tg-sight-card__text">Shinjuku Gyoen National Garden is a public park in Tokyo, Japan. Shinjuku Gyoen National Garden, a former estate turned 144-acre park, was originally created as a recreational garden for the Imperial family. Throughout the year, the park hosts various events such as photography lessons, chrysanthemum flower exhibitions, and traditional Japanese art performances. Paths, lawns, and shaded areas make up the main public facilities.</p>
-                </div>
-            </div>
-            <!-- 24. Isetan Shinjuku -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_24.avif" alt="Isetan Shinjuku" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Isetan Shinjuku</h3>
-                    <p class="tg-sight-card__text">Isetan Shinjuku is a known department store in Japan, tracing its origins back to 1886 when it started as a kimono shop. Today, it is celebrated for its diverse range of products, from luxury brands to casual wear. The flagship store in Shinjuku is considered the birthplace of fashion trends and offers an extensive selection of fashion items from top global brands, beauty products, and gourmet food.</p>
-                </div>
-            </div>
-            <!-- 25. Hanazono Shrine -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_25.avif" alt="Hanazono Shrine" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Hanazono Shrine</h3>
-                    <p class="tg-sight-card__text">Hanazono Shrine is a visitor site in Tokyo, Japan. Hanazono Shrine, In Shinjuku, is a compact Edo-period Shinto shrine dedicated to Inari Okami, the god of trade and business success. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 26. Shinjuku Golden-Gai -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_26.avif" alt="Shinjuku Golden-Gai" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Shinjuku Golden-Gai</h3>
-                    <p class="tg-sight-card__text">Shinjuku Golden-Gai is a visitor site in Tokyo, Japan. While the area has gained popularity among international travellers, it still retains its local charm and may have some establishments with &#x27;Locals Only&#x27; signs. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 27. Omoide Yokocho Memory Lane -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_27.avif" alt="Omoide Yokocho Memory Lane" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Omoide Yokocho Memory Lane</h3>
-                    <p class="tg-sight-card__text">Omoide Yokocho, also known as Memory Lane Alley or Yakitori Alley, is a known landmark in Tokyo located just north of Shinjuku station. Once a black market area post-World War II, it has transformed into a busy alleyway filled with tightly compressed restaurants offering cheap izakaya food and alcoholic drinks. The active atmosphere attracts both locals and tourists seeking to savor its culinary offerings.</p>
-                </div>
-            </div>
-            <!-- 28. Meguro Sky Garden -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_28.avif" alt="Meguro Sky Garden" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Meguro Sky Garden</h3>
-                    <p class="tg-sight-card__text">Meguro Sky Garden is a public park in Tokyo, Japan. The park rises up to 35 meters high and offers superb views of the surrounding buildings and the city of Tokyo. Despite its location above a highway road, it provides a peaceful nature break with no cafes or restaurants on site. Paths, lawns, and shaded areas make up the main public facilities.</p>
-                </div>
-            </div>
-            <!-- 29. Hibiya Park -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_29.avif" alt="Hibiya Park" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Hibiya Park</h3>
-                    <p class="tg-sight-card__text">Hibiya Park, Japan&#x27;s oldest Western-style park, is located in Tokyo&#x27;s Chiyoda Ward. Spanning over 161,636.66 square meters, it was originally a military parade ground before transforming into a urban oasis. Situated near the Imperial Palace and surrounded by busy districts, the park offers lush gardens, seasonal blooms, and a Japanese garden. Travellers can enjoy flower beds, outdoor music venues, public halls as well as beautifully maintained lawns and ponds.</p>
-                </div>
-            </div>
-            <!-- 30. Tokyo Takarazuka Theater -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_30.avif" alt="Tokyo Takarazuka Theater" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Tokyo Takarazuka Theater</h3>
-                    <p class="tg-sight-card__text">Tokyo Takarazuka Theater is a theatre in Tokyo, Japan. Tokyo Takarazuka Theatre is a grand performing arts space that introduces travellers to the world of Takarazuka Creative Arts. It was formerly known as the Ernie Pyle Theater and hosts performances by the all-female musical troupe, Takarazuka Revue. Public access is usually through ticketed performances or daytime visits.</p>
-                </div>
-            </div>
-            <!-- 31. Imperial Theatre -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_31.avif" alt="Imperial Theatre" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Imperial Theatre</h3>
-                    <p class="tg-sight-card__text">Imperial Theatre, a historic venue established in 1911, is a significant part of Tokyo&#x27;s cultural scene. It hosts diverse performances annually, including Western musicals like Les Miserables and Elisabeth, as well as shows by Japanese entertainers such as Endless SHOCK. Despite its smaller size, the theater offers comfortable seating with good views of the stage from various angles.</p>
-                </div>
-            </div>
-            <!-- 32. Kokyo Gaien National Garden -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_32.avif" alt="Kokyo Gaien National Garden" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Kokyo Gaien National Garden</h3>
-                    <p class="tg-sight-card__text">Kokyo Gaien National Garden, located in central Tokyo, is a large green space featuring 2000 black pines and family-friendly areas like Kitanomaru Park. It offers an understated experience with scenic moats and the East Gardens. Travellers can view the Nijubashi from the large plaza in front of the Imperial Palace, which provides a backdrop against the city skyline.</p>
-                </div>
-            </div>
-            <!-- 33. Sakurada-mon Gate -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_33.avif" alt="Sakurada-mon Gate" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Sakurada-mon Gate</h3>
-                    <p class="tg-sight-card__text">Sakurada-mon Gate, located near the Imperial Palace in Tokyo, Japan, is a significant historical landmark that dates back to the Edo period. Originally built in 1457 and reconstructed in 1636, it has survived through centuries of history. The gate&#x27;s steel storehouse structure is a evidence of its resilience after being destroyed in the Great Kanto Earthquake of 1923.</p>
-                </div>
-            </div>
-            <!-- 34. Marunouchi Tokyo Station Square -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_34.avif" alt="Marunouchi Tokyo Station Square" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Marunouchi Tokyo Station Square</h3>
-                    <p class="tg-sight-card__text">Marunouchi Square is a spacious, white granite-paved area flanked by lawns and adjacent to the striking red-brick Tokyo Station. It is a harmonious blend of tradition and modernity, nature and architecture, functionality, and beauty. This popular spot is frequented by locals and tourists alike due to its convenient access to Tokyo&#x27;s landmarks such as the Imperial Palace, Ginza, and Nihonbashi.</p>
-                </div>
-            </div>
-            <!-- 35. Tokyo Character Street -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_35.avif" alt="Tokyo Character Street" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Tokyo Character Street</h3>
-                    <p class="tg-sight-card__text">A shopping area in Tokyo Station filled with stores selling merchandise of popular Japanese characters and anime. The site forms part of Tokyo Character Street&#x27;s documented civic and cultural landscape within Japan, with archives and visitor information available from municipal or regional heritage authorities.</p>
-                </div>
-            </div>
-            <!-- 36. Statues of Kirin -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_36.avif" alt="Statues of Kirin" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Statues of Kirin</h3>
-                    <p class="tg-sight-card__text">Statues of Kirin is a monument in Tokyo, Japan. Kachidoki is a busy city market in Japan that takes place once a month, attracting around 20,000 travellers over the weekend. It&#x27;s a great place for families to enjoy various activities such as eating, shopping, learning, and experiencing together. The memorial stands in an open plaza or roadside setting.</p>
-                </div>
-            </div>
-            <!-- 37. Fukutoku Shrine -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_37.avif" alt="Fukutoku Shrine" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Fukutoku Shrine</h3>
-                    <p class="tg-sight-card__text">Fukutoku Shrine, also known as Mebuki or Sprouting Shrine, is an urban shrine located in Nihonbashi with a history dating back to the mid-9th century. It has been patronized by historical figures such as Minamoto no Yoshiie and Tokugawa Ieyasu. The shrine&#x27;s main gate, made of sawtooth oak, is said to have sprouted buds according to local legend.</p>
-                </div>
-            </div>
-            <!-- 38. Koami Shrine -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_38.avif" alt="Koami Shrine" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Koami Shrine</h3>
-                    <p class="tg-sight-card__text">Koami Shrine, located in Nihonbashi, Chuo-ku, Tokyo, is a historic shrine with a local history. Believed to be at least 1,000 years old, it houses wooden carvings of two dragons that survived the firebombing of Tokyo during World War II. The shrine is famous for Sennarai-benten, the goddess of luck and protection from bad luck.</p>
-                </div>
-            </div>
-            <!-- 39. Suitengu Shrine -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_39.avif" alt="Suitengu Shrine" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Suitengu Shrine</h3>
-                    <p class="tg-sight-card__text">Suitengu Shrine, a small Shinto shrine in Tokyo, is dedicated to fertility and childbirth. It is a branch shrine of Kurume Suitengu in Fukuoka Prefecture and is known for its deity for safe childbirth. The shrine is popular among worshippers praying for easy childbirth and the birth of their children.</p>
-                </div>
-            </div>
-            <!-- 40. Okuno Building -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/tokyo_40.avif" alt="Okuno Building" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Okuno Building</h3>
-                    <p class="tg-sight-card__text">Located amidst the modern structures of Ginza, Tokyo&#x27;s upscale district, the Okuno Building is a blend of art, history, and antiquity. Constructed in the 1930s as a lavish apartment complex, it endured the ravages of World War II and subsequent urban development. Today, this architectural gem houses an array of art galleries and studios within its careful preserved walls.</p>
-                </div>
-            </div>
+                </dl>
             </div>
         </section>
-        </div>
+
+        <section id="atlas" class="destination-atlas" aria-labelledby="atlas-title">
+            <div class="page-shell destination-atlas__layout">
+                <div class="destination-atlas__brief">
+                    <p class="destination-atlas__index">City atlas</p>
+                    <h2 id="atlas-title">Plot the city.</h2>
+                    <p class="destination-atlas__copy">Zoom, pan, and open any marker to focus that place in the catalog below.</p>
+                    <dl class="destination-atlas__facts" aria-label="Map coverage">
+                        <div>
+                            <dt>Plotted</dt>
+                            <dd>40 places</dd>
+                        </div>
+                        <div>
+                            <dt>Center</dt>
+                            <dd>35.6764&deg; N<br>139.6500&deg; E</dd>
+                        </div>
+                    </dl>
+                </div>
+                <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Tokyo attractions"></div>
+            </div>
+        </section>
+
+        <section id="places" class="destination-places" aria-labelledby="places-title">
+            <div class="page-shell">
+                <div class="destination-chapter">
+                    <h2 id="places-title" class="destination-chapter__heading">40 ways into<br>Tokyo.</h2>
+                    <p class="destination-chapter__copy">Browse the index, open a location, and read the essentials without scrolling through a long catalog. Each entry contains its image, admission note, and contextual guide.</p>
+                </div>
+                <div class="places-explorer" data-places-explorer>
+                    <aside class="places-explorer__rail" aria-label="Place index">
+                        <div class="places-explorer__toolbar">
+                            <label class="places-explorer__filter-label" for="places-filter">Filter places</label>
+                            <input
+                                id="places-filter"
+                                class="places-explorer__filter"
+                                type="search"
+                                data-places-filter
+                                placeholder="Search by name"
+                                autocomplete="off"
+                            >
+                            <p class="places-explorer__meta"><strong data-places-count>40</strong> of 40 shown</p>
+                        </div>
+                        <ul class="places-explorer__list" role="listbox" aria-label="Places in Tokyo" data-places-list data-lenis-prevent data-tg-scroll-surface>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option is-active"
+                            role="option"
+                            id="place-option-1"
+                            data-place-option
+                            data-place-index="0"
+                            data-place-name="Imperial Palace East National Gardens"
+                            data-place-lat="35.6865"
+                            data-place-lng="139.757"
+                            aria-selected="true"
+                            tabindex="0"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">01</span>
+                            <span class="places-explorer__option-name">Imperial Palace East National Gardens</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-2"
+                            data-place-option
+                            data-place-index="1"
+                            data-place-name="Wadakura Fountain Park"
+                            data-place-lat="35.6826"
+                            data-place-lng="139.7602"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">02</span>
+                            <span class="places-explorer__option-name">Wadakura Fountain Park</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-3"
+                            data-place-option
+                            data-place-index="2"
+                            data-place-name="Tokyo Tower"
+                            data-place-lat="35.6586"
+                            data-place-lng="139.7454"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">03</span>
+                            <span class="places-explorer__option-name">Tokyo Tower</span>
+                            <span class="places-explorer__option-price">¥1,500</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-4"
+                            data-place-option
+                            data-place-index="3"
+                            data-place-name="Zojo-ji"
+                            data-place-lat="35.6573"
+                            data-place-lng="139.7482"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">04</span>
+                            <span class="places-explorer__option-name">Zojo-ji</span>
+                            <span class="places-explorer__option-price">Free (treasure gallery ¥700)</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-5"
+                            data-place-option
+                            data-place-index="4"
+                            data-place-name="Shibuya Crossing"
+                            data-place-lat="35.6595"
+                            data-place-lng="139.7005"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">05</span>
+                            <span class="places-explorer__option-name">Shibuya Crossing</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-6"
+                            data-place-option
+                            data-place-index="5"
+                            data-place-name="Meiji Jingu"
+                            data-place-lat="35.6764"
+                            data-place-lng="139.6993"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">06</span>
+                            <span class="places-explorer__option-name">Meiji Jingu</span>
+                            <span class="places-explorer__option-price">Free (inner garden ¥500)</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-7"
+                            data-place-option
+                            data-place-index="6"
+                            data-place-name="Meiji Jingu Ichino Torii"
+                            data-place-lat="35.6687"
+                            data-place-lng="139.7042"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">07</span>
+                            <span class="places-explorer__option-name">Meiji Jingu Ichino Torii</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-8"
+                            data-place-option
+                            data-place-index="7"
+                            data-place-name="North Observation Deck, Tokyo Metropolitan Government Building"
+                            data-place-lat="35.6896"
+                            data-place-lng="139.6923"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">08</span>
+                            <span class="places-explorer__option-name">North Observation Deck, Tokyo Metropolitan Government Building</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-9"
+                            data-place-option
+                            data-place-index="8"
+                            data-place-name="Senso-ji"
+                            data-place-lat="35.7148"
+                            data-place-lng="139.7967"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">09</span>
+                            <span class="places-explorer__option-name">Senso-ji</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-10"
+                            data-place-option
+                            data-place-index="9"
+                            data-place-name="Nakamise Shopping Street"
+                            data-place-lat="35.7126"
+                            data-place-lng="139.7965"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">10</span>
+                            <span class="places-explorer__option-name">Nakamise Shopping Street</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-11"
+                            data-place-option
+                            data-place-index="10"
+                            data-place-name="Kaminarimon Gate"
+                            data-place-lat="35.7111"
+                            data-place-lng="139.7964"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">11</span>
+                            <span class="places-explorer__option-name">Kaminarimon Gate</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-12"
+                            data-place-option
+                            data-place-index="11"
+                            data-place-name="Sumida River Walk"
+                            data-place-lat="35.7122"
+                            data-place-lng="139.8005"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">12</span>
+                            <span class="places-explorer__option-name">Sumida River Walk</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-13"
+                            data-place-option
+                            data-place-index="12"
+                            data-place-name="Tokyo Skytree"
+                            data-place-lat="35.71"
+                            data-place-lng="139.8107"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">13</span>
+                            <span class="places-explorer__option-name">Tokyo Skytree</span>
+                            <span class="places-explorer__option-price">¥2,100</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-14"
+                            data-place-option
+                            data-place-index="13"
+                            data-place-name="Unicorn Gundam"
+                            data-place-lat="35.624451"
+                            data-place-lng="139.775492"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">14</span>
+                            <span class="places-explorer__option-name">Unicorn Gundam</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-15"
+                            data-place-option
+                            data-place-index="14"
+                            data-place-name="Tokyo Dome"
+                            data-place-lat="35.70564"
+                            data-place-lng="139.751891"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">15</span>
+                            <span class="places-explorer__option-name">Tokyo Dome</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-16"
+                            data-place-option
+                            data-place-index="15"
+                            data-place-name="Hachiko Statue"
+                            data-place-lat="35.659058"
+                            data-place-lng="139.700629"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">16</span>
+                            <span class="places-explorer__option-name">Hachiko Statue</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-17"
+                            data-place-option
+                            data-place-index="16"
+                            data-place-name="Loft"
+                            data-place-lat="35.660935"
+                            data-place-lng="139.699723"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">17</span>
+                            <span class="places-explorer__option-name">Loft</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-18"
+                            data-place-option
+                            data-place-index="17"
+                            data-place-name="Konno Hachiman-gu Shrine"
+                            data-place-lat="35.657536"
+                            data-place-lng="139.706344"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">18</span>
+                            <span class="places-explorer__option-name">Konno Hachiman-gu Shrine</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-19"
+                            data-place-option
+                            data-place-index="18"
+                            data-place-name="Kiddy Land"
+                            data-place-lat="35.667733"
+                            data-place-lng="139.706547"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">19</span>
+                            <span class="places-explorer__option-name">Kiddy Land</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-20"
+                            data-place-option
+                            data-place-index="19"
+                            data-place-name="Togo Shrine"
+                            data-place-lat="35.67174"
+                            data-place-lng="139.705844"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">20</span>
+                            <span class="places-explorer__option-name">Togo Shrine</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-21"
+                            data-place-option
+                            data-place-index="20"
+                            data-place-name="Kiyomasa&#x27;s Well"
+                            data-place-lat="35.67477"
+                            data-place-lng="139.698683"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">21</span>
+                            <span class="places-explorer__option-name">Kiyomasa&#x27;s Well</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-22"
+                            data-place-option
+                            data-place-index="21"
+                            data-place-name="Hatonomori Hachiman Shrine"
+                            data-place-lat="35.677864"
+                            data-place-lng="139.709582"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">22</span>
+                            <span class="places-explorer__option-name">Hatonomori Hachiman Shrine</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-23"
+                            data-place-option
+                            data-place-index="22"
+                            data-place-name="Shinjuku Gyoen National Garden"
+                            data-place-lat="35.685176"
+                            data-place-lng="139.710052"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">23</span>
+                            <span class="places-explorer__option-name">Shinjuku Gyoen National Garden</span>
+                            <span class="places-explorer__option-price">¥500</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-24"
+                            data-place-option
+                            data-place-index="23"
+                            data-place-name="Isetan Shinjuku"
+                            data-place-lat="35.691574"
+                            data-place-lng="139.704647"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">24</span>
+                            <span class="places-explorer__option-name">Isetan Shinjuku</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-25"
+                            data-place-option
+                            data-place-index="24"
+                            data-place-name="Hanazono Shrine"
+                            data-place-lat="35.693531"
+                            data-place-lng="139.705328"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">25</span>
+                            <span class="places-explorer__option-name">Hanazono Shrine</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-26"
+                            data-place-option
+                            data-place-index="25"
+                            data-place-name="Shinjuku Golden-Gai"
+                            data-place-lat="35.694112"
+                            data-place-lng="139.704761"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">26</span>
+                            <span class="places-explorer__option-name">Shinjuku Golden-Gai</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-27"
+                            data-place-option
+                            data-place-index="26"
+                            data-place-name="Omoide Yokocho Memory Lane"
+                            data-place-lat="35.692701"
+                            data-place-lng="139.699578"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">27</span>
+                            <span class="places-explorer__option-name">Omoide Yokocho Memory Lane</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-28"
+                            data-place-option
+                            data-place-index="27"
+                            data-place-name="Meguro Sky Garden"
+                            data-place-lat="35.651065"
+                            data-place-lng="139.687558"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">28</span>
+                            <span class="places-explorer__option-name">Meguro Sky Garden</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-29"
+                            data-place-option
+                            data-place-index="28"
+                            data-place-name="Hibiya Park"
+                            data-place-lat="35.673612"
+                            data-place-lng="139.755877"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">29</span>
+                            <span class="places-explorer__option-name">Hibiya Park</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-30"
+                            data-place-option
+                            data-place-index="29"
+                            data-place-name="Tokyo Takarazuka Theater"
+                            data-place-lat="35.67273"
+                            data-place-lng="139.759216"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">30</span>
+                            <span class="places-explorer__option-name">Tokyo Takarazuka Theater</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-31"
+                            data-place-option
+                            data-place-index="30"
+                            data-place-name="Imperial Theatre"
+                            data-place-lat="35.676576"
+                            data-place-lng="139.760905"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">31</span>
+                            <span class="places-explorer__option-name">Imperial Theatre</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-32"
+                            data-place-option
+                            data-place-index="31"
+                            data-place-name="Kokyo Gaien National Garden"
+                            data-place-lat="35.680117"
+                            data-place-lng="139.758313"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">32</span>
+                            <span class="places-explorer__option-name">Kokyo Gaien National Garden</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-33"
+                            data-place-option
+                            data-place-index="32"
+                            data-place-name="Sakurada-mon Gate"
+                            data-place-lat="35.678563"
+                            data-place-lng="139.753942"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">33</span>
+                            <span class="places-explorer__option-name">Sakurada-mon Gate</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-34"
+                            data-place-option
+                            data-place-index="33"
+                            data-place-name="Marunouchi Tokyo Station Square"
+                            data-place-lat="35.68156"
+                            data-place-lng="139.765477"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">34</span>
+                            <span class="places-explorer__option-name">Marunouchi Tokyo Station Square</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-35"
+                            data-place-option
+                            data-place-index="34"
+                            data-place-name="Tokyo Character Street"
+                            data-place-lat="35.6820335"
+                            data-place-lng="139.7686549"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">35</span>
+                            <span class="places-explorer__option-name">Tokyo Character Street</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-36"
+                            data-place-option
+                            data-place-index="35"
+                            data-place-name="Statues of Kirin"
+                            data-place-lat="35.684089"
+                            data-place-lng="139.774345"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">36</span>
+                            <span class="places-explorer__option-name">Statues of Kirin</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-37"
+                            data-place-option
+                            data-place-index="36"
+                            data-place-name="Fukutoku Shrine"
+                            data-place-lat="35.687307"
+                            data-place-lng="139.774449"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">37</span>
+                            <span class="places-explorer__option-name">Fukutoku Shrine</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-38"
+                            data-place-option
+                            data-place-index="37"
+                            data-place-name="Koami Shrine"
+                            data-place-lat="35.684117"
+                            data-place-lng="139.780462"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">38</span>
+                            <span class="places-explorer__option-name">Koami Shrine</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-39"
+                            data-place-option
+                            data-place-index="38"
+                            data-place-name="Suitengu Shrine"
+                            data-place-lat="35.683657"
+                            data-place-lng="139.785021"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">39</span>
+                            <span class="places-explorer__option-name">Suitengu Shrine</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-40"
+                            data-place-option
+                            data-place-index="39"
+                            data-place-name="Okuno Building"
+                            data-place-lat="35.67377"
+                            data-place-lng="139.768851"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">40</span>
+                            <span class="places-explorer__option-name">Okuno Building</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                        </ul>
+                        <p class="places-explorer__empty" data-places-empty hidden>No places match that filter.</p>
+                    </aside>
+                    <div class="places-explorer__stage" data-places-stage>
+                    <nav class="places-stage__stepper" data-places-stepper aria-label="Browse places" hidden>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--prev" data-places-prev aria-label="Previous place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M14.75 5.25 L8.25 12 l6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M9.1 12 H17.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--next" data-places-next aria-label="Next place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M9.25 5.25 L15.75 12 l-6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M6.6 12 H14.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                    </nav>
+                <article
+                    class="places-stage__panel is-active"
+                    data-place-panel
+                    data-place-index="0"
+                    aria-labelledby="place-title-1"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_1.avif" alt="Imperial Palace East National Gardens" width="1200" height="750" loading="eager" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">01</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-1" class="places-stage__title">Imperial Palace East National Gardens</h3>
+                        <p class="places-stage__text">The Imperial Palace is the main residence of the emperor of Japan. It is a large park-like area located in the Chiyoda district of the Chiyoda ward of Tokyo and contains several buildings, including the Fukiage Palace, where the emperor has his living quarters; the main palace, where various ceremonies and receptions take place; some residences of the Imperial Family; an archive; and museums and administrative offices.</p>
+                        <p class="places-stage__coords">35.6865&deg; N / 139.7570&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="1"
+                    aria-labelledby="place-title-2"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_2.avif" alt="Wadakura Fountain Park" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">02</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-2" class="places-stage__title">Wadakura Fountain Park</h3>
+                        <p class="places-stage__text">Wadakura Fountain Park sits within the Tokyo area of Tokyo, documented in local heritage registers for its civic or cultural role. Visitors approach from the main access road and combine the visit with neighbouring heritage buildings and public spaces in the district.</p>
+                        <p class="places-stage__coords">35.6826&deg; N / 139.7602&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="2"
+                    aria-labelledby="place-title-3"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_3.avif" alt="Tokyo Tower" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">03</span>
+                            <span class="places-stage__admission"><span>Admission</span>¥1,500</span>
+                        </p>
+                        <h3 id="place-title-3" class="places-stage__title">Tokyo Tower</h3>
+                        <p class="places-stage__text">Tokyo Tower, also known by its official name Japan Radio Tower is a communications and observation tower in the district of Shiba-koen in Minato, Tokyo, Japan, completed in 1958. At 332.9 meters, it was the tallest tower in Japan until the construction of Tokyo Skytree in 2012. It is a lattice tower inspired by the Eiffel Tower, and is painted white and international orange to comply with air safety regulations.</p>
+                        <p class="places-stage__coords">35.6586&deg; N / 139.7454&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="3"
+                    aria-labelledby="place-title-4"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_4.avif" alt="Zojo-ji" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">04</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free (treasure gallery ¥700)</span>
+                        </p>
+                        <h3 id="place-title-4" class="places-stage__title">Zojo-ji</h3>
+                        <p class="places-stage__text">Zojo-ji is a visitor site in Tokyo, Japan. A profound, historic Buddhist temple famously serving as the grand chief temple of the Jodo sect. It powerfully stands in brilliant, striking architectural contrast directly beneath the modern Tokyo Tower. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">35.6573&deg; N / 139.7482&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="4"
+                    aria-labelledby="place-title-5"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_5.avif" alt="Shibuya Crossing" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">05</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-5" class="places-stage__title">Shibuya Crossing</h3>
+                        <p class="places-stage__text">Shibuya Scramble Crossing, commonly known as Shibuya Crossing, is a scramble crossing in Shibuya, Tokyo, Japan. It is located near Shibuya Station in Shibuya, a major commercial and entertainment district in Tokyo. It has been described as the world&#x27;s busiest pedestrian crossing, with as many as 3,000 people crossing during a single green light cycle.</p>
+                        <p class="places-stage__coords">35.6595&deg; N / 139.7005&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="5"
+                    aria-labelledby="place-title-6"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_6.avif" alt="Meiji Jingu" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">06</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free (inner garden ¥500)</span>
+                        </p>
+                        <h3 id="place-title-6" class="places-stage__title">Meiji Jingu</h3>
+                        <p class="places-stage__text">Meiji Jingu is a visitor site in Tokyo, Japan. Meiji Shrine is a Shinto shrine in Shibuya, Tokyo, that is dedicated to the deified spirits of Emperor Meiji and his wife, Empress Shōken. The shrine does not contain the emperor&#x27;s grave, which is located at Fushimi-momoyama, south of Kyoto. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">35.6764&deg; N / 139.6993&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="6"
+                    aria-labelledby="place-title-7"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_7.avif" alt="Meiji Jingu Ichino Torii" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">07</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-7" class="places-stage__title">Meiji Jingu Ichino Torii</h3>
+                        <p class="places-stage__text">Meiji Jingu Ichino Torii is a visitor site in Tokyo, Japan. Meiji Shrine is a Shinto shrine in Shibuya, Tokyo, that is dedicated to the deified spirits of Emperor Meiji and his wife, Empress Shōken. The shrine does not contain the emperor&#x27;s grave, which is located at Fushimi-momoyama, south of Kyoto. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">35.6687&deg; N / 139.7042&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="7"
+                    aria-labelledby="place-title-8"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_8.avif" alt="North Observation Deck, Tokyo Metropolitan Government Building" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">08</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-8" class="places-stage__title">North Observation Deck, Tokyo Metropolitan Government Building</h3>
+                        <p class="places-stage__text">The Tokyo Metropolitan Government Building, also referred to as the Tochō for short, is the seat of the Tokyo Metropolitan Government, which governs the special wards, cities, towns, and villages that constitute the Tokyo Metropolis. Located in Shinjuku ward, the building was designed by architect Kenzo Tange. It consists of a complex of three structures, each taking up a city block.</p>
+                        <p class="places-stage__coords">35.6896&deg; N / 139.6923&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="8"
+                    aria-labelledby="place-title-9"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_9.avif" alt="Senso-ji" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">09</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-9" class="places-stage__title">Senso-ji</h3>
+                        <p class="places-stage__text">Senso-ji, also known as Asakusa Kannon ), is a visitor site in Tokyo, Japan. Sensō-ji, also known as Asakusa Kannon ), is an ancient Buddhist temple in Asakusa, Tokyo, Japan. It is Tokyo&#x27;s oldest-established temple, and one of its most significant. It is dedicated to Kannon, the bodhisattva of compassion. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">35.7148&deg; N / 139.7967&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="9"
+                    aria-labelledby="place-title-10"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_10.avif" alt="Nakamise Shopping Street" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">10</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-10" class="places-stage__title">Nakamise Shopping Street</h3>
+                        <p class="places-stage__text">Nakamise Shopping Street is one of the oldest shopping streets in Japan, forming the busy approach to Senso-ji Temple in Asakusa. The 250-meter-long pedestrian avenue is lined with nearly 90 traditional stalls selling a wide variety of Japanese souvenirs, traditional crafts, and local street food snacks, such as freshly baked ningyo-yaki and rice crackers.</p>
+                        <p class="places-stage__coords">35.7126&deg; N / 139.7965&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="10"
+                    aria-labelledby="place-title-11"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_11.avif" alt="Kaminarimon Gate" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">11</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-11" class="places-stage__title">Kaminarimon Gate</h3>
+                        <p class="places-stage__text">The Kaminarimon is the outer of two large entrance gates that ultimately leads to the Sensō-ji in Asakusa, Tokyo, Japan. The gate, with its lantern and statues, is popular with tourists. It stands at 11.7 m tall, 11.4 m wide and covers an area of 69.3 m2.</p>
+                        <p class="places-stage__coords">35.7111&deg; N / 139.7964&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="11"
+                    aria-labelledby="place-title-12"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_12.avif" alt="Sumida River Walk" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">12</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-12" class="places-stage__title">Sumida River Walk</h3>
+                        <p class="places-stage__text">Adachi is a special ward in the Tokyo Metropolis in Japan. It is located to the north of the Tokyo. The ward consists of two separate areas: a small strip of land between the Sumida River and Arakawa River and a larger area north of the Arakawa River.</p>
+                        <p class="places-stage__coords">35.7122&deg; N / 139.8005&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="12"
+                    aria-labelledby="place-title-13"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_13.avif" alt="Tokyo Skytree" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">13</span>
+                            <span class="places-stage__admission"><span>Admission</span>¥2,100</span>
+                        </p>
+                        <h3 id="place-title-13" class="places-stage__title">Tokyo Skytree</h3>
+                        <p class="places-stage__text">Tokyo Skytree, a.k.a Tokyo Sky Tree, is a broadcasting and observation tower, located in Sumida, Tokyo, Japan. It has been the tallest tower in Japan since opening in 2012, and reached its full height of 634 metres in early 2011, making it the tallest tower in the world, displacing the Canton Tower, and the third tallest structure in the world behind Merdeka 118 and Burj Khalifa.</p>
+                        <p class="places-stage__coords">35.7100&deg; N / 139.8107&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="13"
+                    aria-labelledby="place-title-14"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_14.avif" alt="Unicorn Gundam" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">14</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-14" class="places-stage__title">Unicorn Gundam</h3>
+                        <p class="places-stage__text">In Tokyo&#x27;s Odaiba district stands the Unicorn Gundam Statue, a towering 20-meter tall tribute to the beloved Japanese manga and anime series Mobile Suit Gundam. This larger-than-life white statue comes alive at night with lights and music, making it a for fans and travellers alike. Situated outside the Divercity Tokyo Plaza Mall, this landmark has become an integral part of Odaiba&#x27;s active anime and manga culture.</p>
+                        <p class="places-stage__coords">35.6245&deg; N / 139.7755&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="14"
+                    aria-labelledby="place-title-15"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_15.avif" alt="Tokyo Dome" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">15</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-15" class="places-stage__title">Tokyo Dome</h3>
+                        <p class="places-stage__text">Tokyo Dome is a visitor site in Tokyo, Japan. This domed stadium is the home ground for the Yomiuri Giants and has welcomed legendary artists like Mick Jagger, Michael Jackson, and Madonna over the years. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">35.7056&deg; N / 139.7519&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="15"
+                    aria-labelledby="place-title-16"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_16.avif" alt="Hachiko Statue" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">16</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-16" class="places-stage__title">Hachiko Statue</h3>
+                        <p class="places-stage__text">The Hachikō Memorial Statue in Shibuya is a popular meeting spot featuring a bronze statue honoring Hachiko, the famously loyal Akita dog. The story of Hachiko and his unwavering loyalty has captured hearts worldwide, inspiring movies and gaining recognition as a symbol of canine devotion. This legendary dog would wait at Shibuya Station every day for his owner to return from work, continuing to do so for nine years after his owner&#x27;s passing.</p>
+                        <p class="places-stage__coords">35.6591&deg; N / 139.7006&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="16"
+                    aria-labelledby="place-title-17"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_17.avif" alt="Loft" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">17</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-17" class="places-stage__title">Loft</h3>
+                        <p class="places-stage__text">Loft is a active shopping haven that caters to all visitor needs, whether for home, kitchen, office, or even travel. With a strong emphasis on design, Loft stands out by offering an eclectic mix of products ranging from quirky cartoon character merchandise like phone straps and stationery to modern interpretations of traditional Japanese items such as fans and ceramics.</p>
+                        <p class="places-stage__coords">35.6609&deg; N / 139.6997&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="17"
+                    aria-labelledby="place-title-18"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_18.avif" alt="Konno Hachiman-gu Shrine" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">18</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-18" class="places-stage__title">Konno Hachiman-gu Shrine</h3>
+                        <p class="places-stage__text">Konno Hachiman-gu Shrine is a visitor site in Tokyo, Japan. Despite not being as grand as other shrines like Meiji, its resilience through WWII bombings and its historical significance make it a compelling attraction. Just a short walk from Shibuya Station, this Shinto shrine gives visitors an oasis of history amid the busy city. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">35.6575&deg; N / 139.7063&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="18"
+                    aria-labelledby="place-title-19"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_19.avif" alt="Kiddy Land" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">19</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-19" class="places-stage__title">Kiddy Land</h3>
+                        <p class="places-stage__text">Kiddy Land, located in Harajuku, is a active retail store spread across four levels and offers an extensive collection of Japanese and American toys. The shop is a popular with fans of famous Japanese characters, with a five-story building dedicated to various character goods such as Snoopy, Rilakkuma, Disney, Star Wars, and Hello Kitty. It&#x27;s not just for kids; adults and even celebrities frequent the store.</p>
+                        <p class="places-stage__coords">35.6677&deg; N / 139.7065&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="19"
+                    aria-labelledby="place-title-20"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_20.avif" alt="Togo Shrine" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">20</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-20" class="places-stage__title">Togo Shrine</h3>
+                        <p class="places-stage__text">Togo Shrine is a visitor site in Tokyo, Japan. Records associated with the site include 1905. While smaller than the nearby Meiji Shrine, it offers a peaceful escape from the busy city. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">35.6717&deg; N / 139.7058&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="20"
+                    aria-labelledby="place-title-21"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_21.avif" alt="Kiyomasa&#x27;s Well" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">21</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-21" class="places-stage__title">Kiyomasa&#x27;s Well</h3>
+                        <p class="places-stage__text">Located within Meiji Jingu, Kiyomasa&#x27;s Well is a known &quot;power spot&quot; in Tokyo. It is believed to have been created by Kato Kiyomasa, a prominent feudal lord from the 16th and 17th centuries. The well&#x27;s pristine water attracts travellers who seek its positive energies. Although touching the water in the well is prohibited, travellers can touch the water around the small pond.</p>
+                        <p class="places-stage__coords">35.6748&deg; N / 139.6987&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="21"
+                    aria-labelledby="place-title-22"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_22.avif" alt="Hatonomori Hachiman Shrine" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">22</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-22" class="places-stage__title">Hatonomori Hachiman Shrine</h3>
+                        <p class="places-stage__text">Hatonomori Hachiman Shrine is a visitor site in Tokyo, Japan. Hatonomori Hachiman Shrine, located in Shibuya Ward near Sendagaya station, is a centuries-old Shinto place of worship known for its hydrangeas in the summer. It is also depicted in the anime series &#x27;March Comes in Like a Lion,&#x27; where the protagonist often visits before his shogi matches. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">35.6779&deg; N / 139.7096&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="22"
+                    aria-labelledby="place-title-23"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_23.avif" alt="Shinjuku Gyoen National Garden" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">23</span>
+                            <span class="places-stage__admission"><span>Admission</span>¥500</span>
+                        </p>
+                        <h3 id="place-title-23" class="places-stage__title">Shinjuku Gyoen National Garden</h3>
+                        <p class="places-stage__text">Shinjuku Gyoen National Garden is a public park in Tokyo, Japan. Shinjuku Gyoen National Garden, a former estate turned 144-acre park, was originally created as a recreational garden for the Imperial family. Throughout the year, the park hosts various events such as photography lessons, chrysanthemum flower exhibitions, and traditional Japanese art performances. Paths, lawns, and shaded areas make up the main public facilities.</p>
+                        <p class="places-stage__coords">35.6852&deg; N / 139.7101&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="23"
+                    aria-labelledby="place-title-24"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_24.avif" alt="Isetan Shinjuku" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">24</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-24" class="places-stage__title">Isetan Shinjuku</h3>
+                        <p class="places-stage__text">Isetan Shinjuku is a known department store in Japan, tracing its origins back to 1886 when it started as a kimono shop. Today, it is celebrated for its diverse range of products, from luxury brands to casual wear. The flagship store in Shinjuku is considered the birthplace of fashion trends and offers an extensive selection of fashion items from top global brands, beauty products, and gourmet food.</p>
+                        <p class="places-stage__coords">35.6916&deg; N / 139.7046&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="24"
+                    aria-labelledby="place-title-25"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_25.avif" alt="Hanazono Shrine" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">25</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-25" class="places-stage__title">Hanazono Shrine</h3>
+                        <p class="places-stage__text">Hanazono Shrine is a visitor site in Tokyo, Japan. Hanazono Shrine, In Shinjuku, is a compact Edo-period Shinto shrine dedicated to Inari Okami, the god of trade and business success. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">35.6935&deg; N / 139.7053&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="25"
+                    aria-labelledby="place-title-26"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_26.avif" alt="Shinjuku Golden-Gai" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">26</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-26" class="places-stage__title">Shinjuku Golden-Gai</h3>
+                        <p class="places-stage__text">Shinjuku Golden-Gai is a visitor site in Tokyo, Japan. While the area has gained popularity among international travellers, it still retains its local charm and may have some establishments with &#x27;Locals Only&#x27; signs. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">35.6941&deg; N / 139.7048&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="26"
+                    aria-labelledby="place-title-27"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_27.avif" alt="Omoide Yokocho Memory Lane" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">27</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-27" class="places-stage__title">Omoide Yokocho Memory Lane</h3>
+                        <p class="places-stage__text">Omoide Yokocho, also known as Memory Lane Alley or Yakitori Alley, is a known landmark in Tokyo located just north of Shinjuku station. Once a black market area post-World War II, it has transformed into a busy alleyway filled with tightly compressed restaurants offering cheap izakaya food and alcoholic drinks. The active atmosphere attracts both locals and tourists seeking to savor its culinary offerings.</p>
+                        <p class="places-stage__coords">35.6927&deg; N / 139.6996&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="27"
+                    aria-labelledby="place-title-28"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_28.avif" alt="Meguro Sky Garden" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">28</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-28" class="places-stage__title">Meguro Sky Garden</h3>
+                        <p class="places-stage__text">Meguro Sky Garden is a public park in Tokyo, Japan. The park rises up to 35 meters high and offers superb views of the surrounding buildings and the city of Tokyo. Despite its location above a highway road, it provides a peaceful nature break with no cafes or restaurants on site. Paths, lawns, and shaded areas make up the main public facilities.</p>
+                        <p class="places-stage__coords">35.6511&deg; N / 139.6876&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="28"
+                    aria-labelledby="place-title-29"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_29.avif" alt="Hibiya Park" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">29</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-29" class="places-stage__title">Hibiya Park</h3>
+                        <p class="places-stage__text">Hibiya Park, Japan&#x27;s oldest Western-style park, is located in Tokyo&#x27;s Chiyoda Ward. Spanning over 161,636.66 square meters, it was originally a military parade ground before transforming into a urban oasis. Situated near the Imperial Palace and surrounded by busy districts, the park offers lush gardens, seasonal blooms, and a Japanese garden. Travellers can enjoy flower beds, outdoor music venues, public halls as well as beautifully maintained lawns and ponds.</p>
+                        <p class="places-stage__coords">35.6736&deg; N / 139.7559&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="29"
+                    aria-labelledby="place-title-30"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_30.avif" alt="Tokyo Takarazuka Theater" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">30</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-30" class="places-stage__title">Tokyo Takarazuka Theater</h3>
+                        <p class="places-stage__text">Tokyo Takarazuka Theater is a theatre in Tokyo, Japan. Tokyo Takarazuka Theatre is a grand performing arts space that introduces travellers to the world of Takarazuka Creative Arts. It was formerly known as the Ernie Pyle Theater and hosts performances by the all-female musical troupe, Takarazuka Revue. Public access is usually through ticketed performances or daytime visits.</p>
+                        <p class="places-stage__coords">35.6727&deg; N / 139.7592&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="30"
+                    aria-labelledby="place-title-31"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_31.avif" alt="Imperial Theatre" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">31</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-31" class="places-stage__title">Imperial Theatre</h3>
+                        <p class="places-stage__text">Imperial Theatre, a historic venue established in 1911, is a significant part of Tokyo&#x27;s cultural scene. It hosts diverse performances annually, including Western musicals like Les Miserables and Elisabeth, as well as shows by Japanese entertainers such as Endless SHOCK. Despite its smaller size, the theater offers comfortable seating with good views of the stage from various angles.</p>
+                        <p class="places-stage__coords">35.6766&deg; N / 139.7609&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="31"
+                    aria-labelledby="place-title-32"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_32.avif" alt="Kokyo Gaien National Garden" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">32</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-32" class="places-stage__title">Kokyo Gaien National Garden</h3>
+                        <p class="places-stage__text">Kokyo Gaien National Garden, located in central Tokyo, is a large green space featuring 2000 black pines and family-friendly areas like Kitanomaru Park. It offers an understated experience with scenic moats and the East Gardens. Travellers can view the Nijubashi from the large plaza in front of the Imperial Palace, which provides a backdrop against the city skyline.</p>
+                        <p class="places-stage__coords">35.6801&deg; N / 139.7583&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="32"
+                    aria-labelledby="place-title-33"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_33.avif" alt="Sakurada-mon Gate" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">33</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-33" class="places-stage__title">Sakurada-mon Gate</h3>
+                        <p class="places-stage__text">Sakurada-mon Gate, located near the Imperial Palace in Tokyo, Japan, is a significant historical landmark that dates back to the Edo period. Originally built in 1457 and reconstructed in 1636, it has survived through centuries of history. The gate&#x27;s steel storehouse structure is a evidence of its resilience after being destroyed in the Great Kanto Earthquake of 1923.</p>
+                        <p class="places-stage__coords">35.6786&deg; N / 139.7539&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="33"
+                    aria-labelledby="place-title-34"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_34.avif" alt="Marunouchi Tokyo Station Square" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">34</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-34" class="places-stage__title">Marunouchi Tokyo Station Square</h3>
+                        <p class="places-stage__text">Marunouchi Square is a spacious, white granite-paved area flanked by lawns and adjacent to the striking red-brick Tokyo Station. It is a harmonious blend of tradition and modernity, nature and architecture, functionality, and beauty. This popular spot is frequented by locals and tourists alike due to its convenient access to Tokyo&#x27;s landmarks such as the Imperial Palace, Ginza, and Nihonbashi.</p>
+                        <p class="places-stage__coords">35.6816&deg; N / 139.7655&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="34"
+                    aria-labelledby="place-title-35"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_35.avif" alt="Tokyo Character Street" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">35</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-35" class="places-stage__title">Tokyo Character Street</h3>
+                        <p class="places-stage__text">A shopping area in Tokyo Station filled with stores selling merchandise of popular Japanese characters and anime. The site forms part of Tokyo Character Street&#x27;s documented civic and cultural landscape within Japan, with archives and visitor information available from municipal or regional heritage authorities.</p>
+                        <p class="places-stage__coords">35.6820&deg; N / 139.7687&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="35"
+                    aria-labelledby="place-title-36"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_36.avif" alt="Statues of Kirin" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">36</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-36" class="places-stage__title">Statues of Kirin</h3>
+                        <p class="places-stage__text">Statues of Kirin is a monument in Tokyo, Japan. Kachidoki is a busy city market in Japan that takes place once a month, attracting around 20,000 travellers over the weekend. It&#x27;s a great place for families to enjoy various activities such as eating, shopping, learning, and experiencing together. The memorial stands in an open plaza or roadside setting.</p>
+                        <p class="places-stage__coords">35.6841&deg; N / 139.7743&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="36"
+                    aria-labelledby="place-title-37"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_37.avif" alt="Fukutoku Shrine" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">37</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-37" class="places-stage__title">Fukutoku Shrine</h3>
+                        <p class="places-stage__text">Fukutoku Shrine, also known as Mebuki or Sprouting Shrine, is an urban shrine located in Nihonbashi with a history dating back to the mid-9th century. It has been patronized by historical figures such as Minamoto no Yoshiie and Tokugawa Ieyasu. The shrine&#x27;s main gate, made of sawtooth oak, is said to have sprouted buds according to local legend.</p>
+                        <p class="places-stage__coords">35.6873&deg; N / 139.7744&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="37"
+                    aria-labelledby="place-title-38"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_38.avif" alt="Koami Shrine" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">38</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-38" class="places-stage__title">Koami Shrine</h3>
+                        <p class="places-stage__text">Koami Shrine, located in Nihonbashi, Chuo-ku, Tokyo, is a historic shrine with a local history. Believed to be at least 1,000 years old, it houses wooden carvings of two dragons that survived the firebombing of Tokyo during World War II. The shrine is famous for Sennarai-benten, the goddess of luck and protection from bad luck.</p>
+                        <p class="places-stage__coords">35.6841&deg; N / 139.7805&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="38"
+                    aria-labelledby="place-title-39"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_39.avif" alt="Suitengu Shrine" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">39</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-39" class="places-stage__title">Suitengu Shrine</h3>
+                        <p class="places-stage__text">Suitengu Shrine, a small Shinto shrine in Tokyo, is dedicated to fertility and childbirth. It is a branch shrine of Kurume Suitengu in Fukuoka Prefecture and is known for its deity for safe childbirth. The shrine is popular among worshippers praying for easy childbirth and the birth of their children.</p>
+                        <p class="places-stage__coords">35.6837&deg; N / 139.7850&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="39"
+                    aria-labelledby="place-title-40"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/tokyo_40.avif" alt="Okuno Building" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">40</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-40" class="places-stage__title">Okuno Building</h3>
+                        <p class="places-stage__text">Located amidst the modern structures of Ginza, Tokyo&#x27;s upscale district, the Okuno Building is a blend of art, history, and antiquity. Constructed in the 1930s as a lavish apartment complex, it endured the ravages of World War II and subsequent urban development. Today, this architectural gem houses an array of art galleries and studios within its careful preserved walls.</p>
+                        <p class="places-stage__coords">35.6738&deg; N / 139.7689&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="site-footer">
         <div class="page-shell">
             <div class="site-footer__bar">
-                <a href="../../index.html" class="site-footer__brand" aria-label="Global Explorer home">
-                    <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
+                <a href="../../index.html" class="site-footer__mark" aria-label="Global Explorer home">
+                    <svg width="24" height="24" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
-                    <span class="site-footer__brand-name font-display">Global Explorer</span>
+                    Global Explorer
                 </a>
-                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides <span>Tokyo: 40 places across Kanto.</span></p>
             </div>
         </div>
     </footer>
 
     <button id="scrollTopBtn" type="button" aria-label="Scroll to top">
-        <i class="ph ph-arrow-up" aria-hidden="true"></i>
+        <svg viewBox="0 0 24 24" width="1.15em" height="1.15em" aria-hidden="true" focusable="false">
+            <path d="M12 5.25 V18.75 M12 5.25 L6.75 10.5 M12 5.25 L17.25 10.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
     </button>
 
     <script defer src="../../assets/dev-destination-toggle.js"></script>
     <script defer src="../../assets/tg-page-chrome.js"></script>
     <script defer src="../../assets/tg-destination-map.js"></script>
+    <script defer src="../../assets/tg-destination-places.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const map = L.map('map').setView([35.676423, 139.650027], 14);
+            const map = L.map('map');
             L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
                 attribution: '&copy; Google Maps',
                 maxZoom: 20
             }).addTo(map);
-            const locations = [{"name": "Imperial Palace East National Gardens", "lat": 35.6865, "lng": 139.757}, {"name": "Wadakura Fountain Park", "lat": 35.6826, "lng": 139.7602}, {"name": "Tokyo Tower", "lat": 35.6586, "lng": 139.7454}, {"name": "Zojo-ji", "lat": 35.6573, "lng": 139.7482}, {"name": "Shibuya Crossing", "lat": 35.6595, "lng": 139.7005}, {"name": "Meiji Jingu", "lat": 35.6764, "lng": 139.6993}, {"name": "Meiji Jingu Ichino Torii", "lat": 35.6687, "lng": 139.7042}, {"name": "North Observation Deck, Tokyo Metropolitan Government Building", "lat": 35.6896, "lng": 139.6923}, {"name": "Senso-ji", "lat": 35.7148, "lng": 139.7967}, {"name": "Nakamise Shopping Street", "lat": 35.7126, "lng": 139.7965}, {"name": "Kaminarimon Gate", "lat": 35.7111, "lng": 139.7964}, {"name": "Sumida River Walk", "lat": 35.7122, "lng": 139.8005}, {"name": "Tokyo Skytree", "lat": 35.71, "lng": 139.8107}, {"name": "Unicorn Gundam", "lat": 35.624451, "lng": 139.775492}, {"name": "Tokyo Dome", "lat": 35.70564, "lng": 139.751891}, {"name": "Hachiko Statue", "lat": 35.659058, "lng": 139.700629}, {"name": "Loft", "lat": 35.660935, "lng": 139.699723}, {"name": "Konno Hachiman-gu Shrine", "lat": 35.657536, "lng": 139.706344}, {"name": "Kiddy Land", "lat": 35.667733, "lng": 139.706547}, {"name": "Togo Shrine", "lat": 35.67174, "lng": 139.705844}, {"name": "Kiyomasa's Well", "lat": 35.67477, "lng": 139.698683}, {"name": "Hatonomori Hachiman Shrine", "lat": 35.677864, "lng": 139.709582}, {"name": "Shinjuku Gyoen National Garden", "lat": 35.685176, "lng": 139.710052}, {"name": "Isetan Shinjuku", "lat": 35.691574, "lng": 139.704647}, {"name": "Hanazono Shrine", "lat": 35.693531, "lng": 139.705328}, {"name": "Shinjuku Golden-Gai", "lat": 35.694112, "lng": 139.704761}, {"name": "Omoide Yokocho Memory Lane", "lat": 35.692701, "lng": 139.699578}, {"name": "Meguro Sky Garden", "lat": 35.651065, "lng": 139.687558}, {"name": "Hibiya Park", "lat": 35.673612, "lng": 139.755877}, {"name": "Tokyo Takarazuka Theater", "lat": 35.67273, "lng": 139.759216}, {"name": "Imperial Theatre", "lat": 35.676576, "lng": 139.760905}, {"name": "Kokyo Gaien National Garden", "lat": 35.680117, "lng": 139.758313}, {"name": "Sakurada-mon Gate", "lat": 35.678563, "lng": 139.753942}, {"name": "Marunouchi Tokyo Station Square", "lat": 35.68156, "lng": 139.765477}, {"name": "Tokyo Character Street", "lat": 35.6820335, "lng": 139.7686549}, {"name": "Statues of Kirin", "lat": 35.684089, "lng": 139.774345}, {"name": "Fukutoku Shrine", "lat": 35.687307, "lng": 139.774449}, {"name": "Koami Shrine", "lat": 35.684117, "lng": 139.780462}, {"name": "Suitengu Shrine", "lat": 35.683657, "lng": 139.785021}, {"name": "Okuno Building", "lat": 35.67377, "lng": 139.768851}];
+            const locations = Array.from(document.querySelectorAll('[data-place-option]')).map((el) => ({
+                name: el.dataset.placeName || '',
+                lat: Number(el.dataset.placeLat),
+                lng: Number(el.dataset.placeLng),
+            }));
             const customIcon = L.icon({
                 iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
                 iconSize: [32, 32],
@@ -666,14 +1761,45 @@
                 popupAnchor: [0, -32],
             });
             const destinationCenter = [35.676423, 139.650027];
-            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.051972, "maxCenterLng": 0.160673};
-            locations.forEach((location) => {
-                L.marker([location.lat, location.lng], { icon: customIcon })
+            const mapContext = {"denseUrban": true};
+            const markers = locations.map((location) => {
+                const marker = L.marker([location.lat, location.lng], { icon: customIcon })
                     .addTo(map)
                     .bindPopup(`<strong>${location.name}</strong>`);
+                return marker;
             });
             window.TGDestinationMap?.fitToLocations(map, locations, destinationCenter, mapContext);
             window.TGDestinationMap?.bindMobileScrollGuard(map, 'map');
+            window.TGDestinationMap?.registerMarkers(map, markers);
+
+            const heroImage = document.querySelector('[data-destination-hero-image]');
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (heroImage && !reduceMotion) {
+                let framePending = false;
+                let scrolling = false;
+                let scrollEndTimer = 0;
+                const updateHeroPosition = () => {
+                    const offset = Math.min(window.scrollY, window.innerHeight * 1.15) * 0.075;
+                    heroImage.style.transform = `translate3d(0, ${offset}px, 0) scale(1.055)`;
+                    framePending = false;
+                };
+                window.addEventListener('scroll', () => {
+                    if (!scrolling) {
+                        scrolling = true;
+                        heroImage.style.willChange = 'transform';
+                    }
+                    window.clearTimeout(scrollEndTimer);
+                    scrollEndTimer = window.setTimeout(() => {
+                        scrolling = false;
+                        heroImage.style.willChange = 'auto';
+                    }, 150);
+                    if (!framePending) {
+                        window.requestAnimationFrame(updateHeroPosition);
+                        framePending = true;
+                    }
+                }, { passive: true });
+                updateHeroPosition();
+            }
         });
     </script>
 </body>

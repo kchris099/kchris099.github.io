@@ -6,568 +6,1481 @@
     <meta name="description" content="Plan a visit to Sydney with a concise history, interactive attractions map, prices, and curated highlights across the destination.">
     <meta name="theme-color" content="#121417">
     <title>Sydney Guide | Global Explorer Guides</title>
-    <link rel="stylesheet" href="../../assets/tailwind.css">
-    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
     <link rel="stylesheet" href="../../assets/newindex-fonts.css">
     <link rel="stylesheet" href="../../assets/tg-theme.css">
     <link rel="stylesheet" href="../../assets/tg-site-chrome.css">
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
     <link rel="stylesheet" href="../../assets/tg-modern-polish.css">
+    <link rel="stylesheet" href="../../assets/tg-country-page.css">
+    <link rel="stylesheet" href="../../assets/tg-destination-page-v3.css">
     <script defer src="../../assets/lenis.min.js"></script>
     <script defer src="../../assets/tg-smooth-scroll.js"></script>
     <link rel="preload" as="image" href="images/sydney_hero.avif" type="image/avif" fetchpriority="high">
     <script defer src="../../assets/leaflet/leaflet.js"></script>
 </head>
-<body class="tg-theme tg-destination-page tg-modern">
-    <header id="site-header" class="header-glass fixed top-0 left-0 right-0 z-50">
+<body class="tg-theme tg-modern tg-country-v2 tg-destination-v3">
+    <a class="skip-link" href="#main-content">Skip to Sydney guide</a>
+    <header id="site-header" class="header-glass">
         <div class="page-shell header-glass__inner">
-            <a href="../../index.html" class="font-display site-brand" style="display:flex;align-items:center;gap:0.75rem;text-decoration:none;color:inherit;font-size:1.25rem;" aria-label="Global Explorer home">
+            <a href="../../index.html" class="site-brand" aria-label="Global Explorer home">
                 <span class="site-brand__mark" aria-hidden="true">
                     <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
-                        <circle cx="14" cy="14" r="2" fill="#E8B14F"/>
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
                 </span>
                 Global Explorer
             </a>
-            <nav class="header-glass__nav-mobile" aria-label="Mobile navigation">
-                <a href="../../index.html" class="header-glass__icon-link" aria-label="Home">
-                    <i class="ph ph-house" aria-hidden="true"></i>
-                </a>
-                <a href="australia.html" class="header-glass__icon-link" aria-label="Back to Australia">
-                    <i class="ph ph-arrow-left" aria-hidden="true"></i>
-                </a>
-            </nav>
             <nav class="header-glass__nav" aria-label="Primary">
-                <a href="../../index.html" class="nav-link">Home</a>
-                <a href="sydney.html" class="nav-link" aria-current="page">Sydney</a>
+                <a href="#main-content" class="nav-link" aria-current="page">Sydney</a>
+                <a href="#atlas" class="nav-link">Atlas</a>
+                <a href="#places" class="nav-link">Places</a>
                 <a href="australia.html" class="nav-link">Australia</a>
-                <a href="../../index.html#map" class="nav-link">Atlas</a>
             </nav>
         </div>
     </header>
-    <main>
-        <div class="tg-destination-hero-zone">
-            <div class="tg-destination-hero" aria-hidden="true">
-                <div class="tg-destination-hero__image" style="background-image: url('images/sydney_hero.avif')"></div>
-                <div class="tg-destination-hero__fade"></div>
-            </div>
-            <div class="page-shell tg-destination-hero-zone__content">
-        <nav class="tg-toolbar tg-toolbar--compact" aria-label="Breadcrumb">
-            <div class="tg-breadcrumb">
-                <img src="../../assets/flags/w40/au.png" alt="" class="w-6 h-auto rounded-[2px]" aria-hidden="true">
-                <span>Australia</span>
-                <span class="tg-breadcrumb__sep" aria-hidden="true">&rsaquo;</span>
-                <span class="tg-breadcrumb__current">East Coast</span>
-            </div>
-        </nav>
+    <main id="main-content" tabindex="-1">
+        <section class="destination-hero" aria-labelledby="destination-title">
+            <img class="destination-hero__media" data-destination-hero-image src="images/sydney_hero.avif" alt="" width="1600" height="1067" fetchpriority="high" decoding="sync">
+            <div class="destination-hero__shade" aria-hidden="true"></div>
+            <div class="page-shell destination-hero__content">
+                <button
+                    type="button"
+                    id="destination-active-toggle"
+                    class="country-active-toggle country-active-toggle--inactive"
+                    data-iso2="AU"
+                    data-slug="sydney"
+                    data-active="false"
+                    data-interactive="true"
+                    aria-label="Toggle Sydney visibility on Australia guide"
+                    aria-pressed="false"
+                >
+                    <img src="../../assets/flags/w80/au.png" alt="" aria-hidden="true">
+                    <span class="country-toggle__copy" aria-hidden="true">
+                        <span class="country-toggle__label">Sydney guide</span>
+                        <strong class="country-toggle__state"></strong>
+                    </span>
+                </button>
 
-        <header class="tg-page-header">
-            <button
-        type="button"
-        id="destination-active-toggle"
-        class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
-        data-iso2="AU"
-        data-slug="sydney"
-        data-active="false"
-        data-interactive="true"
-        aria-label="Toggle Sydney visibility on Australia guide"
-        aria-pressed="false"
-    >
-        <i class="ph ph-map-pin text-4xl pointer-events-none" aria-hidden="true"></i>
-    </button>
-            <span class="tg-page-header__eyebrow">Destination Guide — East Coast</span>
-            <h1 class="tg-page-title font-display">Explore <em>Sydney</em></h1>
-            <div class="glass-card frosted-panel tg-panel">
-                <h2 class="tg-panel__title font-display">
-                    <i class="ph ph-scroll" aria-hidden="true"></i> A Brief History
-                </h2>
-                <p class="tg-panel__body">Sydney Harbour was settled by Britain in 1788 as a penal colony that grew into Australia&#x27;s largest metropolis. Opera House sails, sandstone convict precincts, and harbour bridges record colonial foundations and post-war immigration on the Pacific rim. Bondi-to-Coogee coastal walks and Rocks laneways extend harbour settlement layers along the Pacific escarpment.</p>
-            </div>
-        </header>
+                <div class="hero__route" aria-label="Destination route and coordinates">
+                    <span>Australia / East Coast</span>
+                    <span>33.8637&deg; S / 151.2097&deg; E</span>
+                </div>
 
-        <div class="tg-section__header tg-section__header--map-end">
-            <span class="tg-section__eyebrow">Map</span>
-            <h2 class="tg-section__title font-display">Attractions Map</h2>
-        </div>
-            </div>
-        </div>
-
-        <div class="page-shell tg-main tg-main--below-hero">
-        <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Sydney attractions"></div>
-        <section class="tg-section">
-            <div class="tg-section__header">
-                <span class="tg-section__eyebrow">Highlights</span>
-                <h2 class="tg-section__title font-display">Top Sights &amp; Activities</h2>
-            </div>
-            <div class="tg-sights-list">
-            
-            <!-- 1. Mrs Macquarie&#x27;s Chair -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/sydney_1.avif" alt="Mrs Macquarie&#x27;s Chair" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                <h1 id="destination-title" class="destination-hero__title" style="--destination-title-chars: 6">Sydney</h1>
+                <div class="destination-hero__history">
+                    <p>Sydney Harbour was settled by Britain in 1788 as a penal colony that grew into Australia&#x27;s largest metropolis. Opera House sails, sandstone convict precincts, and harbour bridges record colonial foundations and post-war immigration on the Pacific rim. Bondi-to-Coogee coastal walks and Rocks laneways extend harbour settlement layers along the Pacific escarpment.</p>
+                </div>
+                <dl class="destination-hero__facts" aria-label="Sydney guide facts">
+                    <div>
+                        <dt>Country</dt>
+                        <dd>Australia</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Mrs Macquarie&#x27;s Chair</h3>
-                    <p class="tg-sight-card__text">Mrs Macquarie&#x27;s Chair is a historic sandstone bench, skillfully carved by convicts in 1810 for Elizabeth Macquarie, the wife of New South Wales&#x27; governor. This spot offers views of Sydney Harbour, including the Opera House and Harbour Bridge, making it a must-visit for photography enthusiasts. Located at the edge of The Domain and near the Royal Botanic Gardens, it&#x27;s an ideal place to unwind while soaking in scenery.</p>
-                </div>
-            </div>
-            <!-- 2. St Mary&#x27;s Cathedral -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/sydney_2.avif" alt="St Mary&#x27;s Cathedral" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                    <div>
+                        <dt>Region</dt>
+                        <dd>East Coast</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">St Mary&#x27;s Cathedral</h3>
-                    <p class="tg-sight-card__text">Saint Mary&#x27;s Cathedral, a Gothic-style Catholic cathedral constructed from local sandstone between 1868 and 1928, is a structure that can accommodate up to 2,000 worshippers. Standing at 75 meters tall, it is the second largest church in Australia. The cathedral&#x27;s long lasting architecture and grandeur make it a popular tourist attraction. Inside, visitors can admire stained glass windows, an organ, detailed wood carvings, and towering neo-Gothic arches.</p>
-                </div>
-            </div>
-            <!-- 3. Hyde Park Barracks -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/sydney_3.avif" alt="Hyde Park Barracks" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                    <div>
+                        <dt>Places</dt>
+                        <dd>33</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Hyde Park Barracks</h3>
-                    <p class="tg-sight-card__text">Hyde Park Barracks, erected in 1819 in Sydney, Australia, served as a prison for British convicts and later housed female immigrants and destitute elderly women. The barracks transitioned through various roles over the years, including functioning as a courthouse and government offices. Today, it has a glimpse into the lives of convicts and orphans who lived there in the 1800s through twice-daily tours or audio guides.</p>
-                </div>
-            </div>
-            <!-- 4. Sydney Tower Eye -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/sydney_4.avif" alt="Sydney Tower Eye" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> A$29
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Sydney Tower Eye</h3>
-                    <p class="tg-sight-card__text">Formerly known as Centrepoint Tower, Sydney Tower Eye is a must-visit landmark in Sydney. It offers a 4-D cinema, an observation deck, and an outdoor viewing platform that provides 360-degree views of the city. This tower is a great starting point for first-time visitors to get their bearings in Sydney. The panoramic scenery from the top allows visitors to familiarize themselves with the city&#x27;s layout and plan their transportation options accordingly.</p>
-                </div>
-            </div>
-            <!-- 5. State Theatre -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/sydney_5.avif" alt="State Theatre" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">State Theatre</h3>
-                    <p class="tg-sight-card__text">The State Theatre, located in Sydney&#x27;s CBD, is a establishment that hosts live music, film screenings, and comedy shows. The building has ornate Gothic, Italian, and art deco architecture and was originally opened in 1929 as a &#x27;Fantasy Palace for the People.&#x27; With its opulent design featuring vaulted ceilings, mosaic floors, marble columns and statues, brass and bronze doors, it offers a unique experience for visitors.</p>
-                </div>
-            </div>
-            <!-- 6. Queen Victoria Building -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/sydney_6.avif" alt="Queen Victoria Building" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Queen Victoria Building</h3>
-                    <p class="tg-sight-card__text">The Queen Victoria Building, a historic shopping center in Sydney&#x27;s CBD, is a example of Romanesque architecture designed by George McRae. Built in the late 19th century, it now houses over 175 modern stores including known brands like Tiffany and Ralph Lauren alongside tea rooms, florists, and jewelry stores. The building&#x27;s grand arches, pillars, and stained-glass windows reflect the artistry of its craftsmen from a bygone era.</p>
-                </div>
-            </div>
-            <!-- 7. Sydney Town Hall -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/sydney_7.avif" alt="Sydney Town Hall" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free (guided tour A$15)
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Sydney Town Hall</h3>
-                    <p class="tg-sight-card__text">Sydney Town Hall is a visitor site in Sydney, Australia. Constructed from local sandstone in the Victorian Second Empire style, it is home to the Lord Mayor&#x27;s chambers, council offices, and venues for various functions and meetings. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 8. Taronga Zoo Sydney -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/sydney_8.avif" alt="Taronga Zoo Sydney" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> A$50
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Taronga Zoo Sydney</h3>
-                    <p class="tg-sight-card__text">Located along the Sydney Harbour, Taronga Zoo is a must-visit destination for animal lovers and adventure seekers alike. Home to over 350 distinct species, this zoo offers an immersive experience that connects visitors with wildlife in a natural setting. Accessible via a scenic ferry ride from the city center, it provides views of landmarks like the Sydney Opera House and Harbour Bridge.</p>
-                </div>
-            </div>
-            <!-- 9. Darling Harbour -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/sydney_9.avif" alt="Darling Harbour" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Darling Harbour</h3>
-                    <p class="tg-sight-card__text">Darling Harbour is a waterfront destination in Sydney, offering a many of attractions and hosting large-scale events. Spanning 20 hectares, it is the gateway to various tourist hotspots including SEA LIFE Sydney Aquarium, IMAX theatre, Australian National Maritime Museum, WILD LIFE Sydney Zoo, and the Chinese Garden of Friendship.</p>
-                </div>
-            </div>
-            <!-- 10. Chinese Garden of Friendship -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/sydney_10.avif" alt="Chinese Garden of Friendship" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> A$12
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Chinese Garden of Friendship</h3>
-                    <p class="tg-sight-card__text">Chinese Garden of Friendship is a public park in Sydney, Australia. It was gifted to Australia by the city of Guangzhou as a symbol of friendship between the two countries. Paths, lawns, and shaded areas make up the main public facilities. Chinese Garden of Friendship remains part of the public visitor circuit in Sydney.</p>
-                </div>
-            </div>
-            <!-- 11. Sydney Fish Market -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/sydney_11.avif" alt="Sydney Fish Market" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Sydney Fish Market</h3>
-                    <p class="tg-sight-card__text">Sydney Fish Market is a market in Sydney, Australia. Sydney Fish Market is a beloved institution among locals and a seafood destination. It&#x27;s the second-largest seafood market globally in terms of variety, offering some of the freshest seafood in Sydney. Stalls sell food and goods during regular market hours.</p>
-                </div>
-            </div>
-            <!-- 12. SEA LIFE Sydney Aquarium -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/sydney_12.avif" alt="SEA LIFE Sydney Aquarium" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> A$39
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">SEA LIFE Sydney Aquarium</h3>
-                    <p class="tg-sight-card__text">SEA LIFE Sydney Aquarium is a must-visit aquatic attraction in Sydney, offering five distinct habitat exhibitions showing Australia&#x27;s marine life. Conveniently located near Circular Quay, it provides easy access for visitors. The aquarium houses a diverse range of ocean creatures and offers educational sessions on animal feeding and more. It&#x27;s an ideal family-friendly activity that allows visitors to explore the rich underwater world of Australia&#x27;s aquatic animals.</p>
-                </div>
-            </div>
-            <!-- 13. Sydney Cricket Ground -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/sydney_13.avif" alt="Sydney Cricket Ground" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> A$30
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Sydney Cricket Ground</h3>
-                    <p class="tg-sight-card__text">The Sydney Cricket Ground (SCG) in Moore Park is a historic sports stadium that has been hosting cricket, rugby, soccer, and even Olympic events since 1876. It&#x27;s a popular venue for both domestic and international matches, as well as concerts featuring known artists like Madonna and U2. Visitors can take a behind-the-scenes tour of the SCG to explore the fields of play, dressing rooms, media room, and Walk of Honour while learning about the venue&#x27;s rich history.</p>
-                </div>
-            </div>
-            <!-- 14. Paddington Reservoir Gardens -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/sydney_14.avif" alt="Paddington Reservoir Gardens" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Paddington Reservoir Gardens</h3>
-                    <p class="tg-sight-card__text">Paddington Reservoir Gardens is a public park in Sydney, Australia. In Paddington, Sydney, the Paddington Reservoir Gardens is a urban sunken garden that has been transformed from a derelict water reservoir into an award-winning public park. Paths, lawns, and shaded areas make up the main public facilities.</p>
-                </div>
-            </div>
-            <!-- 15. Hornby Lighthouse -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/sydney_15.avif" alt="Hornby Lighthouse" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Hornby Lighthouse</h3>
-                    <p class="tg-sight-card__text">Hornby Lighthouse is a visitor site in Sydney, Australia. Records associated with the site include 1858. Hornby Lighthouse, a striking red and white striped structure, has been guiding ships since its construction in 1858. Visitors can enjoy scenic walking tracks and lookouts that provide panoramic vistas of Sydney Harbour. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 16. North Head -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/sydney_16.avif" alt="North Head" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">North Head</h3>
-                    <p class="tg-sight-card__text">North Head is a visitor site in Sydney, Australia. Visitors can explore the headland on foot or by bike, taking in the natural beauty and historical landmarks along the way. The grounds and principal structures are the main points of interest. North Head remains part of the public visitor circuit in Sydney.</p>
-                </div>
-            </div>
-            <!-- 17. Macquarie Lighthouse -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/sydney_17.avif" alt="Macquarie Lighthouse" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Macquarie Lighthouse</h3>
-                    <p class="tg-sight-card__text">The Macquarie Lighthouse is the first lighthouse that was constructed in Australia. It provides guided tours and a panoramic view of Sydney Harbour, which is also noticeable from the coastal cliff walking trail nearby. The builder of this historical landmark remains unknown, but it sits at the end of a scenic walkway with lots of roadside parking available.</p>
-                </div>
-            </div>
-            <!-- 18. Sydney Opera House -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/sydney_18.avif" alt="Sydney Opera House" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> A$50
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Sydney Opera House</h3>
-                    <p class="tg-sight-card__text">Sydney Opera House is a theatre in Sydney, Australia. The Sydney Opera House is an arts center located on Bennelong Point in Sydney Harbour, offering views of the harbor, bridge, and city skyline. With over 1,600 performances annually, it hosts a diverse range of events including opera, theatre, music, dance, and comedy shows. Public access is usually through ticketed performances or daytime visits.</p>
-                </div>
-            </div>
-            <!-- 19. Government House -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/sydney_19.avif" alt="Government House" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Government House</h3>
-                    <p class="tg-sight-card__text">Government House, the official residence of the New South Wales governor, is a grand mansion dating back to the 1800s. Designed by Edward Blore in a Gothic Revival style, it has crenellated battlements and detailed interiors reminiscent of a castle. The State Rooms are marvelously restored and showcase Victorian pomp.</p>
-                </div>
-            </div>
-            <!-- 20. Royal Botanic Garden Sydney -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/sydney_20.avif" alt="Royal Botanic Garden Sydney" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Royal Botanic Garden Sydney</h3>
-                    <p class="tg-sight-card__text">Royal Botanic Garden Sydney is a public park in Sydney, Australia. Records associated with the site include 1816. The Royal Botanic Garden Sydney, established in 1816, is the oldest scientific institution in Australia. Paths, lawns, and shaded areas make up the main public facilities.</p>
-                </div>
-            </div>
-            <!-- 21. Sydney Harbour Bridge -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/sydney_21.avif" alt="Sydney Harbour Bridge" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Sydney Harbour Bridge</h3>
-                    <p class="tg-sight-card__text">Sydney Harbour Bridge, an structure opened in 1932, offers the thrilling BridgeClimb experience and the Pylon Lookout with exhibitions. Beyond its fame, Sydney&#x27;s surroundings offer unique experiences like camping beneath the bridge or glamping in a zoo with a harbor view. The city&#x27;s wild heart extends to camping areas and caravan parks near the CBD, while train rides from Central Station lead to the Blue Mountains or coastal beaches.</p>
-                </div>
-            </div>
-            <!-- 22. Luna Park Sydney -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/sydney_22.avif" alt="Luna Park Sydney" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free (rides A$34)
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Luna Park Sydney</h3>
-                    <p class="tg-sight-card__text">Luna Park Sydney is a public park in Sydney, Australia. Records associated with the site include 1935, 2004. Luna Park Sydney, a beloved amusement park located at Milsons Point, has been enchanting visitors since its grand opening in 1935. After undergoing redevelopment and reopening in 2004, this destination has a blend of vintage rides like the Wild Mouse Rollercoaster and the Big Dipper, alongside classic attractions such as the Carousel.</p>
-                </div>
-            </div>
-            <!-- 23. Blues Point Reserve -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/sydney_23.avif" alt="Blues Point Reserve" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Blues Point Reserve</h3>
-                    <p class="tg-sight-card__text">Blues Point Reserve is a public park in Sydney, Australia. It&#x27;s also a popular location for fishing enthusiasts looking to catch trevally, kingfish, or jewfish while enjoying the scenery. Paths, lawns, and shaded areas make up the main public facilities.</p>
-                </div>
-            </div>
-            <!-- 24. Mary Booth Lookout Reserve -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/sydney_24.avif" alt="Mary Booth Lookout Reserve" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Mary Booth Lookout Reserve</h3>
-                    <p class="tg-sight-card__text">Mary Booth Lookout Reserve is a public park in Sydney, Australia. Located in Kirribilli, just 5km or a 22-minute drive from Sydney CBD, Mary Booth Lookout Reserve offers a secluded and view of the Harbour Bridge without the usual crowds. Accessible from Milsons Point train station, visitors can enjoy a perfect picnic spot on the grassy reserve above. Paths, lawns, and shaded areas make up the main public facilities.</p>
-                </div>
-            </div>
-            <!-- 25. Paddy&#x27;s Markets Haymarket -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/sydney_25.avif" alt="Paddy&#x27;s Markets Haymarket" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Paddy&#x27;s Markets Haymarket</h3>
-                    <p class="tg-sight-card__text">Paddy&#x27;s Markets Haymarket is a market in Sydney, Australia. Open five days a week, it offers a wide variety of goods including souvenirs, clothing, fresh produce, hand-crafted jewelry, vintage records, and handmade Chinese lanterns. Stalls sell food and goods during regular market hours.</p>
-                </div>
-            </div>
-            <!-- 26. Chinatown Sydney -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/sydney_26.avif" alt="Chinatown Sydney" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Chinatown Sydney</h3>
-                    <p class="tg-sight-card__text">Chinatown Sydney sits within the Paddy&#x27;s Markets Haymarket area of Sydney, documented in local heritage registers for its civic or cultural role. Visitors approach from the main access road and combine the visit with neighbouring heritage buildings and public spaces in the district.</p>
-                </div>
-            </div>
-            <!-- 27. Capitol Theatre -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/sydney_27.avif" alt="Capitol Theatre" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Capitol Theatre</h3>
-                    <p class="tg-sight-card__text">Capitol Theatre is a theatre in Sydney, Australia. Capitol Theatre, located in the Haymarket district of Sydney, is a historic Victorian theatre known for its ornate decor and opulent atmosphere. The venue has been hosting a variety of performances including musicals, comedy acts, ballets, and plays since it first opened in 1892. Access is usually through ticketed performances or daytime visits.</p>
-                </div>
-            </div>
-            <!-- 28. BridgeClimb Sydney -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/sydney_28.avif" alt="BridgeClimb Sydney" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> A$344
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">BridgeClimb Sydney</h3>
-                    <p class="tg-sight-card__text">BridgeClimb Sydney is a documented piece of civic infrastructure in Sydney, Australia, recognised in local engineering and heritage listings for its construction period and continued public use. The structure is accessible from the surrounding streets and is visible from adjacent viewpoints. Travellers cross or view the site while moving between nearby districts and transit connections.</p>
-                </div>
-            </div>
-            <!-- 29. The Rocks Market -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/sydney_29.avif" alt="The Rocks Market" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">The Rocks Market</h3>
-                    <p class="tg-sight-card__text">The Rocks Market is a market in Sydney, Australia. It transforms the historic cobblestone laneways into a display of talented chefs and artisans, offering a carefully curated collection of fashion, homewares, artworks, and gifts. Visitors can indulge in gourmet street food while enjoying live entertainment, supporting local makers and creatives. Stalls sell food and goods during regular market hours.</p>
-                </div>
-            </div>
-            <!-- 30. Accor Stadium -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/sydney_30.avif" alt="Accor Stadium" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> A$25
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Accor Stadium</h3>
-                    <p class="tg-sight-card__text">Accor Stadium, formerly known as Stadium Australia, is a versatile venue located in Sydney Olympic Park, Australia. Built for the 2000 Olympics, it has since been refurbished to accommodate various sports including Australian Rules Football, Cricket, Rugby league and Rugby Union matches, it hosts concerts and events such as the upcoming FIFA Women&#x27;s World Cup 2023. The stadium offers an electrifying atmosphere for sporting events and provides ample amenities for visitors.</p>
-                </div>
-            </div>
-            <!-- 31. Sydney Showground -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/sydney_31.avif" alt="Sydney Showground" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Sydney Showground</h3>
-                    <p class="tg-sight-card__text">Sydney Showground, located in Sydney Olympic Park, is a premier events venue that has hosted major events in Australia. It offers versatile indoor and outdoor spaces suitable for small meetings, large-scale exhibitions, trade shows, and festivals. The Easter Show at Sydney Showground is a popular but expensive experience with various food stalls, performances, grand parades, and thrilling rides. The highlight of the show is the fireworks display.</p>
-                </div>
-            </div>
-            <!-- 32. Coal Loader Centre for Sustainability -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/sydney_32.avif" alt="Coal Loader Centre for Sustainability" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Coal Loader Centre for Sustainability</h3>
-                    <p class="tg-sight-card__text">Coal Loader Centre for Sustainability is a visitor site in Sydney, Australia. The Coal Loader Centre for Sustainability in Waverton, Sydney offers a unique experience that combines history and sustainability. Visitors can explore the 160m-long former coal-loading tunnel with sensor lights guiding the way, as well as the green roof on the platform above. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 33. Ritz Cinemas -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/sydney_33.avif" alt="Ritz Cinemas" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> A$27
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Ritz Cinemas</h3>
-                    <p class="tg-sight-card__text">Ritz Cinemas, located in a 1930s art deco building, offers a unique movie-watching experience with its cocktail bar and balcony. It is a popular destination for film enthusiasts of all ages, showing the latest movies on big screens with well equipped surround sound. The cinema holds historical significance as one of the only two original Art Deco cinemas still standing in Sydney, it provides a chance to watch films in 70mm format, making it a rare find in the city.</p>
-                </div>
-            </div>
+                </dl>
             </div>
         </section>
-        </div>
+
+        <section id="atlas" class="destination-atlas" aria-labelledby="atlas-title">
+            <div class="page-shell destination-atlas__layout">
+                <div class="destination-atlas__brief">
+                    <p class="destination-atlas__index">City atlas</p>
+                    <h2 id="atlas-title">Plot the city.</h2>
+                    <p class="destination-atlas__copy">Zoom, pan, and open any marker to focus that place in the catalog below.</p>
+                    <dl class="destination-atlas__facts" aria-label="Map coverage">
+                        <div>
+                            <dt>Plotted</dt>
+                            <dd>33 places</dd>
+                        </div>
+                        <div>
+                            <dt>Center</dt>
+                            <dd>33.8637&deg; S<br>151.2097&deg; E</dd>
+                        </div>
+                    </dl>
+                </div>
+                <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Sydney attractions"></div>
+            </div>
+        </section>
+
+        <section id="places" class="destination-places" aria-labelledby="places-title">
+            <div class="page-shell">
+                <div class="destination-chapter">
+                    <h2 id="places-title" class="destination-chapter__heading">33 ways into<br>Sydney.</h2>
+                    <p class="destination-chapter__copy">Browse the index, open a location, and read the essentials without scrolling through a long catalog. Each entry contains its image, admission note, and contextual guide.</p>
+                </div>
+                <div class="places-explorer" data-places-explorer>
+                    <aside class="places-explorer__rail" aria-label="Place index">
+                        <div class="places-explorer__toolbar">
+                            <label class="places-explorer__filter-label" for="places-filter">Filter places</label>
+                            <input
+                                id="places-filter"
+                                class="places-explorer__filter"
+                                type="search"
+                                data-places-filter
+                                placeholder="Search by name"
+                                autocomplete="off"
+                            >
+                            <p class="places-explorer__meta"><strong data-places-count>33</strong> of 33 shown</p>
+                        </div>
+                        <ul class="places-explorer__list" role="listbox" aria-label="Places in Sydney" data-places-list data-lenis-prevent data-tg-scroll-surface>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option is-active"
+                            role="option"
+                            id="place-option-1"
+                            data-place-option
+                            data-place-index="0"
+                            data-place-name="Mrs Macquarie&#x27;s Chair"
+                            data-place-lat="-33.859664"
+                            data-place-lng="151.222571"
+                            aria-selected="true"
+                            tabindex="0"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">01</span>
+                            <span class="places-explorer__option-name">Mrs Macquarie&#x27;s Chair</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-2"
+                            data-place-option
+                            data-place-index="1"
+                            data-place-name="St Mary&#x27;s Cathedral"
+                            data-place-lat="-33.87119"
+                            data-place-lng="151.213325"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">02</span>
+                            <span class="places-explorer__option-name">St Mary&#x27;s Cathedral</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-3"
+                            data-place-option
+                            data-place-index="2"
+                            data-place-name="Hyde Park Barracks"
+                            data-place-lat="-33.869604"
+                            data-place-lng="151.212585"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">03</span>
+                            <span class="places-explorer__option-name">Hyde Park Barracks</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-4"
+                            data-place-option
+                            data-place-index="3"
+                            data-place-name="Sydney Tower Eye"
+                            data-place-lat="-33.870315"
+                            data-place-lng="151.20888"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">04</span>
+                            <span class="places-explorer__option-name">Sydney Tower Eye</span>
+                            <span class="places-explorer__option-price">A$29</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-5"
+                            data-place-option
+                            data-place-index="4"
+                            data-place-name="State Theatre"
+                            data-place-lat="-33.870829"
+                            data-place-lng="151.207615"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">05</span>
+                            <span class="places-explorer__option-name">State Theatre</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-6"
+                            data-place-option
+                            data-place-index="5"
+                            data-place-name="Queen Victoria Building"
+                            data-place-lat="-33.871716"
+                            data-place-lng="151.206701"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">06</span>
+                            <span class="places-explorer__option-name">Queen Victoria Building</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-7"
+                            data-place-option
+                            data-place-index="6"
+                            data-place-name="Sydney Town Hall"
+                            data-place-lat="-33.873157"
+                            data-place-lng="151.206116"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">07</span>
+                            <span class="places-explorer__option-name">Sydney Town Hall</span>
+                            <span class="places-explorer__option-price">Free (guided tour A$15)</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-8"
+                            data-place-option
+                            data-place-index="7"
+                            data-place-name="Taronga Zoo Sydney"
+                            data-place-lat="-33.843547"
+                            data-place-lng="151.241342"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">08</span>
+                            <span class="places-explorer__option-name">Taronga Zoo Sydney</span>
+                            <span class="places-explorer__option-price">A$50</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-9"
+                            data-place-option
+                            data-place-index="8"
+                            data-place-name="Darling Harbour"
+                            data-place-lat="-33.87488"
+                            data-place-lng="151.2009"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">09</span>
+                            <span class="places-explorer__option-name">Darling Harbour</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-10"
+                            data-place-option
+                            data-place-index="9"
+                            data-place-name="Chinese Garden of Friendship"
+                            data-place-lat="-33.876526"
+                            data-place-lng="151.202797"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">10</span>
+                            <span class="places-explorer__option-name">Chinese Garden of Friendship</span>
+                            <span class="places-explorer__option-price">A$12</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-11"
+                            data-place-option
+                            data-place-index="10"
+                            data-place-name="Sydney Fish Market"
+                            data-place-lat="-33.875117"
+                            data-place-lng="151.189992"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">11</span>
+                            <span class="places-explorer__option-name">Sydney Fish Market</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-12"
+                            data-place-option
+                            data-place-index="11"
+                            data-place-name="SEA LIFE Sydney Aquarium"
+                            data-place-lat="-33.8696"
+                            data-place-lng="151.202138"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">12</span>
+                            <span class="places-explorer__option-name">SEA LIFE Sydney Aquarium</span>
+                            <span class="places-explorer__option-price">A$39</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-13"
+                            data-place-option
+                            data-place-index="12"
+                            data-place-name="Sydney Cricket Ground"
+                            data-place-lat="-33.891668"
+                            data-place-lng="151.224815"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">13</span>
+                            <span class="places-explorer__option-name">Sydney Cricket Ground</span>
+                            <span class="places-explorer__option-price">A$30</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-14"
+                            data-place-option
+                            data-place-index="13"
+                            data-place-name="Paddington Reservoir Gardens"
+                            data-place-lat="-33.885276"
+                            data-place-lng="151.226738"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">14</span>
+                            <span class="places-explorer__option-name">Paddington Reservoir Gardens</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-15"
+                            data-place-option
+                            data-place-index="14"
+                            data-place-name="Hornby Lighthouse"
+                            data-place-lat="-33.833531"
+                            data-place-lng="151.280983"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">15</span>
+                            <span class="places-explorer__option-name">Hornby Lighthouse</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-16"
+                            data-place-option
+                            data-place-index="15"
+                            data-place-name="North Head"
+                            data-place-lat="-33.822357"
+                            data-place-lng="151.299387"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">16</span>
+                            <span class="places-explorer__option-name">North Head</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-17"
+                            data-place-option
+                            data-place-index="16"
+                            data-place-name="Macquarie Lighthouse"
+                            data-place-lat="-33.853903"
+                            data-place-lng="151.285192"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">17</span>
+                            <span class="places-explorer__option-name">Macquarie Lighthouse</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-18"
+                            data-place-option
+                            data-place-index="17"
+                            data-place-name="Sydney Opera House"
+                            data-place-lat="-33.856784"
+                            data-place-lng="151.215297"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">18</span>
+                            <span class="places-explorer__option-name">Sydney Opera House</span>
+                            <span class="places-explorer__option-price">A$50</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-19"
+                            data-place-option
+                            data-place-index="18"
+                            data-place-name="Government House"
+                            data-place-lat="-33.859643"
+                            data-place-lng="151.21485"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">19</span>
+                            <span class="places-explorer__option-name">Government House</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-20"
+                            data-place-option
+                            data-place-index="19"
+                            data-place-name="Royal Botanic Garden Sydney"
+                            data-place-lat="-33.864186"
+                            data-place-lng="151.216571"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">20</span>
+                            <span class="places-explorer__option-name">Royal Botanic Garden Sydney</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-21"
+                            data-place-option
+                            data-place-index="20"
+                            data-place-name="Sydney Harbour Bridge"
+                            data-place-lat="-33.852306"
+                            data-place-lng="151.210787"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">21</span>
+                            <span class="places-explorer__option-name">Sydney Harbour Bridge</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-22"
+                            data-place-option
+                            data-place-index="21"
+                            data-place-name="Luna Park Sydney"
+                            data-place-lat="-33.847699"
+                            data-place-lng="151.209838"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">22</span>
+                            <span class="places-explorer__option-name">Luna Park Sydney</span>
+                            <span class="places-explorer__option-price">Free (rides A$34)</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-23"
+                            data-place-option
+                            data-place-index="22"
+                            data-place-name="Blues Point Reserve"
+                            data-place-lat="-33.849866"
+                            data-place-lng="151.203863"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">23</span>
+                            <span class="places-explorer__option-name">Blues Point Reserve</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-24"
+                            data-place-option
+                            data-place-index="23"
+                            data-place-name="Mary Booth Lookout Reserve"
+                            data-place-lat="-33.85015"
+                            data-place-lng="151.215829"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">24</span>
+                            <span class="places-explorer__option-name">Mary Booth Lookout Reserve</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-25"
+                            data-place-option
+                            data-place-index="24"
+                            data-place-name="Paddy&#x27;s Markets Haymarket"
+                            data-place-lat="-33.880009"
+                            data-place-lng="151.203562"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">25</span>
+                            <span class="places-explorer__option-name">Paddy&#x27;s Markets Haymarket</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-26"
+                            data-place-option
+                            data-place-index="25"
+                            data-place-name="Chinatown Sydney"
+                            data-place-lat="-33.8787982"
+                            data-place-lng="151.2040867"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">26</span>
+                            <span class="places-explorer__option-name">Chinatown Sydney</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-27"
+                            data-place-option
+                            data-place-index="26"
+                            data-place-name="Capitol Theatre"
+                            data-place-lat="-33.879399"
+                            data-place-lng="151.206303"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">27</span>
+                            <span class="places-explorer__option-name">Capitol Theatre</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-28"
+                            data-place-option
+                            data-place-index="27"
+                            data-place-name="BridgeClimb Sydney"
+                            data-place-lat="-33.857439"
+                            data-place-lng="151.2077747"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">28</span>
+                            <span class="places-explorer__option-name">BridgeClimb Sydney</span>
+                            <span class="places-explorer__option-price">A$344</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-29"
+                            data-place-option
+                            data-place-index="28"
+                            data-place-name="The Rocks Market"
+                            data-place-lat="-33.857787"
+                            data-place-lng="151.20856"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">29</span>
+                            <span class="places-explorer__option-name">The Rocks Market</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-30"
+                            data-place-option
+                            data-place-index="29"
+                            data-place-name="Accor Stadium"
+                            data-place-lat="-33.847116"
+                            data-place-lng="151.063414"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">30</span>
+                            <span class="places-explorer__option-name">Accor Stadium</span>
+                            <span class="places-explorer__option-price">A$25</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-31"
+                            data-place-option
+                            data-place-index="30"
+                            data-place-name="Sydney Showground"
+                            data-place-lat="-33.845306"
+                            data-place-lng="151.068619"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">31</span>
+                            <span class="places-explorer__option-name">Sydney Showground</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-32"
+                            data-place-option
+                            data-place-index="31"
+                            data-place-name="Coal Loader Centre for Sustainability"
+                            data-place-lat="-33.842989"
+                            data-place-lng="151.194468"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">32</span>
+                            <span class="places-explorer__option-name">Coal Loader Centre for Sustainability</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-33"
+                            data-place-option
+                            data-place-index="32"
+                            data-place-name="Ritz Cinemas"
+                            data-place-lat="-33.920074"
+                            data-place-lng="151.243326"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">33</span>
+                            <span class="places-explorer__option-name">Ritz Cinemas</span>
+                            <span class="places-explorer__option-price">A$27</span>
+                        </button>
+                    </li>
+                        </ul>
+                        <p class="places-explorer__empty" data-places-empty hidden>No places match that filter.</p>
+                    </aside>
+                    <div class="places-explorer__stage" data-places-stage>
+                    <nav class="places-stage__stepper" data-places-stepper aria-label="Browse places" hidden>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--prev" data-places-prev aria-label="Previous place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M14.75 5.25 L8.25 12 l6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M9.1 12 H17.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--next" data-places-next aria-label="Next place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M9.25 5.25 L15.75 12 l-6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M6.6 12 H14.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                    </nav>
+                <article
+                    class="places-stage__panel is-active"
+                    data-place-panel
+                    data-place-index="0"
+                    aria-labelledby="place-title-1"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/sydney_1.avif" alt="Mrs Macquarie&#x27;s Chair" width="1200" height="750" loading="eager" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">01</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-1" class="places-stage__title">Mrs Macquarie&#x27;s Chair</h3>
+                        <p class="places-stage__text">Mrs Macquarie&#x27;s Chair is a historic sandstone bench, skillfully carved by convicts in 1810 for Elizabeth Macquarie, the wife of New South Wales&#x27; governor. This spot offers views of Sydney Harbour, including the Opera House and Harbour Bridge, making it a must-visit for photography enthusiasts. Located at the edge of The Domain and near the Royal Botanic Gardens, it&#x27;s an ideal place to unwind while soaking in scenery.</p>
+                        <p class="places-stage__coords">33.8597&deg; S / 151.2226&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="1"
+                    aria-labelledby="place-title-2"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/sydney_2.avif" alt="St Mary&#x27;s Cathedral" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">02</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-2" class="places-stage__title">St Mary&#x27;s Cathedral</h3>
+                        <p class="places-stage__text">Saint Mary&#x27;s Cathedral, a Gothic-style Catholic cathedral constructed from local sandstone between 1868 and 1928, is a structure that can accommodate up to 2,000 worshippers. Standing at 75 meters tall, it is the second largest church in Australia. The cathedral&#x27;s long lasting architecture and grandeur make it a popular tourist attraction. Inside, visitors can admire stained glass windows, an organ, detailed wood carvings, and towering neo-Gothic arches.</p>
+                        <p class="places-stage__coords">33.8712&deg; S / 151.2133&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="2"
+                    aria-labelledby="place-title-3"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/sydney_3.avif" alt="Hyde Park Barracks" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">03</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-3" class="places-stage__title">Hyde Park Barracks</h3>
+                        <p class="places-stage__text">Hyde Park Barracks, erected in 1819 in Sydney, Australia, served as a prison for British convicts and later housed female immigrants and destitute elderly women. The barracks transitioned through various roles over the years, including functioning as a courthouse and government offices. Today, it has a glimpse into the lives of convicts and orphans who lived there in the 1800s through twice-daily tours or audio guides.</p>
+                        <p class="places-stage__coords">33.8696&deg; S / 151.2126&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="3"
+                    aria-labelledby="place-title-4"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/sydney_4.avif" alt="Sydney Tower Eye" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">04</span>
+                            <span class="places-stage__admission"><span>Admission</span>A$29</span>
+                        </p>
+                        <h3 id="place-title-4" class="places-stage__title">Sydney Tower Eye</h3>
+                        <p class="places-stage__text">Formerly known as Centrepoint Tower, Sydney Tower Eye is a must-visit landmark in Sydney. It offers a 4-D cinema, an observation deck, and an outdoor viewing platform that provides 360-degree views of the city. This tower is a great starting point for first-time visitors to get their bearings in Sydney. The panoramic scenery from the top allows visitors to familiarize themselves with the city&#x27;s layout and plan their transportation options accordingly.</p>
+                        <p class="places-stage__coords">33.8703&deg; S / 151.2089&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="4"
+                    aria-labelledby="place-title-5"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/sydney_5.avif" alt="State Theatre" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">05</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-5" class="places-stage__title">State Theatre</h3>
+                        <p class="places-stage__text">The State Theatre, located in Sydney&#x27;s CBD, is a establishment that hosts live music, film screenings, and comedy shows. The building has ornate Gothic, Italian, and art deco architecture and was originally opened in 1929 as a &#x27;Fantasy Palace for the People.&#x27; With its opulent design featuring vaulted ceilings, mosaic floors, marble columns and statues, brass and bronze doors, it offers a unique experience for visitors.</p>
+                        <p class="places-stage__coords">33.8708&deg; S / 151.2076&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="5"
+                    aria-labelledby="place-title-6"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/sydney_6.avif" alt="Queen Victoria Building" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">06</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-6" class="places-stage__title">Queen Victoria Building</h3>
+                        <p class="places-stage__text">The Queen Victoria Building, a historic shopping center in Sydney&#x27;s CBD, is a example of Romanesque architecture designed by George McRae. Built in the late 19th century, it now houses over 175 modern stores including known brands like Tiffany and Ralph Lauren alongside tea rooms, florists, and jewelry stores. The building&#x27;s grand arches, pillars, and stained-glass windows reflect the artistry of its craftsmen from a bygone era.</p>
+                        <p class="places-stage__coords">33.8717&deg; S / 151.2067&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="6"
+                    aria-labelledby="place-title-7"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/sydney_7.avif" alt="Sydney Town Hall" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">07</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free (guided tour A$15)</span>
+                        </p>
+                        <h3 id="place-title-7" class="places-stage__title">Sydney Town Hall</h3>
+                        <p class="places-stage__text">Sydney Town Hall is a visitor site in Sydney, Australia. Constructed from local sandstone in the Victorian Second Empire style, it is home to the Lord Mayor&#x27;s chambers, council offices, and venues for various functions and meetings. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">33.8732&deg; S / 151.2061&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="7"
+                    aria-labelledby="place-title-8"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/sydney_8.avif" alt="Taronga Zoo Sydney" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">08</span>
+                            <span class="places-stage__admission"><span>Admission</span>A$50</span>
+                        </p>
+                        <h3 id="place-title-8" class="places-stage__title">Taronga Zoo Sydney</h3>
+                        <p class="places-stage__text">Located along the Sydney Harbour, Taronga Zoo is a must-visit destination for animal lovers and adventure seekers alike. Home to over 350 distinct species, this zoo offers an immersive experience that connects visitors with wildlife in a natural setting. Accessible via a scenic ferry ride from the city center, it provides views of landmarks like the Sydney Opera House and Harbour Bridge.</p>
+                        <p class="places-stage__coords">33.8435&deg; S / 151.2413&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="8"
+                    aria-labelledby="place-title-9"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/sydney_9.avif" alt="Darling Harbour" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">09</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-9" class="places-stage__title">Darling Harbour</h3>
+                        <p class="places-stage__text">Darling Harbour is a waterfront destination in Sydney, offering a many of attractions and hosting large-scale events. Spanning 20 hectares, it is the gateway to various tourist hotspots including SEA LIFE Sydney Aquarium, IMAX theatre, Australian National Maritime Museum, WILD LIFE Sydney Zoo, and the Chinese Garden of Friendship.</p>
+                        <p class="places-stage__coords">33.8749&deg; S / 151.2009&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="9"
+                    aria-labelledby="place-title-10"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/sydney_10.avif" alt="Chinese Garden of Friendship" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">10</span>
+                            <span class="places-stage__admission"><span>Admission</span>A$12</span>
+                        </p>
+                        <h3 id="place-title-10" class="places-stage__title">Chinese Garden of Friendship</h3>
+                        <p class="places-stage__text">Chinese Garden of Friendship is a public park in Sydney, Australia. It was gifted to Australia by the city of Guangzhou as a symbol of friendship between the two countries. Paths, lawns, and shaded areas make up the main public facilities. Chinese Garden of Friendship remains part of the public visitor circuit in Sydney.</p>
+                        <p class="places-stage__coords">33.8765&deg; S / 151.2028&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="10"
+                    aria-labelledby="place-title-11"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/sydney_11.avif" alt="Sydney Fish Market" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">11</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-11" class="places-stage__title">Sydney Fish Market</h3>
+                        <p class="places-stage__text">Sydney Fish Market is a market in Sydney, Australia. Sydney Fish Market is a beloved institution among locals and a seafood destination. It&#x27;s the second-largest seafood market globally in terms of variety, offering some of the freshest seafood in Sydney. Stalls sell food and goods during regular market hours.</p>
+                        <p class="places-stage__coords">33.8751&deg; S / 151.1900&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="11"
+                    aria-labelledby="place-title-12"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/sydney_12.avif" alt="SEA LIFE Sydney Aquarium" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">12</span>
+                            <span class="places-stage__admission"><span>Admission</span>A$39</span>
+                        </p>
+                        <h3 id="place-title-12" class="places-stage__title">SEA LIFE Sydney Aquarium</h3>
+                        <p class="places-stage__text">SEA LIFE Sydney Aquarium is a must-visit aquatic attraction in Sydney, offering five distinct habitat exhibitions showing Australia&#x27;s marine life. Conveniently located near Circular Quay, it provides easy access for visitors. The aquarium houses a diverse range of ocean creatures and offers educational sessions on animal feeding and more. It&#x27;s an ideal family-friendly activity that allows visitors to explore the rich underwater world of Australia&#x27;s aquatic animals.</p>
+                        <p class="places-stage__coords">33.8696&deg; S / 151.2021&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="12"
+                    aria-labelledby="place-title-13"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/sydney_13.avif" alt="Sydney Cricket Ground" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">13</span>
+                            <span class="places-stage__admission"><span>Admission</span>A$30</span>
+                        </p>
+                        <h3 id="place-title-13" class="places-stage__title">Sydney Cricket Ground</h3>
+                        <p class="places-stage__text">The Sydney Cricket Ground (SCG) in Moore Park is a historic sports stadium that has been hosting cricket, rugby, soccer, and even Olympic events since 1876. It&#x27;s a popular venue for both domestic and international matches, as well as concerts featuring known artists like Madonna and U2. Visitors can take a behind-the-scenes tour of the SCG to explore the fields of play, dressing rooms, media room, and Walk of Honour while learning about the venue&#x27;s rich history.</p>
+                        <p class="places-stage__coords">33.8917&deg; S / 151.2248&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="13"
+                    aria-labelledby="place-title-14"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/sydney_14.avif" alt="Paddington Reservoir Gardens" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">14</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-14" class="places-stage__title">Paddington Reservoir Gardens</h3>
+                        <p class="places-stage__text">Paddington Reservoir Gardens is a public park in Sydney, Australia. In Paddington, Sydney, the Paddington Reservoir Gardens is a urban sunken garden that has been transformed from a derelict water reservoir into an award-winning public park. Paths, lawns, and shaded areas make up the main public facilities.</p>
+                        <p class="places-stage__coords">33.8853&deg; S / 151.2267&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="14"
+                    aria-labelledby="place-title-15"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/sydney_15.avif" alt="Hornby Lighthouse" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">15</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-15" class="places-stage__title">Hornby Lighthouse</h3>
+                        <p class="places-stage__text">Hornby Lighthouse is a visitor site in Sydney, Australia. Records associated with the site include 1858. Hornby Lighthouse, a striking red and white striped structure, has been guiding ships since its construction in 1858. Visitors can enjoy scenic walking tracks and lookouts that provide panoramic vistas of Sydney Harbour. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">33.8335&deg; S / 151.2810&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="15"
+                    aria-labelledby="place-title-16"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/sydney_16.avif" alt="North Head" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">16</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-16" class="places-stage__title">North Head</h3>
+                        <p class="places-stage__text">North Head is a visitor site in Sydney, Australia. Visitors can explore the headland on foot or by bike, taking in the natural beauty and historical landmarks along the way. The grounds and principal structures are the main points of interest. North Head remains part of the public visitor circuit in Sydney.</p>
+                        <p class="places-stage__coords">33.8224&deg; S / 151.2994&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="16"
+                    aria-labelledby="place-title-17"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/sydney_17.avif" alt="Macquarie Lighthouse" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">17</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-17" class="places-stage__title">Macquarie Lighthouse</h3>
+                        <p class="places-stage__text">The Macquarie Lighthouse is the first lighthouse that was constructed in Australia. It provides guided tours and a panoramic view of Sydney Harbour, which is also noticeable from the coastal cliff walking trail nearby. The builder of this historical landmark remains unknown, but it sits at the end of a scenic walkway with lots of roadside parking available.</p>
+                        <p class="places-stage__coords">33.8539&deg; S / 151.2852&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="17"
+                    aria-labelledby="place-title-18"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/sydney_18.avif" alt="Sydney Opera House" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">18</span>
+                            <span class="places-stage__admission"><span>Admission</span>A$50</span>
+                        </p>
+                        <h3 id="place-title-18" class="places-stage__title">Sydney Opera House</h3>
+                        <p class="places-stage__text">Sydney Opera House is a theatre in Sydney, Australia. The Sydney Opera House is an arts center located on Bennelong Point in Sydney Harbour, offering views of the harbor, bridge, and city skyline. With over 1,600 performances annually, it hosts a diverse range of events including opera, theatre, music, dance, and comedy shows. Public access is usually through ticketed performances or daytime visits.</p>
+                        <p class="places-stage__coords">33.8568&deg; S / 151.2153&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="18"
+                    aria-labelledby="place-title-19"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/sydney_19.avif" alt="Government House" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">19</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-19" class="places-stage__title">Government House</h3>
+                        <p class="places-stage__text">Government House, the official residence of the New South Wales governor, is a grand mansion dating back to the 1800s. Designed by Edward Blore in a Gothic Revival style, it has crenellated battlements and detailed interiors reminiscent of a castle. The State Rooms are marvelously restored and showcase Victorian pomp.</p>
+                        <p class="places-stage__coords">33.8596&deg; S / 151.2149&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="19"
+                    aria-labelledby="place-title-20"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/sydney_20.avif" alt="Royal Botanic Garden Sydney" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">20</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-20" class="places-stage__title">Royal Botanic Garden Sydney</h3>
+                        <p class="places-stage__text">Royal Botanic Garden Sydney is a public park in Sydney, Australia. Records associated with the site include 1816. The Royal Botanic Garden Sydney, established in 1816, is the oldest scientific institution in Australia. Paths, lawns, and shaded areas make up the main public facilities.</p>
+                        <p class="places-stage__coords">33.8642&deg; S / 151.2166&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="20"
+                    aria-labelledby="place-title-21"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/sydney_21.avif" alt="Sydney Harbour Bridge" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">21</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-21" class="places-stage__title">Sydney Harbour Bridge</h3>
+                        <p class="places-stage__text">Sydney Harbour Bridge, an structure opened in 1932, offers the thrilling BridgeClimb experience and the Pylon Lookout with exhibitions. Beyond its fame, Sydney&#x27;s surroundings offer unique experiences like camping beneath the bridge or glamping in a zoo with a harbor view. The city&#x27;s wild heart extends to camping areas and caravan parks near the CBD, while train rides from Central Station lead to the Blue Mountains or coastal beaches.</p>
+                        <p class="places-stage__coords">33.8523&deg; S / 151.2108&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="21"
+                    aria-labelledby="place-title-22"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/sydney_22.avif" alt="Luna Park Sydney" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">22</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free (rides A$34)</span>
+                        </p>
+                        <h3 id="place-title-22" class="places-stage__title">Luna Park Sydney</h3>
+                        <p class="places-stage__text">Luna Park Sydney is a public park in Sydney, Australia. Records associated with the site include 1935, 2004. Luna Park Sydney, a beloved amusement park located at Milsons Point, has been enchanting visitors since its grand opening in 1935. After undergoing redevelopment and reopening in 2004, this destination has a blend of vintage rides like the Wild Mouse Rollercoaster and the Big Dipper, alongside classic attractions such as the Carousel.</p>
+                        <p class="places-stage__coords">33.8477&deg; S / 151.2098&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="22"
+                    aria-labelledby="place-title-23"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/sydney_23.avif" alt="Blues Point Reserve" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">23</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-23" class="places-stage__title">Blues Point Reserve</h3>
+                        <p class="places-stage__text">Blues Point Reserve is a public park in Sydney, Australia. It&#x27;s also a popular location for fishing enthusiasts looking to catch trevally, kingfish, or jewfish while enjoying the scenery. Paths, lawns, and shaded areas make up the main public facilities.</p>
+                        <p class="places-stage__coords">33.8499&deg; S / 151.2039&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="23"
+                    aria-labelledby="place-title-24"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/sydney_24.avif" alt="Mary Booth Lookout Reserve" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">24</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-24" class="places-stage__title">Mary Booth Lookout Reserve</h3>
+                        <p class="places-stage__text">Mary Booth Lookout Reserve is a public park in Sydney, Australia. Located in Kirribilli, just 5km or a 22-minute drive from Sydney CBD, Mary Booth Lookout Reserve offers a secluded and view of the Harbour Bridge without the usual crowds. Accessible from Milsons Point train station, visitors can enjoy a perfect picnic spot on the grassy reserve above. Paths, lawns, and shaded areas make up the main public facilities.</p>
+                        <p class="places-stage__coords">33.8501&deg; S / 151.2158&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="24"
+                    aria-labelledby="place-title-25"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/sydney_25.avif" alt="Paddy&#x27;s Markets Haymarket" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">25</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-25" class="places-stage__title">Paddy&#x27;s Markets Haymarket</h3>
+                        <p class="places-stage__text">Paddy&#x27;s Markets Haymarket is a market in Sydney, Australia. Open five days a week, it offers a wide variety of goods including souvenirs, clothing, fresh produce, hand-crafted jewelry, vintage records, and handmade Chinese lanterns. Stalls sell food and goods during regular market hours.</p>
+                        <p class="places-stage__coords">33.8800&deg; S / 151.2036&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="25"
+                    aria-labelledby="place-title-26"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/sydney_26.avif" alt="Chinatown Sydney" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">26</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-26" class="places-stage__title">Chinatown Sydney</h3>
+                        <p class="places-stage__text">Chinatown Sydney sits within the Paddy&#x27;s Markets Haymarket area of Sydney, documented in local heritage registers for its civic or cultural role. Visitors approach from the main access road and combine the visit with neighbouring heritage buildings and public spaces in the district.</p>
+                        <p class="places-stage__coords">33.8788&deg; S / 151.2041&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="26"
+                    aria-labelledby="place-title-27"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/sydney_27.avif" alt="Capitol Theatre" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">27</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-27" class="places-stage__title">Capitol Theatre</h3>
+                        <p class="places-stage__text">Capitol Theatre is a theatre in Sydney, Australia. Capitol Theatre, located in the Haymarket district of Sydney, is a historic Victorian theatre known for its ornate decor and opulent atmosphere. The venue has been hosting a variety of performances including musicals, comedy acts, ballets, and plays since it first opened in 1892. Access is usually through ticketed performances or daytime visits.</p>
+                        <p class="places-stage__coords">33.8794&deg; S / 151.2063&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="27"
+                    aria-labelledby="place-title-28"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/sydney_28.avif" alt="BridgeClimb Sydney" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">28</span>
+                            <span class="places-stage__admission"><span>Admission</span>A$344</span>
+                        </p>
+                        <h3 id="place-title-28" class="places-stage__title">BridgeClimb Sydney</h3>
+                        <p class="places-stage__text">BridgeClimb Sydney is a documented piece of civic infrastructure in Sydney, Australia, recognised in local engineering and heritage listings for its construction period and continued public use. The structure is accessible from the surrounding streets and is visible from adjacent viewpoints. Travellers cross or view the site while moving between nearby districts and transit connections.</p>
+                        <p class="places-stage__coords">33.8574&deg; S / 151.2078&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="28"
+                    aria-labelledby="place-title-29"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/sydney_29.avif" alt="The Rocks Market" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">29</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-29" class="places-stage__title">The Rocks Market</h3>
+                        <p class="places-stage__text">The Rocks Market is a market in Sydney, Australia. It transforms the historic cobblestone laneways into a display of talented chefs and artisans, offering a carefully curated collection of fashion, homewares, artworks, and gifts. Visitors can indulge in gourmet street food while enjoying live entertainment, supporting local makers and creatives. Stalls sell food and goods during regular market hours.</p>
+                        <p class="places-stage__coords">33.8578&deg; S / 151.2086&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="29"
+                    aria-labelledby="place-title-30"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/sydney_30.avif" alt="Accor Stadium" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">30</span>
+                            <span class="places-stage__admission"><span>Admission</span>A$25</span>
+                        </p>
+                        <h3 id="place-title-30" class="places-stage__title">Accor Stadium</h3>
+                        <p class="places-stage__text">Accor Stadium, formerly known as Stadium Australia, is a versatile venue located in Sydney Olympic Park, Australia. Built for the 2000 Olympics, it has since been refurbished to accommodate various sports including Australian Rules Football, Cricket, Rugby league and Rugby Union matches, it hosts concerts and events such as the upcoming FIFA Women&#x27;s World Cup 2023. The stadium offers an electrifying atmosphere for sporting events and provides ample amenities for visitors.</p>
+                        <p class="places-stage__coords">33.8471&deg; S / 151.0634&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="30"
+                    aria-labelledby="place-title-31"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/sydney_31.avif" alt="Sydney Showground" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">31</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-31" class="places-stage__title">Sydney Showground</h3>
+                        <p class="places-stage__text">Sydney Showground, located in Sydney Olympic Park, is a premier events venue that has hosted major events in Australia. It offers versatile indoor and outdoor spaces suitable for small meetings, large-scale exhibitions, trade shows, and festivals. The Easter Show at Sydney Showground is a popular but expensive experience with various food stalls, performances, grand parades, and thrilling rides. The highlight of the show is the fireworks display.</p>
+                        <p class="places-stage__coords">33.8453&deg; S / 151.0686&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="31"
+                    aria-labelledby="place-title-32"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/sydney_32.avif" alt="Coal Loader Centre for Sustainability" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">32</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-32" class="places-stage__title">Coal Loader Centre for Sustainability</h3>
+                        <p class="places-stage__text">Coal Loader Centre for Sustainability is a visitor site in Sydney, Australia. The Coal Loader Centre for Sustainability in Waverton, Sydney offers a unique experience that combines history and sustainability. Visitors can explore the 160m-long former coal-loading tunnel with sensor lights guiding the way, as well as the green roof on the platform above. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">33.8430&deg; S / 151.1945&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="32"
+                    aria-labelledby="place-title-33"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/sydney_33.avif" alt="Ritz Cinemas" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">33</span>
+                            <span class="places-stage__admission"><span>Admission</span>A$27</span>
+                        </p>
+                        <h3 id="place-title-33" class="places-stage__title">Ritz Cinemas</h3>
+                        <p class="places-stage__text">Ritz Cinemas, located in a 1930s art deco building, offers a unique movie-watching experience with its cocktail bar and balcony. It is a popular destination for film enthusiasts of all ages, showing the latest movies on big screens with well equipped surround sound. The cinema holds historical significance as one of the only two original Art Deco cinemas still standing in Sydney, it provides a chance to watch films in 70mm format, making it a rare find in the city.</p>
+                        <p class="places-stage__coords">33.9201&deg; S / 151.2433&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="site-footer">
         <div class="page-shell">
             <div class="site-footer__bar">
-                <a href="../../index.html" class="site-footer__brand" aria-label="Global Explorer home">
-                    <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
+                <a href="../../index.html" class="site-footer__mark" aria-label="Global Explorer home">
+                    <svg width="24" height="24" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
-                    <span class="site-footer__brand-name font-display">Global Explorer</span>
+                    Global Explorer
                 </a>
-                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides <span>Sydney: 33 places across East Coast.</span></p>
             </div>
         </div>
     </footer>
 
     <button id="scrollTopBtn" type="button" aria-label="Scroll to top">
-        <i class="ph ph-arrow-up" aria-hidden="true"></i>
+        <svg viewBox="0 0 24 24" width="1.15em" height="1.15em" aria-hidden="true" focusable="false">
+            <path d="M12 5.25 V18.75 M12 5.25 L6.75 10.5 M12 5.25 L17.25 10.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
     </button>
 
     <script defer src="../../assets/dev-destination-toggle.js"></script>
     <script defer src="../../assets/tg-page-chrome.js"></script>
     <script defer src="../../assets/tg-destination-map.js"></script>
+    <script defer src="../../assets/tg-destination-places.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const map = L.map('map').setView([-33.863710, 151.209673], 14);
+            const map = L.map('map');
             L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
                 attribution: '&copy; Google Maps',
                 maxZoom: 20
             }).addTo(map);
-            const locations = [{"name": "Mrs Macquarie's Chair", "lat": -33.859664, "lng": 151.222571}, {"name": "St Mary's Cathedral", "lat": -33.87119, "lng": 151.213325}, {"name": "Hyde Park Barracks", "lat": -33.869604, "lng": 151.212585}, {"name": "Sydney Tower Eye", "lat": -33.870315, "lng": 151.20888}, {"name": "State Theatre", "lat": -33.870829, "lng": 151.207615}, {"name": "Queen Victoria Building", "lat": -33.871716, "lng": 151.206701}, {"name": "Sydney Town Hall", "lat": -33.873157, "lng": 151.206116}, {"name": "Taronga Zoo Sydney", "lat": -33.843547, "lng": 151.241342}, {"name": "Darling Harbour", "lat": -33.87488, "lng": 151.2009}, {"name": "Chinese Garden of Friendship", "lat": -33.876526, "lng": 151.202797}, {"name": "Sydney Fish Market", "lat": -33.875117, "lng": 151.189992}, {"name": "SEA LIFE Sydney Aquarium", "lat": -33.8696, "lng": 151.202138}, {"name": "Sydney Cricket Ground", "lat": -33.891668, "lng": 151.224815}, {"name": "Paddington Reservoir Gardens", "lat": -33.885276, "lng": 151.226738}, {"name": "Hornby Lighthouse", "lat": -33.833531, "lng": 151.280983}, {"name": "North Head", "lat": -33.822357, "lng": 151.299387}, {"name": "Macquarie Lighthouse", "lat": -33.853903, "lng": 151.285192}, {"name": "Sydney Opera House", "lat": -33.856784, "lng": 151.215297}, {"name": "Government House", "lat": -33.859643, "lng": 151.21485}, {"name": "Royal Botanic Garden Sydney", "lat": -33.864186, "lng": 151.216571}, {"name": "Sydney Harbour Bridge", "lat": -33.852306, "lng": 151.210787}, {"name": "Luna Park Sydney", "lat": -33.847699, "lng": 151.209838}, {"name": "Blues Point Reserve", "lat": -33.849866, "lng": 151.203863}, {"name": "Mary Booth Lookout Reserve", "lat": -33.85015, "lng": 151.215829}, {"name": "Paddy's Markets Haymarket", "lat": -33.880009, "lng": 151.203562}, {"name": "Chinatown Sydney", "lat": -33.8787982, "lng": 151.2040867}, {"name": "Capitol Theatre", "lat": -33.879399, "lng": 151.206303}, {"name": "BridgeClimb Sydney", "lat": -33.857439, "lng": 151.2077747}, {"name": "The Rocks Market", "lat": -33.857787, "lng": 151.20856}, {"name": "Accor Stadium", "lat": -33.847116, "lng": 151.063414}, {"name": "Sydney Showground", "lat": -33.845306, "lng": 151.068619}, {"name": "Coal Loader Centre for Sustainability", "lat": -33.842989, "lng": 151.194468}, {"name": "Ritz Cinemas", "lat": -33.920074, "lng": 151.243326}];
+            const locations = Array.from(document.querySelectorAll('[data-place-option]')).map((el) => ({
+                name: el.dataset.placeName || '',
+                lat: Number(el.dataset.placeLat),
+                lng: Number(el.dataset.placeLng),
+            }));
             const customIcon = L.icon({
                 iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
                 iconSize: [32, 32],
@@ -575,14 +1488,45 @@
                 popupAnchor: [0, -32],
             });
             const destinationCenter = [-33.863710, 151.209673];
-            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": true, "compactRegion": false, "denseUrban": false, "maxCenterLat": 0.056364, "maxCenterLng": 0.146259};
-            locations.forEach((location) => {
-                L.marker([location.lat, location.lng], { icon: customIcon })
+            const mapContext = {"spreadUrban": true};
+            const markers = locations.map((location) => {
+                const marker = L.marker([location.lat, location.lng], { icon: customIcon })
                     .addTo(map)
                     .bindPopup(`<strong>${location.name}</strong>`);
+                return marker;
             });
             window.TGDestinationMap?.fitToLocations(map, locations, destinationCenter, mapContext);
             window.TGDestinationMap?.bindMobileScrollGuard(map, 'map');
+            window.TGDestinationMap?.registerMarkers(map, markers);
+
+            const heroImage = document.querySelector('[data-destination-hero-image]');
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (heroImage && !reduceMotion) {
+                let framePending = false;
+                let scrolling = false;
+                let scrollEndTimer = 0;
+                const updateHeroPosition = () => {
+                    const offset = Math.min(window.scrollY, window.innerHeight * 1.15) * 0.075;
+                    heroImage.style.transform = `translate3d(0, ${offset}px, 0) scale(1.055)`;
+                    framePending = false;
+                };
+                window.addEventListener('scroll', () => {
+                    if (!scrolling) {
+                        scrolling = true;
+                        heroImage.style.willChange = 'transform';
+                    }
+                    window.clearTimeout(scrollEndTimer);
+                    scrollEndTimer = window.setTimeout(() => {
+                        scrolling = false;
+                        heroImage.style.willChange = 'auto';
+                    }, 150);
+                    if (!framePending) {
+                        window.requestAnimationFrame(updateHeroPosition);
+                        framePending = true;
+                    }
+                }, { passive: true });
+                updateHeroPosition();
+            }
         });
     </script>
 </body>

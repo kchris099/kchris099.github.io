@@ -6,451 +6,1126 @@
     <meta name="description" content="Plan a visit to Helsinki with a concise history, interactive attractions map, prices, and curated highlights across the destination.">
     <meta name="theme-color" content="#121417">
     <title>Helsinki Guide | Global Explorer Guides</title>
-    <link rel="stylesheet" href="../../assets/tailwind.css">
-    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
     <link rel="stylesheet" href="../../assets/newindex-fonts.css">
     <link rel="stylesheet" href="../../assets/tg-theme.css">
     <link rel="stylesheet" href="../../assets/tg-site-chrome.css">
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
     <link rel="stylesheet" href="../../assets/tg-modern-polish.css">
+    <link rel="stylesheet" href="../../assets/tg-country-page.css">
+    <link rel="stylesheet" href="../../assets/tg-destination-page-v3.css">
     <script defer src="../../assets/lenis.min.js"></script>
     <script defer src="../../assets/tg-smooth-scroll.js"></script>
     <link rel="preload" as="image" href="images/helsinki_hero.avif" type="image/avif" fetchpriority="high">
     <script defer src="../../assets/leaflet/leaflet.js"></script>
 </head>
-<body class="tg-theme tg-destination-page tg-modern">
-    <header id="site-header" class="header-glass fixed top-0 left-0 right-0 z-50">
+<body class="tg-theme tg-modern tg-country-v2 tg-destination-v3">
+    <a class="skip-link" href="#main-content">Skip to Helsinki guide</a>
+    <header id="site-header" class="header-glass">
         <div class="page-shell header-glass__inner">
-            <a href="../../index.html" class="font-display site-brand" style="display:flex;align-items:center;gap:0.75rem;text-decoration:none;color:inherit;font-size:1.25rem;" aria-label="Global Explorer home">
+            <a href="../../index.html" class="site-brand" aria-label="Global Explorer home">
                 <span class="site-brand__mark" aria-hidden="true">
                     <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
-                        <circle cx="14" cy="14" r="2" fill="#E8B14F"/>
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
                 </span>
                 Global Explorer
             </a>
-            <nav class="header-glass__nav-mobile" aria-label="Mobile navigation">
-                <a href="../../index.html" class="header-glass__icon-link" aria-label="Home">
-                    <i class="ph ph-house" aria-hidden="true"></i>
-                </a>
-                <a href="finland.html" class="header-glass__icon-link" aria-label="Back to Finland">
-                    <i class="ph ph-arrow-left" aria-hidden="true"></i>
-                </a>
-            </nav>
             <nav class="header-glass__nav" aria-label="Primary">
-                <a href="../../index.html" class="nav-link">Home</a>
-                <a href="helsinki.html" class="nav-link" aria-current="page">Helsinki</a>
+                <a href="#main-content" class="nav-link" aria-current="page">Helsinki</a>
+                <a href="#atlas" class="nav-link">Atlas</a>
+                <a href="#places" class="nav-link">Places</a>
                 <a href="finland.html" class="nav-link">Finland</a>
-                <a href="../../index.html#map" class="nav-link">Atlas</a>
             </nav>
         </div>
     </header>
-    <main>
-        <div class="tg-destination-hero-zone">
-            <div class="tg-destination-hero" aria-hidden="true">
-                <div class="tg-destination-hero__image" style="background-image: url('images/helsinki_hero.avif')"></div>
-                <div class="tg-destination-hero__fade"></div>
-            </div>
-            <div class="page-shell tg-destination-hero-zone__content">
-        <nav class="tg-toolbar tg-toolbar--compact" aria-label="Breadcrumb">
-            <div class="tg-breadcrumb">
-                <img src="../../assets/flags/w40/fi.png" alt="" class="w-6 h-auto rounded-[2px]" aria-hidden="true">
-                <span>Finland</span>
-                <span class="tg-breadcrumb__sep" aria-hidden="true">&rsaquo;</span>
-                <span class="tg-breadcrumb__current">Helsinki</span>
-            </div>
-        </nav>
+    <main id="main-content" tabindex="-1">
+        <section class="destination-hero" aria-labelledby="destination-title">
+            <img class="destination-hero__media" data-destination-hero-image src="images/helsinki_hero.avif" alt="" width="1600" height="1067" fetchpriority="high" decoding="sync">
+            <div class="destination-hero__shade" aria-hidden="true"></div>
+            <div class="page-shell destination-hero__content">
+                <button
+                    type="button"
+                    id="destination-active-toggle"
+                    class="country-active-toggle country-active-toggle--active"
+                    data-iso2="FI"
+                    data-slug="helsinki"
+                    data-active="true"
+                    data-interactive="true"
+                    aria-label="Toggle Helsinki visibility on Finland guide"
+                    aria-pressed="true"
+                >
+                    <img src="../../assets/flags/w80/fi.png" alt="" aria-hidden="true">
+                    <span class="country-toggle__copy" aria-hidden="true">
+                        <span class="country-toggle__label">Helsinki guide</span>
+                        <strong class="country-toggle__state"></strong>
+                    </span>
+                </button>
 
-        <header class="tg-page-header">
-            <button
-        type="button"
-        id="destination-active-toggle"
-        class="country-active-toggle country-active-toggle--active country-active-toggle--readonly"
-        data-iso2="FI"
-        data-slug="helsinki"
-        data-active="true"
-        data-interactive="true"
-        aria-label="Toggle Helsinki visibility on Finland guide"
-        aria-pressed="true"
-    >
-        <i class="ph ph-map-pin text-4xl pointer-events-none" aria-hidden="true"></i>
-    </button>
-            <span class="tg-page-header__eyebrow">Destination Guide — Helsinki</span>
-            <h1 class="tg-page-title font-display">Explore <em>Helsinki</em></h1>
-            <div class="glass-card frosted-panel tg-panel">
-                <h2 class="tg-panel__title font-display">
-                    <i class="ph ph-scroll" aria-hidden="true"></i> A Brief History
-                </h2>
-                <p class="tg-panel__body">Helsinki was founded by King Gustav I of Sweden in 1550 and moved to its present harbor site in 1640 to improve trade access. After Russia annexed Finland in 1809, the city became capital of the Grand Duchy in 1812 and was rebuilt with a neoclassical center around Senate Square under architect Carl Ludvig Engel. Ports, island fortifications, and later art-nouveau districts expanded with industry and shipping.</p>
-            </div>
-        </header>
+                <div class="hero__route" aria-label="Destination route and coordinates">
+                    <span>Finland / Helsinki</span>
+                    <span>60.1695&deg; N / 24.9354&deg; E</span>
+                </div>
 
-        <div class="tg-section__header tg-section__header--map-end">
-            <span class="tg-section__eyebrow">Map</span>
-            <h2 class="tg-section__title font-display">Attractions Map</h2>
-        </div>
-            </div>
-        </div>
-
-        <div class="page-shell tg-main tg-main--below-hero">
-        <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Helsinki attractions"></div>
-        <section class="tg-section">
-            <div class="tg-section__header">
-                <span class="tg-section__eyebrow">Highlights</span>
-                <h2 class="tg-section__title font-display">Top Sights &amp; Activities</h2>
-            </div>
-            <div class="tg-sights-list">
-            
-            <!-- 1. Helsinki Cathedral -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/helsinki_1.avif" alt="Helsinki Cathedral" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                <h1 id="destination-title" class="destination-hero__title" style="--destination-title-chars: 8">Helsinki</h1>
+                <div class="destination-hero__history">
+                    <p>Helsinki was founded by King Gustav I of Sweden in 1550 and moved to its present harbor site in 1640 to improve trade access. After Russia annexed Finland in 1809, the city became capital of the Grand Duchy in 1812 and was rebuilt with a neoclassical center around Senate Square under architect Carl Ludvig Engel. Ports, island fortifications, and later art-nouveau districts expanded with industry and shipping.</p>
+                </div>
+                <dl class="destination-hero__facts destination-hero__facts--no-region" aria-label="Helsinki guide facts">
+                    <div>
+                        <dt>Country</dt>
+                        <dd>Finland</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Helsinki Cathedral</h3>
-                    <p class="tg-sight-card__text">Helsinki Cathedral was designed by Carl Ludvig Engel for the new imperial capital and completed in 1852 after revisions by Ernst Lohrmann. Its white facade and green domes dominate Senate Square and remain one of the clearest examples of Helsinki&#x27;s 19th-century neoclassical plan.</p>
-                </div>
-            </div>
-            <!-- 2. The National Library of Finland -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/helsinki_2.avif" alt="The National Library of Finland" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                    <div>
+                        <dt>Places</dt>
+                        <dd>24</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">The National Library of Finland</h3>
-                    <p class="tg-sight-card__text">The National Library building by C. L. Engel opened in 1844 beside Senate Square. Its rotunda, reading rooms, and collections support legal deposit, national bibliography, and research in Finnish cultural history. The library served the Imperial Alexander University before Finland&#x27;s independence.</p>
-                </div>
-            </div>
-            <!-- 3. Suomenlinna -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/helsinki_3.avif" alt="Suomenlinna" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Suomenlinna</h3>
-                    <p class="tg-sight-card__text">Suomenlinna is an island fortress begun in 1748 under Swedish rule as Sveaborg. Later used by Russian and Finnish authorities, it now contains museums, docks, residences, and defensive works across linked islands. UNESCO added the site to the World Heritage List in 1991.</p>
-                </div>
-            </div>
-            <!-- 4. Helsinki Central Library Oodi -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/helsinki_4.avif" alt="Helsinki Central Library Oodi" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Helsinki Central Library Oodi</h3>
-                    <p class="tg-sight-card__text">Oodi opened in 2018 opposite Finlandia Hall and Parliament House as Helsinki&#x27;s central public library. Designed by ALA Architects, it combines library collections with event space, work areas, studios, and civic meeting functions in a timber-and-glass building tied to Finland&#x27;s public education culture.</p>
-                </div>
-            </div>
-            <!-- 5. Sibelius Monument -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/helsinki_5.avif" alt="Sibelius Monument" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Sibelius Monument</h3>
-                    <p class="tg-sight-card__text">Sibelius Monument is a monument in Helsinki, Finland. Records associated with the site include 1967. The Sibelius Monument, In Sibelius Park in Helsinki, Finland, is a monument to the known Finnish composer Jean Sibelius. Designed by artist Eila Hiltunen and unveiled in 1967, the monument has over 600 steel pipes emerging from natural rock to create a wave-like structure symbolizing Sibelius&#x27;s music. The memorial stands in an open plaza or roadside setting.</p>
-                </div>
-            </div>
-            <!-- 6. Temppeliaukio Church -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/helsinki_6.avif" alt="Temppeliaukio Church" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Temppeliaukio Church</h3>
-                    <p class="tg-sight-card__text">Temppeliaukio Church is a religious building in Helsinki, Finland. Located Helsinki, Temppeliaukio Church is a unique attraction known for its distinctive architecture. This popular venue also hosts concerts and gives visitors a one-of-a-kind atmosphere. The exterior and main interior spaces are usually viewable outside service times.</p>
-                </div>
-            </div>
-            <!-- 7. Helsinki Market Square -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/helsinki_7.avif" alt="Helsinki Market Square" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Helsinki Market Square</h3>
-                    <p class="tg-sight-card__text">Kauppatori is a year-round harborside market in Helsinki, offering a active mix of food stalls, handicrafts, and a heated cafe tent during the winter. It provides an authentic Helsinki experience away from tourist crowds. The market square specializes in seasonal Finnish foodstuffs and souvenirs, located on the seafront at the northern end of Etelasatama harbor.</p>
-                </div>
-            </div>
-            <!-- 8. Old Market Hall -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/helsinki_8.avif" alt="Old Market Hall" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Old Market Hall</h3>
-                    <p class="tg-sight-card__text">The Old Market Hall in Helsinki is a historic 19th-century venue located near the Market Square. It offers a unique shopping experience with shops and stalls selling traditional Finnish specialties, including local cheeses, seafood, fruits, vegetables, cakes, spices, teas, and coffee. Adjacent to where fishing boats dock, travellers can sample fresh seafood in a historic atmosphere.</p>
-                </div>
-            </div>
-            <!-- 9. Esplanadi -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/helsinki_9.avif" alt="Esplanadi" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Esplanadi</h3>
-                    <p class="tg-sight-card__text">Esplanadi is a visitor site in Helsinki, Finland. Records associated with the site include 1812. Esplanadi Park, established in 1812, is a green space with tree-lined avenues and a stage for live music performances. It is also home to Kappeli, one of Helsinki&#x27;s oldest restaurants serving classic Finnish cuisine. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 10. Senate Square -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/helsinki_10.avif" alt="Senate Square" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Senate Square</h3>
-                    <p class="tg-sight-card__text">Senate Square is a public square in Helsinki, Finland. It opened or was completed around 1852. Senate Square is a grand public space in Helsinki, showing neoclassical architecture and serving as the focal point of the city&#x27;s political, religious, and academic life. It was completed in 1852 to honor Tsar Nicholas of Russia and is a key element of Engel&#x27;s grand city plan. Open pavement and surrounding facades define the visitor setting.</p>
-                </div>
-            </div>
-            <!-- 11. Uspenski Cathedral -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/helsinki_11.avif" alt="Uspenski Cathedral" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Uspenski Cathedral</h3>
-                    <p class="tg-sight-card__text">Perched atop a hill in Helsinki, Uspenski Cathedral is the epicenter of the Finnish Orthodox faith. Known as the &#x27;Russian Church,&#x27; it has an ornate exterior with red brick and distinctive onion domes. Inside, travellers are treated to lavish interior decorations that reflect Orthodox Byzantine style influenced by Italian Art Deco. With its thirteen towers and east-facing crosses symbolizing Jesus and the Twelve Apostles, this cathedral stands out as Scandinavia&#x27;s largest Orthodox church.</p>
-                </div>
-            </div>
-            <!-- 12. SkyWheel Helsinki -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/helsinki_12.avif" alt="SkyWheel Helsinki" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €15
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">SkyWheel Helsinki</h3>
-                    <p class="tg-sight-card__text">SkyWheel Helsinki, a 40-meter observation wheel, offers panoramic views of the city and its surroundings. Located in the Katajanokka area near the harbor skyline, it provides travellers with comfortable climate-controlled cabins to enjoy the vistas all year round.</p>
-                </div>
-            </div>
-            <!-- 13. St. John&#x27;s Church -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/helsinki_13.avif" alt="St. John&#x27;s Church" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">St. John&#x27;s Church</h3>
-                    <p class="tg-sight-card__text">St. John&#x27;s Church is a religious building in Helsinki, Finland. John&#x27;s Church is an neo-Gothic stone church In Helsinki, Finland. Situated near other significant landmarks, such as the Cathedral of St. The church stands on a historic hill where the Feast of St. The exterior and main interior spaces are usually viewable outside service times.</p>
-                </div>
-            </div>
-            <!-- 14. Finnish National Theatre -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/helsinki_14.avif" alt="Finnish National Theatre" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Finnish National Theatre</h3>
-                    <p class="tg-sight-card__text">The Finnish National Theatre, In Helsinki City Center, is a 20th-century architectural gem designed by Onni Törnqvist-Tarjanne. With its three stages for live performances, it is the oldest Finnish-language professional theater in Finland, dating back to its establishment in 1872. The theater played a significant role in Finland&#x27;s push for independence and is an important cultural institution in the country.</p>
-                </div>
-            </div>
-            <!-- 15. Kamppi Chapel -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/helsinki_15.avif" alt="Kamppi Chapel" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Kamppi Chapel</h3>
-                    <p class="tg-sight-card__text">Kamppi Chapel, also known as the Chapel of Silence, is a religious building in Helsinki, Finland. Kamppi Chapel, also known as the Chapel of Silence, is a modern notable building situated in Helsinki&#x27;s active Kamppi district. Designed by K2S Architects, this elliptical wooden structure stands out amidst the urban landscape. The exterior and main interior spaces are usually viewable outside service times.</p>
-                </div>
-            </div>
-            <!-- 16. Korkeasaari Zoo -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/helsinki_16.avif" alt="Korkeasaari Zoo" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €22
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Korkeasaari Zoo</h3>
-                    <p class="tg-sight-card__text">An island zoo home to a diverse range of animals and dedicated to conservation efforts. The site forms part of Korkeasaari Zoo&#x27;s documented civic and cultural landscape within Finland, with archives and visitor information available from municipal or regional heritage authorities.</p>
-                </div>
-            </div>
-            <!-- 17. Hakaniemen kauppahalli -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/helsinki_17.avif" alt="Hakaniemen kauppahalli" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Hakaniemen kauppahalli</h3>
-                    <p class="tg-sight-card__text">Hakaniemen kauppahalli is a visitor site in Helsinki, Finland. Hakaniemen Kauppahalli is a traditional 6-day food market located in Helsinki, Finland. It offers a wide variety of indoor and outdoor stalls selling fruits, vegetables, fish, meat, cheese, and other local products. Travellers can experience the Finnish food culture by sampling smoked ham, reindeer meat, local cheeses, and Karelian pies. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 18. Kallio church -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/helsinki_18.avif" alt="Kallio church" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Kallio church</h3>
-                    <p class="tg-sight-card__text">Kallio church is a religious building in Helsinki, Finland. It opened or was completed around 1912. Completed in 1912 and designed by Lars Sonck, this granite marvel is not only the tallest structure in its neighborhood but also a beloved landmark throughout the city. Its striking gray facade, adorned with subtle decorations and topped with a pale green copper dome, reflects both strength and elegance. The exterior and main interior spaces are usually viewable outside service times.</p>
-                </div>
-            </div>
-            <!-- 19. Linnanmäki -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/helsinki_19.avif" alt="Linnanmäki" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Linnanmäki</h3>
-                    <p class="tg-sight-card__text">Linnanmäki is a visitor site in Helsinki, Finland. Records associated with the site include 1950. Linnanmäki Amusement Park is a beloved attraction in Helsinki, offering over 50 rides and roller coasters, as well as a monorail and a tower with panoramic views. Since its establishment in 1950, this park has directly blended tradition with modernity, drawing millions of travellers annually. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 20. SEA LIFE Helsinki -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/helsinki_20.avif" alt="SEA LIFE Helsinki" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €22
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">SEA LIFE Helsinki</h3>
-                    <p class="tg-sight-card__text">SEA LIFE Helsinki is a visitor site in Helsinki, Finland. SEA LIFE Helsinki is an indoor aquarium situated within the Linnanmaki Amusement Park in Helsinki. The family-friendly exhibits offer play areas and group packages, making it a great destination for kids. Travellers can explore eight different aquarium zones showing a variety of sea creatures, from colorful corals and clownfish to sharks and piranhas. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 21. Malminkartanonhuippu -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/helsinki_21.avif" alt="Malminkartanonhuippu" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Malminkartanonhuippu</h3>
-                    <p class="tg-sight-card__text">Malminkartanonhuippu is a popular hill in Helsinki known for its appeal to outdoor enthusiasts and nature lovers. The area offers panoramic views of the city and the sea, making it an ideal spot for sightseeing, especially during sunset or sunrise. Travellers can engage in various activities such as biking, extreme sports, or simply taking a peaceful walk while enjoying the well-maintained surroundings.</p>
-                </div>
-            </div>
-            <!-- 22. Helsinki Winter Garden -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/helsinki_22.avif" alt="Helsinki Winter Garden" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Helsinki Winter Garden</h3>
-                    <p class="tg-sight-card__text">The Helsinki Winter Garden is a 19th-century glass greenhouse located in the Zoo area north of Toolonlahti Bay. It is open to the public and showcases over 200 different plants, including palms, cacti, flowers, pines, limes, magnolias, and camellias. Travellers can also admire parrots and carp in a pond within the garden.</p>
-                </div>
-            </div>
-            <!-- 23. Helsinki Olympic Stadium -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/helsinki_23.avif" alt="Helsinki Olympic Stadium" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Helsinki Olympic Stadium</h3>
-                    <p class="tg-sight-card__text">Helsinki Olympic Stadium is a stadium in Helsinki, Finland. Records associated with the site include 1952. The Helsinki Olympic Stadium, situated in the Tl district just 2.3 kilometers from downtown Helsinki, is the largest stadium in Finland and a significant venue for sports events and concerts. Event access follows posted ticket and gate procedures.</p>
-                </div>
-            </div>
-            <!-- 24. Finnish National Opera and Ballet -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/helsinki_24.avif" alt="Finnish National Opera and Ballet" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Finnish National Opera and Ballet</h3>
-                    <p class="tg-sight-card__text">The Finnish National Opera and Ballet, located in Helsinki, is a state-owned opera and ballet company housed in the Opera House by the Toolonlahti bay. The venue has two auditoriums - a grand 1,350-seat main hall and a smaller studio with 300-500 seats. Travellers can enjoy opera performances, classical ballets, and active concerts at this cultural hub.</p>
-                </div>
-            </div>
+                </dl>
             </div>
         </section>
-        </div>
+
+        <section id="atlas" class="destination-atlas" aria-labelledby="atlas-title">
+            <div class="page-shell destination-atlas__layout">
+                <div class="destination-atlas__brief">
+                    <p class="destination-atlas__index">City atlas</p>
+                    <h2 id="atlas-title">Plot the city.</h2>
+                    <p class="destination-atlas__copy">Zoom, pan, and open any marker to focus that place in the catalog below.</p>
+                    <dl class="destination-atlas__facts" aria-label="Map coverage">
+                        <div>
+                            <dt>Plotted</dt>
+                            <dd>24 places</dd>
+                        </div>
+                        <div>
+                            <dt>Center</dt>
+                            <dd>60.1695&deg; N<br>24.9354&deg; E</dd>
+                        </div>
+                    </dl>
+                </div>
+                <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Helsinki attractions"></div>
+            </div>
+        </section>
+
+        <section id="places" class="destination-places" aria-labelledby="places-title">
+            <div class="page-shell">
+                <div class="destination-chapter">
+                    <h2 id="places-title" class="destination-chapter__heading">24 ways into<br>Helsinki.</h2>
+                    <p class="destination-chapter__copy">Browse the index, open a location, and read the essentials without scrolling through a long catalog. Each entry contains its image, admission note, and contextual guide.</p>
+                </div>
+                <div class="places-explorer" data-places-explorer>
+                    <aside class="places-explorer__rail" aria-label="Place index">
+                        <div class="places-explorer__toolbar">
+                            <label class="places-explorer__filter-label" for="places-filter">Filter places</label>
+                            <input
+                                id="places-filter"
+                                class="places-explorer__filter"
+                                type="search"
+                                data-places-filter
+                                placeholder="Search by name"
+                                autocomplete="off"
+                            >
+                            <p class="places-explorer__meta"><strong data-places-count>24</strong> of 24 shown</p>
+                        </div>
+                        <ul class="places-explorer__list" role="listbox" aria-label="Places in Helsinki" data-places-list data-lenis-prevent data-tg-scroll-surface>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option is-active"
+                            role="option"
+                            id="place-option-1"
+                            data-place-option
+                            data-place-index="0"
+                            data-place-name="Helsinki Cathedral"
+                            data-place-lat="60.1699"
+                            data-place-lng="24.9524"
+                            aria-selected="true"
+                            tabindex="0"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">01</span>
+                            <span class="places-explorer__option-name">Helsinki Cathedral</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-2"
+                            data-place-option
+                            data-place-index="1"
+                            data-place-name="The National Library of Finland"
+                            data-place-lat="60.1705"
+                            data-place-lng="24.9532"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">02</span>
+                            <span class="places-explorer__option-name">The National Library of Finland</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-3"
+                            data-place-option
+                            data-place-index="2"
+                            data-place-name="Suomenlinna"
+                            data-place-lat="60.1463"
+                            data-place-lng="24.9885"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">03</span>
+                            <span class="places-explorer__option-name">Suomenlinna</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-4"
+                            data-place-option
+                            data-place-index="3"
+                            data-place-name="Helsinki Central Library Oodi"
+                            data-place-lat="60.1739"
+                            data-place-lng="24.9384"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">04</span>
+                            <span class="places-explorer__option-name">Helsinki Central Library Oodi</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-5"
+                            data-place-option
+                            data-place-index="4"
+                            data-place-name="Sibelius Monument"
+                            data-place-lat="60.182045"
+                            data-place-lng="24.913429"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">05</span>
+                            <span class="places-explorer__option-name">Sibelius Monument</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-6"
+                            data-place-option
+                            data-place-index="5"
+                            data-place-name="Temppeliaukio Church"
+                            data-place-lat="60.173025"
+                            data-place-lng="24.925235"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">06</span>
+                            <span class="places-explorer__option-name">Temppeliaukio Church</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-7"
+                            data-place-option
+                            data-place-index="6"
+                            data-place-name="Helsinki Market Square"
+                            data-place-lat="60.167665"
+                            data-place-lng="24.953678"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">07</span>
+                            <span class="places-explorer__option-name">Helsinki Market Square</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-8"
+                            data-place-option
+                            data-place-index="7"
+                            data-place-name="Old Market Hall"
+                            data-place-lat="60.166164"
+                            data-place-lng="24.952819"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">08</span>
+                            <span class="places-explorer__option-name">Old Market Hall</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-9"
+                            data-place-option
+                            data-place-index="8"
+                            data-place-name="Esplanadi"
+                            data-place-lat="60.167481"
+                            data-place-lng="24.94761"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">09</span>
+                            <span class="places-explorer__option-name">Esplanadi</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-10"
+                            data-place-option
+                            data-place-index="9"
+                            data-place-name="Senate Square"
+                            data-place-lat="60.169479"
+                            data-place-lng="24.952287"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">10</span>
+                            <span class="places-explorer__option-name">Senate Square</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-11"
+                            data-place-option
+                            data-place-index="10"
+                            data-place-name="Uspenski Cathedral"
+                            data-place-lat="60.168602"
+                            data-place-lng="24.959897"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">11</span>
+                            <span class="places-explorer__option-name">Uspenski Cathedral</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-12"
+                            data-place-option
+                            data-place-index="11"
+                            data-place-name="SkyWheel Helsinki"
+                            data-place-lat="60.166788"
+                            data-place-lng="24.959437"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">12</span>
+                            <span class="places-explorer__option-name">SkyWheel Helsinki</span>
+                            <span class="places-explorer__option-price">€15</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-13"
+                            data-place-option
+                            data-place-index="12"
+                            data-place-name="St. John&#x27;s Church"
+                            data-place-lat="60.161716"
+                            data-place-lng="24.944966"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">13</span>
+                            <span class="places-explorer__option-name">St. John&#x27;s Church</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-14"
+                            data-place-option
+                            data-place-index="13"
+                            data-place-name="Finnish National Theatre"
+                            data-place-lat="60.172523"
+                            data-place-lng="24.943818"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">14</span>
+                            <span class="places-explorer__option-name">Finnish National Theatre</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-15"
+                            data-place-option
+                            data-place-index="14"
+                            data-place-name="Kamppi Chapel"
+                            data-place-lat="60.16947"
+                            data-place-lng="24.936004"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">15</span>
+                            <span class="places-explorer__option-name">Kamppi Chapel</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-16"
+                            data-place-option
+                            data-place-index="15"
+                            data-place-name="Korkeasaari Zoo"
+                            data-place-lat="60.1748869"
+                            data-place-lng="24.9850409"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">16</span>
+                            <span class="places-explorer__option-name">Korkeasaari Zoo</span>
+                            <span class="places-explorer__option-price">€22</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-17"
+                            data-place-option
+                            data-place-index="16"
+                            data-place-name="Hakaniemen kauppahalli"
+                            data-place-lat="60.180098"
+                            data-place-lng="24.951342"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">17</span>
+                            <span class="places-explorer__option-name">Hakaniemen kauppahalli</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-18"
+                            data-place-option
+                            data-place-index="17"
+                            data-place-name="Kallio church"
+                            data-place-lat="60.184324"
+                            data-place-lng="24.949357"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">18</span>
+                            <span class="places-explorer__option-name">Kallio church</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-19"
+                            data-place-option
+                            data-place-index="18"
+                            data-place-name="Linnanmäki"
+                            data-place-lat="60.188341"
+                            data-place-lng="24.940369"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">19</span>
+                            <span class="places-explorer__option-name">Linnanmäki</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-20"
+                            data-place-option
+                            data-place-index="19"
+                            data-place-name="SEA LIFE Helsinki"
+                            data-place-lat="60.189238"
+                            data-place-lng="24.939298"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">20</span>
+                            <span class="places-explorer__option-name">SEA LIFE Helsinki</span>
+                            <span class="places-explorer__option-price">€22</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-21"
+                            data-place-option
+                            data-place-index="20"
+                            data-place-name="Malminkartanonhuippu"
+                            data-place-lat="60.251204"
+                            data-place-lng="24.843907"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">21</span>
+                            <span class="places-explorer__option-name">Malminkartanonhuippu</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-22"
+                            data-place-option
+                            data-place-index="21"
+                            data-place-name="Helsinki Winter Garden"
+                            data-place-lat="60.186131"
+                            data-place-lng="24.931664"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">22</span>
+                            <span class="places-explorer__option-name">Helsinki Winter Garden</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-23"
+                            data-place-option
+                            data-place-index="22"
+                            data-place-name="Helsinki Olympic Stadium"
+                            data-place-lat="60.186985"
+                            data-place-lng="24.927212"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">23</span>
+                            <span class="places-explorer__option-name">Helsinki Olympic Stadium</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-24"
+                            data-place-option
+                            data-place-index="23"
+                            data-place-name="Finnish National Opera and Ballet"
+                            data-place-lat="60.181576"
+                            data-place-lng="24.929619"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">24</span>
+                            <span class="places-explorer__option-name">Finnish National Opera and Ballet</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                        </ul>
+                        <p class="places-explorer__empty" data-places-empty hidden>No places match that filter.</p>
+                    </aside>
+                    <div class="places-explorer__stage" data-places-stage>
+                    <nav class="places-stage__stepper" data-places-stepper aria-label="Browse places" hidden>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--prev" data-places-prev aria-label="Previous place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M14.75 5.25 L8.25 12 l6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M9.1 12 H17.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--next" data-places-next aria-label="Next place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M9.25 5.25 L15.75 12 l-6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M6.6 12 H14.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                    </nav>
+                <article
+                    class="places-stage__panel is-active"
+                    data-place-panel
+                    data-place-index="0"
+                    aria-labelledby="place-title-1"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/helsinki_1.avif" alt="Helsinki Cathedral" width="1200" height="750" loading="eager" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">01</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-1" class="places-stage__title">Helsinki Cathedral</h3>
+                        <p class="places-stage__text">Helsinki Cathedral was designed by Carl Ludvig Engel for the new imperial capital and completed in 1852 after revisions by Ernst Lohrmann. Its white facade and green domes dominate Senate Square and remain one of the clearest examples of Helsinki&#x27;s 19th-century neoclassical plan.</p>
+                        <p class="places-stage__coords">60.1699&deg; N / 24.9524&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="1"
+                    aria-labelledby="place-title-2"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/helsinki_2.avif" alt="The National Library of Finland" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">02</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-2" class="places-stage__title">The National Library of Finland</h3>
+                        <p class="places-stage__text">The National Library building by C. L. Engel opened in 1844 beside Senate Square. Its rotunda, reading rooms, and collections support legal deposit, national bibliography, and research in Finnish cultural history. The library served the Imperial Alexander University before Finland&#x27;s independence.</p>
+                        <p class="places-stage__coords">60.1705&deg; N / 24.9532&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="2"
+                    aria-labelledby="place-title-3"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/helsinki_3.avif" alt="Suomenlinna" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">03</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-3" class="places-stage__title">Suomenlinna</h3>
+                        <p class="places-stage__text">Suomenlinna is an island fortress begun in 1748 under Swedish rule as Sveaborg. Later used by Russian and Finnish authorities, it now contains museums, docks, residences, and defensive works across linked islands. UNESCO added the site to the World Heritage List in 1991.</p>
+                        <p class="places-stage__coords">60.1463&deg; N / 24.9885&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="3"
+                    aria-labelledby="place-title-4"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/helsinki_4.avif" alt="Helsinki Central Library Oodi" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">04</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-4" class="places-stage__title">Helsinki Central Library Oodi</h3>
+                        <p class="places-stage__text">Oodi opened in 2018 opposite Finlandia Hall and Parliament House as Helsinki&#x27;s central public library. Designed by ALA Architects, it combines library collections with event space, work areas, studios, and civic meeting functions in a timber-and-glass building tied to Finland&#x27;s public education culture.</p>
+                        <p class="places-stage__coords">60.1739&deg; N / 24.9384&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="4"
+                    aria-labelledby="place-title-5"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/helsinki_5.avif" alt="Sibelius Monument" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">05</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-5" class="places-stage__title">Sibelius Monument</h3>
+                        <p class="places-stage__text">Sibelius Monument is a monument in Helsinki, Finland. Records associated with the site include 1967. The Sibelius Monument, In Sibelius Park in Helsinki, Finland, is a monument to the known Finnish composer Jean Sibelius. Designed by artist Eila Hiltunen and unveiled in 1967, the monument has over 600 steel pipes emerging from natural rock to create a wave-like structure symbolizing Sibelius&#x27;s music. The memorial stands in an open plaza or roadside setting.</p>
+                        <p class="places-stage__coords">60.1820&deg; N / 24.9134&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="5"
+                    aria-labelledby="place-title-6"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/helsinki_6.avif" alt="Temppeliaukio Church" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">06</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-6" class="places-stage__title">Temppeliaukio Church</h3>
+                        <p class="places-stage__text">Temppeliaukio Church is a religious building in Helsinki, Finland. Located Helsinki, Temppeliaukio Church is a unique attraction known for its distinctive architecture. This popular venue also hosts concerts and gives visitors a one-of-a-kind atmosphere. The exterior and main interior spaces are usually viewable outside service times.</p>
+                        <p class="places-stage__coords">60.1730&deg; N / 24.9252&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="6"
+                    aria-labelledby="place-title-7"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/helsinki_7.avif" alt="Helsinki Market Square" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">07</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-7" class="places-stage__title">Helsinki Market Square</h3>
+                        <p class="places-stage__text">Kauppatori is a year-round harborside market in Helsinki, offering a active mix of food stalls, handicrafts, and a heated cafe tent during the winter. It provides an authentic Helsinki experience away from tourist crowds. The market square specializes in seasonal Finnish foodstuffs and souvenirs, located on the seafront at the northern end of Etelasatama harbor.</p>
+                        <p class="places-stage__coords">60.1677&deg; N / 24.9537&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="7"
+                    aria-labelledby="place-title-8"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/helsinki_8.avif" alt="Old Market Hall" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">08</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-8" class="places-stage__title">Old Market Hall</h3>
+                        <p class="places-stage__text">The Old Market Hall in Helsinki is a historic 19th-century venue located near the Market Square. It offers a unique shopping experience with shops and stalls selling traditional Finnish specialties, including local cheeses, seafood, fruits, vegetables, cakes, spices, teas, and coffee. Adjacent to where fishing boats dock, travellers can sample fresh seafood in a historic atmosphere.</p>
+                        <p class="places-stage__coords">60.1662&deg; N / 24.9528&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="8"
+                    aria-labelledby="place-title-9"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/helsinki_9.avif" alt="Esplanadi" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">09</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-9" class="places-stage__title">Esplanadi</h3>
+                        <p class="places-stage__text">Esplanadi is a visitor site in Helsinki, Finland. Records associated with the site include 1812. Esplanadi Park, established in 1812, is a green space with tree-lined avenues and a stage for live music performances. It is also home to Kappeli, one of Helsinki&#x27;s oldest restaurants serving classic Finnish cuisine. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">60.1675&deg; N / 24.9476&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="9"
+                    aria-labelledby="place-title-10"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/helsinki_10.avif" alt="Senate Square" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">10</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-10" class="places-stage__title">Senate Square</h3>
+                        <p class="places-stage__text">Senate Square is a public square in Helsinki, Finland. It opened or was completed around 1852. Senate Square is a grand public space in Helsinki, showing neoclassical architecture and serving as the focal point of the city&#x27;s political, religious, and academic life. It was completed in 1852 to honor Tsar Nicholas of Russia and is a key element of Engel&#x27;s grand city plan. Open pavement and surrounding facades define the visitor setting.</p>
+                        <p class="places-stage__coords">60.1695&deg; N / 24.9523&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="10"
+                    aria-labelledby="place-title-11"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/helsinki_11.avif" alt="Uspenski Cathedral" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">11</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-11" class="places-stage__title">Uspenski Cathedral</h3>
+                        <p class="places-stage__text">Perched atop a hill in Helsinki, Uspenski Cathedral is the epicenter of the Finnish Orthodox faith. Known as the &#x27;Russian Church,&#x27; it has an ornate exterior with red brick and distinctive onion domes. Inside, travellers are treated to lavish interior decorations that reflect Orthodox Byzantine style influenced by Italian Art Deco. With its thirteen towers and east-facing crosses symbolizing Jesus and the Twelve Apostles, this cathedral stands out as Scandinavia&#x27;s largest Orthodox church.</p>
+                        <p class="places-stage__coords">60.1686&deg; N / 24.9599&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="11"
+                    aria-labelledby="place-title-12"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/helsinki_12.avif" alt="SkyWheel Helsinki" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">12</span>
+                            <span class="places-stage__admission"><span>Admission</span>€15</span>
+                        </p>
+                        <h3 id="place-title-12" class="places-stage__title">SkyWheel Helsinki</h3>
+                        <p class="places-stage__text">SkyWheel Helsinki, a 40-meter observation wheel, offers panoramic views of the city and its surroundings. Located in the Katajanokka area near the harbor skyline, it provides travellers with comfortable climate-controlled cabins to enjoy the vistas all year round.</p>
+                        <p class="places-stage__coords">60.1668&deg; N / 24.9594&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="12"
+                    aria-labelledby="place-title-13"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/helsinki_13.avif" alt="St. John&#x27;s Church" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">13</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-13" class="places-stage__title">St. John&#x27;s Church</h3>
+                        <p class="places-stage__text">St. John&#x27;s Church is a religious building in Helsinki, Finland. John&#x27;s Church is an neo-Gothic stone church In Helsinki, Finland. Situated near other significant landmarks, such as the Cathedral of St. The church stands on a historic hill where the Feast of St. The exterior and main interior spaces are usually viewable outside service times.</p>
+                        <p class="places-stage__coords">60.1617&deg; N / 24.9450&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="13"
+                    aria-labelledby="place-title-14"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/helsinki_14.avif" alt="Finnish National Theatre" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">14</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-14" class="places-stage__title">Finnish National Theatre</h3>
+                        <p class="places-stage__text">The Finnish National Theatre, In Helsinki City Center, is a 20th-century architectural gem designed by Onni Törnqvist-Tarjanne. With its three stages for live performances, it is the oldest Finnish-language professional theater in Finland, dating back to its establishment in 1872. The theater played a significant role in Finland&#x27;s push for independence and is an important cultural institution in the country.</p>
+                        <p class="places-stage__coords">60.1725&deg; N / 24.9438&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="14"
+                    aria-labelledby="place-title-15"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/helsinki_15.avif" alt="Kamppi Chapel" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">15</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-15" class="places-stage__title">Kamppi Chapel</h3>
+                        <p class="places-stage__text">Kamppi Chapel, also known as the Chapel of Silence, is a religious building in Helsinki, Finland. Kamppi Chapel, also known as the Chapel of Silence, is a modern notable building situated in Helsinki&#x27;s active Kamppi district. Designed by K2S Architects, this elliptical wooden structure stands out amidst the urban landscape. The exterior and main interior spaces are usually viewable outside service times.</p>
+                        <p class="places-stage__coords">60.1695&deg; N / 24.9360&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="15"
+                    aria-labelledby="place-title-16"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/helsinki_16.avif" alt="Korkeasaari Zoo" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">16</span>
+                            <span class="places-stage__admission"><span>Admission</span>€22</span>
+                        </p>
+                        <h3 id="place-title-16" class="places-stage__title">Korkeasaari Zoo</h3>
+                        <p class="places-stage__text">An island zoo home to a diverse range of animals and dedicated to conservation efforts. The site forms part of Korkeasaari Zoo&#x27;s documented civic and cultural landscape within Finland, with archives and visitor information available from municipal or regional heritage authorities.</p>
+                        <p class="places-stage__coords">60.1749&deg; N / 24.9850&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="16"
+                    aria-labelledby="place-title-17"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/helsinki_17.avif" alt="Hakaniemen kauppahalli" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">17</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-17" class="places-stage__title">Hakaniemen kauppahalli</h3>
+                        <p class="places-stage__text">Hakaniemen kauppahalli is a visitor site in Helsinki, Finland. Hakaniemen Kauppahalli is a traditional 6-day food market located in Helsinki, Finland. It offers a wide variety of indoor and outdoor stalls selling fruits, vegetables, fish, meat, cheese, and other local products. Travellers can experience the Finnish food culture by sampling smoked ham, reindeer meat, local cheeses, and Karelian pies. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">60.1801&deg; N / 24.9513&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="17"
+                    aria-labelledby="place-title-18"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/helsinki_18.avif" alt="Kallio church" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">18</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-18" class="places-stage__title">Kallio church</h3>
+                        <p class="places-stage__text">Kallio church is a religious building in Helsinki, Finland. It opened or was completed around 1912. Completed in 1912 and designed by Lars Sonck, this granite marvel is not only the tallest structure in its neighborhood but also a beloved landmark throughout the city. Its striking gray facade, adorned with subtle decorations and topped with a pale green copper dome, reflects both strength and elegance. The exterior and main interior spaces are usually viewable outside service times.</p>
+                        <p class="places-stage__coords">60.1843&deg; N / 24.9494&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="18"
+                    aria-labelledby="place-title-19"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/helsinki_19.avif" alt="Linnanmäki" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">19</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-19" class="places-stage__title">Linnanmäki</h3>
+                        <p class="places-stage__text">Linnanmäki is a visitor site in Helsinki, Finland. Records associated with the site include 1950. Linnanmäki Amusement Park is a beloved attraction in Helsinki, offering over 50 rides and roller coasters, as well as a monorail and a tower with panoramic views. Since its establishment in 1950, this park has directly blended tradition with modernity, drawing millions of travellers annually. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">60.1883&deg; N / 24.9404&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="19"
+                    aria-labelledby="place-title-20"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/helsinki_20.avif" alt="SEA LIFE Helsinki" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">20</span>
+                            <span class="places-stage__admission"><span>Admission</span>€22</span>
+                        </p>
+                        <h3 id="place-title-20" class="places-stage__title">SEA LIFE Helsinki</h3>
+                        <p class="places-stage__text">SEA LIFE Helsinki is a visitor site in Helsinki, Finland. SEA LIFE Helsinki is an indoor aquarium situated within the Linnanmaki Amusement Park in Helsinki. The family-friendly exhibits offer play areas and group packages, making it a great destination for kids. Travellers can explore eight different aquarium zones showing a variety of sea creatures, from colorful corals and clownfish to sharks and piranhas. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">60.1892&deg; N / 24.9393&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="20"
+                    aria-labelledby="place-title-21"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/helsinki_21.avif" alt="Malminkartanonhuippu" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">21</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-21" class="places-stage__title">Malminkartanonhuippu</h3>
+                        <p class="places-stage__text">Malminkartanonhuippu is a popular hill in Helsinki known for its appeal to outdoor enthusiasts and nature lovers. The area offers panoramic views of the city and the sea, making it an ideal spot for sightseeing, especially during sunset or sunrise. Travellers can engage in various activities such as biking, extreme sports, or simply taking a peaceful walk while enjoying the well-maintained surroundings.</p>
+                        <p class="places-stage__coords">60.2512&deg; N / 24.8439&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="21"
+                    aria-labelledby="place-title-22"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/helsinki_22.avif" alt="Helsinki Winter Garden" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">22</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-22" class="places-stage__title">Helsinki Winter Garden</h3>
+                        <p class="places-stage__text">The Helsinki Winter Garden is a 19th-century glass greenhouse located in the Zoo area north of Toolonlahti Bay. It is open to the public and showcases over 200 different plants, including palms, cacti, flowers, pines, limes, magnolias, and camellias. Travellers can also admire parrots and carp in a pond within the garden.</p>
+                        <p class="places-stage__coords">60.1861&deg; N / 24.9317&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="22"
+                    aria-labelledby="place-title-23"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/helsinki_23.avif" alt="Helsinki Olympic Stadium" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">23</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-23" class="places-stage__title">Helsinki Olympic Stadium</h3>
+                        <p class="places-stage__text">Helsinki Olympic Stadium is a stadium in Helsinki, Finland. Records associated with the site include 1952. The Helsinki Olympic Stadium, situated in the Tl district just 2.3 kilometers from downtown Helsinki, is the largest stadium in Finland and a significant venue for sports events and concerts. Event access follows posted ticket and gate procedures.</p>
+                        <p class="places-stage__coords">60.1870&deg; N / 24.9272&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="23"
+                    aria-labelledby="place-title-24"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/helsinki_24.avif" alt="Finnish National Opera and Ballet" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">24</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-24" class="places-stage__title">Finnish National Opera and Ballet</h3>
+                        <p class="places-stage__text">The Finnish National Opera and Ballet, located in Helsinki, is a state-owned opera and ballet company housed in the Opera House by the Toolonlahti bay. The venue has two auditoriums - a grand 1,350-seat main hall and a smaller studio with 300-500 seats. Travellers can enjoy opera performances, classical ballets, and active concerts at this cultural hub.</p>
+                        <p class="places-stage__coords">60.1816&deg; N / 24.9296&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="site-footer">
         <div class="page-shell">
             <div class="site-footer__bar">
-                <a href="../../index.html" class="site-footer__brand" aria-label="Global Explorer home">
-                    <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
+                <a href="../../index.html" class="site-footer__mark" aria-label="Global Explorer home">
+                    <svg width="24" height="24" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
-                    <span class="site-footer__brand-name font-display">Global Explorer</span>
+                    Global Explorer
                 </a>
-                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides <span>Helsinki: 24 places across Helsinki.</span></p>
             </div>
         </div>
     </footer>
 
     <button id="scrollTopBtn" type="button" aria-label="Scroll to top">
-        <i class="ph ph-arrow-up" aria-hidden="true"></i>
+        <svg viewBox="0 0 24 24" width="1.15em" height="1.15em" aria-hidden="true" focusable="false">
+            <path d="M12 5.25 V18.75 M12 5.25 L6.75 10.5 M12 5.25 L17.25 10.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
     </button>
 
     <script defer src="../../assets/dev-destination-toggle.js"></script>
     <script defer src="../../assets/tg-page-chrome.js"></script>
     <script defer src="../../assets/tg-destination-map.js"></script>
+    <script defer src="../../assets/tg-destination-places.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const map = L.map('map').setView([60.169520, 24.935450], 14);
+            const map = L.map('map');
             L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
                 attribution: '&copy; Google Maps',
                 maxZoom: 20
             }).addTo(map);
-            const locations = [{"name": "Helsinki Cathedral", "lat": 60.1699, "lng": 24.9524}, {"name": "The National Library of Finland", "lat": 60.1705, "lng": 24.9532}, {"name": "Suomenlinna", "lat": 60.1463, "lng": 24.9885}, {"name": "Helsinki Central Library Oodi", "lat": 60.1739, "lng": 24.9384}, {"name": "Sibelius Monument", "lat": 60.182045, "lng": 24.913429}, {"name": "Temppeliaukio Church", "lat": 60.173025, "lng": 24.925235}, {"name": "Helsinki Market Square", "lat": 60.167665, "lng": 24.953678}, {"name": "Old Market Hall", "lat": 60.166164, "lng": 24.952819}, {"name": "Esplanadi", "lat": 60.167481, "lng": 24.94761}, {"name": "Senate Square", "lat": 60.169479, "lng": 24.952287}, {"name": "Uspenski Cathedral", "lat": 60.168602, "lng": 24.959897}, {"name": "SkyWheel Helsinki", "lat": 60.166788, "lng": 24.959437}, {"name": "St. John's Church", "lat": 60.161716, "lng": 24.944966}, {"name": "Finnish National Theatre", "lat": 60.172523, "lng": 24.943818}, {"name": "Kamppi Chapel", "lat": 60.16947, "lng": 24.936004}, {"name": "Korkeasaari Zoo", "lat": 60.1748869, "lng": 24.9850409}, {"name": "Hakaniemen kauppahalli", "lat": 60.180098, "lng": 24.951342}, {"name": "Kallio church", "lat": 60.184324, "lng": 24.949357}, {"name": "Linnanmäki", "lat": 60.188341, "lng": 24.940369}, {"name": "SEA LIFE Helsinki", "lat": 60.189238, "lng": 24.939298}, {"name": "Malminkartanonhuippu", "lat": 60.251204, "lng": 24.843907}, {"name": "Helsinki Winter Garden", "lat": 60.186131, "lng": 24.931664}, {"name": "Helsinki Olympic Stadium", "lat": 60.186985, "lng": 24.927212}, {"name": "Finnish National Opera and Ballet", "lat": 60.181576, "lng": 24.929619}];
+            const locations = Array.from(document.querySelectorAll('[data-place-option]')).map((el) => ({
+                name: el.dataset.placeName || '',
+                lat: Number(el.dataset.placeLat),
+                lng: Number(el.dataset.placeLng),
+            }));
             const customIcon = L.icon({
                 iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
                 iconSize: [32, 32],
@@ -458,14 +1133,45 @@
                 popupAnchor: [0, -32],
             });
             const destinationCenter = [60.169520, 24.935450];
-            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.081684, "maxCenterLng": 0.091543};
-            locations.forEach((location) => {
-                L.marker([location.lat, location.lng], { icon: customIcon })
+            const mapContext = {"denseUrban": true};
+            const markers = locations.map((location) => {
+                const marker = L.marker([location.lat, location.lng], { icon: customIcon })
                     .addTo(map)
                     .bindPopup(`<strong>${location.name}</strong>`);
+                return marker;
             });
             window.TGDestinationMap?.fitToLocations(map, locations, destinationCenter, mapContext);
             window.TGDestinationMap?.bindMobileScrollGuard(map, 'map');
+            window.TGDestinationMap?.registerMarkers(map, markers);
+
+            const heroImage = document.querySelector('[data-destination-hero-image]');
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (heroImage && !reduceMotion) {
+                let framePending = false;
+                let scrolling = false;
+                let scrollEndTimer = 0;
+                const updateHeroPosition = () => {
+                    const offset = Math.min(window.scrollY, window.innerHeight * 1.15) * 0.075;
+                    heroImage.style.transform = `translate3d(0, ${offset}px, 0) scale(1.055)`;
+                    framePending = false;
+                };
+                window.addEventListener('scroll', () => {
+                    if (!scrolling) {
+                        scrolling = true;
+                        heroImage.style.willChange = 'transform';
+                    }
+                    window.clearTimeout(scrollEndTimer);
+                    scrollEndTimer = window.setTimeout(() => {
+                        scrolling = false;
+                        heroImage.style.willChange = 'auto';
+                    }, 150);
+                    if (!framePending) {
+                        window.requestAnimationFrame(updateHeroPosition);
+                        framePending = true;
+                    }
+                }, { passive: true });
+                updateHeroPosition();
+            }
         });
     </script>
 </body>

@@ -6,282 +6,619 @@
     <meta name="description" content="Plan a visit to Pécs with a concise history, interactive attractions map, prices, and curated highlights across the destination.">
     <meta name="theme-color" content="#121417">
     <title>Pécs Guide | Global Explorer Guides</title>
-    <link rel="stylesheet" href="../../assets/tailwind.css">
-    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
     <link rel="stylesheet" href="../../assets/newindex-fonts.css">
     <link rel="stylesheet" href="../../assets/tg-theme.css">
     <link rel="stylesheet" href="../../assets/tg-site-chrome.css">
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
     <link rel="stylesheet" href="../../assets/tg-modern-polish.css">
+    <link rel="stylesheet" href="../../assets/tg-country-page.css">
+    <link rel="stylesheet" href="../../assets/tg-destination-page-v3.css">
     <script defer src="../../assets/lenis.min.js"></script>
     <script defer src="../../assets/tg-smooth-scroll.js"></script>
     <link rel="preload" as="image" href="images/pecs_hero.avif" type="image/avif" fetchpriority="high">
     <script defer src="../../assets/leaflet/leaflet.js"></script>
 </head>
-<body class="tg-theme tg-destination-page tg-modern">
-    <header id="site-header" class="header-glass fixed top-0 left-0 right-0 z-50">
+<body class="tg-theme tg-modern tg-country-v2 tg-destination-v3">
+    <a class="skip-link" href="#main-content">Skip to Pécs guide</a>
+    <header id="site-header" class="header-glass">
         <div class="page-shell header-glass__inner">
-            <a href="../../index.html" class="font-display site-brand" style="display:flex;align-items:center;gap:0.75rem;text-decoration:none;color:inherit;font-size:1.25rem;" aria-label="Global Explorer home">
+            <a href="../../index.html" class="site-brand" aria-label="Global Explorer home">
                 <span class="site-brand__mark" aria-hidden="true">
                     <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
-                        <circle cx="14" cy="14" r="2" fill="#E8B14F"/>
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
                 </span>
                 Global Explorer
             </a>
-            <nav class="header-glass__nav-mobile" aria-label="Mobile navigation">
-                <a href="../../index.html" class="header-glass__icon-link" aria-label="Home">
-                    <i class="ph ph-house" aria-hidden="true"></i>
-                </a>
-                <a href="hungary.html" class="header-glass__icon-link" aria-label="Back to Hungary">
-                    <i class="ph ph-arrow-left" aria-hidden="true"></i>
-                </a>
-            </nav>
             <nav class="header-glass__nav" aria-label="Primary">
-                <a href="../../index.html" class="nav-link">Home</a>
-                <a href="pecs.html" class="nav-link" aria-current="page">Pécs</a>
+                <a href="#main-content" class="nav-link" aria-current="page">Pécs</a>
+                <a href="#atlas" class="nav-link">Atlas</a>
+                <a href="#places" class="nav-link">Places</a>
                 <a href="hungary.html" class="nav-link">Hungary</a>
-                <a href="../../index.html#map" class="nav-link">Atlas</a>
             </nav>
         </div>
     </header>
-    <main>
-        <div class="tg-destination-hero-zone">
-            <div class="tg-destination-hero" aria-hidden="true">
-                <div class="tg-destination-hero__image" style="background-image: url('images/pecs_hero.avif')"></div>
-                <div class="tg-destination-hero__fade"></div>
-            </div>
-            <div class="page-shell tg-destination-hero-zone__content">
-        <nav class="tg-toolbar tg-toolbar--compact" aria-label="Breadcrumb">
-            <div class="tg-breadcrumb">
-                <img src="../../assets/flags/w40/hu.png" alt="" class="w-6 h-auto rounded-[2px]" aria-hidden="true">
-                <span>Hungary</span>
-                <span class="tg-breadcrumb__sep" aria-hidden="true">&rsaquo;</span>
-                <span class="tg-breadcrumb__current">Pécs</span>
-            </div>
-        </nav>
+    <main id="main-content" tabindex="-1">
+        <section class="destination-hero" aria-labelledby="destination-title">
+            <img class="destination-hero__media" data-destination-hero-image src="images/pecs_hero.avif" alt="" width="1600" height="1067" fetchpriority="high" decoding="sync">
+            <div class="destination-hero__shade" aria-hidden="true"></div>
+            <div class="page-shell destination-hero__content">
+                <button
+                    type="button"
+                    id="destination-active-toggle"
+                    class="country-active-toggle country-active-toggle--inactive"
+                    data-iso2="HU"
+                    data-slug="pecs"
+                    data-active="false"
+                    data-interactive="true"
+                    aria-label="Toggle Pécs visibility on Hungary guide"
+                    aria-pressed="false"
+                >
+                    <img src="../../assets/flags/w80/hu.png" alt="" aria-hidden="true">
+                    <span class="country-toggle__copy" aria-hidden="true">
+                        <span class="country-toggle__label">Pécs guide</span>
+                        <strong class="country-toggle__state"></strong>
+                    </span>
+                </button>
 
-        <header class="tg-page-header">
-            <button
-        type="button"
-        id="destination-active-toggle"
-        class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
-        data-iso2="HU"
-        data-slug="pecs"
-        data-active="false"
-        data-interactive="true"
-        aria-label="Toggle Pécs visibility on Hungary guide"
-        aria-pressed="false"
-    >
-        <i class="ph ph-map-pin text-4xl pointer-events-none" aria-hidden="true"></i>
-    </button>
-            <span class="tg-page-header__eyebrow">Destination Guide — Pécs</span>
-            <h1 class="tg-page-title font-display">Explore <em>Pécs</em></h1>
-            <div class="glass-card frosted-panel tg-panel">
-                <h2 class="tg-panel__title font-display">
-                    <i class="ph ph-scroll" aria-hidden="true"></i> A Brief History
-                </h2>
-                <p class="tg-panel__body">Pécs preserves Roman Sopianae cemeteries, an Ottoman mosque, and nineteenth-century civic buildings in southern Transdanubia. Early Christian burial chambers and Zsolnay ceramic heritage record Roman Pannonia, Ottoman occupation, and Hungarian industrial culture. Early Christian burial chambers and Zsolnay porcelain yards extend Roman and Ottoman layers in Transdanubia.</p>
-            </div>
-        </header>
+                <div class="hero__route" aria-label="Destination route and coordinates">
+                    <span>Hungary / Pécs</span>
+                    <span>46.0823&deg; N / 18.2284&deg; E</span>
+                </div>
 
-        <div class="tg-section__header tg-section__header--map-end">
-            <span class="tg-section__eyebrow">Map</span>
-            <h2 class="tg-section__title font-display">Attractions Map</h2>
-        </div>
-            </div>
-        </div>
-
-        <div class="page-shell tg-main tg-main--below-hero">
-        <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Pécs attractions"></div>
-        <section class="tg-section">
-            <div class="tg-section__header">
-                <span class="tg-section__eyebrow">Highlights</span>
-                <h2 class="tg-section__title font-display">Top Sights &amp; Activities</h2>
-            </div>
-            <div class="tg-sights-list">
-            
-            <!-- 1. Pécs TV Tower -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/pecs_1.avif" alt="Pécs TV Tower" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> HUF 1,590
+                <h1 id="destination-title" class="destination-hero__title" style="--destination-title-chars: 4">Pécs</h1>
+                <div class="destination-hero__history">
+                    <p>Pécs preserves Roman Sopianae cemeteries, an Ottoman mosque, and nineteenth-century civic buildings in southern Transdanubia. Early Christian burial chambers and Zsolnay ceramic heritage record Roman Pannonia, Ottoman occupation, and Hungarian industrial culture. Early Christian burial chambers and Zsolnay porcelain yards extend Roman and Ottoman layers in Transdanubia.</p>
+                </div>
+                <dl class="destination-hero__facts destination-hero__facts--no-region" aria-label="Pécs guide facts">
+                    <div>
+                        <dt>Country</dt>
+                        <dd>Hungary</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Pécs TV Tower</h3>
-                    <p class="tg-sight-card__text">The Pécs TV Tower, standing at 197 meters high atop the 535-meter Misina, has been in operation since 1973. Apart from its broadcasting responsibilities, it has an observation deck offering panoramic views of Pécs and its surroundings. On clear days, visitors can admire the Villanyi Mountains and even catch a glimpse of Croatian Papuk Hill or Badacsony. At night, the tower is illuminated with colors.</p>
-                </div>
-            </div>
-            <!-- 2. Pécs Zoo -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/pecs_2.avif" alt="Pécs Zoo" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> HUF 4,500
+                    <div>
+                        <dt>Places</dt>
+                        <dd>11</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Pécs Zoo</h3>
-                    <p class="tg-sight-card__text">Pécs Zoo is a visitor site in Pécs, Hungary. Pécs Zoo, located in the southern part of Pecs, Hungary, is a popular attraction offering a diverse range of animal species from around the world. Visitors can observe majestic creatures like lions, tigers, and leopards up close. The zoo is well-organized and clean with friendly English-speaking staff. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 3. Nike Statue -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/pecs_3.avif" alt="Nike Statue" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Nike Statue</h3>
-                    <p class="tg-sight-card__text">Nike Statue is a monument in Pécs, Hungary. Records associated with the site include 1975. Erected in 1975 by Memos Makris as a Liberation monument, this statue offers panoramic views of the city and surrounding landscapes. While some may find the site shrouded in mystery regarding its origins and purpose, it remains a popular spot for tourists seeking both beauty and tranquility. The memorial stands in an open plaza or roadside setting.</p>
-                </div>
-            </div>
-            <!-- 4. Zsolnay Fountain -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/pecs_4.avif" alt="Zsolnay Fountain" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Zsolnay Fountain</h3>
-                    <p class="tg-sight-card__text">Zsolnay Fountain is a significant monument in Pecs, dedicated to Vilmos Zsolnay, the known designer of Zsolnay ceramics. Donated by his son in 1908 and designed by Andor Pilch, this fountain is a when visiting the city. It&#x27;s located on Szechenyi Ter and stands in front of the Catholic church. The fountain is especially during warmer months when it&#x27;s operational, offering a refreshing oasis for visitors.</p>
-                </div>
-            </div>
-            <!-- 5. National Theatre of Pécs -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/pecs_5.avif" alt="National Theatre of Pécs" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> HUF 6,000
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">National Theatre of Pécs</h3>
-                    <p class="tg-sight-card__text">When exploring the cultural landscape of Pécs, the National Theatre of Pécs stands out as a must-visit destination. This architectural gem not only draws with its design but also is a hub for the city&#x27;s dynamic performing arts scene. Home to the known Pécs Ballet Company, it offers an array of performances ranging from drama and opera to ballet, ensuring there&#x27;s something for everyone.</p>
-                </div>
-            </div>
-            <!-- 6. Downtown Candlemas Church of the Blessed Virgin Mary -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/pecs_6.avif" alt="Downtown Candlemas Church of the Blessed Virgin Mary" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Downtown Candlemas Church of the Blessed Virgin Mary</h3>
-                    <p class="tg-sight-card__text">Downtown Candlemas Church of the Blessed Virgin Mary is a religious building in Pécs, Hungary. Originally a mosque during the Turkish occupation, it was later converted into a Catholic church. The exterior and main interior spaces are usually viewable outside service times.</p>
-                </div>
-            </div>
-            <!-- 7. Basilica of Pécs -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/pecs_7.avif" alt="Basilica of Pécs" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Basilica of Pécs</h3>
-                    <p class="tg-sight-card__text">Pécs Cathedral, also known as the Cathedral Basilica of the Assumption of the Blessed Virgin Mary, is a Catholic church with origins dating back to the 10th century. In Pecs, Hungary, this active cathedral has gardens and religious art. Its rich history and architectural design make it a top tourist attraction in the city. The cathedral&#x27;s Romanesque Revival look from the 19th century adds to its allure.</p>
-                </div>
-            </div>
-            <!-- 8. Barbican -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/pecs_8.avif" alt="Barbican" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Barbican</h3>
-                    <p class="tg-sight-card__text">Barbican is a well-preserved circular fortress gate that dates back centuries and offers city views from the top. Similar to the Krakow Barbican, the Pecs Barbican was once part of a city wall system and is situated in the northwest corner of the medieval wall surrounding Pecs city center. It is Hungary&#x27;s only remaining barbican and was constructed in the 15th century as a defense against Ottoman occupation.</p>
-                </div>
-            </div>
-            <!-- 9. Vilmos Zsolnay Statue -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/pecs_9.avif" alt="Vilmos Zsolnay Statue" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Vilmos Zsolnay Statue</h3>
-                    <p class="tg-sight-card__text">Zsolnay Statue is a fascinating attraction located in Pecs, Hungary. The statue is made of durable porcelain, a material invented by the Zsolnay family. Visitors can explore the Zsolnay Family and Factory History Exhibition to learn about the industrial dynasty&#x27;s journey from producing simple ceramic items to creating ornate decorative pieces, at the factory&#x27;s exit in Pecs, there is a museum and a functioning factory site that can be visited.</p>
-                </div>
-            </div>
-            <!-- 10. Zsolnay Mausoleum -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/pecs_10.avif" alt="Zsolnay Mausoleum" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> HUF 2,500
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Zsolnay Mausoleum</h3>
-                    <p class="tg-sight-card__text">The Zsolnay Mausoleum is a cultural center dedicated to the known ceramics company, showing modern art and offering dining options. The mausoleum itself is a burial chamber of the Zsolnay family, featuring porcelain made with innovative techniques known as &quot;eosin.&quot; Visitors recommend exploring the entire cultural center first to understand the history and significance of the mausoleum.</p>
-                </div>
-            </div>
-            <!-- 11. Tettye Ruins -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/pecs_11.avif" alt="Tettye Ruins" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Tettye Ruins</h3>
-                    <p class="tg-sight-card__text">Tettye Ruin Garden, located in the city of Pecs, Hungary, is a blend of history and natural beauty. Located on the slopes of Misina Hill, this historic site offers panoramic views of the city below. Once a grand palace, it now showcases ancient ruins surrounded by lush vineyards that evoke the Renaissance era.</p>
-                </div>
-            </div>
+                </dl>
             </div>
         </section>
-        </div>
+
+        <section id="atlas" class="destination-atlas" aria-labelledby="atlas-title">
+            <div class="page-shell destination-atlas__layout">
+                <div class="destination-atlas__brief">
+                    <p class="destination-atlas__index">City atlas</p>
+                    <h2 id="atlas-title">Plot the city.</h2>
+                    <p class="destination-atlas__copy">Zoom, pan, and open any marker to focus that place in the catalog below.</p>
+                    <dl class="destination-atlas__facts" aria-label="Map coverage">
+                        <div>
+                            <dt>Plotted</dt>
+                            <dd>11 places</dd>
+                        </div>
+                        <div>
+                            <dt>Center</dt>
+                            <dd>46.0823&deg; N<br>18.2284&deg; E</dd>
+                        </div>
+                    </dl>
+                </div>
+                <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Pécs attractions"></div>
+            </div>
+        </section>
+
+        <section id="places" class="destination-places" aria-labelledby="places-title">
+            <div class="page-shell">
+                <div class="destination-chapter">
+                    <h2 id="places-title" class="destination-chapter__heading">11 ways into<br>Pécs.</h2>
+                    <p class="destination-chapter__copy">Browse the index, open a location, and read the essentials without scrolling through a long catalog. Each entry contains its image, admission note, and contextual guide.</p>
+                </div>
+                <div class="places-explorer" data-places-explorer>
+                    <aside class="places-explorer__rail" aria-label="Place index">
+                        <div class="places-explorer__toolbar">
+                            <label class="places-explorer__filter-label" for="places-filter">Filter places</label>
+                            <input
+                                id="places-filter"
+                                class="places-explorer__filter"
+                                type="search"
+                                data-places-filter
+                                placeholder="Search by name"
+                                autocomplete="off"
+                            >
+                            <p class="places-explorer__meta"><strong data-places-count>11</strong> of 11 shown</p>
+                        </div>
+                        <ul class="places-explorer__list" role="listbox" aria-label="Places in Pécs" data-places-list data-lenis-prevent data-tg-scroll-surface>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option is-active"
+                            role="option"
+                            id="place-option-1"
+                            data-place-option
+                            data-place-index="0"
+                            data-place-name="Pécs TV Tower"
+                            data-place-lat="46.099092"
+                            data-place-lng="18.220146"
+                            aria-selected="true"
+                            tabindex="0"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">01</span>
+                            <span class="places-explorer__option-name">Pécs TV Tower</span>
+                            <span class="places-explorer__option-price">HUF 1,590</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-2"
+                            data-place-option
+                            data-place-index="1"
+                            data-place-name="Pécs Zoo"
+                            data-place-lat="46.093667"
+                            data-place-lng="18.225779"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">02</span>
+                            <span class="places-explorer__option-name">Pécs Zoo</span>
+                            <span class="places-explorer__option-price">HUF 4,500</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-3"
+                            data-place-option
+                            data-place-index="2"
+                            data-place-name="Nike Statue"
+                            data-place-lat="46.087599"
+                            data-place-lng="18.222572"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">03</span>
+                            <span class="places-explorer__option-name">Nike Statue</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-4"
+                            data-place-option
+                            data-place-index="3"
+                            data-place-name="Zsolnay Fountain"
+                            data-place-lat="46.07526"
+                            data-place-lng="18.228694"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">04</span>
+                            <span class="places-explorer__option-name">Zsolnay Fountain</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-5"
+                            data-place-option
+                            data-place-index="4"
+                            data-place-name="National Theatre of Pécs"
+                            data-place-lat="46.076322"
+                            data-place-lng="18.230675"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">05</span>
+                            <span class="places-explorer__option-name">National Theatre of Pécs</span>
+                            <span class="places-explorer__option-price">HUF 6,000</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-6"
+                            data-place-option
+                            data-place-index="5"
+                            data-place-name="Downtown Candlemas Church of the Blessed Virgin Mary"
+                            data-place-lat="46.07707"
+                            data-place-lng="18.227905"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">06</span>
+                            <span class="places-explorer__option-name">Downtown Candlemas Church of the Blessed Virgin Mary</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-7"
+                            data-place-option
+                            data-place-index="6"
+                            data-place-name="Basilica of Pécs"
+                            data-place-lat="46.078629"
+                            data-place-lng="18.223618"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">07</span>
+                            <span class="places-explorer__option-name">Basilica of Pécs</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-8"
+                            data-place-option
+                            data-place-index="7"
+                            data-place-name="Barbican"
+                            data-place-lat="46.077826"
+                            data-place-lng="18.221463"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">08</span>
+                            <span class="places-explorer__option-name">Barbican</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-9"
+                            data-place-option
+                            data-place-index="8"
+                            data-place-name="Vilmos Zsolnay Statue"
+                            data-place-lat="46.072568"
+                            data-place-lng="18.224644"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">09</span>
+                            <span class="places-explorer__option-name">Vilmos Zsolnay Statue</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-10"
+                            data-place-option
+                            data-place-index="9"
+                            data-place-name="Zsolnay Mausoleum"
+                            data-place-lat="46.080332"
+                            data-place-lng="18.250866"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">10</span>
+                            <span class="places-explorer__option-name">Zsolnay Mausoleum</span>
+                            <span class="places-explorer__option-price">HUF 2,500</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-11"
+                            data-place-option
+                            data-place-index="10"
+                            data-place-name="Tettye Ruins"
+                            data-place-lat="46.087246"
+                            data-place-lng="18.23564"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">11</span>
+                            <span class="places-explorer__option-name">Tettye Ruins</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                        </ul>
+                        <p class="places-explorer__empty" data-places-empty hidden>No places match that filter.</p>
+                    </aside>
+                    <div class="places-explorer__stage" data-places-stage>
+                    <nav class="places-stage__stepper" data-places-stepper aria-label="Browse places" hidden>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--prev" data-places-prev aria-label="Previous place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M14.75 5.25 L8.25 12 l6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M9.1 12 H17.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--next" data-places-next aria-label="Next place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M9.25 5.25 L15.75 12 l-6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M6.6 12 H14.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                    </nav>
+                <article
+                    class="places-stage__panel is-active"
+                    data-place-panel
+                    data-place-index="0"
+                    aria-labelledby="place-title-1"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/pecs_1.avif" alt="Pécs TV Tower" width="1200" height="750" loading="eager" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">01</span>
+                            <span class="places-stage__admission"><span>Admission</span>HUF 1,590</span>
+                        </p>
+                        <h3 id="place-title-1" class="places-stage__title">Pécs TV Tower</h3>
+                        <p class="places-stage__text">The Pécs TV Tower, standing at 197 meters high atop the 535-meter Misina, has been in operation since 1973. Apart from its broadcasting responsibilities, it has an observation deck offering panoramic views of Pécs and its surroundings. On clear days, visitors can admire the Villanyi Mountains and even catch a glimpse of Croatian Papuk Hill or Badacsony. At night, the tower is illuminated with colors.</p>
+                        <p class="places-stage__coords">46.0991&deg; N / 18.2201&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="1"
+                    aria-labelledby="place-title-2"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/pecs_2.avif" alt="Pécs Zoo" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">02</span>
+                            <span class="places-stage__admission"><span>Admission</span>HUF 4,500</span>
+                        </p>
+                        <h3 id="place-title-2" class="places-stage__title">Pécs Zoo</h3>
+                        <p class="places-stage__text">Pécs Zoo is a visitor site in Pécs, Hungary. Pécs Zoo, located in the southern part of Pecs, Hungary, is a popular attraction offering a diverse range of animal species from around the world. Visitors can observe majestic creatures like lions, tigers, and leopards up close. The zoo is well-organized and clean with friendly English-speaking staff. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">46.0937&deg; N / 18.2258&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="2"
+                    aria-labelledby="place-title-3"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/pecs_3.avif" alt="Nike Statue" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">03</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-3" class="places-stage__title">Nike Statue</h3>
+                        <p class="places-stage__text">Nike Statue is a monument in Pécs, Hungary. Records associated with the site include 1975. Erected in 1975 by Memos Makris as a Liberation monument, this statue offers panoramic views of the city and surrounding landscapes. While some may find the site shrouded in mystery regarding its origins and purpose, it remains a popular spot for tourists seeking both beauty and tranquility. The memorial stands in an open plaza or roadside setting.</p>
+                        <p class="places-stage__coords">46.0876&deg; N / 18.2226&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="3"
+                    aria-labelledby="place-title-4"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/pecs_4.avif" alt="Zsolnay Fountain" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">04</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-4" class="places-stage__title">Zsolnay Fountain</h3>
+                        <p class="places-stage__text">Zsolnay Fountain is a significant monument in Pecs, dedicated to Vilmos Zsolnay, the known designer of Zsolnay ceramics. Donated by his son in 1908 and designed by Andor Pilch, this fountain is a when visiting the city. It&#x27;s located on Szechenyi Ter and stands in front of the Catholic church. The fountain is especially during warmer months when it&#x27;s operational, offering a refreshing oasis for visitors.</p>
+                        <p class="places-stage__coords">46.0753&deg; N / 18.2287&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="4"
+                    aria-labelledby="place-title-5"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/pecs_5.avif" alt="National Theatre of Pécs" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">05</span>
+                            <span class="places-stage__admission"><span>Admission</span>HUF 6,000</span>
+                        </p>
+                        <h3 id="place-title-5" class="places-stage__title">National Theatre of Pécs</h3>
+                        <p class="places-stage__text">When exploring the cultural landscape of Pécs, the National Theatre of Pécs stands out as a must-visit destination. This architectural gem not only draws with its design but also is a hub for the city&#x27;s dynamic performing arts scene. Home to the known Pécs Ballet Company, it offers an array of performances ranging from drama and opera to ballet, ensuring there&#x27;s something for everyone.</p>
+                        <p class="places-stage__coords">46.0763&deg; N / 18.2307&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="5"
+                    aria-labelledby="place-title-6"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/pecs_6.avif" alt="Downtown Candlemas Church of the Blessed Virgin Mary" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">06</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-6" class="places-stage__title">Downtown Candlemas Church of the Blessed Virgin Mary</h3>
+                        <p class="places-stage__text">Downtown Candlemas Church of the Blessed Virgin Mary is a religious building in Pécs, Hungary. Originally a mosque during the Turkish occupation, it was later converted into a Catholic church. The exterior and main interior spaces are usually viewable outside service times.</p>
+                        <p class="places-stage__coords">46.0771&deg; N / 18.2279&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="6"
+                    aria-labelledby="place-title-7"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/pecs_7.avif" alt="Basilica of Pécs" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">07</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-7" class="places-stage__title">Basilica of Pécs</h3>
+                        <p class="places-stage__text">Pécs Cathedral, also known as the Cathedral Basilica of the Assumption of the Blessed Virgin Mary, is a Catholic church with origins dating back to the 10th century. In Pecs, Hungary, this active cathedral has gardens and religious art. Its rich history and architectural design make it a top tourist attraction in the city. The cathedral&#x27;s Romanesque Revival look from the 19th century adds to its allure.</p>
+                        <p class="places-stage__coords">46.0786&deg; N / 18.2236&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="7"
+                    aria-labelledby="place-title-8"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/pecs_8.avif" alt="Barbican" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">08</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-8" class="places-stage__title">Barbican</h3>
+                        <p class="places-stage__text">Barbican is a well-preserved circular fortress gate that dates back centuries and offers city views from the top. Similar to the Krakow Barbican, the Pecs Barbican was once part of a city wall system and is situated in the northwest corner of the medieval wall surrounding Pecs city center. It is Hungary&#x27;s only remaining barbican and was constructed in the 15th century as a defense against Ottoman occupation.</p>
+                        <p class="places-stage__coords">46.0778&deg; N / 18.2215&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="8"
+                    aria-labelledby="place-title-9"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/pecs_9.avif" alt="Vilmos Zsolnay Statue" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">09</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-9" class="places-stage__title">Vilmos Zsolnay Statue</h3>
+                        <p class="places-stage__text">Zsolnay Statue is a fascinating attraction located in Pecs, Hungary. The statue is made of durable porcelain, a material invented by the Zsolnay family. Visitors can explore the Zsolnay Family and Factory History Exhibition to learn about the industrial dynasty&#x27;s journey from producing simple ceramic items to creating ornate decorative pieces, at the factory&#x27;s exit in Pecs, there is a museum and a functioning factory site that can be visited.</p>
+                        <p class="places-stage__coords">46.0726&deg; N / 18.2246&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="9"
+                    aria-labelledby="place-title-10"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/pecs_10.avif" alt="Zsolnay Mausoleum" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">10</span>
+                            <span class="places-stage__admission"><span>Admission</span>HUF 2,500</span>
+                        </p>
+                        <h3 id="place-title-10" class="places-stage__title">Zsolnay Mausoleum</h3>
+                        <p class="places-stage__text">The Zsolnay Mausoleum is a cultural center dedicated to the known ceramics company, showing modern art and offering dining options. The mausoleum itself is a burial chamber of the Zsolnay family, featuring porcelain made with innovative techniques known as &quot;eosin.&quot; Visitors recommend exploring the entire cultural center first to understand the history and significance of the mausoleum.</p>
+                        <p class="places-stage__coords">46.0803&deg; N / 18.2509&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="10"
+                    aria-labelledby="place-title-11"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/pecs_11.avif" alt="Tettye Ruins" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">11</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-11" class="places-stage__title">Tettye Ruins</h3>
+                        <p class="places-stage__text">Tettye Ruin Garden, located in the city of Pecs, Hungary, is a blend of history and natural beauty. Located on the slopes of Misina Hill, this historic site offers panoramic views of the city below. Once a grand palace, it now showcases ancient ruins surrounded by lush vineyards that evoke the Renaissance era.</p>
+                        <p class="places-stage__coords">46.0872&deg; N / 18.2356&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="site-footer">
         <div class="page-shell">
             <div class="site-footer__bar">
-                <a href="../../index.html" class="site-footer__brand" aria-label="Global Explorer home">
-                    <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
+                <a href="../../index.html" class="site-footer__mark" aria-label="Global Explorer home">
+                    <svg width="24" height="24" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
-                    <span class="site-footer__brand-name font-display">Global Explorer</span>
+                    Global Explorer
                 </a>
-                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides <span>Pécs: 11 places across Pécs.</span></p>
             </div>
         </div>
     </footer>
 
     <button id="scrollTopBtn" type="button" aria-label="Scroll to top">
-        <i class="ph ph-arrow-up" aria-hidden="true"></i>
+        <svg viewBox="0 0 24 24" width="1.15em" height="1.15em" aria-hidden="true" focusable="false">
+            <path d="M12 5.25 V18.75 M12 5.25 L6.75 10.5 M12 5.25 L17.25 10.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
     </button>
 
     <script defer src="../../assets/dev-destination-toggle.js"></script>
     <script defer src="../../assets/tg-page-chrome.js"></script>
     <script defer src="../../assets/tg-destination-map.js"></script>
+    <script defer src="../../assets/tg-destination-places.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const map = L.map('map').setView([46.082328, 18.228364], 14);
+            const map = L.map('map');
             L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
                 attribution: '&copy; Google Maps',
                 maxZoom: 20
             }).addTo(map);
-            const locations = [{"name": "Pécs TV Tower", "lat": 46.099092, "lng": 18.220146}, {"name": "Pécs Zoo", "lat": 46.093667, "lng": 18.225779}, {"name": "Nike Statue", "lat": 46.087599, "lng": 18.222572}, {"name": "Zsolnay Fountain", "lat": 46.07526, "lng": 18.228694}, {"name": "National Theatre of Pécs", "lat": 46.076322, "lng": 18.230675}, {"name": "Downtown Candlemas Church of the Blessed Virgin Mary", "lat": 46.07707, "lng": 18.227905}, {"name": "Basilica of Pécs", "lat": 46.078629, "lng": 18.223618}, {"name": "Barbican", "lat": 46.077826, "lng": 18.221463}, {"name": "Vilmos Zsolnay Statue", "lat": 46.072568, "lng": 18.224644}, {"name": "Zsolnay Mausoleum", "lat": 46.080332, "lng": 18.250866}, {"name": "Tettye Ruins", "lat": 46.087246, "lng": 18.23564}];
+            const locations = Array.from(document.querySelectorAll('[data-place-option]')).map((el) => ({
+                name: el.dataset.placeName || '',
+                lat: Number(el.dataset.placeLat),
+                lng: Number(el.dataset.placeLng),
+            }));
             const customIcon = L.icon({
                 iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
                 iconSize: [32, 32],
@@ -289,14 +626,45 @@
                 popupAnchor: [0, -32],
             });
             const destinationCenter = [46.082328, 18.228364];
-            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": false, "maxCenterLat": 0.016764, "maxCenterLng": 0.022502};
-            locations.forEach((location) => {
-                L.marker([location.lat, location.lng], { icon: customIcon })
+            const mapContext = {};
+            const markers = locations.map((location) => {
+                const marker = L.marker([location.lat, location.lng], { icon: customIcon })
                     .addTo(map)
                     .bindPopup(`<strong>${location.name}</strong>`);
+                return marker;
             });
             window.TGDestinationMap?.fitToLocations(map, locations, destinationCenter, mapContext);
             window.TGDestinationMap?.bindMobileScrollGuard(map, 'map');
+            window.TGDestinationMap?.registerMarkers(map, markers);
+
+            const heroImage = document.querySelector('[data-destination-hero-image]');
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (heroImage && !reduceMotion) {
+                let framePending = false;
+                let scrolling = false;
+                let scrollEndTimer = 0;
+                const updateHeroPosition = () => {
+                    const offset = Math.min(window.scrollY, window.innerHeight * 1.15) * 0.075;
+                    heroImage.style.transform = `translate3d(0, ${offset}px, 0) scale(1.055)`;
+                    framePending = false;
+                };
+                window.addEventListener('scroll', () => {
+                    if (!scrolling) {
+                        scrolling = true;
+                        heroImage.style.willChange = 'transform';
+                    }
+                    window.clearTimeout(scrollEndTimer);
+                    scrollEndTimer = window.setTimeout(() => {
+                        scrolling = false;
+                        heroImage.style.willChange = 'auto';
+                    }, 150);
+                    if (!framePending) {
+                        window.requestAnimationFrame(updateHeroPosition);
+                        framePending = true;
+                    }
+                }, { passive: true });
+                updateHeroPosition();
+            }
         });
     </script>
 </body>

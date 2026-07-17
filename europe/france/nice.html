@@ -6,425 +6,1052 @@
     <meta name="description" content="Plan a visit to Nice with a concise history, interactive attractions map, prices, and curated highlights across the destination.">
     <meta name="theme-color" content="#121417">
     <title>Nice Guide | Global Explorer Guides</title>
-    <link rel="stylesheet" href="../../assets/tailwind.css">
-    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
     <link rel="stylesheet" href="../../assets/newindex-fonts.css">
     <link rel="stylesheet" href="../../assets/tg-theme.css">
     <link rel="stylesheet" href="../../assets/tg-site-chrome.css">
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
     <link rel="stylesheet" href="../../assets/tg-modern-polish.css">
+    <link rel="stylesheet" href="../../assets/tg-country-page.css">
+    <link rel="stylesheet" href="../../assets/tg-destination-page-v3.css">
     <script defer src="../../assets/lenis.min.js"></script>
     <script defer src="../../assets/tg-smooth-scroll.js"></script>
     <link rel="preload" as="image" href="images/nice_hero.avif" type="image/avif" fetchpriority="high">
     <script defer src="../../assets/leaflet/leaflet.js"></script>
 </head>
-<body class="tg-theme tg-destination-page tg-modern">
-    <header id="site-header" class="header-glass fixed top-0 left-0 right-0 z-50">
+<body class="tg-theme tg-modern tg-country-v2 tg-destination-v3">
+    <a class="skip-link" href="#main-content">Skip to Nice guide</a>
+    <header id="site-header" class="header-glass">
         <div class="page-shell header-glass__inner">
-            <a href="../../index.html" class="font-display site-brand" style="display:flex;align-items:center;gap:0.75rem;text-decoration:none;color:inherit;font-size:1.25rem;" aria-label="Global Explorer home">
+            <a href="../../index.html" class="site-brand" aria-label="Global Explorer home">
                 <span class="site-brand__mark" aria-hidden="true">
                     <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
-                        <circle cx="14" cy="14" r="2" fill="#E8B14F"/>
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
                 </span>
                 Global Explorer
             </a>
-            <nav class="header-glass__nav-mobile" aria-label="Mobile navigation">
-                <a href="../../index.html" class="header-glass__icon-link" aria-label="Home">
-                    <i class="ph ph-house" aria-hidden="true"></i>
-                </a>
-                <a href="france.html" class="header-glass__icon-link" aria-label="Back to France">
-                    <i class="ph ph-arrow-left" aria-hidden="true"></i>
-                </a>
-            </nav>
             <nav class="header-glass__nav" aria-label="Primary">
-                <a href="../../index.html" class="nav-link">Home</a>
-                <a href="nice.html" class="nav-link" aria-current="page">Nice</a>
+                <a href="#main-content" class="nav-link" aria-current="page">Nice</a>
+                <a href="#atlas" class="nav-link">Atlas</a>
+                <a href="#places" class="nav-link">Places</a>
                 <a href="france.html" class="nav-link">France</a>
-                <a href="../../index.html#map" class="nav-link">Atlas</a>
             </nav>
         </div>
     </header>
-    <main>
-        <div class="tg-destination-hero-zone">
-            <div class="tg-destination-hero" aria-hidden="true">
-                <div class="tg-destination-hero__image" style="background-image: url('images/nice_hero.avif')"></div>
-                <div class="tg-destination-hero__fade"></div>
-            </div>
-            <div class="page-shell tg-destination-hero-zone__content">
-        <nav class="tg-toolbar tg-toolbar--compact" aria-label="Breadcrumb">
-            <div class="tg-breadcrumb">
-                <img src="../../assets/flags/w40/fr.png" alt="" class="w-6 h-auto rounded-[2px]" aria-hidden="true">
-                <span>France</span>
-                <span class="tg-breadcrumb__sep" aria-hidden="true">&rsaquo;</span>
-                <span class="tg-breadcrumb__current">Southern France</span>
-            </div>
-        </nav>
+    <main id="main-content" tabindex="-1">
+        <section class="destination-hero" aria-labelledby="destination-title">
+            <img class="destination-hero__media" data-destination-hero-image src="images/nice_hero.avif" alt="" width="1600" height="1067" fetchpriority="high" decoding="sync">
+            <div class="destination-hero__shade" aria-hidden="true"></div>
+            <div class="page-shell destination-hero__content">
+                <button
+                    type="button"
+                    id="destination-active-toggle"
+                    class="country-active-toggle country-active-toggle--inactive"
+                    data-iso2="FR"
+                    data-slug="nice"
+                    data-active="false"
+                    data-interactive="true"
+                    aria-label="Toggle Nice visibility on France guide"
+                    aria-pressed="false"
+                >
+                    <img src="../../assets/flags/w80/fr.png" alt="" aria-hidden="true">
+                    <span class="country-toggle__copy" aria-hidden="true">
+                        <span class="country-toggle__label">Nice guide</span>
+                        <strong class="country-toggle__state"></strong>
+                    </span>
+                </button>
 
-        <header class="tg-page-header">
-            <button
-        type="button"
-        id="destination-active-toggle"
-        class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
-        data-iso2="FR"
-        data-slug="nice"
-        data-active="false"
-        data-interactive="true"
-        aria-label="Toggle Nice visibility on France guide"
-        aria-pressed="false"
-    >
-        <i class="ph ph-map-pin text-4xl pointer-events-none" aria-hidden="true"></i>
-    </button>
-            <span class="tg-page-header__eyebrow">Destination Guide — Southern France</span>
-            <h1 class="tg-page-title font-display">Explore <em>Nice</em></h1>
-            <div class="glass-card frosted-panel tg-panel">
-                <h2 class="tg-panel__title font-display">
-                    <i class="ph ph-scroll" aria-hidden="true"></i> A Brief History
-                </h2>
-                <p class="tg-panel__body">Nice passed from Savoyard rule to France in 1860, preserving Italianate old-town lanes beneath Belle Époque façades along the Baie des Anges. English and Russian aristocrats wintered here from the 19th century, funding promenades, churches, and gardens. The city remains the commercial centre of the French Riviera while mountain villages above supply olive oil and perfumery.</p>
-            </div>
-        </header>
+                <div class="hero__route" aria-label="Destination route and coordinates">
+                    <span>France / Southern France</span>
+                    <span>43.6999&deg; N / 7.2678&deg; E</span>
+                </div>
 
-        <div class="tg-section__header tg-section__header--map-end">
-            <span class="tg-section__eyebrow">Map</span>
-            <h2 class="tg-section__title font-display">Attractions Map</h2>
-        </div>
-            </div>
-        </div>
-
-        <div class="page-shell tg-main tg-main--below-hero">
-        <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Nice attractions"></div>
-        <section class="tg-section">
-            <div class="tg-section__header">
-                <span class="tg-section__eyebrow">Highlights</span>
-                <h2 class="tg-section__title font-display">Top Sights &amp; Activities</h2>
-            </div>
-            <div class="tg-sights-list">
-            
-            <!-- 1. Place Masséna -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/nice_1.avif" alt="Place Masséna" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                <h1 id="destination-title" class="destination-hero__title" style="--destination-title-chars: 4">Nice</h1>
+                <div class="destination-hero__history">
+                    <p>Nice passed from Savoyard rule to France in 1860, preserving Italianate old-town lanes beneath Belle Époque façades along the Baie des Anges. English and Russian aristocrats wintered here from the 19th century, funding promenades, churches, and gardens. The city remains the commercial centre of the French Riviera while mountain villages above supply olive oil and perfumery.</p>
+                </div>
+                <dl class="destination-hero__facts" aria-label="Nice guide facts">
+                    <div>
+                        <dt>Country</dt>
+                        <dd>France</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Place Masséna</h3>
-                    <p class="tg-sight-card__text">Place Masséna is a and historic 19th-century plaza located in Nice. It is surrounded by neoclassical buildings, cafes, and upscale shops, making it a busy city square with plenty to offer. The square hosts various public events and is connected to the pedestrian zone, providing easy access to the Old Town and seafront.</p>
-                </div>
-            </div>
-            <!-- 2. Fontaine du Soleil -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/nice_2.avif" alt="Fontaine du Soleil" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                    <div>
+                        <dt>Region</dt>
+                        <dd>Southern France</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Fontaine du Soleil</h3>
-                    <p class="tg-sight-card__text">Fontaine du Soleil is a visitor site in Nice, France. This landmark has been a source of local humor and stories since the 1950s. The grounds and principal structures are the main points of interest. Fontaine du Soleil remains part of the public visitor circuit in Nice.</p>
-                </div>
-            </div>
-            <!-- 3. Opéra de Nice -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/nice_3.avif" alt="Opéra de Nice" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                    <div>
+                        <dt>Places</dt>
+                        <dd>22</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Opéra de Nice</h3>
-                    <p class="tg-sight-card__text">The Opéra de Nice, originally a small wooden theater built in 1776, has evolved into a known institution hosting grand opera, ballet, and music performances. After being purchased by the city of Nice and redesigned in classical Italian style by architect Benoit Brunat, it has become the main venue for operas, classical concerts, and ballet performances in the city.</p>
-                </div>
-            </div>
-            <!-- 4. Colline du Château -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/nice_4.avif" alt="Colline du Château" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Colline du Château</h3>
-                    <p class="tg-sight-card__text">Colline du Château, also known as Castle Hill, is a historic hilltop park in Nice that offers views of the city and the sea. The climb up the stone steps to this hill is short but rewarding, with turquoise coasts and apricot-colored roofs spreading out Before visitors as visitors ascend. From the summit, enjoy grand vistas of the Old Port with its yachts and sails, as well as distant views of the snow-dusted peaks of the Alps.</p>
-                </div>
-            </div>
-            <!-- 5. Point de vue Colline du Château -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/nice_5.avif" alt="Point de vue Colline du Château" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Point de vue Colline du Château</h3>
-                    <p class="tg-sight-card__text">Point de vue Colline du Château is a visitor site in Nice, France. Records associated with the site include 1706. Point de vue Colline du chateau, located on a hill in Nice, offers panoramic views of the city and the Bay of Angels. The castle itself was destroyed in 1706, but its park has become a popular meeting place for both tourists and locals. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 6. #ILoveNICE -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/nice_6.avif" alt="#ILoveNICE" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">#ILoveNICE</h3>
-                    <p class="tg-sight-card__text">The #ILoveNICE installation on Colline du Chateau is a photogenic landmark above the old town, popular with visitors posing against the Bay of Angels backdrop. The viewpoint lies within the castle hill park reached by steps or elevator from the waterfront, linking the Promenade des Anglais to panoramic terraces.</p>
-                </div>
-            </div>
-            <!-- 7. Basilique Notre-Dame de l&#x27;Assomption -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/nice_7.avif" alt="Basilique Notre-Dame de l&#x27;Assomption" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Basilique Notre-Dame de l&#x27;Assomption</h3>
-                    <p class="tg-sight-card__text">Basilique Notre-Dame de l&#x27;Assomption, also known as Notre Dame de Nice, is a grand neo-Gothic church with imposing twin towers and active stained glass. Located at the end of Saint-Jean-Medecin, it resembles a white-washed version of the famous Notre Dame in Paris. Despite its striking similarity to the Parisian landmark, this basilica was actually modeled after a monastery in Angers, France.</p>
-                </div>
-            </div>
-            <!-- 8. Jardin des Arènes de Cimiez -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/nice_8.avif" alt="Jardin des Arènes de Cimiez" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Jardin des Arènes de Cimiez</h3>
-                    <p class="tg-sight-card__text">Garden of Arenas Cimiez is a historic site in the neighborhood of Cimiez, Nice, featuring ruins of a Roman amphitheater that once accommodated up to 5,000 spectators. The area also includes the remains of an old Roman settlement called Cemenelum, comprising an arena, thermal baths, and a basilica. This place is rich in history and was favored by English Queen Victoria as well as nobles and aristocrats from France and beyond for relaxation.</p>
-                </div>
-            </div>
-            <!-- 9. Monastère de Cimiez -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/nice_9.avif" alt="Monastère de Cimiez" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Monastère de Cimiez</h3>
-                    <p class="tg-sight-card__text">Cimiez Monastery, an 800s monastery with gardens overlooking Nice, is a historical site that offers a glimpse into the Franciscan way of life. The monastery includes a church, a 17th-century chapel, and a museum showing the history and development of the Franciscan order. Visitors can admire paintings by the Brea brothers in the church and explore the cemetery where artists Henri Matisse and Raoul Dufy are buried.</p>
-                </div>
-            </div>
-            <!-- 10. CAP3000 - Shopping Mall -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/nice_10.avif" alt="CAP3000 - Shopping Mall" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">CAP3000 - Shopping Mall</h3>
-                    <p class="tg-sight-card__text">CAP3000 is a modern and expansive shopping mall in Nice, offering a wide range of popular chain retailers for various goods and numerous dining options. The mall provides an immersive shopping experience with its well-designed layout and vast array of products, including fresh produce, household essentials, electronics, and fashion, CAP3000 hosts entertaining activities for visitors of all ages during the Toussaint 2023 holidays.</p>
-                </div>
-            </div>
-            <!-- 11. Parc Phœnix -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/nice_11.avif" alt="Parc Phœnix" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €6
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Parc Phœnix</h3>
-                    <p class="tg-sight-card__text">Parc Phœnix is a visitor site in Nice, France. Parc Phœnix, located in Nice, France, is a botanical garden and zoo that a massive tropical glasshouse, aviaries, and habitats for various animals like otters and wallabies. The park features an expansive indoor arboretum filled with exotic orchids, wild palms, diverse habitats, and surprising species of flora and fauna. The main structures and grounds are the principal points of interest.</p>
-                </div>
-            </div>
-            <!-- 12. French Riviera Sightseeing -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/nice_12.avif" alt="French Riviera Sightseeing" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">French Riviera Sightseeing</h3>
-                    <p class="tg-sight-card__text">French Riviera Sightseeing operates coach and minibus tours from Nice to coastal towns such as Monaco, Eze, and Cannes. Departures typically start near the port and seafront hotels, offering guided commentary on Belle Epoque architecture and Mediterranean viewpoints along the Corniche roads.</p>
-                </div>
-            </div>
-            <!-- 13. Cascade de Gairaut -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/nice_13.avif" alt="Cascade de Gairaut" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Cascade de Gairaut</h3>
-                    <p class="tg-sight-card__text">Cascade de Gairaut is a waterfall in Nice, France. Ducks have made this place their home, adding to its bucolic charm. Marked tracks lead to viewing platforms or overlooks. Cascade de Gairaut remains part of the public visitor circuit in Nice. Local maps identify Cascade de Gairaut within Nice, France.</p>
-                </div>
-            </div>
-            <!-- 14. Fort du Mont Alban -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/nice_14.avif" alt="Fort du Mont Alban" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Fort du Mont Alban</h3>
-                    <p class="tg-sight-card__text">Fort du Mont Alban is a fortified historic site in Nice, France. Records associated with the site include 1557. Perched high above the French Riviera, Fort du Mont Alban is a 16th-century military stronghold that has stood the test of time since its construction in 1557. Walls, courtyards, or towers form the main visitor route when the grounds are open.</p>
-                </div>
-            </div>
-            <!-- 15. Grotte du Lazaret -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/nice_15.avif" alt="Grotte du Lazaret" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Grotte du Lazaret</h3>
-                    <p class="tg-sight-card__text">Located at the foot of Mont Boron, Grotte du Lazaret is a 35-meter-long and 14-foot-wide cave that provides insight into the lives of pre-Neanderthal inhabitants. Archaeologists have discovered over 20,000 bone fragments from both humans and ancient animals within the cave, dating back to around 130,000 BC. This seaside cave offers raised walkways and self-guided tours for visitors interested in prehistory.</p>
-                </div>
-            </div>
-            <!-- 16. Fort de la Revère -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/nice_16.avif" alt="Fort de la Revère" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Fort de la Revère</h3>
-                    <p class="tg-sight-card__text">Fort de la Revère is a fortified historic site in Nice, France. Construction and early use date to around 1878. Fort de la Revere, located in Eze, is a historical gem offering panoramic views of the Mediterranean Sea and the city of Nice. Built in 1878 to protect the region, this hidden fortress is a favorite picnic spot for locals. Walls, courtyards, or towers form the main visitor route when the grounds are open.</p>
-                </div>
-            </div>
-            <!-- 17. Trophy of Augustus -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/nice_17.avif" alt="Trophy of Augustus" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €7
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Trophy of Augustus</h3>
-                    <p class="tg-sight-card__text">The Trophy of Augustus, also known as the Trophy of the Alps, is a Roman-era monument located in La Turbie. Built around 6BC by Emperor Augustus to commemorate his victory over 45 Ligurian tribes, it offers panoramic views and a glimpse into ancient history. The monument was constructed to celebrate the emperor&#x27;s triumph over rebellious tribes that obstructed trade routes through the mountains.</p>
-                </div>
-            </div>
-            <!-- 18. Allianz Riviera -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/nice_18.avif" alt="Allianz Riviera" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Allianz Riviera</h3>
-                    <p class="tg-sight-card__text">Allianz Riviera, opened in 2013, is the home stadium of OGC Nice and was also a venue for the 2016 UEFA European Championship. It hosts various sporting events like rugby, concerts, and cultural events. The stadium offers an exciting atmosphere for live matches and is easily accessible via tram from Nice city center. While it may have limited food and beverage options inside, there are plenty of choices outside the stadium.</p>
-                </div>
-            </div>
-            <!-- 19. Prom. des Anglais -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/nice_19.avif" alt="Prom. des Anglais" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Prom. des Anglais</h3>
-                    <p class="tg-sight-card__text">Prom. Des Anglais is a visitor site in Nice, France. Prom. Des Anglais is a 7-km-long beachfront promenade in Nice, France, lined with palm trees and featuring a bike path. It has been a popular spot since the 18th century when English aristocrats sought refuge from winter weather. The promenade extends from the airport to Nice&#x27;s old town and is home to many hotels and cafes. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 20. Jardin Albert 1er -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/nice_20.avif" alt="Jardin Albert 1er" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Jardin Albert 1er</h3>
-                    <p class="tg-sight-card__text">Jardin Albert 1er is a visitor site in Nice, France. It also hosts special events such as the Nice Jazz Festival and offers an open-air theater for summer performances. At its center stands the Arc de Venet, a striking metal sculpture designed by French artist Bernar Venet. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 21. Place Giuseppe Garibaldi -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/nice_21.avif" alt="Place Giuseppe Garibaldi" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Place Giuseppe Garibaldi</h3>
-                    <p class="tg-sight-card__text">Place Giuseppe Garibaldi is a historic square featuring elegant architecture, outdoor cafes, and a statue of Garibaldi, a key figure in Italian unification. The site forms part of Place Giuseppe Garibaldi&#x27;s documented civic and cultural landscape within Nice, with archives and visitor information available from municipal or regional heritage authorities.</p>
-                </div>
-            </div>
-            <!-- 22. Haut de Cagnes place De Gaulle -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/nice_22.avif" alt="Haut de Cagnes place De Gaulle" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Haut de Cagnes place De Gaulle</h3>
-                    <p class="tg-sight-card__text">Haut de Cagnes place De Gaulle is a visitor site in Nice, France. The 14th-century Chateau Grimaldi, home to the Musee de l&#x27;Olivier and an annual international art festival, dominates the area with its ramparts. The narrow cobblestone streets are lined with boutiques and restaurants, while the main square is popular for boules playing. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
+                </dl>
             </div>
         </section>
-        </div>
+
+        <section id="atlas" class="destination-atlas" aria-labelledby="atlas-title">
+            <div class="page-shell destination-atlas__layout">
+                <div class="destination-atlas__brief">
+                    <p class="destination-atlas__index">City atlas</p>
+                    <h2 id="atlas-title">Plot the city.</h2>
+                    <p class="destination-atlas__copy">Zoom, pan, and open any marker to focus that place in the catalog below.</p>
+                    <dl class="destination-atlas__facts" aria-label="Map coverage">
+                        <div>
+                            <dt>Plotted</dt>
+                            <dd>22 places</dd>
+                        </div>
+                        <div>
+                            <dt>Center</dt>
+                            <dd>43.6999&deg; N<br>7.2678&deg; E</dd>
+                        </div>
+                    </dl>
+                </div>
+                <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Nice attractions"></div>
+            </div>
+        </section>
+
+        <section id="places" class="destination-places" aria-labelledby="places-title">
+            <div class="page-shell">
+                <div class="destination-chapter">
+                    <h2 id="places-title" class="destination-chapter__heading">22 ways into<br>Nice.</h2>
+                    <p class="destination-chapter__copy">Browse the index, open a location, and read the essentials without scrolling through a long catalog. Each entry contains its image, admission note, and contextual guide.</p>
+                </div>
+                <div class="places-explorer" data-places-explorer>
+                    <aside class="places-explorer__rail" aria-label="Place index">
+                        <div class="places-explorer__toolbar">
+                            <label class="places-explorer__filter-label" for="places-filter">Filter places</label>
+                            <input
+                                id="places-filter"
+                                class="places-explorer__filter"
+                                type="search"
+                                data-places-filter
+                                placeholder="Search by name"
+                                autocomplete="off"
+                            >
+                            <p class="places-explorer__meta"><strong data-places-count>22</strong> of 22 shown</p>
+                        </div>
+                        <ul class="places-explorer__list" role="listbox" aria-label="Places in Nice" data-places-list data-lenis-prevent data-tg-scroll-surface>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option is-active"
+                            role="option"
+                            id="place-option-1"
+                            data-place-option
+                            data-place-index="0"
+                            data-place-name="Place Masséna"
+                            data-place-lat="43.697233"
+                            data-place-lng="7.270236"
+                            aria-selected="true"
+                            tabindex="0"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">01</span>
+                            <span class="places-explorer__option-name">Place Masséna</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-2"
+                            data-place-option
+                            data-place-index="1"
+                            data-place-name="Fontaine du Soleil"
+                            data-place-lat="43.696504"
+                            data-place-lng="7.270615"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">02</span>
+                            <span class="places-explorer__option-name">Fontaine du Soleil</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-3"
+                            data-place-option
+                            data-place-index="2"
+                            data-place-name="Opéra de Nice"
+                            data-place-lat="43.695472"
+                            data-place-lng="7.272539"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">03</span>
+                            <span class="places-explorer__option-name">Opéra de Nice</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-4"
+                            data-place-option
+                            data-place-index="3"
+                            data-place-name="Colline du Château"
+                            data-place-lat="43.695935"
+                            data-place-lng="7.27966"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">04</span>
+                            <span class="places-explorer__option-name">Colline du Château</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-5"
+                            data-place-option
+                            data-place-index="4"
+                            data-place-name="Point de vue Colline du Château"
+                            data-place-lat="43.694699"
+                            data-place-lng="7.279898"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">05</span>
+                            <span class="places-explorer__option-name">Point de vue Colline du Château</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-6"
+                            data-place-option
+                            data-place-index="5"
+                            data-place-name="#ILoveNICE"
+                            data-place-lat="43.6936742"
+                            data-place-lng="7.278999900000001"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">06</span>
+                            <span class="places-explorer__option-name">#ILoveNICE</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-7"
+                            data-place-option
+                            data-place-index="6"
+                            data-place-name="Basilique Notre-Dame de l&#x27;Assomption"
+                            data-place-lat="43.703273"
+                            data-place-lng="7.265733"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">07</span>
+                            <span class="places-explorer__option-name">Basilique Notre-Dame de l&#x27;Assomption</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-8"
+                            data-place-option
+                            data-place-index="7"
+                            data-place-name="Jardin des Arènes de Cimiez"
+                            data-place-lat="43.720007"
+                            data-place-lng="7.276896"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">08</span>
+                            <span class="places-explorer__option-name">Jardin des Arènes de Cimiez</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-9"
+                            data-place-option
+                            data-place-index="8"
+                            data-place-name="Monastère de Cimiez"
+                            data-place-lat="43.720109"
+                            data-place-lng="7.279046"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">09</span>
+                            <span class="places-explorer__option-name">Monastère de Cimiez</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-10"
+                            data-place-option
+                            data-place-index="9"
+                            data-place-name="CAP3000 - Shopping Mall"
+                            data-place-lat="43.659044"
+                            data-place-lng="7.195555"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">10</span>
+                            <span class="places-explorer__option-name">CAP3000 - Shopping Mall</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-11"
+                            data-place-option
+                            data-place-index="10"
+                            data-place-name="Parc Phœnix"
+                            data-place-lat="43.668751"
+                            data-place-lng="7.219213"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">11</span>
+                            <span class="places-explorer__option-name">Parc Phœnix</span>
+                            <span class="places-explorer__option-price">€6</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-12"
+                            data-place-option
+                            data-place-index="11"
+                            data-place-name="French Riviera Sightseeing"
+                            data-place-lat="43.6754294"
+                            data-place-lng="7.2259403"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">12</span>
+                            <span class="places-explorer__option-name">French Riviera Sightseeing</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-13"
+                            data-place-option
+                            data-place-index="12"
+                            data-place-name="Cascade de Gairaut"
+                            data-place-lat="43.737977"
+                            data-place-lng="7.259658"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">13</span>
+                            <span class="places-explorer__option-name">Cascade de Gairaut</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-14"
+                            data-place-option
+                            data-place-index="13"
+                            data-place-name="Fort du Mont Alban"
+                            data-place-lat="43.701321"
+                            data-place-lng="7.300155"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">14</span>
+                            <span class="places-explorer__option-name">Fort du Mont Alban</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-15"
+                            data-place-option
+                            data-place-index="14"
+                            data-place-name="Grotte du Lazaret"
+                            data-place-lat="43.690388"
+                            data-place-lng="7.294823"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">15</span>
+                            <span class="places-explorer__option-name">Grotte du Lazaret</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-16"
+                            data-place-option
+                            data-place-index="15"
+                            data-place-name="Fort de la Revère"
+                            data-place-lat="43.738976"
+                            data-place-lng="7.366603"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">16</span>
+                            <span class="places-explorer__option-name">Fort de la Revère</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-17"
+                            data-place-option
+                            data-place-index="16"
+                            data-place-name="Trophy of Augustus"
+                            data-place-lat="43.744802"
+                            data-place-lng="7.401826"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">17</span>
+                            <span class="places-explorer__option-name">Trophy of Augustus</span>
+                            <span class="places-explorer__option-price">€7</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-18"
+                            data-place-option
+                            data-place-index="17"
+                            data-place-name="Allianz Riviera"
+                            data-place-lat="43.705101"
+                            data-place-lng="7.19261"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">18</span>
+                            <span class="places-explorer__option-name">Allianz Riviera</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-19"
+                            data-place-option
+                            data-place-index="18"
+                            data-place-name="Prom. des Anglais"
+                            data-place-lat="43.694977"
+                            data-place-lng="7.267831"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">19</span>
+                            <span class="places-explorer__option-name">Prom. des Anglais</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-20"
+                            data-place-option
+                            data-place-index="19"
+                            data-place-name="Jardin Albert 1er"
+                            data-place-lat="43.695772"
+                            data-place-lng="7.268264"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">20</span>
+                            <span class="places-explorer__option-name">Jardin Albert 1er</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-21"
+                            data-place-option
+                            data-place-index="20"
+                            data-place-name="Place Giuseppe Garibaldi"
+                            data-place-lat="43.7009577"
+                            data-place-lng="7.2801788"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">21</span>
+                            <span class="places-explorer__option-name">Place Giuseppe Garibaldi</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-22"
+                            data-place-option
+                            data-place-index="21"
+                            data-place-name="Haut de Cagnes place De Gaulle"
+                            data-place-lat="43.666991"
+                            data-place-lng="7.145438"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">22</span>
+                            <span class="places-explorer__option-name">Haut de Cagnes place De Gaulle</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                        </ul>
+                        <p class="places-explorer__empty" data-places-empty hidden>No places match that filter.</p>
+                    </aside>
+                    <div class="places-explorer__stage" data-places-stage>
+                    <nav class="places-stage__stepper" data-places-stepper aria-label="Browse places" hidden>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--prev" data-places-prev aria-label="Previous place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M14.75 5.25 L8.25 12 l6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M9.1 12 H17.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--next" data-places-next aria-label="Next place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M9.25 5.25 L15.75 12 l-6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M6.6 12 H14.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                    </nav>
+                <article
+                    class="places-stage__panel is-active"
+                    data-place-panel
+                    data-place-index="0"
+                    aria-labelledby="place-title-1"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/nice_1.avif" alt="Place Masséna" width="1200" height="750" loading="eager" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">01</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-1" class="places-stage__title">Place Masséna</h3>
+                        <p class="places-stage__text">Place Masséna is a and historic 19th-century plaza located in Nice. It is surrounded by neoclassical buildings, cafes, and upscale shops, making it a busy city square with plenty to offer. The square hosts various public events and is connected to the pedestrian zone, providing easy access to the Old Town and seafront.</p>
+                        <p class="places-stage__coords">43.6972&deg; N / 7.2702&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="1"
+                    aria-labelledby="place-title-2"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/nice_2.avif" alt="Fontaine du Soleil" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">02</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-2" class="places-stage__title">Fontaine du Soleil</h3>
+                        <p class="places-stage__text">Fontaine du Soleil is a visitor site in Nice, France. This landmark has been a source of local humor and stories since the 1950s. The grounds and principal structures are the main points of interest. Fontaine du Soleil remains part of the public visitor circuit in Nice.</p>
+                        <p class="places-stage__coords">43.6965&deg; N / 7.2706&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="2"
+                    aria-labelledby="place-title-3"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/nice_3.avif" alt="Opéra de Nice" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">03</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-3" class="places-stage__title">Opéra de Nice</h3>
+                        <p class="places-stage__text">The Opéra de Nice, originally a small wooden theater built in 1776, has evolved into a known institution hosting grand opera, ballet, and music performances. After being purchased by the city of Nice and redesigned in classical Italian style by architect Benoit Brunat, it has become the main venue for operas, classical concerts, and ballet performances in the city.</p>
+                        <p class="places-stage__coords">43.6955&deg; N / 7.2725&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="3"
+                    aria-labelledby="place-title-4"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/nice_4.avif" alt="Colline du Château" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">04</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-4" class="places-stage__title">Colline du Château</h3>
+                        <p class="places-stage__text">Colline du Château, also known as Castle Hill, is a historic hilltop park in Nice that offers views of the city and the sea. The climb up the stone steps to this hill is short but rewarding, with turquoise coasts and apricot-colored roofs spreading out Before visitors as visitors ascend. From the summit, enjoy grand vistas of the Old Port with its yachts and sails, as well as distant views of the snow-dusted peaks of the Alps.</p>
+                        <p class="places-stage__coords">43.6959&deg; N / 7.2797&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="4"
+                    aria-labelledby="place-title-5"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/nice_5.avif" alt="Point de vue Colline du Château" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">05</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-5" class="places-stage__title">Point de vue Colline du Château</h3>
+                        <p class="places-stage__text">Point de vue Colline du Château is a visitor site in Nice, France. Records associated with the site include 1706. Point de vue Colline du chateau, located on a hill in Nice, offers panoramic views of the city and the Bay of Angels. The castle itself was destroyed in 1706, but its park has become a popular meeting place for both tourists and locals. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">43.6947&deg; N / 7.2799&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="5"
+                    aria-labelledby="place-title-6"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/nice_6.avif" alt="#ILoveNICE" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">06</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-6" class="places-stage__title">#ILoveNICE</h3>
+                        <p class="places-stage__text">The #ILoveNICE installation on Colline du Chateau is a photogenic landmark above the old town, popular with visitors posing against the Bay of Angels backdrop. The viewpoint lies within the castle hill park reached by steps or elevator from the waterfront, linking the Promenade des Anglais to panoramic terraces.</p>
+                        <p class="places-stage__coords">43.6937&deg; N / 7.2790&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="6"
+                    aria-labelledby="place-title-7"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/nice_7.avif" alt="Basilique Notre-Dame de l&#x27;Assomption" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">07</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-7" class="places-stage__title">Basilique Notre-Dame de l&#x27;Assomption</h3>
+                        <p class="places-stage__text">Basilique Notre-Dame de l&#x27;Assomption, also known as Notre Dame de Nice, is a grand neo-Gothic church with imposing twin towers and active stained glass. Located at the end of Saint-Jean-Medecin, it resembles a white-washed version of the famous Notre Dame in Paris. Despite its striking similarity to the Parisian landmark, this basilica was actually modeled after a monastery in Angers, France.</p>
+                        <p class="places-stage__coords">43.7033&deg; N / 7.2657&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="7"
+                    aria-labelledby="place-title-8"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/nice_8.avif" alt="Jardin des Arènes de Cimiez" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">08</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-8" class="places-stage__title">Jardin des Arènes de Cimiez</h3>
+                        <p class="places-stage__text">Garden of Arenas Cimiez is a historic site in the neighborhood of Cimiez, Nice, featuring ruins of a Roman amphitheater that once accommodated up to 5,000 spectators. The area also includes the remains of an old Roman settlement called Cemenelum, comprising an arena, thermal baths, and a basilica. This place is rich in history and was favored by English Queen Victoria as well as nobles and aristocrats from France and beyond for relaxation.</p>
+                        <p class="places-stage__coords">43.7200&deg; N / 7.2769&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="8"
+                    aria-labelledby="place-title-9"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/nice_9.avif" alt="Monastère de Cimiez" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">09</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-9" class="places-stage__title">Monastère de Cimiez</h3>
+                        <p class="places-stage__text">Cimiez Monastery, an 800s monastery with gardens overlooking Nice, is a historical site that offers a glimpse into the Franciscan way of life. The monastery includes a church, a 17th-century chapel, and a museum showing the history and development of the Franciscan order. Visitors can admire paintings by the Brea brothers in the church and explore the cemetery where artists Henri Matisse and Raoul Dufy are buried.</p>
+                        <p class="places-stage__coords">43.7201&deg; N / 7.2790&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="9"
+                    aria-labelledby="place-title-10"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/nice_10.avif" alt="CAP3000 - Shopping Mall" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">10</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-10" class="places-stage__title">CAP3000 - Shopping Mall</h3>
+                        <p class="places-stage__text">CAP3000 is a modern and expansive shopping mall in Nice, offering a wide range of popular chain retailers for various goods and numerous dining options. The mall provides an immersive shopping experience with its well-designed layout and vast array of products, including fresh produce, household essentials, electronics, and fashion, CAP3000 hosts entertaining activities for visitors of all ages during the Toussaint 2023 holidays.</p>
+                        <p class="places-stage__coords">43.6590&deg; N / 7.1956&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="10"
+                    aria-labelledby="place-title-11"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/nice_11.avif" alt="Parc Phœnix" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">11</span>
+                            <span class="places-stage__admission"><span>Admission</span>€6</span>
+                        </p>
+                        <h3 id="place-title-11" class="places-stage__title">Parc Phœnix</h3>
+                        <p class="places-stage__text">Parc Phœnix is a visitor site in Nice, France. Parc Phœnix, located in Nice, France, is a botanical garden and zoo that a massive tropical glasshouse, aviaries, and habitats for various animals like otters and wallabies. The park features an expansive indoor arboretum filled with exotic orchids, wild palms, diverse habitats, and surprising species of flora and fauna. The main structures and grounds are the principal points of interest.</p>
+                        <p class="places-stage__coords">43.6688&deg; N / 7.2192&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="11"
+                    aria-labelledby="place-title-12"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/nice_12.avif" alt="French Riviera Sightseeing" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">12</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-12" class="places-stage__title">French Riviera Sightseeing</h3>
+                        <p class="places-stage__text">French Riviera Sightseeing operates coach and minibus tours from Nice to coastal towns such as Monaco, Eze, and Cannes. Departures typically start near the port and seafront hotels, offering guided commentary on Belle Epoque architecture and Mediterranean viewpoints along the Corniche roads.</p>
+                        <p class="places-stage__coords">43.6754&deg; N / 7.2259&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="12"
+                    aria-labelledby="place-title-13"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/nice_13.avif" alt="Cascade de Gairaut" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">13</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-13" class="places-stage__title">Cascade de Gairaut</h3>
+                        <p class="places-stage__text">Cascade de Gairaut is a waterfall in Nice, France. Ducks have made this place their home, adding to its bucolic charm. Marked tracks lead to viewing platforms or overlooks. Cascade de Gairaut remains part of the public visitor circuit in Nice. Local maps identify Cascade de Gairaut within Nice, France.</p>
+                        <p class="places-stage__coords">43.7380&deg; N / 7.2597&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="13"
+                    aria-labelledby="place-title-14"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/nice_14.avif" alt="Fort du Mont Alban" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">14</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-14" class="places-stage__title">Fort du Mont Alban</h3>
+                        <p class="places-stage__text">Fort du Mont Alban is a fortified historic site in Nice, France. Records associated with the site include 1557. Perched high above the French Riviera, Fort du Mont Alban is a 16th-century military stronghold that has stood the test of time since its construction in 1557. Walls, courtyards, or towers form the main visitor route when the grounds are open.</p>
+                        <p class="places-stage__coords">43.7013&deg; N / 7.3002&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="14"
+                    aria-labelledby="place-title-15"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/nice_15.avif" alt="Grotte du Lazaret" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">15</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-15" class="places-stage__title">Grotte du Lazaret</h3>
+                        <p class="places-stage__text">Located at the foot of Mont Boron, Grotte du Lazaret is a 35-meter-long and 14-foot-wide cave that provides insight into the lives of pre-Neanderthal inhabitants. Archaeologists have discovered over 20,000 bone fragments from both humans and ancient animals within the cave, dating back to around 130,000 BC. This seaside cave offers raised walkways and self-guided tours for visitors interested in prehistory.</p>
+                        <p class="places-stage__coords">43.6904&deg; N / 7.2948&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="15"
+                    aria-labelledby="place-title-16"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/nice_16.avif" alt="Fort de la Revère" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">16</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-16" class="places-stage__title">Fort de la Revère</h3>
+                        <p class="places-stage__text">Fort de la Revère is a fortified historic site in Nice, France. Construction and early use date to around 1878. Fort de la Revere, located in Eze, is a historical gem offering panoramic views of the Mediterranean Sea and the city of Nice. Built in 1878 to protect the region, this hidden fortress is a favorite picnic spot for locals. Walls, courtyards, or towers form the main visitor route when the grounds are open.</p>
+                        <p class="places-stage__coords">43.7390&deg; N / 7.3666&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="16"
+                    aria-labelledby="place-title-17"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/nice_17.avif" alt="Trophy of Augustus" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">17</span>
+                            <span class="places-stage__admission"><span>Admission</span>€7</span>
+                        </p>
+                        <h3 id="place-title-17" class="places-stage__title">Trophy of Augustus</h3>
+                        <p class="places-stage__text">The Trophy of Augustus, also known as the Trophy of the Alps, is a Roman-era monument located in La Turbie. Built around 6BC by Emperor Augustus to commemorate his victory over 45 Ligurian tribes, it offers panoramic views and a glimpse into ancient history. The monument was constructed to celebrate the emperor&#x27;s triumph over rebellious tribes that obstructed trade routes through the mountains.</p>
+                        <p class="places-stage__coords">43.7448&deg; N / 7.4018&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="17"
+                    aria-labelledby="place-title-18"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/nice_18.avif" alt="Allianz Riviera" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">18</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-18" class="places-stage__title">Allianz Riviera</h3>
+                        <p class="places-stage__text">Allianz Riviera, opened in 2013, is the home stadium of OGC Nice and was also a venue for the 2016 UEFA European Championship. It hosts various sporting events like rugby, concerts, and cultural events. The stadium offers an exciting atmosphere for live matches and is easily accessible via tram from Nice city center. While it may have limited food and beverage options inside, there are plenty of choices outside the stadium.</p>
+                        <p class="places-stage__coords">43.7051&deg; N / 7.1926&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="18"
+                    aria-labelledby="place-title-19"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/nice_19.avif" alt="Prom. des Anglais" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">19</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-19" class="places-stage__title">Prom. des Anglais</h3>
+                        <p class="places-stage__text">Prom. Des Anglais is a visitor site in Nice, France. Prom. Des Anglais is a 7-km-long beachfront promenade in Nice, France, lined with palm trees and featuring a bike path. It has been a popular spot since the 18th century when English aristocrats sought refuge from winter weather. The promenade extends from the airport to Nice&#x27;s old town and is home to many hotels and cafes. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">43.6950&deg; N / 7.2678&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="19"
+                    aria-labelledby="place-title-20"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/nice_20.avif" alt="Jardin Albert 1er" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">20</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-20" class="places-stage__title">Jardin Albert 1er</h3>
+                        <p class="places-stage__text">Jardin Albert 1er is a visitor site in Nice, France. It also hosts special events such as the Nice Jazz Festival and offers an open-air theater for summer performances. At its center stands the Arc de Venet, a striking metal sculpture designed by French artist Bernar Venet. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">43.6958&deg; N / 7.2683&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="20"
+                    aria-labelledby="place-title-21"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/nice_21.avif" alt="Place Giuseppe Garibaldi" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">21</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-21" class="places-stage__title">Place Giuseppe Garibaldi</h3>
+                        <p class="places-stage__text">Place Giuseppe Garibaldi is a historic square featuring elegant architecture, outdoor cafes, and a statue of Garibaldi, a key figure in Italian unification. The site forms part of Place Giuseppe Garibaldi&#x27;s documented civic and cultural landscape within Nice, with archives and visitor information available from municipal or regional heritage authorities.</p>
+                        <p class="places-stage__coords">43.7010&deg; N / 7.2802&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="21"
+                    aria-labelledby="place-title-22"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/nice_22.avif" alt="Haut de Cagnes place De Gaulle" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">22</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-22" class="places-stage__title">Haut de Cagnes place De Gaulle</h3>
+                        <p class="places-stage__text">Haut de Cagnes place De Gaulle is a visitor site in Nice, France. The 14th-century Chateau Grimaldi, home to the Musee de l&#x27;Olivier and an annual international art festival, dominates the area with its ramparts. The narrow cobblestone streets are lined with boutiques and restaurants, while the main square is popular for boules playing. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">43.6670&deg; N / 7.1454&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="site-footer">
         <div class="page-shell">
             <div class="site-footer__bar">
-                <a href="../../index.html" class="site-footer__brand" aria-label="Global Explorer home">
-                    <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
+                <a href="../../index.html" class="site-footer__mark" aria-label="Global Explorer home">
+                    <svg width="24" height="24" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
-                    <span class="site-footer__brand-name font-display">Global Explorer</span>
+                    Global Explorer
                 </a>
-                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides <span>Nice: 22 places across Southern France.</span></p>
             </div>
         </div>
     </footer>
 
     <button id="scrollTopBtn" type="button" aria-label="Scroll to top">
-        <i class="ph ph-arrow-up" aria-hidden="true"></i>
+        <svg viewBox="0 0 24 24" width="1.15em" height="1.15em" aria-hidden="true" focusable="false">
+            <path d="M12 5.25 V18.75 M12 5.25 L6.75 10.5 M12 5.25 L17.25 10.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
     </button>
 
     <script defer src="../../assets/dev-destination-toggle.js"></script>
     <script defer src="../../assets/tg-page-chrome.js"></script>
     <script defer src="../../assets/tg-destination-map.js"></script>
+    <script defer src="../../assets/tg-destination-places.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const map = L.map('map').setView([43.699882, 7.267805], 14);
+            const map = L.map('map');
             L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
                 attribution: '&copy; Google Maps',
                 maxZoom: 20
             }).addTo(map);
-            const locations = [{"name": "Place Masséna", "lat": 43.697233, "lng": 7.270236}, {"name": "Fontaine du Soleil", "lat": 43.696504, "lng": 7.270615}, {"name": "Opéra de Nice", "lat": 43.695472, "lng": 7.272539}, {"name": "Colline du Château", "lat": 43.695935, "lng": 7.27966}, {"name": "Point de vue Colline du Château", "lat": 43.694699, "lng": 7.279898}, {"name": "#ILoveNICE", "lat": 43.6936742, "lng": 7.278999900000001}, {"name": "Basilique Notre-Dame de l'Assomption", "lat": 43.703273, "lng": 7.265733}, {"name": "Jardin des Arènes de Cimiez", "lat": 43.720007, "lng": 7.276896}, {"name": "Monastère de Cimiez", "lat": 43.720109, "lng": 7.279046}, {"name": "CAP3000 - Shopping Mall", "lat": 43.659044, "lng": 7.195555}, {"name": "Parc Phœnix", "lat": 43.668751, "lng": 7.219213}, {"name": "French Riviera Sightseeing", "lat": 43.6754294, "lng": 7.2259403}, {"name": "Cascade de Gairaut", "lat": 43.737977, "lng": 7.259658}, {"name": "Fort du Mont Alban", "lat": 43.701321, "lng": 7.300155}, {"name": "Grotte du Lazaret", "lat": 43.690388, "lng": 7.294823}, {"name": "Fort de la Revère", "lat": 43.738976, "lng": 7.366603}, {"name": "Trophy of Augustus", "lat": 43.744802, "lng": 7.401826}, {"name": "Allianz Riviera", "lat": 43.705101, "lng": 7.19261}, {"name": "Prom. des Anglais", "lat": 43.694977, "lng": 7.267831}, {"name": "Jardin Albert 1er", "lat": 43.695772, "lng": 7.268264}, {"name": "Place Giuseppe Garibaldi", "lat": 43.7009577, "lng": 7.2801788}, {"name": "Haut de Cagnes place De Gaulle", "lat": 43.666991, "lng": 7.145438}];
+            const locations = Array.from(document.querySelectorAll('[data-place-option]')).map((el) => ({
+                name: el.dataset.placeName || '',
+                lat: Number(el.dataset.placeLat),
+                lng: Number(el.dataset.placeLng),
+            }));
             const customIcon = L.icon({
                 iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
                 iconSize: [32, 32],
@@ -432,14 +1059,45 @@
                 popupAnchor: [0, -32],
             });
             const destinationCenter = [43.699882, 7.267805];
-            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": true, "compactRegion": false, "denseUrban": false, "maxCenterLat": 0.04492, "maxCenterLng": 0.134021};
-            locations.forEach((location) => {
-                L.marker([location.lat, location.lng], { icon: customIcon })
+            const mapContext = {"spreadUrban": true};
+            const markers = locations.map((location) => {
+                const marker = L.marker([location.lat, location.lng], { icon: customIcon })
                     .addTo(map)
                     .bindPopup(`<strong>${location.name}</strong>`);
+                return marker;
             });
             window.TGDestinationMap?.fitToLocations(map, locations, destinationCenter, mapContext);
             window.TGDestinationMap?.bindMobileScrollGuard(map, 'map');
+            window.TGDestinationMap?.registerMarkers(map, markers);
+
+            const heroImage = document.querySelector('[data-destination-hero-image]');
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (heroImage && !reduceMotion) {
+                let framePending = false;
+                let scrolling = false;
+                let scrollEndTimer = 0;
+                const updateHeroPosition = () => {
+                    const offset = Math.min(window.scrollY, window.innerHeight * 1.15) * 0.075;
+                    heroImage.style.transform = `translate3d(0, ${offset}px, 0) scale(1.055)`;
+                    framePending = false;
+                };
+                window.addEventListener('scroll', () => {
+                    if (!scrolling) {
+                        scrolling = true;
+                        heroImage.style.willChange = 'transform';
+                    }
+                    window.clearTimeout(scrollEndTimer);
+                    scrollEndTimer = window.setTimeout(() => {
+                        scrolling = false;
+                        heroImage.style.willChange = 'auto';
+                    }, 150);
+                    if (!framePending) {
+                        window.requestAnimationFrame(updateHeroPosition);
+                        framePending = true;
+                    }
+                }, { passive: true });
+                updateHeroPosition();
+            }
         });
     </script>
 </body>

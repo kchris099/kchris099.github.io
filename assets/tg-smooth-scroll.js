@@ -11,6 +11,24 @@
         return;
     }
 
+    const HEADER_CLEARANCE = 80;
+    // Padded destination/country sections: land on content, not empty top padding.
+    const PADDED_SECTION_SELECTOR = [
+        ".destination-atlas",
+        ".destination-places",
+        ".regions-section",
+        ".country-map-section",
+    ].join(", ");
+
+    const navScrollOffset = (target) => {
+        if (!(target instanceof Element) || !target.matches(PADDED_SECTION_SELECTOR)) {
+            return -HEADER_CLEARANCE;
+        }
+        const pad = Number.parseFloat(window.getComputedStyle(target).paddingTop) || 0;
+        // Skip half the top padding so content is in view without overshooting.
+        return pad * 0.5 - HEADER_CLEARANCE;
+    };
+
     const scrollExemptSelector = [
         ".country-map-root",
         ".country-map-panel",
@@ -20,6 +38,7 @@
         ".custom-scrollbar",
         ".country-map-inset-drawer__panel",
         ".search-results",
+        ".places-explorer__list",
         "[data-tg-scroll-surface]",
     ].join(", ");
 
@@ -118,7 +137,10 @@
                 const target = document.querySelector(id);
                 if (target) {
                     event.preventDefault();
-                    lenis.scrollTo(target, { offset: -80, duration: 1.4 });
+                    lenis.scrollTo(target, {
+                        offset: navScrollOffset(target),
+                        duration: 1.4,
+                    });
                 }
             });
         });
@@ -136,10 +158,11 @@
             lenis.scrollTo(y, { duration: 1.2 });
         },
         scrollToElement(target, options = {}) {
+            const { offset, ...rest } = options;
             lenis.scrollTo(target, {
-                offset: -80,
+                offset: offset ?? navScrollOffset(target),
                 duration: 1.4,
-                ...options,
+                ...rest,
             });
         },
     };

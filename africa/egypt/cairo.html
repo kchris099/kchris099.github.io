@@ -6,529 +6,1360 @@
     <meta name="description" content="Plan a visit to Cairo with a concise history, interactive attractions map, prices, and curated highlights across the destination.">
     <meta name="theme-color" content="#121417">
     <title>Cairo Guide | Global Explorer Guides</title>
-    <link rel="stylesheet" href="../../assets/tailwind.css">
-    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
     <link rel="stylesheet" href="../../assets/newindex-fonts.css">
     <link rel="stylesheet" href="../../assets/tg-theme.css">
     <link rel="stylesheet" href="../../assets/tg-site-chrome.css">
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
     <link rel="stylesheet" href="../../assets/tg-modern-polish.css">
+    <link rel="stylesheet" href="../../assets/tg-country-page.css">
+    <link rel="stylesheet" href="../../assets/tg-destination-page-v3.css">
     <script defer src="../../assets/lenis.min.js"></script>
     <script defer src="../../assets/tg-smooth-scroll.js"></script>
     <link rel="preload" as="image" href="images/cairo_hero.avif" type="image/avif" fetchpriority="high">
     <script defer src="../../assets/leaflet/leaflet.js"></script>
 </head>
-<body class="tg-theme tg-destination-page tg-modern">
-    <header id="site-header" class="header-glass fixed top-0 left-0 right-0 z-50">
+<body class="tg-theme tg-modern tg-country-v2 tg-destination-v3">
+    <a class="skip-link" href="#main-content">Skip to Cairo guide</a>
+    <header id="site-header" class="header-glass">
         <div class="page-shell header-glass__inner">
-            <a href="../../index.html" class="font-display site-brand" style="display:flex;align-items:center;gap:0.75rem;text-decoration:none;color:inherit;font-size:1.25rem;" aria-label="Global Explorer home">
+            <a href="../../index.html" class="site-brand" aria-label="Global Explorer home">
                 <span class="site-brand__mark" aria-hidden="true">
                     <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
-                        <circle cx="14" cy="14" r="2" fill="#E8B14F"/>
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
                 </span>
                 Global Explorer
             </a>
-            <nav class="header-glass__nav-mobile" aria-label="Mobile navigation">
-                <a href="../../index.html" class="header-glass__icon-link" aria-label="Home">
-                    <i class="ph ph-house" aria-hidden="true"></i>
-                </a>
-                <a href="egypt.html" class="header-glass__icon-link" aria-label="Back to Egypt">
-                    <i class="ph ph-arrow-left" aria-hidden="true"></i>
-                </a>
-            </nav>
             <nav class="header-glass__nav" aria-label="Primary">
-                <a href="../../index.html" class="nav-link">Home</a>
-                <a href="cairo.html" class="nav-link" aria-current="page">Cairo</a>
+                <a href="#main-content" class="nav-link" aria-current="page">Cairo</a>
+                <a href="#atlas" class="nav-link">Atlas</a>
+                <a href="#places" class="nav-link">Places</a>
                 <a href="egypt.html" class="nav-link">Egypt</a>
-                <a href="../../index.html#map" class="nav-link">Atlas</a>
             </nav>
         </div>
     </header>
-    <main>
-        <div class="tg-destination-hero-zone">
-            <div class="tg-destination-hero" aria-hidden="true">
-                <div class="tg-destination-hero__image" style="background-image: url('images/cairo_hero.avif')"></div>
-                <div class="tg-destination-hero__fade"></div>
-            </div>
-            <div class="page-shell tg-destination-hero-zone__content">
-        <nav class="tg-toolbar tg-toolbar--compact" aria-label="Breadcrumb">
-            <div class="tg-breadcrumb">
-                <img src="../../assets/flags/w40/eg.png" alt="" class="w-6 h-auto rounded-[2px]" aria-hidden="true">
-                <span>Egypt</span>
-                <span class="tg-breadcrumb__sep" aria-hidden="true">&rsaquo;</span>
-                <span class="tg-breadcrumb__current">Cairo</span>
-            </div>
-        </nav>
+    <main id="main-content" tabindex="-1">
+        <section class="destination-hero" aria-labelledby="destination-title">
+            <img class="destination-hero__media" data-destination-hero-image src="images/cairo_hero.avif" alt="" width="1600" height="1067" fetchpriority="high" decoding="sync">
+            <div class="destination-hero__shade" aria-hidden="true"></div>
+            <div class="page-shell destination-hero__content">
+                <button
+                    type="button"
+                    id="destination-active-toggle"
+                    class="country-active-toggle country-active-toggle--inactive"
+                    data-iso2="EG"
+                    data-slug="cairo"
+                    data-active="false"
+                    data-interactive="true"
+                    aria-label="Toggle Cairo visibility on Egypt guide"
+                    aria-pressed="false"
+                >
+                    <img src="../../assets/flags/w80/eg.png" alt="" aria-hidden="true">
+                    <span class="country-toggle__copy" aria-hidden="true">
+                        <span class="country-toggle__label">Cairo guide</span>
+                        <strong class="country-toggle__state"></strong>
+                    </span>
+                </button>
 
-        <header class="tg-page-header">
-            <button
-        type="button"
-        id="destination-active-toggle"
-        class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
-        data-iso2="EG"
-        data-slug="cairo"
-        data-active="false"
-        data-interactive="true"
-        aria-label="Toggle Cairo visibility on Egypt guide"
-        aria-pressed="false"
-    >
-        <i class="ph ph-map-pin text-4xl pointer-events-none" aria-hidden="true"></i>
-    </button>
-            <span class="tg-page-header__eyebrow">Destination Guide — Cairo</span>
-            <h1 class="tg-page-title font-display">Explore <em>Cairo</em></h1>
-            <div class="glass-card frosted-panel tg-panel">
-                <h2 class="tg-panel__title font-display">
-                    <i class="ph ph-scroll" aria-hidden="true"></i> A Brief History
-                </h2>
-                <p class="tg-panel__body">Cairo incorporates Fustat, founded in 641, and later Fatimid, Ayyubid, and Mamluk quarters around the Nile. Al-Azhar Mosque, the Citadel of Saladin, and Islamic Cairo&#x27;s madrasas record medieval scholarship and trade. Ottoman and khedival reforms added European-style boulevards before the city became capital of modern Egypt in the 20th century, leaving pharaonic, Coptic, and Islamic monuments across the metropolis.</p>
-            </div>
-        </header>
+                <div class="hero__route" aria-label="Destination route and coordinates">
+                    <span>Egypt / Cairo</span>
+                    <span>30.0276&deg; N / 31.2304&deg; E</span>
+                </div>
 
-        <div class="tg-section__header tg-section__header--map-end">
-            <span class="tg-section__eyebrow">Map</span>
-            <h2 class="tg-section__title font-display">Attractions Map</h2>
-        </div>
-            </div>
-        </div>
-
-        <div class="page-shell tg-main tg-main--below-hero">
-        <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Cairo attractions"></div>
-        <section class="tg-section">
-            <div class="tg-section__header">
-                <span class="tg-section__eyebrow">Highlights</span>
-                <h2 class="tg-section__title font-display">Top Sights &amp; Activities</h2>
-            </div>
-            <div class="tg-sights-list">
-            
-            <!-- 1. Khan el-Khalili -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/cairo_1.avif" alt="Khan el-Khalili" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                <h1 id="destination-title" class="destination-hero__title" style="--destination-title-chars: 5">Cairo</h1>
+                <div class="destination-hero__history">
+                    <p>Cairo incorporates Fustat, founded in 641, and later Fatimid, Ayyubid, and Mamluk quarters around the Nile. Al-Azhar Mosque, the Citadel of Saladin, and Islamic Cairo&#x27;s madrasas record medieval scholarship and trade. Ottoman and khedival reforms added European-style boulevards before the city became capital of modern Egypt in the 20th century, with pharaonic, Coptic, and Islamic monuments still spread across the metropolis.</p>
+                </div>
+                <dl class="destination-hero__facts destination-hero__facts--no-region" aria-label="Cairo guide facts">
+                    <div>
+                        <dt>Country</dt>
+                        <dd>Egypt</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Khan el-Khalili</h3>
-                    <p class="tg-sight-card__text">Khan el-Khalili is a busy souk located in Cairo&#x27;s bazaar district, offering a wide array of souvenirs, crafts, jewelry, clothing, and spices. Despite its touristy nature and the persistent calls to browse the merchandise, a visit to this historic market is an essential part of experiencing Cairo. The winding alleys are filled with enticing items such as incense sticks, tea cups, and mini hookahs.</p>
-                </div>
-            </div>
-            <!-- 2. Al-Azhar Mosque -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/cairo_2.avif" alt="Al-Azhar Mosque" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                    <div>
+                        <dt>Places</dt>
+                        <dd>30</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Al-Azhar Mosque</h3>
-                    <p class="tg-sight-card__text">Al-Azhar Mosque, situated in Islamic Cairo, is not only one of the oldest mosques but also a known center for Sunni Islamic learning. Its rich history dates back to 970 AD and it has evolved into a major hub for Islamic education. The mosque&#x27;s architecture, including minarets and domes, attracts history enthusiasts and travelers interested in Islamic art and architecture. Guided tours are available to look at its historical significance and role in Islamic education.</p>
-                </div>
-            </div>
-            <!-- 3. Qalawun Complex -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/cairo_3.avif" alt="Qalawun Complex" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> E£150
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Qalawun Complex</h3>
-                    <p class="tg-sight-card__text">The Qalawun Complex, located in Medieval Cairo, is a notable building named after the 13th-century ruler who commissioned its construction. The complex has detailed marble and stone buildings with elaborate details, including the world&#x27;s second-most mausoleum.</p>
-                </div>
-            </div>
-            <!-- 4. Mosque of Ibn Tulun -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/cairo_4.avif" alt="Mosque of Ibn Tulun" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Mosque of Ibn Tulun</h3>
-                    <p class="tg-sight-card__text">The Mosque of Ibn Tulun in Old Cairo dates to the ninth century and is among Egypt&#x27;s oldest congregational mosques. A spiral minaret, large courtyard, stucco arcades, and an ablution fountain define the plan. Visitors enter the courtyard and arcades outside prayer times when the complex is open.</p>
-                </div>
-            </div>
-            <!-- 5. Al-Hakim Mosque -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/cairo_5.avif" alt="Al-Hakim Mosque" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Al-Hakim Mosque</h3>
-                    <p class="tg-sight-card__text">Al-Hakim Mosque, located in Cairo, is a 10th-century landmark with grand entrances and a spacious inner courtyard surrounded by arcades. This ancient mosque has Fatimid era architecture and two minarets that are part of the city walls. Despite its plain appearance compared to other mosques in the area, it stands out for its tranquility and historical significance. Over the years, it has served various purposes including as a school, prison, and psychiatric ward.</p>
-                </div>
-            </div>
-            <!-- 6. Bab al-Futuh -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/cairo_6.avif" alt="Bab al-Futuh" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Bab al-Futuh</h3>
-                    <p class="tg-sight-card__text">Bab al-Futuh is a visitor site in Cairo, Egypt. In Old Cairo, Bab al-Futuh a to the city&#x27;s rich history. As one of the last remaining fortified gates from the Fatimid era, it served as an important defense against potential invaders like the Seljuk Turks. The main structures and grounds are the principal points of interest.</p>
-                </div>
-            </div>
-            <!-- 7. Bab El Nasr -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/cairo_7.avif" alt="Bab El Nasr" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Bab El Nasr</h3>
-                    <p class="tg-sight-card__text">Bab El Nasr, also known as the Gate of Victory, is a visitor site in Cairo, Egypt. Construction and early use date to around 1087. Bab El Nasr, also known as the Gate of Victory, is a well-preserved fortified gate in Cairo&#x27;s Old City. Built in 1087, it has one of the few remaining examples of Islamic military architecture. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 8. Bayt al-Suhaymi -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/cairo_8.avif" alt="Bayt al-Suhaymi" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> E£80
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Bayt al-Suhaymi</h3>
-                    <p class="tg-sight-card__text">Bayt al-Suhaymi is a beach in Cairo, Egypt. In the Cairo, Bayt al-Suhaymi is a to the grandeur of Ottoman-era architecture. Originally constructed in 1648 by Abdel Wahab el Tablawy, this remarkable house museum showcases an detailed blend of various homes that have been artfully merged over time. Swimming and shoreline walks are the usual uses of the site.</p>
-                </div>
-            </div>
-            <!-- 9. Mosque-Madrasa of Sultan Hassan -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/cairo_9.avif" alt="Mosque-Madrasa of Sultan Hassan" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> EGP 220
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Mosque-Madrasa of Sultan Hassan</h3>
-                    <p class="tg-sight-card__text">Mosque-Madrasa of Sultan Hassan is a religious building in Cairo, Egypt. Visitors, especially those interested in Islamic art and history, will be captivated by its opulent interiors and expansive courtyard. The exterior and main interior spaces are usually viewable outside service times.</p>
-                </div>
-            </div>
-            <!-- 10. Al-Rifa&#x27;i Mosque -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/cairo_10.avif" alt="Al-Rifa&#x27;i Mosque" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> EGP 220
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Al-Rifa&#x27;i Mosque</h3>
-                    <p class="tg-sight-card__text">Al-Rifa&#x27;i Mosque, located in Cairo, Egypt, is a example of Islamic architecture and historical significance. Commissioned in 1869 by Princess Hoshiyar, the mother of Khedive Isma&#x27;il Pasha, it was completed in 1912. The mosque&#x27;s design incorporates neo-Mamluk and Ancient Egyptian elements, featuring a high ceiling with 44 pillars.</p>
-                </div>
-            </div>
-            <!-- 11. Saladin Citadel -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/cairo_11.avif" alt="Saladin Citadel" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> EGP 550
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Saladin Citadel</h3>
-                    <p class="tg-sight-card__text">The Citadel of Saladin, an imposing fortress and wall constructed by Saladin in the 12th century as protection against the Crusaders, is a culturally significant site in Islamic Cairo. It houses several mosques, including the Mosque of Mohamed Ali, also known as the Alabaster Mosque for its design and construction.</p>
-                </div>
-            </div>
-            <!-- 12. Sultan Al Nasir Muhammad Mosque -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/cairo_12.avif" alt="Sultan Al Nasir Muhammad Mosque" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free (included in Citadel ticket EGP 550)
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Sultan Al Nasir Muhammad Mosque</h3>
-                    <p class="tg-sight-card__text">The Al-Nasser Mohammed Ibn Kalawoun mosque is a historical site located in the Citadel of Salah alDin alAyyubi in Cairo, Egypt. It was built by Sultan Al-Mansur Saif al-Din Qalawun and served as the royal mosque during the Mamluk Period. The architectural style of the mosque reflects elements of Mumluk, Ayubid, and Fatimid styles, showing a blend of ancient influences.</p>
-                </div>
-            </div>
-            <!-- 13. Great Sphinx of Giza -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/cairo_13.avif" alt="Great Sphinx of Giza" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> EGP 700
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Great Sphinx of Giza</h3>
-                    <p class="tg-sight-card__text">The Great Sphinx of Giza is a limestone monument with a lion&#x27;s body and a human face, carved beside the Giza pyramid plateau more than 4,500 years ago. It faces east toward the Nile and sits near the Valley Temple and Khafre&#x27;s pyramid complex. Visitors view it from the Giza plateau walkways; climbing the statue is not allowed. Sand, wind, and restoration work have shaped its present outline.</p>
-                </div>
-            </div>
-            <!-- 14. Valley Temple of Khafre -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/cairo_14.avif" alt="Valley Temple of Khafre" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free (included in Giza Plateau ticket EGP 700)
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Valley Temple of Khafre</h3>
-                    <p class="tg-sight-card__text">The Valley Temple of Khafre is an ancient structure located on the Giza plateau in modern-day Cairo, Egypt. It was built as a part of the complex that includes the Great Pyramid and the Sphinx during the 4th Dynasty of Ancient Egypt&#x27;s Old Kingdom, over 4,500 years ago. The temple offers a close-up view of megalithic stonework with massive blocks fitted together directly without mortar.</p>
-                </div>
-            </div>
-            <!-- 15. The Great Pyramid of Giza -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/cairo_15.avif" alt="The Great Pyramid of Giza" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> EGP 1,500
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">The Great Pyramid of Giza</h3>
-                    <p class="tg-sight-card__text">The Great Pyramid of Giza, also known as the Pyramid of Khufu or the Pyramid of Cheops, is the largest among the Egyptian pyramids. It is part of a complex that includes temples and other ancient artifacts. This wonder of the ancient world has stood for nearly 4000 years, showing impeccable geometry and serving as a massive tomb for pharaohs. Constructed by tens-of-thousands-strong teams, these pyramids are a evidence of ancient Egypt&#x27;s might and organization.</p>
-                </div>
-            </div>
-            <!-- 16. The Grand Egyptian Museum -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/cairo_16.avif" alt="The Grand Egyptian Museum" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> EGP 1,450
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">The Grand Egyptian Museum</h3>
-                    <p class="tg-sight-card__text">The Grand Egyptian Museum (GEM) is a massive display of Egypt&#x27;s history, showing 50,000 objects including never-before-exhibited pieces like King Tut&#x27;s entire collection and King Khufu&#x27;s Solar Boat. The museum promises to be a glorious attraction once completed, offering great accessibility with stairs for viewing the pyramids. Visitors can expect a clean and gorgeous experience with good amenities such as food, resting areas, and bathrooms.</p>
-                </div>
-            </div>
-            <!-- 17. Bab Zuwayla -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/cairo_17.avif" alt="Bab Zuwayla" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> E£100
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Bab Zuwayla</h3>
-                    <p class="tg-sight-card__text">Bab Zuwayla is a visitor site in Cairo, Egypt. Records associated with the site include 1092. Bab Zuweila is the last remaining southern gate of Old Islamic Cairo, dating back to 1092. It is named after the Zuwayla, a North African Berber tribe from the Fatimid army. Visitors can explore a small museum on the ground floor that explains the historical significance of the gate in both Arabic and English. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 18. Talaat Harb Square -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/cairo_18.avif" alt="Talaat Harb Square" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Talaat Harb Square</h3>
-                    <p class="tg-sight-card__text">Talaat Harb Square, also known as &quot;Midan Talaat Harb, is a public square in Cairo, Egypt. The square is surrounded by shops, cafes, and historic buildings, making it a popular spot for both locals and tourists. Open pavement and surrounding facades define the visitor setting.</p>
-                </div>
-            </div>
-            <!-- 19. El- Tahrir Square -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/cairo_19.avif" alt="El- Tahrir Square" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">El- Tahrir Square</h3>
-                    <p class="tg-sight-card__text">El-Tahrir Square is a busy hub in Cairo, Egypt, where explore the city&#x27;s rich history and active culture. The Egyptian Museum, also called the Egyptian National Museum, is a must-visit here. It houses an collection of 120,000 ancient Egyptian artifacts, including the famous golden mask of King Tutankhamen. As visitors wander around El-Tahrir Square, take in the Tahir Park and its lush greenery.</p>
-                </div>
-            </div>
-            <!-- 20. Qasr El Nil Bridge -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/cairo_20.avif" alt="Qasr El Nil Bridge" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Qasr El Nil Bridge</h3>
-                    <p class="tg-sight-card__text">Qasr El Nil Bridge, also known as Khedive Ismail Bridge, is a historic road bridge spanning the Nile River in Cairo. It offers views of the city&#x27;s skyline and is known for 19th-century bronze lion statues that guard each end of the bridge. The nearly 2km-long bridge connects Tahrir Square to Gezira Island and has been a significant site for public demonstrations.</p>
-                </div>
-            </div>
-            <!-- 21. Cairo Tower -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/cairo_21.avif" alt="Cairo Tower" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> EGP 350
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Cairo Tower</h3>
-                    <p class="tg-sight-card__text">Cairo Tower is a visitor site in Cairo, Egypt. Cairo Tower, a 187-meter tall structure inspired by lotus flowers and adorned with 8 million mosaic lozenges, offers panoramic views of Cairo and the Nile River. The time to visit is in the afternoon to witness a sunset over the city. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 22. Cairo Opera House -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/cairo_22.avif" alt="Cairo Opera House" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> E£300
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Cairo Opera House</h3>
-                    <p class="tg-sight-card__text">The Cairo Opera House, established in 1988 and located in the Zamalek district along the Nile, is a prominent venue showing Arab dance, classical music, opera, and international performances. The program includes classic concerts with Western and jazz influences, as well as traditional orchestral selections. Visitors can experience performances by the Cairo combination Orchestra and Egyptian modern dance troupes, long lasting ballet classics are featured on the schedule.</p>
-                </div>
-            </div>
-            <!-- 23. Prince Mohamed Ali Palace (Manial Palace) and Egyptian Museum of Musical Instruments -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/cairo_23.avif" alt="Prince Mohamed Ali Palace (Manial Palace) and Egyptian Museum of Musical Instruments" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> E£150
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Prince Mohamed Ali Palace (Manial Palace) and Egyptian Museum of Musical Instruments</h3>
-                    <p class="tg-sight-card__text">Manial Palace, also known as Prince Mohamed Ali Palace, is a lavishly adorned royal residence situated on Manial Island in the Nile River. Constructed between 1900 and 1929 by Prince Mohammed Ali Tewfik, this palace showcases a fusion of Islamic architectural styles including Ottoman, Moorish, and Persian influences.</p>
-                </div>
-            </div>
-            <!-- 24. Orman Garden -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/cairo_24.avif" alt="Orman Garden" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> E£30
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Orman Garden</h3>
-                    <p class="tg-sight-card__text">Orman Garden is a public park in Cairo, Egypt. Orman Garden, located in Cairo, Egypt, is a vast park commissioned by Khedive Isma&#x27;il Pasha and built by French architect Jean-Pierre Barillet-Deschamps. It&#x27;s a popular destination for nature enthusiasts with its orchards and walking trails. Paths, lawns, and shaded areas make up the main public facilities.</p>
-                </div>
-            </div>
-            <!-- 25. Hanging Church -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/cairo_25.avif" alt="Hanging Church" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Hanging Church</h3>
-                    <p class="tg-sight-card__text">Hanging Church is a religious building in Cairo, Egypt. It rises about 13 meters from the ground and is known for its unique wooden roof shaped like Noah&#x27;s ark. This historical site was built on the ruins where the Holy Family stayed and drank from a well. The exterior and main interior spaces are usually viewable outside service times.</p>
-                </div>
-            </div>
-            <!-- 26. Saints Sergius and Bacchus Church -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/cairo_26.avif" alt="Saints Sergius and Bacchus Church" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Saints Sergius and Bacchus Church</h3>
-                    <p class="tg-sight-card__text">The Saints Sergius and Bacchus Church, also known as Abu Serga, is a 4th or 5th-century Coptic Christian church located in modern-day Coptic Cairo. It is believed to have been built on the spot where the Holy Family rested during their journey to Egypt. The church&#x27;s crypt, located 10 meters deep, is said to be the place where Joseph, Mary, and infant Jesus stayed while Joseph worked at the nearby Babylon fortress.</p>
-                </div>
-            </div>
-            <!-- 27. Amr ibn al-As Mosque -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/cairo_27.avif" alt="Amr ibn al-As Mosque" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Amr ibn al-As Mosque</h3>
-                    <p class="tg-sight-card__text">The Amr ibn Al-A&#x27;as Mosque is a significant landmark in Egypt, being the first mosque in the country and even in Africa. Initially constructed without minarets, they were added 30 years later and have undergone several reconstructions since then. The mosque&#x27;s minaret design has evolved over time, reflecting its rich history.</p>
-                </div>
-            </div>
-            <!-- 28. Rawda Island Nilometer -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/cairo_28.avif" alt="Rawda Island Nilometer" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> E£50
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Rawda Island Nilometer</h3>
-                    <p class="tg-sight-card__text">Rawda Island Nilometer is a visitor site in Cairo, Egypt. History enthusiasts and travelers intrigued by ancient Egyptian technology will find it appealing. The site offers insight into Egypt&#x27;s agricultural and civilizational significance of the Nile River. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 29. Pharaonic Village -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/cairo_29.avif" alt="Pharaonic Village" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> E£650
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Pharaonic Village</h3>
-                    <p class="tg-sight-card__text">Pharaonic Village is a visitor site in Cairo, Egypt. Pharaonic Village is a living museum that offers a glimpse into Egyptian history through replicas of an ancient village and the tomb of Tutankhamen. It&#x27;s a great place for families, with activities designed to educate and entertain kids. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 30. Al-Azhar Park -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/cairo_30.avif" alt="Al-Azhar Park" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> E£150
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Al-Azhar Park</h3>
-                    <p class="tg-sight-card__text">Al-Azhar Park is a public park in Cairo, Egypt. It opened or was completed around 2005. It provides a peaceful retreat for both tourists and locals to unwind amidst lush greenery. Paths, lawns, and shaded areas make up the main public facilities. Al-Azhar Park remains part of the public visitor circuit in Cairo.</p>
-                </div>
-            </div>
+                </dl>
             </div>
         </section>
-        </div>
+
+        <section id="atlas" class="destination-atlas" aria-labelledby="atlas-title">
+            <div class="page-shell destination-atlas__layout">
+                <div class="destination-atlas__brief">
+                    <p class="destination-atlas__index">City atlas</p>
+                    <h2 id="atlas-title">Plot the city.</h2>
+                    <p class="destination-atlas__copy">Zoom, pan, and open any marker to focus that place in the catalog below.</p>
+                    <dl class="destination-atlas__facts" aria-label="Map coverage">
+                        <div>
+                            <dt>Plotted</dt>
+                            <dd>30 places</dd>
+                        </div>
+                        <div>
+                            <dt>Center</dt>
+                            <dd>30.0276&deg; N<br>31.2304&deg; E</dd>
+                        </div>
+                    </dl>
+                </div>
+                <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Cairo attractions"></div>
+            </div>
+        </section>
+
+        <section id="places" class="destination-places" aria-labelledby="places-title">
+            <div class="page-shell">
+                <div class="destination-chapter">
+                    <h2 id="places-title" class="destination-chapter__heading">30 ways into<br>Cairo.</h2>
+                    <p class="destination-chapter__copy">Browse the index, open a location, and read the essentials without scrolling through a long catalog. Each entry contains its image, admission note, and contextual guide.</p>
+                </div>
+                <div class="places-explorer" data-places-explorer>
+                    <aside class="places-explorer__rail" aria-label="Place index">
+                        <div class="places-explorer__toolbar">
+                            <label class="places-explorer__filter-label" for="places-filter">Filter places</label>
+                            <input
+                                id="places-filter"
+                                class="places-explorer__filter"
+                                type="search"
+                                data-places-filter
+                                placeholder="Search by name"
+                                autocomplete="off"
+                            >
+                            <p class="places-explorer__meta"><strong data-places-count>30</strong> of 30 shown</p>
+                        </div>
+                        <ul class="places-explorer__list" role="listbox" aria-label="Places in Cairo" data-places-list data-lenis-prevent data-tg-scroll-surface>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option is-active"
+                            role="option"
+                            id="place-option-1"
+                            data-place-option
+                            data-place-index="0"
+                            data-place-name="Khan el-Khalili"
+                            data-place-lat="30.047739"
+                            data-place-lng="31.262254"
+                            aria-selected="true"
+                            tabindex="0"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">01</span>
+                            <span class="places-explorer__option-name">Khan el-Khalili</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-2"
+                            data-place-option
+                            data-place-index="1"
+                            data-place-name="Al-Azhar Mosque"
+                            data-place-lat="30.046099"
+                            data-place-lng="31.26239"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">02</span>
+                            <span class="places-explorer__option-name">Al-Azhar Mosque</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-3"
+                            data-place-option
+                            data-place-index="2"
+                            data-place-name="Qalawun Complex"
+                            data-place-lat="30.049597"
+                            data-place-lng="31.260968"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">03</span>
+                            <span class="places-explorer__option-name">Qalawun Complex</span>
+                            <span class="places-explorer__option-price">E£150</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-4"
+                            data-place-option
+                            data-place-index="3"
+                            data-place-name="Mosque of Ibn Tulun"
+                            data-place-lat="30.02882"
+                            data-place-lng="31.249521"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">04</span>
+                            <span class="places-explorer__option-name">Mosque of Ibn Tulun</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-5"
+                            data-place-option
+                            data-place-index="4"
+                            data-place-name="Al-Hakim Mosque"
+                            data-place-lat="30.054539"
+                            data-place-lng="31.26378"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">05</span>
+                            <span class="places-explorer__option-name">Al-Hakim Mosque</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-6"
+                            data-place-option
+                            data-place-index="5"
+                            data-place-name="Bab al-Futuh"
+                            data-place-lat="30.055449"
+                            data-place-lng="31.26336"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">06</span>
+                            <span class="places-explorer__option-name">Bab al-Futuh</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-7"
+                            data-place-option
+                            data-place-index="6"
+                            data-place-name="Bab El Nasr"
+                            data-place-lat="30.054212"
+                            data-place-lng="31.26506"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">07</span>
+                            <span class="places-explorer__option-name">Bab El Nasr</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-8"
+                            data-place-option
+                            data-place-index="7"
+                            data-place-name="Bayt al-Suhaymi"
+                            data-place-lat="30.052101"
+                            data-place-lng="31.26249"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">08</span>
+                            <span class="places-explorer__option-name">Bayt al-Suhaymi</span>
+                            <span class="places-explorer__option-price">E£80</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-9"
+                            data-place-option
+                            data-place-index="8"
+                            data-place-name="Mosque-Madrasa of Sultan Hassan"
+                            data-place-lat="30.032187"
+                            data-place-lng="31.256612"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">09</span>
+                            <span class="places-explorer__option-name">Mosque-Madrasa of Sultan Hassan</span>
+                            <span class="places-explorer__option-price">EGP 220</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-10"
+                            data-place-option
+                            data-place-index="9"
+                            data-place-name="Al-Rifa&#x27;i Mosque"
+                            data-place-lat="30.032829"
+                            data-place-lng="31.257115"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">10</span>
+                            <span class="places-explorer__option-name">Al-Rifa&#x27;i Mosque</span>
+                            <span class="places-explorer__option-price">EGP 220</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-11"
+                            data-place-option
+                            data-place-index="10"
+                            data-place-name="Saladin Citadel"
+                            data-place-lat="30.028746"
+                            data-place-lng="31.259714"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">11</span>
+                            <span class="places-explorer__option-name">Saladin Citadel</span>
+                            <span class="places-explorer__option-price">EGP 550</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-12"
+                            data-place-option
+                            data-place-index="11"
+                            data-place-name="Sultan Al Nasir Muhammad Mosque"
+                            data-place-lat="30.029249"
+                            data-place-lng="31.260725"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">12</span>
+                            <span class="places-explorer__option-name">Sultan Al Nasir Muhammad Mosque</span>
+                            <span class="places-explorer__option-price">Free (included in Citadel ticket EGP 550)</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-13"
+                            data-place-option
+                            data-place-index="12"
+                            data-place-name="Great Sphinx of Giza"
+                            data-place-lat="29.975269"
+                            data-place-lng="31.137567"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">13</span>
+                            <span class="places-explorer__option-name">Great Sphinx of Giza</span>
+                            <span class="places-explorer__option-price">EGP 700</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-14"
+                            data-place-option
+                            data-place-index="13"
+                            data-place-name="Valley Temple of Khafre"
+                            data-place-lat="29.974737"
+                            data-place-lng="31.138357"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">14</span>
+                            <span class="places-explorer__option-name">Valley Temple of Khafre</span>
+                            <span class="places-explorer__option-price">Free (included in Giza Plateau ticket EGP 700)</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-15"
+                            data-place-option
+                            data-place-index="14"
+                            data-place-name="The Great Pyramid of Giza"
+                            data-place-lat="29.979237"
+                            data-place-lng="31.134201"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">15</span>
+                            <span class="places-explorer__option-name">The Great Pyramid of Giza</span>
+                            <span class="places-explorer__option-price">EGP 1,500</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-16"
+                            data-place-option
+                            data-place-index="15"
+                            data-place-name="The Grand Egyptian Museum"
+                            data-place-lat="29.993199"
+                            data-place-lng="31.124441"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">16</span>
+                            <span class="places-explorer__option-name">The Grand Egyptian Museum</span>
+                            <span class="places-explorer__option-price">EGP 1,450</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-17"
+                            data-place-option
+                            data-place-index="16"
+                            data-place-name="Bab Zuwayla"
+                            data-place-lat="30.04288"
+                            data-place-lng="31.257872"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">17</span>
+                            <span class="places-explorer__option-name">Bab Zuwayla</span>
+                            <span class="places-explorer__option-price">E£100</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-18"
+                            data-place-option
+                            data-place-index="17"
+                            data-place-name="Talaat Harb Square"
+                            data-place-lat="30.04755"
+                            data-place-lng="31.238599"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">18</span>
+                            <span class="places-explorer__option-name">Talaat Harb Square</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-19"
+                            data-place-option
+                            data-place-index="18"
+                            data-place-name="El- Tahrir Square"
+                            data-place-lat="30.044428"
+                            data-place-lng="31.235764"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">19</span>
+                            <span class="places-explorer__option-name">El- Tahrir Square</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-20"
+                            data-place-option
+                            data-place-index="19"
+                            data-place-name="Qasr El Nil Bridge"
+                            data-place-lat="30.043861"
+                            data-place-lng="31.230942"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">20</span>
+                            <span class="places-explorer__option-name">Qasr El Nil Bridge</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-21"
+                            data-place-option
+                            data-place-index="20"
+                            data-place-name="Cairo Tower"
+                            data-place-lat="30.046522"
+                            data-place-lng="31.224299"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">21</span>
+                            <span class="places-explorer__option-name">Cairo Tower</span>
+                            <span class="places-explorer__option-price">EGP 350</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-22"
+                            data-place-option
+                            data-place-index="21"
+                            data-place-name="Cairo Opera House"
+                            data-place-lat="30.042361"
+                            data-place-lng="31.223668"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">22</span>
+                            <span class="places-explorer__option-name">Cairo Opera House</span>
+                            <span class="places-explorer__option-price">E£300</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-23"
+                            data-place-option
+                            data-place-index="22"
+                            data-place-name="Prince Mohamed Ali Palace (Manial Palace) and Egyptian Museum of Musical Instruments"
+                            data-place-lat="30.028805"
+                            data-place-lng="31.22992"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">23</span>
+                            <span class="places-explorer__option-name">Prince Mohamed Ali Palace (Manial Palace) and Egyptian Museum of Musical Instruments</span>
+                            <span class="places-explorer__option-price">E£150</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-24"
+                            data-place-option
+                            data-place-index="23"
+                            data-place-name="Orman Garden"
+                            data-place-lat="30.02904"
+                            data-place-lng="31.212974"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">24</span>
+                            <span class="places-explorer__option-name">Orman Garden</span>
+                            <span class="places-explorer__option-price">E£30</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-25"
+                            data-place-option
+                            data-place-index="24"
+                            data-place-name="Hanging Church"
+                            data-place-lat="30.005239"
+                            data-place-lng="31.230169"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">25</span>
+                            <span class="places-explorer__option-name">Hanging Church</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-26"
+                            data-place-option
+                            data-place-index="25"
+                            data-place-name="Saints Sergius and Bacchus Church"
+                            data-place-lat="30.006279"
+                            data-place-lng="31.230675"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">26</span>
+                            <span class="places-explorer__option-name">Saints Sergius and Bacchus Church</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-27"
+                            data-place-option
+                            data-place-index="26"
+                            data-place-name="Amr ibn al-As Mosque"
+                            data-place-lat="30.010129"
+                            data-place-lng="31.233164"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">27</span>
+                            <span class="places-explorer__option-name">Amr ibn al-As Mosque</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-28"
+                            data-place-option
+                            data-place-index="27"
+                            data-place-name="Rawda Island Nilometer"
+                            data-place-lat="30.006967"
+                            data-place-lng="31.225001"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">28</span>
+                            <span class="places-explorer__option-name">Rawda Island Nilometer</span>
+                            <span class="places-explorer__option-price">E£50</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-29"
+                            data-place-option
+                            data-place-index="28"
+                            data-place-name="Pharaonic Village"
+                            data-place-lat="29.997343"
+                            data-place-lng="31.21479"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">29</span>
+                            <span class="places-explorer__option-name">Pharaonic Village</span>
+                            <span class="places-explorer__option-price">E£650</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-30"
+                            data-place-option
+                            data-place-index="29"
+                            data-place-name="Al-Azhar Park"
+                            data-place-lat="30.041426"
+                            data-place-lng="31.265581"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">30</span>
+                            <span class="places-explorer__option-name">Al-Azhar Park</span>
+                            <span class="places-explorer__option-price">E£150</span>
+                        </button>
+                    </li>
+                        </ul>
+                        <p class="places-explorer__empty" data-places-empty hidden>No places match that filter.</p>
+                    </aside>
+                    <div class="places-explorer__stage" data-places-stage>
+                    <nav class="places-stage__stepper" data-places-stepper aria-label="Browse places" hidden>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--prev" data-places-prev aria-label="Previous place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M14.75 5.25 L8.25 12 l6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M9.1 12 H17.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--next" data-places-next aria-label="Next place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M9.25 5.25 L15.75 12 l-6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M6.6 12 H14.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                    </nav>
+                <article
+                    class="places-stage__panel is-active"
+                    data-place-panel
+                    data-place-index="0"
+                    aria-labelledby="place-title-1"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/cairo_1.avif" alt="Khan el-Khalili" width="1200" height="750" loading="eager" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">01</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-1" class="places-stage__title">Khan el-Khalili</h3>
+                        <p class="places-stage__text">Khan el-Khalili is a busy souk located in Cairo&#x27;s bazaar district, offering a wide array of souvenirs, crafts, jewelry, clothing, and spices. Despite its touristy nature and the persistent calls to browse the merchandise, a visit to this historic market is an essential part of experiencing Cairo. The winding alleys are filled with enticing items such as incense sticks, tea cups, and mini hookahs.</p>
+                        <p class="places-stage__coords">30.0477&deg; N / 31.2623&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="1"
+                    aria-labelledby="place-title-2"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/cairo_2.avif" alt="Al-Azhar Mosque" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">02</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-2" class="places-stage__title">Al-Azhar Mosque</h3>
+                        <p class="places-stage__text">Al-Azhar Mosque, situated in Islamic Cairo, is not only one of the oldest mosques but also a known center for Sunni Islamic learning. Its rich history dates back to 970 AD and it has evolved into a major hub for Islamic education. The mosque&#x27;s architecture, including minarets and domes, attracts history enthusiasts and travelers interested in Islamic art and architecture. Guided tours are available to look at its historical significance and role in Islamic education.</p>
+                        <p class="places-stage__coords">30.0461&deg; N / 31.2624&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="2"
+                    aria-labelledby="place-title-3"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/cairo_3.avif" alt="Qalawun Complex" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">03</span>
+                            <span class="places-stage__admission"><span>Admission</span>E£150</span>
+                        </p>
+                        <h3 id="place-title-3" class="places-stage__title">Qalawun Complex</h3>
+                        <p class="places-stage__text">The Qalawun Complex, located in Medieval Cairo, is a notable building named after the 13th-century ruler who commissioned its construction. The complex has detailed marble and stone buildings with elaborate details, including the world&#x27;s second-most mausoleum.</p>
+                        <p class="places-stage__coords">30.0496&deg; N / 31.2610&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="3"
+                    aria-labelledby="place-title-4"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/cairo_4.avif" alt="Mosque of Ibn Tulun" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">04</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-4" class="places-stage__title">Mosque of Ibn Tulun</h3>
+                        <p class="places-stage__text">The Mosque of Ibn Tulun in Old Cairo dates to the ninth century and is among Egypt&#x27;s oldest congregational mosques. A spiral minaret, large courtyard, stucco arcades, and an ablution fountain define the plan. Visitors enter the courtyard and arcades outside prayer times when the complex is open.</p>
+                        <p class="places-stage__coords">30.0288&deg; N / 31.2495&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="4"
+                    aria-labelledby="place-title-5"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/cairo_5.avif" alt="Al-Hakim Mosque" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">05</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-5" class="places-stage__title">Al-Hakim Mosque</h3>
+                        <p class="places-stage__text">Al-Hakim Mosque, located in Cairo, is a 10th-century landmark with grand entrances and a spacious inner courtyard surrounded by arcades. This ancient mosque has Fatimid era architecture and two minarets that are part of the city walls. Despite its plain appearance compared to other mosques in the area, it stands out for its tranquility and historical significance. Over the years, it has served various purposes including as a school, prison, and psychiatric ward.</p>
+                        <p class="places-stage__coords">30.0545&deg; N / 31.2638&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="5"
+                    aria-labelledby="place-title-6"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/cairo_6.avif" alt="Bab al-Futuh" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">06</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-6" class="places-stage__title">Bab al-Futuh</h3>
+                        <p class="places-stage__text">Bab al-Futuh is a visitor site in Cairo, Egypt. In Old Cairo, Bab al-Futuh a to the city&#x27;s rich history. As one of the last remaining fortified gates from the Fatimid era, it served as an important defense against potential invaders like the Seljuk Turks. The main structures and grounds are the principal points of interest.</p>
+                        <p class="places-stage__coords">30.0554&deg; N / 31.2634&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="6"
+                    aria-labelledby="place-title-7"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/cairo_7.avif" alt="Bab El Nasr" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">07</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-7" class="places-stage__title">Bab El Nasr</h3>
+                        <p class="places-stage__text">Bab El Nasr, also known as the Gate of Victory, is a visitor site in Cairo, Egypt. Construction and early use date to around 1087. Bab El Nasr, also known as the Gate of Victory, is a well-preserved fortified gate in Cairo&#x27;s Old City. Built in 1087, it has one of the few remaining examples of Islamic military architecture. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">30.0542&deg; N / 31.2651&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="7"
+                    aria-labelledby="place-title-8"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/cairo_8.avif" alt="Bayt al-Suhaymi" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">08</span>
+                            <span class="places-stage__admission"><span>Admission</span>E£80</span>
+                        </p>
+                        <h3 id="place-title-8" class="places-stage__title">Bayt al-Suhaymi</h3>
+                        <p class="places-stage__text">Bayt al-Suhaymi is a beach in Cairo, Egypt. In the Cairo, Bayt al-Suhaymi is a to the grandeur of Ottoman-era architecture. Originally constructed in 1648 by Abdel Wahab el Tablawy, this remarkable house museum showcases an detailed blend of various homes that have been artfully merged over time. Swimming and shoreline walks are the usual uses of the site.</p>
+                        <p class="places-stage__coords">30.0521&deg; N / 31.2625&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="8"
+                    aria-labelledby="place-title-9"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/cairo_9.avif" alt="Mosque-Madrasa of Sultan Hassan" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">09</span>
+                            <span class="places-stage__admission"><span>Admission</span>EGP 220</span>
+                        </p>
+                        <h3 id="place-title-9" class="places-stage__title">Mosque-Madrasa of Sultan Hassan</h3>
+                        <p class="places-stage__text">Mosque-Madrasa of Sultan Hassan is a religious building in Cairo, Egypt. Visitors, especially those interested in Islamic art and history, will be captivated by its opulent interiors and expansive courtyard. The exterior and main interior spaces are usually viewable outside service times.</p>
+                        <p class="places-stage__coords">30.0322&deg; N / 31.2566&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="9"
+                    aria-labelledby="place-title-10"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/cairo_10.avif" alt="Al-Rifa&#x27;i Mosque" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">10</span>
+                            <span class="places-stage__admission"><span>Admission</span>EGP 220</span>
+                        </p>
+                        <h3 id="place-title-10" class="places-stage__title">Al-Rifa&#x27;i Mosque</h3>
+                        <p class="places-stage__text">Al-Rifa&#x27;i Mosque, located in Cairo, Egypt, is a example of Islamic architecture and historical significance. Commissioned in 1869 by Princess Hoshiyar, the mother of Khedive Isma&#x27;il Pasha, it was completed in 1912. The mosque&#x27;s design incorporates neo-Mamluk and Ancient Egyptian elements, featuring a high ceiling with 44 pillars.</p>
+                        <p class="places-stage__coords">30.0328&deg; N / 31.2571&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="10"
+                    aria-labelledby="place-title-11"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/cairo_11.avif" alt="Saladin Citadel" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">11</span>
+                            <span class="places-stage__admission"><span>Admission</span>EGP 550</span>
+                        </p>
+                        <h3 id="place-title-11" class="places-stage__title">Saladin Citadel</h3>
+                        <p class="places-stage__text">The Citadel of Saladin, an imposing fortress and wall constructed by Saladin in the 12th century as protection against the Crusaders, is a culturally significant site in Islamic Cairo. It houses several mosques, including the Mosque of Mohamed Ali, also known as the Alabaster Mosque for its design and construction.</p>
+                        <p class="places-stage__coords">30.0287&deg; N / 31.2597&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="11"
+                    aria-labelledby="place-title-12"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/cairo_12.avif" alt="Sultan Al Nasir Muhammad Mosque" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">12</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free (included in Citadel ticket EGP 550)</span>
+                        </p>
+                        <h3 id="place-title-12" class="places-stage__title">Sultan Al Nasir Muhammad Mosque</h3>
+                        <p class="places-stage__text">The Al-Nasser Mohammed Ibn Kalawoun mosque is a historical site located in the Citadel of Salah alDin alAyyubi in Cairo, Egypt. It was built by Sultan Al-Mansur Saif al-Din Qalawun and served as the royal mosque during the Mamluk Period. The architectural style of the mosque reflects elements of Mumluk, Ayubid, and Fatimid styles, showing a blend of ancient influences.</p>
+                        <p class="places-stage__coords">30.0292&deg; N / 31.2607&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="12"
+                    aria-labelledby="place-title-13"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/cairo_13.avif" alt="Great Sphinx of Giza" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">13</span>
+                            <span class="places-stage__admission"><span>Admission</span>EGP 700</span>
+                        </p>
+                        <h3 id="place-title-13" class="places-stage__title">Great Sphinx of Giza</h3>
+                        <p class="places-stage__text">The Great Sphinx of Giza is a limestone monument with a lion&#x27;s body and a human face, carved beside the Giza pyramid plateau more than 4,500 years ago. It faces east toward the Nile and sits near the Valley Temple and Khafre&#x27;s pyramid complex. Visitors view it from the Giza plateau walkways; climbing the statue is not allowed. Sand, wind, and restoration work have shaped its present outline.</p>
+                        <p class="places-stage__coords">29.9753&deg; N / 31.1376&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="13"
+                    aria-labelledby="place-title-14"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/cairo_14.avif" alt="Valley Temple of Khafre" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">14</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free (included in Giza Plateau ticket EGP 700)</span>
+                        </p>
+                        <h3 id="place-title-14" class="places-stage__title">Valley Temple of Khafre</h3>
+                        <p class="places-stage__text">The Valley Temple of Khafre is an ancient structure located on the Giza plateau in modern-day Cairo, Egypt. It was built as a part of the complex that includes the Great Pyramid and the Sphinx during the 4th Dynasty of Ancient Egypt&#x27;s Old Kingdom, over 4,500 years ago. The temple offers a close-up view of megalithic stonework with massive blocks fitted together directly without mortar.</p>
+                        <p class="places-stage__coords">29.9747&deg; N / 31.1384&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="14"
+                    aria-labelledby="place-title-15"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/cairo_15.avif" alt="The Great Pyramid of Giza" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">15</span>
+                            <span class="places-stage__admission"><span>Admission</span>EGP 1,500</span>
+                        </p>
+                        <h3 id="place-title-15" class="places-stage__title">The Great Pyramid of Giza</h3>
+                        <p class="places-stage__text">The Great Pyramid of Giza, also known as the Pyramid of Khufu or the Pyramid of Cheops, is the largest among the Egyptian pyramids. It is part of a complex that includes temples and other ancient artifacts. This wonder of the ancient world has stood for nearly 4000 years, showing impeccable geometry and serving as a massive tomb for pharaohs. Constructed by tens-of-thousands-strong teams, these pyramids are a evidence of ancient Egypt&#x27;s might and organization.</p>
+                        <p class="places-stage__coords">29.9792&deg; N / 31.1342&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="15"
+                    aria-labelledby="place-title-16"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/cairo_16.avif" alt="The Grand Egyptian Museum" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">16</span>
+                            <span class="places-stage__admission"><span>Admission</span>EGP 1,450</span>
+                        </p>
+                        <h3 id="place-title-16" class="places-stage__title">The Grand Egyptian Museum</h3>
+                        <p class="places-stage__text">The Grand Egyptian Museum (GEM) is a massive display of Egypt&#x27;s history, showing 50,000 objects including never-before-exhibited pieces like King Tut&#x27;s entire collection and King Khufu&#x27;s Solar Boat. The museum promises to be a glorious attraction once completed, offering great accessibility with stairs for viewing the pyramids. Visitors can expect a clean and gorgeous experience with good amenities such as food, resting areas, and bathrooms.</p>
+                        <p class="places-stage__coords">29.9932&deg; N / 31.1244&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="16"
+                    aria-labelledby="place-title-17"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/cairo_17.avif" alt="Bab Zuwayla" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">17</span>
+                            <span class="places-stage__admission"><span>Admission</span>E£100</span>
+                        </p>
+                        <h3 id="place-title-17" class="places-stage__title">Bab Zuwayla</h3>
+                        <p class="places-stage__text">Bab Zuwayla is a visitor site in Cairo, Egypt. Records associated with the site include 1092. Bab Zuweila is the last remaining southern gate of Old Islamic Cairo, dating back to 1092. It is named after the Zuwayla, a North African Berber tribe from the Fatimid army. Visitors can explore a small museum on the ground floor that explains the historical significance of the gate in both Arabic and English. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">30.0429&deg; N / 31.2579&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="17"
+                    aria-labelledby="place-title-18"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/cairo_18.avif" alt="Talaat Harb Square" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">18</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-18" class="places-stage__title">Talaat Harb Square</h3>
+                        <p class="places-stage__text">Talaat Harb Square, also known as &quot;Midan Talaat Harb, is a public square in Cairo, Egypt. The square is surrounded by shops, cafes, and historic buildings, making it a popular spot for both locals and tourists. Open pavement and surrounding facades define the visitor setting.</p>
+                        <p class="places-stage__coords">30.0476&deg; N / 31.2386&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="18"
+                    aria-labelledby="place-title-19"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/cairo_19.avif" alt="El- Tahrir Square" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">19</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-19" class="places-stage__title">El- Tahrir Square</h3>
+                        <p class="places-stage__text">El-Tahrir Square is a busy hub in Cairo, Egypt, where explore the city&#x27;s rich history and active culture. The Egyptian Museum, also called the Egyptian National Museum, is a must-visit here. It houses an collection of 120,000 ancient Egyptian artifacts, including the famous golden mask of King Tutankhamen. As visitors wander around El-Tahrir Square, take in the Tahir Park and its lush greenery.</p>
+                        <p class="places-stage__coords">30.0444&deg; N / 31.2358&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="19"
+                    aria-labelledby="place-title-20"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/cairo_20.avif" alt="Qasr El Nil Bridge" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">20</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-20" class="places-stage__title">Qasr El Nil Bridge</h3>
+                        <p class="places-stage__text">Qasr El Nil Bridge, also known as Khedive Ismail Bridge, is a historic road bridge spanning the Nile River in Cairo. It offers views of the city&#x27;s skyline and is known for 19th-century bronze lion statues that guard each end of the bridge. The nearly 2km-long bridge connects Tahrir Square to Gezira Island and has been a significant site for public demonstrations.</p>
+                        <p class="places-stage__coords">30.0439&deg; N / 31.2309&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="20"
+                    aria-labelledby="place-title-21"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/cairo_21.avif" alt="Cairo Tower" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">21</span>
+                            <span class="places-stage__admission"><span>Admission</span>EGP 350</span>
+                        </p>
+                        <h3 id="place-title-21" class="places-stage__title">Cairo Tower</h3>
+                        <p class="places-stage__text">Cairo Tower is a visitor site in Cairo, Egypt. Cairo Tower, a 187-meter tall structure inspired by lotus flowers and adorned with 8 million mosaic lozenges, offers panoramic views of Cairo and the Nile River. The time to visit is in the afternoon to witness a sunset over the city. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">30.0465&deg; N / 31.2243&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="21"
+                    aria-labelledby="place-title-22"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/cairo_22.avif" alt="Cairo Opera House" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">22</span>
+                            <span class="places-stage__admission"><span>Admission</span>E£300</span>
+                        </p>
+                        <h3 id="place-title-22" class="places-stage__title">Cairo Opera House</h3>
+                        <p class="places-stage__text">The Cairo Opera House, established in 1988 and located in the Zamalek district along the Nile, is a prominent venue showing Arab dance, classical music, opera, and international performances. The program includes classic concerts with Western and jazz influences, as well as traditional orchestral selections. Visitors can experience performances by the Cairo combination Orchestra and Egyptian modern dance troupes, long lasting ballet classics are featured on the schedule.</p>
+                        <p class="places-stage__coords">30.0424&deg; N / 31.2237&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="22"
+                    aria-labelledby="place-title-23"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/cairo_23.avif" alt="Prince Mohamed Ali Palace (Manial Palace) and Egyptian Museum of Musical Instruments" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">23</span>
+                            <span class="places-stage__admission"><span>Admission</span>E£150</span>
+                        </p>
+                        <h3 id="place-title-23" class="places-stage__title">Prince Mohamed Ali Palace (Manial Palace) and Egyptian Museum of Musical Instruments</h3>
+                        <p class="places-stage__text">Manial Palace, also known as Prince Mohamed Ali Palace, is a lavishly adorned royal residence situated on Manial Island in the Nile River. Constructed between 1900 and 1929 by Prince Mohammed Ali Tewfik, this palace showcases a fusion of Islamic architectural styles including Ottoman, Moorish, and Persian influences.</p>
+                        <p class="places-stage__coords">30.0288&deg; N / 31.2299&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="23"
+                    aria-labelledby="place-title-24"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/cairo_24.avif" alt="Orman Garden" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">24</span>
+                            <span class="places-stage__admission"><span>Admission</span>E£30</span>
+                        </p>
+                        <h3 id="place-title-24" class="places-stage__title">Orman Garden</h3>
+                        <p class="places-stage__text">Orman Garden is a public park in Cairo, Egypt. Orman Garden, located in Cairo, Egypt, is a vast park commissioned by Khedive Isma&#x27;il Pasha and built by French architect Jean-Pierre Barillet-Deschamps. It&#x27;s a popular destination for nature enthusiasts with its orchards and walking trails. Paths, lawns, and shaded areas make up the main public facilities.</p>
+                        <p class="places-stage__coords">30.0290&deg; N / 31.2130&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="24"
+                    aria-labelledby="place-title-25"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/cairo_25.avif" alt="Hanging Church" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">25</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-25" class="places-stage__title">Hanging Church</h3>
+                        <p class="places-stage__text">Hanging Church is a religious building in Cairo, Egypt. It rises about 13 meters from the ground and is known for its unique wooden roof shaped like Noah&#x27;s ark. This historical site was built on the ruins where the Holy Family stayed and drank from a well. The exterior and main interior spaces are usually viewable outside service times.</p>
+                        <p class="places-stage__coords">30.0052&deg; N / 31.2302&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="25"
+                    aria-labelledby="place-title-26"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/cairo_26.avif" alt="Saints Sergius and Bacchus Church" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">26</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-26" class="places-stage__title">Saints Sergius and Bacchus Church</h3>
+                        <p class="places-stage__text">The Saints Sergius and Bacchus Church, also known as Abu Serga, is a 4th or 5th-century Coptic Christian church located in modern-day Coptic Cairo. It is believed to have been built on the spot where the Holy Family rested during their journey to Egypt. The church&#x27;s crypt, located 10 meters deep, is said to be the place where Joseph, Mary, and infant Jesus stayed while Joseph worked at the nearby Babylon fortress.</p>
+                        <p class="places-stage__coords">30.0063&deg; N / 31.2307&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="26"
+                    aria-labelledby="place-title-27"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/cairo_27.avif" alt="Amr ibn al-As Mosque" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">27</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-27" class="places-stage__title">Amr ibn al-As Mosque</h3>
+                        <p class="places-stage__text">The Amr ibn Al-A&#x27;as Mosque is a significant landmark in Egypt, being the first mosque in the country and even in Africa. Initially constructed without minarets, they were added 30 years later and have undergone several reconstructions since then. The mosque&#x27;s minaret design has evolved over time, reflecting its rich history.</p>
+                        <p class="places-stage__coords">30.0101&deg; N / 31.2332&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="27"
+                    aria-labelledby="place-title-28"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/cairo_28.avif" alt="Rawda Island Nilometer" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">28</span>
+                            <span class="places-stage__admission"><span>Admission</span>E£50</span>
+                        </p>
+                        <h3 id="place-title-28" class="places-stage__title">Rawda Island Nilometer</h3>
+                        <p class="places-stage__text">Rawda Island Nilometer is a visitor site in Cairo, Egypt. History enthusiasts and travelers intrigued by ancient Egyptian technology will find it appealing. The site offers insight into Egypt&#x27;s agricultural and civilizational significance of the Nile River. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">30.0070&deg; N / 31.2250&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="28"
+                    aria-labelledby="place-title-29"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/cairo_29.avif" alt="Pharaonic Village" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">29</span>
+                            <span class="places-stage__admission"><span>Admission</span>E£650</span>
+                        </p>
+                        <h3 id="place-title-29" class="places-stage__title">Pharaonic Village</h3>
+                        <p class="places-stage__text">Pharaonic Village is a visitor site in Cairo, Egypt. Pharaonic Village is a living museum that offers a glimpse into Egyptian history through replicas of an ancient village and the tomb of Tutankhamen. It&#x27;s a great place for families, with activities designed to educate and entertain kids. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">29.9973&deg; N / 31.2148&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="29"
+                    aria-labelledby="place-title-30"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/cairo_30.avif" alt="Al-Azhar Park" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">30</span>
+                            <span class="places-stage__admission"><span>Admission</span>E£150</span>
+                        </p>
+                        <h3 id="place-title-30" class="places-stage__title">Al-Azhar Park</h3>
+                        <p class="places-stage__text">Al-Azhar Park is a public park in Cairo, Egypt. It opened or was completed around 2005. It provides a peaceful retreat for both tourists and locals to unwind amidst lush greenery. Paths, lawns, and shaded areas make up the main public facilities. Al-Azhar Park remains part of the public visitor circuit in Cairo.</p>
+                        <p class="places-stage__coords">30.0414&deg; N / 31.2656&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="site-footer">
         <div class="page-shell">
             <div class="site-footer__bar">
-                <a href="../../index.html" class="site-footer__brand" aria-label="Global Explorer home">
-                    <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
+                <a href="../../index.html" class="site-footer__mark" aria-label="Global Explorer home">
+                    <svg width="24" height="24" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
-                    <span class="site-footer__brand-name font-display">Global Explorer</span>
+                    Global Explorer
                 </a>
-                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides <span>Cairo: 30 places across Cairo.</span></p>
             </div>
         </div>
     </footer>
 
     <button id="scrollTopBtn" type="button" aria-label="Scroll to top">
-        <i class="ph ph-arrow-up" aria-hidden="true"></i>
+        <svg viewBox="0 0 24 24" width="1.15em" height="1.15em" aria-hidden="true" focusable="false">
+            <path d="M12 5.25 V18.75 M12 5.25 L6.75 10.5 M12 5.25 L17.25 10.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
     </button>
 
     <script defer src="../../assets/dev-destination-toggle.js"></script>
     <script defer src="../../assets/tg-page-chrome.js"></script>
     <script defer src="../../assets/tg-destination-map.js"></script>
+    <script defer src="../../assets/tg-destination-places.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const map = L.map('map').setView([30.027561, 31.230399], 14);
+            const map = L.map('map');
             L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
                 attribution: '&copy; Google Maps',
                 maxZoom: 20
             }).addTo(map);
-            const locations = [{"name": "Khan el-Khalili", "lat": 30.047739, "lng": 31.262254}, {"name": "Al-Azhar Mosque", "lat": 30.046099, "lng": 31.26239}, {"name": "Qalawun Complex", "lat": 30.049597, "lng": 31.260968}, {"name": "Mosque of Ibn Tulun", "lat": 30.02882, "lng": 31.249521}, {"name": "Al-Hakim Mosque", "lat": 30.054539, "lng": 31.26378}, {"name": "Bab al-Futuh", "lat": 30.055449, "lng": 31.26336}, {"name": "Bab El Nasr", "lat": 30.054212, "lng": 31.26506}, {"name": "Bayt al-Suhaymi", "lat": 30.052101, "lng": 31.26249}, {"name": "Mosque-Madrasa of Sultan Hassan", "lat": 30.032187, "lng": 31.256612}, {"name": "Al-Rifa'i Mosque", "lat": 30.032829, "lng": 31.257115}, {"name": "Saladin Citadel", "lat": 30.028746, "lng": 31.259714}, {"name": "Sultan Al Nasir Muhammad Mosque", "lat": 30.029249, "lng": 31.260725}, {"name": "Great Sphinx of Giza", "lat": 29.975269, "lng": 31.137567}, {"name": "Valley Temple of Khafre", "lat": 29.974737, "lng": 31.138357}, {"name": "The Great Pyramid of Giza", "lat": 29.979237, "lng": 31.134201}, {"name": "The Grand Egyptian Museum", "lat": 29.993199, "lng": 31.124441}, {"name": "Bab Zuwayla", "lat": 30.04288, "lng": 31.257872}, {"name": "Talaat Harb Square", "lat": 30.04755, "lng": 31.238599}, {"name": "El- Tahrir Square", "lat": 30.044428, "lng": 31.235764}, {"name": "Qasr El Nil Bridge", "lat": 30.043861, "lng": 31.230942}, {"name": "Cairo Tower", "lat": 30.046522, "lng": 31.224299}, {"name": "Cairo Opera House", "lat": 30.042361, "lng": 31.223668}, {"name": "Prince Mohamed Ali Palace (Manial Palace) and Egyptian Museum of Musical Instruments", "lat": 30.028805, "lng": 31.22992}, {"name": "Orman Garden", "lat": 30.02904, "lng": 31.212974}, {"name": "Hanging Church", "lat": 30.005239, "lng": 31.230169}, {"name": "Saints Sergius and Bacchus Church", "lat": 30.006279, "lng": 31.230675}, {"name": "Amr ibn al-As Mosque", "lat": 30.010129, "lng": 31.233164}, {"name": "Rawda Island Nilometer", "lat": 30.006967, "lng": 31.225001}, {"name": "Pharaonic Village", "lat": 29.997343, "lng": 31.21479}, {"name": "Al-Azhar Park", "lat": 30.041426, "lng": 31.265581}];
+            const locations = Array.from(document.querySelectorAll('[data-place-option]')).map((el) => ({
+                name: el.dataset.placeName || '',
+                lat: Number(el.dataset.placeLat),
+                lng: Number(el.dataset.placeLng),
+            }));
             const customIcon = L.icon({
                 iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
                 iconSize: [32, 32],
@@ -536,14 +1367,45 @@
                 popupAnchor: [0, -32],
             });
             const destinationCenter = [30.027561, 31.230399];
-            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.052824, "maxCenterLng": 0.105958};
-            locations.forEach((location) => {
-                L.marker([location.lat, location.lng], { icon: customIcon })
+            const mapContext = {"denseUrban": true};
+            const markers = locations.map((location) => {
+                const marker = L.marker([location.lat, location.lng], { icon: customIcon })
                     .addTo(map)
                     .bindPopup(`<strong>${location.name}</strong>`);
+                return marker;
             });
             window.TGDestinationMap?.fitToLocations(map, locations, destinationCenter, mapContext);
             window.TGDestinationMap?.bindMobileScrollGuard(map, 'map');
+            window.TGDestinationMap?.registerMarkers(map, markers);
+
+            const heroImage = document.querySelector('[data-destination-hero-image]');
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (heroImage && !reduceMotion) {
+                let framePending = false;
+                let scrolling = false;
+                let scrollEndTimer = 0;
+                const updateHeroPosition = () => {
+                    const offset = Math.min(window.scrollY, window.innerHeight * 1.15) * 0.075;
+                    heroImage.style.transform = `translate3d(0, ${offset}px, 0) scale(1.055)`;
+                    framePending = false;
+                };
+                window.addEventListener('scroll', () => {
+                    if (!scrolling) {
+                        scrolling = true;
+                        heroImage.style.willChange = 'transform';
+                    }
+                    window.clearTimeout(scrollEndTimer);
+                    scrollEndTimer = window.setTimeout(() => {
+                        scrolling = false;
+                        heroImage.style.willChange = 'auto';
+                    }, 150);
+                    if (!framePending) {
+                        window.requestAnimationFrame(updateHeroPosition);
+                        framePending = true;
+                    }
+                }, { passive: true });
+                updateHeroPosition();
+            }
         });
     </script>
 </body>

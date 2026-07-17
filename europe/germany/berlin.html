@@ -6,659 +6,1754 @@
     <meta name="description" content="Plan a visit to Berlin with a concise history, interactive attractions map, prices, and curated highlights across the destination.">
     <meta name="theme-color" content="#121417">
     <title>Berlin Guide | Global Explorer Guides</title>
-    <link rel="stylesheet" href="../../assets/tailwind.css">
-    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
     <link rel="stylesheet" href="../../assets/newindex-fonts.css">
     <link rel="stylesheet" href="../../assets/tg-theme.css">
     <link rel="stylesheet" href="../../assets/tg-site-chrome.css">
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
     <link rel="stylesheet" href="../../assets/tg-modern-polish.css">
+    <link rel="stylesheet" href="../../assets/tg-country-page.css">
+    <link rel="stylesheet" href="../../assets/tg-destination-page-v3.css">
     <script defer src="../../assets/lenis.min.js"></script>
     <script defer src="../../assets/tg-smooth-scroll.js"></script>
     <link rel="preload" as="image" href="images/berlin_hero.avif" type="image/avif" fetchpriority="high">
     <script defer src="../../assets/leaflet/leaflet.js"></script>
 </head>
-<body class="tg-theme tg-destination-page tg-modern">
-    <header id="site-header" class="header-glass fixed top-0 left-0 right-0 z-50">
+<body class="tg-theme tg-modern tg-country-v2 tg-destination-v3">
+    <a class="skip-link" href="#main-content">Skip to Berlin guide</a>
+    <header id="site-header" class="header-glass">
         <div class="page-shell header-glass__inner">
-            <a href="../../index.html" class="font-display site-brand" style="display:flex;align-items:center;gap:0.75rem;text-decoration:none;color:inherit;font-size:1.25rem;" aria-label="Global Explorer home">
+            <a href="../../index.html" class="site-brand" aria-label="Global Explorer home">
                 <span class="site-brand__mark" aria-hidden="true">
                     <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
-                        <circle cx="14" cy="14" r="2" fill="#E8B14F"/>
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
                 </span>
                 Global Explorer
             </a>
-            <nav class="header-glass__nav-mobile" aria-label="Mobile navigation">
-                <a href="../../index.html" class="header-glass__icon-link" aria-label="Home">
-                    <i class="ph ph-house" aria-hidden="true"></i>
-                </a>
-                <a href="germany.html" class="header-glass__icon-link" aria-label="Back to Germany">
-                    <i class="ph ph-arrow-left" aria-hidden="true"></i>
-                </a>
-            </nav>
             <nav class="header-glass__nav" aria-label="Primary">
-                <a href="../../index.html" class="nav-link">Home</a>
-                <a href="berlin.html" class="nav-link" aria-current="page">Berlin</a>
+                <a href="#main-content" class="nav-link" aria-current="page">Berlin</a>
+                <a href="#atlas" class="nav-link">Atlas</a>
+                <a href="#places" class="nav-link">Places</a>
                 <a href="germany.html" class="nav-link">Germany</a>
-                <a href="../../index.html#map" class="nav-link">Atlas</a>
             </nav>
         </div>
     </header>
-    <main>
-        <div class="tg-destination-hero-zone">
-            <div class="tg-destination-hero" aria-hidden="true">
-                <div class="tg-destination-hero__image" style="background-image: url('images/berlin_hero.avif')"></div>
-                <div class="tg-destination-hero__fade"></div>
-            </div>
-            <div class="page-shell tg-destination-hero-zone__content">
-        <nav class="tg-toolbar tg-toolbar--compact" aria-label="Breadcrumb">
-            <div class="tg-breadcrumb">
-                <img src="../../assets/flags/w40/de.png" alt="" class="w-6 h-auto rounded-[2px]" aria-hidden="true">
-                <span>Germany</span>
-                <span class="tg-breadcrumb__sep" aria-hidden="true">&rsaquo;</span>
-                <span class="tg-breadcrumb__current">Eastern Germany</span>
-            </div>
-        </nav>
+    <main id="main-content" tabindex="-1">
+        <section class="destination-hero" aria-labelledby="destination-title">
+            <img class="destination-hero__media" data-destination-hero-image src="images/berlin_hero.avif" alt="" width="1600" height="1067" fetchpriority="high" decoding="sync">
+            <div class="destination-hero__shade" aria-hidden="true"></div>
+            <div class="page-shell destination-hero__content">
+                <button
+                    type="button"
+                    id="destination-active-toggle"
+                    class="country-active-toggle country-active-toggle--active"
+                    data-iso2="DE"
+                    data-slug="berlin"
+                    data-active="true"
+                    data-interactive="true"
+                    aria-label="Toggle Berlin visibility on Germany guide"
+                    aria-pressed="true"
+                >
+                    <img src="../../assets/flags/w80/de.png" alt="" aria-hidden="true">
+                    <span class="country-toggle__copy" aria-hidden="true">
+                        <span class="country-toggle__label">Berlin guide</span>
+                        <strong class="country-toggle__state"></strong>
+                    </span>
+                </button>
 
-        <header class="tg-page-header">
-            <button
-        type="button"
-        id="destination-active-toggle"
-        class="country-active-toggle country-active-toggle--active country-active-toggle--readonly"
-        data-iso2="DE"
-        data-slug="berlin"
-        data-active="true"
-        data-interactive="true"
-        aria-label="Toggle Berlin visibility on Germany guide"
-        aria-pressed="true"
-    >
-        <i class="ph ph-map-pin text-4xl pointer-events-none" aria-hidden="true"></i>
-    </button>
-            <span class="tg-page-header__eyebrow">Destination Guide — Eastern Germany</span>
-            <h1 class="tg-page-title font-display">Explore <em>Berlin</em></h1>
-            <div class="glass-card frosted-panel tg-panel">
-                <h2 class="tg-panel__title font-display">
-                    <i class="ph ph-scroll" aria-hidden="true"></i> A Brief History
-                </h2>
-                <p class="tg-panel__body">Berlin became the capital of Prussia and later the German Empire after unification in 1871. Boulevards, museums, and the Reichstag expanded through industrial growth. The city was divided after 1945, with the Berlin Wall separating East and West from 1961 until 1989. Reunification restored it as the federal capital. Museumsinsel, Brandenburg Gate, and surviving neighborhoods record Prussian, Weimar, Nazi, and Cold War layers.</p>
-            </div>
-        </header>
+                <div class="hero__route" aria-label="Destination route and coordinates">
+                    <span>Germany / Eastern Germany</span>
+                    <span>52.5142&deg; N / 13.3723&deg; E</span>
+                </div>
 
-        <div class="tg-section__header tg-section__header--map-end">
-            <span class="tg-section__eyebrow">Map</span>
-            <h2 class="tg-section__title font-display">Attractions Map</h2>
-        </div>
-            </div>
-        </div>
-
-        <div class="page-shell tg-main tg-main--below-hero">
-        <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Berlin attractions"></div>
-        <section class="tg-section">
-            <div class="tg-section__header">
-                <span class="tg-section__eyebrow">Highlights</span>
-                <h2 class="tg-section__title font-display">Top Sights &amp; Activities</h2>
-            </div>
-            <div class="tg-sights-list">
-            
-            <!-- 1. Kaiser Wilhelm Memorial Church -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_1.avif" alt="Kaiser Wilhelm Memorial Church" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                <h1 id="destination-title" class="destination-hero__title" style="--destination-title-chars: 6">Berlin</h1>
+                <div class="destination-hero__history">
+                    <p>Berlin became the capital of Prussia and later the German Empire after unification in 1871. Boulevards, museums, and the Reichstag expanded through industrial growth. The city was divided after 1945, with the Berlin Wall separating East and West from 1961 until 1989. Reunification restored it as the federal capital. Museumsinsel, Brandenburg Gate, and surviving neighborhoods record Prussian, Weimar, Nazi, and Cold War layers.</p>
+                </div>
+                <dl class="destination-hero__facts" aria-label="Berlin guide facts">
+                    <div>
+                        <dt>Country</dt>
+                        <dd>Germany</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Kaiser Wilhelm Memorial Church</h3>
-                    <p class="tg-sight-card__text">The Kaiser Wilhelm Memorial Church on Breitscheidplatz combines the ruined tower of a neo-Romanesque church destroyed in 1943 with a modern belfry and chapel added in the 1960s. The damaged spire was deliberately left unrepaired as a memorial against war. The new buildings use blue glass and concrete in a striking contrast to the old stonework.</p>
-                </div>
-            </div>
-            <!-- 2. Brandenburg Gate -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_2.avif" alt="Brandenburg Gate" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                    <div>
+                        <dt>Region</dt>
+                        <dd>Eastern Germany</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Brandenburg Gate</h3>
-                    <p class="tg-sight-card__text">The Brandenburg Gate is an 18th-century neoclassical monument designed by Carl Gotthard Langhans at the western end of Unter den Linden. It marked the entrance to the city on the road to Brandenburg an der Havel. After standing in the shadow of the Berlin Wall, it became a focal point for celebrations of German reunification in 1989.</p>
-                </div>
-            </div>
-            <!-- 3. Berliner Fernsehturm -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_3.avif" alt="Berliner Fernsehturm" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €24
+                    <div>
+                        <dt>Places</dt>
+                        <dd>40</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Berliner Fernsehturm</h3>
-                    <p class="tg-sight-card__text">Berliner Fernsehturm is a visitor site in Berlin. The Berlin TV Tower was built in 1969 in Alexanderplatz by the East German government as a visible symbol of socialist modernity. At 368 meters it remains the tallest structure in Germany. An observation deck and revolving restaurant draw visitors for views across both former East and West Berlin districts.</p>
-                </div>
-            </div>
-            <!-- 4. Marx-Engels Forum -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_4.avif" alt="Marx-Engels Forum" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Marx-Engels Forum</h3>
-                    <p class="tg-sight-card__text">The Marx-Engels Forum is a public square near the Spree featuring bronze statues of Karl Marx and Friedrich Engels seated on a bench. Created in the 1980s by the East German state, it reflects the ideological landscape of the former capital. The square was redesigned after reunification but the monuments remain.</p>
-                </div>
-            </div>
-            <!-- 5. Siegessaule -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_5.avif" alt="Siegessaule" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €4
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Siegessaule</h3>
-                    <p class="tg-sight-card__text">Siegessaule is a visitor site in Berlin. The Victory Column, or Siegessäule, stands in the Tiergarten and commemorates Prussian military victories in the 19th century. A gilded Victoria figure crowns the 67-meter shaft. The column was moved to its current location by the Nazis and now sits at the center of a major traffic circle.</p>
-                </div>
-            </div>
-            <!-- 6. Grosser Tiergarten -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_6.avif" alt="Grosser Tiergarten" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Grosser Tiergarten</h3>
-                    <p class="tg-sight-card__text">The Großer Tiergarten is a 210-hectare park in the city center, originally a royal hunting ground laid out in the 16th century. Paths, lawns, and waterways connect monuments including the Victory Column and the Soviet War Memorial. The park provides open green space amid government buildings and embassies.</p>
-                </div>
-            </div>
-            <!-- 7. Richard Wagner Monument -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_7.avif" alt="Richard Wagner Monument" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Richard Wagner Monument</h3>
-                    <p class="tg-sight-card__text">The Richard Wagner Monument in the Tiergarten is a marble statue of the composer erected in 1908. It was removed during the Nazi era and restored to its original site after the war. The monument honors Wagner&#x27;s influence on German opera and his years spent in Berlin during the 19th century.</p>
-                </div>
-            </div>
-            <!-- 8. Soviet War Memorial Tiergarten -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_8.avif" alt="Soviet War Memorial Tiergarten" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Soviet War Memorial Tiergarten</h3>
-                    <p class="tg-sight-card__text">The Soviet War Memorial in the Tiergarten was built in 1945 to honor Red Army soldiers who died in the Battle of Berlin. A curved colonnade frames a central statue of a Soviet soldier, and the grounds contain graves of fallen troops. It was one of the first memorials erected in the defeated city.</p>
-                </div>
-            </div>
-            <!-- 9. Reichstag Building -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_9.avif" alt="Reichstag Building" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Reichstag Building</h3>
-                    <p class="tg-sight-card__text">The Reichstag building houses the German parliament, recognizable by its Renaissance-style facade and the glass dome added by Norman support after reunification. A fire in 1933 and wartime bombing damaged the structure, which was fully restored for the move of the capital from Bonn to Berlin in 1999. Dome visits require advance registration.</p>
-                </div>
-            </div>
-            <!-- 10. Friedrichswerdersche Church -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_10.avif" alt="Friedrichswerdersche Church" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Friedrichswerdersche Church</h3>
-                    <p class="tg-sight-card__text">The Friedrichswerdersche Church was designed by Karl Friedrich Schinkel and completed in 1831 as Berlin&#x27;s first neo-Gothic church. After wartime damage and periods of disuse, it was restored and now is a museum of 19th-century sculpture. The interior&#x27;s slender columns and ribbed vaulting illustrate Schinkel&#x27;s architectural approach.</p>
-                </div>
-            </div>
-            <!-- 11. Berliner Dom -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_11.avif" alt="Berliner Dom" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €15
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Berliner Dom</h3>
-                    <p class="tg-sight-card__text">The Berlin Cathedral, or Berliner Dom, is a Protestant church on Museum Island built as the court church of the Hohenzollern dynasty in the early 20th century. Its large dome and ornate interior were restored after wartime damage. The Hohenzollern crypt below the church holds tombs of princes and emperors.</p>
-                </div>
-            </div>
-            <!-- 12. Checkpoint Charlie -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_12.avif" alt="Checkpoint Charlie" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Checkpoint Charlie</h3>
-                    <p class="tg-sight-card__text">In Berlin, Checkpoint Charlie is a historic landmark that once served as the third checkpoint for immigration control during the Cold War. It separated the Soviet zone from the American sector and was a significant point for political visits and espionage activities. Today, travellers can explore its documentation center to learn about dramatic escapes, the Berlin Tank Crisis, and other historical events.</p>
-                </div>
-            </div>
-            <!-- 13. Memorial to the Murdered Jews of Europe -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_13.avif" alt="Memorial to the Murdered Jews of Europe" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Memorial to the Murdered Jews of Europe</h3>
-                    <p class="tg-sight-card__text">The memorial is located in Berlin, Germany, and is dedicated to the thousands of Jewish victims of the Nazi genocide. The blocks of concrete are arranged in a mazelike fashion and are said to represent the unending cycle of violence inflicted on the Jews. The information office below the memorial holds records, letters, diaries, and photographs from Holocaust victims.</p>
-                </div>
-            </div>
-            <!-- 14. Potsdamer Platz -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_14.avif" alt="Potsdamer Platz" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Potsdamer Platz</h3>
-                    <p class="tg-sight-card__text">Potsdamer Platz is a visitor site in Berlin, Germany. The revitalization began when major corporations like Sony and Daimler established their headquarters here, breathing new life into the area. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 15. Charlottenburg Palace -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_15.avif" alt="Charlottenburg Palace" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €19
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Charlottenburg Palace</h3>
-                    <p class="tg-sight-card__text">Charlottenburg Palace is a fortified historic site in Berlin, Germany. Charlottenburg Palace, a Baroque summer residence in Berlin, is a treasure trove of history and art. Walls, courtyards, or towers form the main visitor route when the grounds are open.</p>
-                </div>
-            </div>
-            <!-- 16. Funkturm Berlin -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_16.avif" alt="Funkturm Berlin" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €8
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Funkturm Berlin</h3>
-                    <p class="tg-sight-card__text">The 150 metre high Funkturm Berlin, built in the 1920s, is now a tourist attraction with an observation deck and art-nouveau restaurant. The tower is based on the Eiffel Tower and was inaugurated during the great German Radio Exhibition in 1926. Albert Einstein gave a speech from the tower&#x27;s base in 1924.</p>
-                </div>
-            </div>
-            <!-- 17. World Time Clock -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_17.avif" alt="World Time Clock" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">World Time Clock</h3>
-                    <p class="tg-sight-card__text">The World Time Clock (Weltzeituhr) is a prominent landmark located in Alexanderplatz, Berlin. Erected in 1969 during the East German era, the large, rotating cylinder displays the current time in major cities across the globe. It remains a popular meeting point and a symbol of the city&#x27;s international connections and Cold War history.</p>
-                </div>
-            </div>
-            <!-- 18. Alexanderplatz -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_18.avif" alt="Alexanderplatz" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Alexanderplatz</h3>
-                    <p class="tg-sight-card__text">Alexanderplatz is a historic meeting and market place in Berlin that has been rebuilt with modern buildings, including the 365-meter TV tower. The area is busy with over 100 stalls selling a variety of items, from handbags to handicrafts, as well as an array of Christmassy snacks. Travellers can also enjoy fairground rides and glide across a huge ice rink. The location is within walking distance to Mitte and offers easy access to the airport.</p>
-                </div>
-            </div>
-            <!-- 19. Nikolaiviertel -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_19.avif" alt="Nikolaiviertel" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Nikolaiviertel</h3>
-                    <p class="tg-sight-card__text">Nikolaiviertel, also known as the Nicholas Quarter, is a visitor site in Berlin, Germany. The grounds and principal structures are the main points of interest. Nikolaiviertel remains part of the public visitor circuit in Berlin. Local maps identify Nikolaiviertel within Berlin, Germany.</p>
-                </div>
-            </div>
-            <!-- 20. Bellevue Palace -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_20.avif" alt="Bellevue Palace" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Bellevue Palace</h3>
-                    <p class="tg-sight-card__text">Bellevue Palace, a neoclassical white mansion with three wings, has been the official residence of the President of Germany since 1994. Situated on the banks of River Spree in Berlin, it was originally built for Prince August Ferdinand of Prussia in 1785. Over time, it served various purposes including as a private residence and an art gallery before becoming the presidential residence.</p>
-                </div>
-            </div>
-            <!-- 21. Tiergarten -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_21.avif" alt="Tiergarten" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Tiergarten</h3>
-                    <p class="tg-sight-card__text">Tiergarten is a visitor site in Berlin, Germany. The main structures and grounds are the principal points of interest. Local maps mark Tiergarten inside Berlin. Approaches are signed from nearby streets in Berlin, Germany. Posted signs mark the main approach within Berlin.</p>
-                </div>
-            </div>
-            <!-- 22. Berlin Hauptbahnhof -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_22.avif" alt="Berlin Hauptbahnhof" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Berlin Hauptbahnhof</h3>
-                    <p class="tg-sight-card__text">Berlin Hauptbahnhof is a visitor site in Berlin, Germany. Berlin Central Train Station, located on a historic railway site, offers a range of services including long-distance, regional, and U-Bahn connections. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 23. Französischer Dom -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_23.avif" alt="Französischer Dom" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free (viewing platform €8)
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Französischer Dom</h3>
-                    <p class="tg-sight-card__text">The Französischer Dom, In Berlin at Gendarmenmarkt, is a stately 17th-century French church known for its domed tower offering panoramic views of the city. Despite its name, which translates to &#x27;French Cathedral,&#x27; it&#x27;s actually just the tower that bears this title. Climbing 284 steps to the top rewards travellers with a 360-degree view of Berlin from an observation deck situated 40 meters above street level.</p>
-                </div>
-            </div>
-            <!-- 24. Friedrichstadt-Palast -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_24.avif" alt="Friedrichstadt-Palast" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €20
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Friedrichstadt-Palast</h3>
-                    <p class="tg-sight-card__text">Friedrichstadt-Palast is a historic theater in Berlin with a rich heritage dating back to the 19th century. It has evolved from a circus and vaudeville theatre into one of Europe&#x27;s most modern and spacious theatrical venues. The theater offers a diverse range of performances, including revue shows, children&#x27;s shows, ballets, opera, and dance presentations, it hosts the popular Quatsch Comedy Club in its basement area.</p>
-                </div>
-            </div>
-            <!-- 25. Tränenpalast -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_25.avif" alt="Tränenpalast" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Tränenpalast</h3>
-                    <p class="tg-sight-card__text">Located Friedrichstrasse, the Tränenpalast, or Palace of Tears, is a reminder of Berlin&#x27;s divided past. Once an active border crossing point between East and West Berlin, this unassuming 1960s building now is a museum that captures the essence of daily life during the Cold War. Travellers can explore heartfelt stories from those who traversed this route between 1962 and 1990, revealing the emotional farewells that took place here.</p>
-                </div>
-            </div>
-            <!-- 26. Lustgarten -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_26.avif" alt="Lustgarten" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Lustgarten</h3>
-                    <p class="tg-sight-card__text">Lustgarten is a visitor site in Berlin, Germany. The main structures and grounds are the principal points of interest. Local maps mark Lustgarten inside Berlin. Approaches are signed from nearby streets in Berlin, Germany. Posted signs mark the main approach within Berlin.</p>
-                </div>
-            </div>
-            <!-- 27. German Historical Museum -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_27.avif" alt="German Historical Museum" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €7
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">German Historical Museum</h3>
-                    <p class="tg-sight-card__text">German Historical Museum is a museum in Berlin, Germany. The German Historical Museum, also known as the Deutsches Historisches Museum (DHM), was established in 1987 to commemorate Berlin&#x27;s 750th anniversary. It offers a full journey through Germany&#x27;s rich history, featuring artifacts from various periods and events up to the fall of the Berlin Wall. Permanent galleries and temporary displays are open on posted hours.</p>
-                </div>
-            </div>
-            <!-- 28. Grunewald Tower -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_28.avif" alt="Grunewald Tower" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €5
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Grunewald Tower</h3>
-                    <p class="tg-sight-card__text">Grunewald Tower, a 19th-century brick tower standing over 180 feet tall, offers an observation deck with views of the surrounding forest. Travellers can began on a bike trip through Grunewald Forest, passing by the Devil&#x27;s Lake and encountering the historical landmark of Grunewald Tower. The tower is situated in Berlin&#x27;s Grunewald Forest and is a lookout point and recreational destination.</p>
-                </div>
-            </div>
-            <!-- 29. Flakturm Humboldthain -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_29.avif" alt="Flakturm Humboldthain" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €17
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Flakturm Humboldthain</h3>
-                    <p class="tg-sight-card__text">Flakturm Humboldthain is a visitor site in Berlin. The Flak Tower was built in 1938 to protect the city of Berlin from air attacks. It is now a popular tourist spot with tours available that allow travellers to explore the three floors of the bunker and stare deep down into the building&#x27;s underground landscape.</p>
-                </div>
-            </div>
-            <!-- 30. Olympiastadion Berlin -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_30.avif" alt="Olympiastadion Berlin" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €11
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Olympiastadion Berlin</h3>
-                    <p class="tg-sight-card__text">Olympiastadion Berlin, originally constructed for the 1936 Olympics during Adolf Hitler&#x27;s reign, is Germany&#x27;s largest stadium with a capacity of 74,649 seats. The venue retains its original architectural style, featuring imposing columns made from stones brought from the Alps. After much debate about its preservation, the stadium underwent renovations in 2004 and now hosts major sporting events and concerts.</p>
-                </div>
-            </div>
-            <!-- 31. Teufelsberg -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_31.avif" alt="Teufelsberg" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €12
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Teufelsberg</h3>
-                    <p class="tg-sight-card__text">Teufelsberg, located in the western part of Berlin, is a man-made hill that was once home to a former U.S. Listening station during the Cold War. The site is now covered in eye-catching street art and offers panoramic views of the city. Travellers can explore the remnants of large satellite dishes and domed towers while immersing themselves in Cold War history. The area&#x27;s official archives are set to open in 2020, shedding light on its mysterious past.</p>
-                </div>
-            </div>
-            <!-- 32. Kurfürstendamm -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_32.avif" alt="Kurfürstendamm" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Kurfürstendamm</h3>
-                    <p class="tg-sight-card__text">Kurfürstendamm, also known as Ku&#x27;damm, is a visitor site in Berlin, Germany. Kurfürstendamm, also known as Ku&#x27;damm, is a legendary boulevard in Berlin that is a must-visit for fashion enthusiasts and shoppers. It is lined with high-end shops, department stores, upscale boutiques, and large shopping centers. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 33. Bikini Berlin -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_33.avif" alt="Bikini Berlin" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Bikini Berlin</h3>
-                    <p class="tg-sight-card__text">Bikini Berlin is a visitor site in Berlin, Germany. Bikini Berlin, located in Charlottenburg, is a unique retail and dining complex housed in an 1950s building. It offers open spaces and a rooftop terrace with views of the Berlin Zoo. The location also hosts various events and exhibitions. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 34. Berlin Zoological Garden -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_34.avif" alt="Berlin Zoological Garden" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €16
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Berlin Zoological Garden</h3>
-                    <p class="tg-sight-card__text">Berlin Zoological Garden is a public park in Berlin, Germany. Berlin Zoological Garden, located in the city&#x27;s Tiergarten, spans over 85 acres and houses more than 15,000 animals from around 2,000 species. The zoo is home to a diverse range of creatures including lions, giant pandas, Bactrian camels, giraffes, kangaroos, penguins and even a polar bear named Knut. Paths, lawns, and shaded areas make up the main public facilities.</p>
-                </div>
-            </div>
-            <!-- 35. Ludwig Erhard Haus -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_35.avif" alt="Ludwig Erhard Haus" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Ludwig Erhard Haus</h3>
-                    <p class="tg-sight-card__text">Ludwig Erhard Haus, also known as the Armadillo, is a visitor site in Berlin, Germany. Ludwig Erhard Haus, also known as the Armadillo, is a futuristic Postmodernist conference and office building designed by architect Sir Nicholas Grimshaw. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 36. Soviet War Memorial Treptow -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_36.avif" alt="Soviet War Memorial Treptow" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Soviet War Memorial Treptow</h3>
-                    <p class="tg-sight-card__text">The Soviet War Memorial Treptow is a monumental tribute to the countless Soviet soldiers who lost their lives during World War II, particularly in the fierce Battle of Berlin. While it may not be In the city like other memorials, it draws many travellers, especially on Victory in Europe Day when people gather to honor these brave souls.</p>
-                </div>
-            </div>
-            <!-- 37. Molecule Man -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_37.avif" alt="Molecule Man" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Molecule Man</h3>
-                    <p class="tg-sight-card__text">Molecule Man is a visitor site in Berlin, Germany. Molecule Man is a significant sculpture by Jonathan Borofsky located at the former meeting point of East and West Berlin. This artwork represents human molecules coming together to form one existence. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 38. East Side Gallery -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_38.avif" alt="East Side Gallery" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">East Side Gallery</h3>
-                    <p class="tg-sight-card__text">East Side Gallery is a museum in Berlin, Germany. The East Side Gallery is a preserved graffiti project covering a 1,316m-long remnant of the Berlin Wall in Friedrichshain-Kreuzberg. The site is catalogued as a cultural landmark. Galleries and public rooms are open on posted hours in Berlin.</p>
-                </div>
-            </div>
-            <!-- 39. Gardens of the World -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_39.avif" alt="Gardens of the World" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €4
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Gardens of the World</h3>
-                    <p class="tg-sight-card__text">Gardens of the World is a public park in Berlin, Germany. Paths, lawns, and shaded areas make up the main public facilities. Gardens of the World remains part of the public visitor circuit in Berlin. Local maps identify Gardens of the World within Berlin, Germany.</p>
-                </div>
-            </div>
-            <!-- 40. Kulturbrauerei -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/berlin_40.avif" alt="Kulturbrauerei" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Kulturbrauerei</h3>
-                    <p class="tg-sight-card__text">Kulturbrauerei is a visitor site in Berlin, Germany. Kulturbrauerei is a fascinating cultural hub that beautifully marries history with modern entertainment. The enchanting Nordic-themed Lucia Christmas Market adds to its charm, featuring cozy wooden chalets and unique stalls, like one selling absinth, for those seeking a twist on traditional festivities. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
+                </dl>
             </div>
         </section>
-        </div>
+
+        <section id="atlas" class="destination-atlas" aria-labelledby="atlas-title">
+            <div class="page-shell destination-atlas__layout">
+                <div class="destination-atlas__brief">
+                    <p class="destination-atlas__index">City atlas</p>
+                    <h2 id="atlas-title">Plot the city.</h2>
+                    <p class="destination-atlas__copy">Zoom, pan, and open any marker to focus that place in the catalog below.</p>
+                    <dl class="destination-atlas__facts" aria-label="Map coverage">
+                        <div>
+                            <dt>Plotted</dt>
+                            <dd>40 places</dd>
+                        </div>
+                        <div>
+                            <dt>Center</dt>
+                            <dd>52.5142&deg; N<br>13.3723&deg; E</dd>
+                        </div>
+                    </dl>
+                </div>
+                <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Berlin attractions"></div>
+            </div>
+        </section>
+
+        <section id="places" class="destination-places" aria-labelledby="places-title">
+            <div class="page-shell">
+                <div class="destination-chapter">
+                    <h2 id="places-title" class="destination-chapter__heading">40 ways into<br>Berlin.</h2>
+                    <p class="destination-chapter__copy">Browse the index, open a location, and read the essentials without scrolling through a long catalog. Each entry contains its image, admission note, and contextual guide.</p>
+                </div>
+                <div class="places-explorer" data-places-explorer>
+                    <aside class="places-explorer__rail" aria-label="Place index">
+                        <div class="places-explorer__toolbar">
+                            <label class="places-explorer__filter-label" for="places-filter">Filter places</label>
+                            <input
+                                id="places-filter"
+                                class="places-explorer__filter"
+                                type="search"
+                                data-places-filter
+                                placeholder="Search by name"
+                                autocomplete="off"
+                            >
+                            <p class="places-explorer__meta"><strong data-places-count>40</strong> of 40 shown</p>
+                        </div>
+                        <ul class="places-explorer__list" role="listbox" aria-label="Places in Berlin" data-places-list data-lenis-prevent data-tg-scroll-surface>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option is-active"
+                            role="option"
+                            id="place-option-1"
+                            data-place-option
+                            data-place-index="0"
+                            data-place-name="Kaiser Wilhelm Memorial Church"
+                            data-place-lat="52.504818"
+                            data-place-lng="13.335082"
+                            aria-selected="true"
+                            tabindex="0"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">01</span>
+                            <span class="places-explorer__option-name">Kaiser Wilhelm Memorial Church</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-2"
+                            data-place-option
+                            data-place-index="1"
+                            data-place-name="Brandenburg Gate"
+                            data-place-lat="52.516275"
+                            data-place-lng="13.377704"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">02</span>
+                            <span class="places-explorer__option-name">Brandenburg Gate</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-3"
+                            data-place-option
+                            data-place-index="2"
+                            data-place-name="Berliner Fernsehturm"
+                            data-place-lat="52.52082"
+                            data-place-lng="13.409421"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">03</span>
+                            <span class="places-explorer__option-name">Berliner Fernsehturm</span>
+                            <span class="places-explorer__option-price">€24</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-4"
+                            data-place-option
+                            data-place-index="3"
+                            data-place-name="Marx-Engels Forum"
+                            data-place-lat="52.518501"
+                            data-place-lng="13.404767"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">04</span>
+                            <span class="places-explorer__option-name">Marx-Engels Forum</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-5"
+                            data-place-option
+                            data-place-index="4"
+                            data-place-name="Siegessaule"
+                            data-place-lat="52.514511"
+                            data-place-lng="13.35011"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">05</span>
+                            <span class="places-explorer__option-name">Siegessaule</span>
+                            <span class="places-explorer__option-price">€4</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-6"
+                            data-place-option
+                            data-place-index="5"
+                            data-place-name="Grosser Tiergarten"
+                            data-place-lat="52.514458"
+                            data-place-lng="13.354375"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">06</span>
+                            <span class="places-explorer__option-name">Grosser Tiergarten</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-7"
+                            data-place-option
+                            data-place-index="6"
+                            data-place-name="Richard Wagner Monument"
+                            data-place-lat="52.510066"
+                            data-place-lng="13.361869"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">07</span>
+                            <span class="places-explorer__option-name">Richard Wagner Monument</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-8"
+                            data-place-option
+                            data-place-index="7"
+                            data-place-name="Soviet War Memorial Tiergarten"
+                            data-place-lat="52.516626"
+                            data-place-lng="13.371929"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">08</span>
+                            <span class="places-explorer__option-name">Soviet War Memorial Tiergarten</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-9"
+                            data-place-option
+                            data-place-index="8"
+                            data-place-name="Reichstag Building"
+                            data-place-lat="52.51862"
+                            data-place-lng="13.376187"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">09</span>
+                            <span class="places-explorer__option-name">Reichstag Building</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-10"
+                            data-place-option
+                            data-place-index="9"
+                            data-place-name="Friedrichswerdersche Church"
+                            data-place-lat="52.5159"
+                            data-place-lng="13.3975"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">10</span>
+                            <span class="places-explorer__option-name">Friedrichswerdersche Church</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-11"
+                            data-place-option
+                            data-place-index="10"
+                            data-place-name="Berliner Dom"
+                            data-place-lat="52.519086"
+                            data-place-lng="13.401028"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">11</span>
+                            <span class="places-explorer__option-name">Berliner Dom</span>
+                            <span class="places-explorer__option-price">€15</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-12"
+                            data-place-option
+                            data-place-index="11"
+                            data-place-name="Checkpoint Charlie"
+                            data-place-lat="52.507443"
+                            data-place-lng="13.390391"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">12</span>
+                            <span class="places-explorer__option-name">Checkpoint Charlie</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-13"
+                            data-place-option
+                            data-place-index="12"
+                            data-place-name="Memorial to the Murdered Jews of Europe"
+                            data-place-lat="52.513947"
+                            data-place-lng="13.378713"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">13</span>
+                            <span class="places-explorer__option-name">Memorial to the Murdered Jews of Europe</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-14"
+                            data-place-option
+                            data-place-index="13"
+                            data-place-name="Potsdamer Platz"
+                            data-place-lat="52.509231"
+                            data-place-lng="13.376105"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">14</span>
+                            <span class="places-explorer__option-name">Potsdamer Platz</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-15"
+                            data-place-option
+                            data-place-index="14"
+                            data-place-name="Charlottenburg Palace"
+                            data-place-lat="52.520932"
+                            data-place-lng="13.295617"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">15</span>
+                            <span class="places-explorer__option-name">Charlottenburg Palace</span>
+                            <span class="places-explorer__option-price">€19</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-16"
+                            data-place-option
+                            data-place-index="15"
+                            data-place-name="Funkturm Berlin"
+                            data-place-lat="52.505033"
+                            data-place-lng="13.278137"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">16</span>
+                            <span class="places-explorer__option-name">Funkturm Berlin</span>
+                            <span class="places-explorer__option-price">€8</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-17"
+                            data-place-option
+                            data-place-index="16"
+                            data-place-name="World Time Clock"
+                            data-place-lat="52.5211743"
+                            data-place-lng="13.413297"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">17</span>
+                            <span class="places-explorer__option-name">World Time Clock</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-18"
+                            data-place-option
+                            data-place-index="17"
+                            data-place-name="Alexanderplatz"
+                            data-place-lat="52.521981"
+                            data-place-lng="13.413306"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">18</span>
+                            <span class="places-explorer__option-name">Alexanderplatz</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-19"
+                            data-place-option
+                            data-place-index="18"
+                            data-place-name="Nikolaiviertel"
+                            data-place-lat="52.517403"
+                            data-place-lng="13.40703"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">19</span>
+                            <span class="places-explorer__option-name">Nikolaiviertel</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-20"
+                            data-place-option
+                            data-place-index="19"
+                            data-place-name="Bellevue Palace"
+                            data-place-lat="52.517573"
+                            data-place-lng="13.352793"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">20</span>
+                            <span class="places-explorer__option-name">Bellevue Palace</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-21"
+                            data-place-option
+                            data-place-index="20"
+                            data-place-name="Tiergarten"
+                            data-place-lat="52.5141516"
+                            data-place-lng="13.3591634"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">21</span>
+                            <span class="places-explorer__option-name">Tiergarten</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-22"
+                            data-place-option
+                            data-place-index="21"
+                            data-place-name="Berlin Hauptbahnhof"
+                            data-place-lat="52.525084"
+                            data-place-lng="13.369402"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">22</span>
+                            <span class="places-explorer__option-name">Berlin Hauptbahnhof</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-23"
+                            data-place-option
+                            data-place-index="22"
+                            data-place-name="Französischer Dom"
+                            data-place-lat="52.514393"
+                            data-place-lng="13.392414"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">23</span>
+                            <span class="places-explorer__option-name">Französischer Dom</span>
+                            <span class="places-explorer__option-price">Free (viewing platform €8)</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-24"
+                            data-place-option
+                            data-place-index="23"
+                            data-place-name="Friedrichstadt-Palast"
+                            data-place-lat="52.52393"
+                            data-place-lng="13.388821"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">24</span>
+                            <span class="places-explorer__option-name">Friedrichstadt-Palast</span>
+                            <span class="places-explorer__option-price">€20</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-25"
+                            data-place-option
+                            data-place-index="24"
+                            data-place-name="Tränenpalast"
+                            data-place-lat="52.520957"
+                            data-place-lng="13.387212"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">25</span>
+                            <span class="places-explorer__option-name">Tränenpalast</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-26"
+                            data-place-option
+                            data-place-index="25"
+                            data-place-name="Lustgarten"
+                            data-place-lat="52.5187"
+                            data-place-lng="13.3992"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">26</span>
+                            <span class="places-explorer__option-name">Lustgarten</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-27"
+                            data-place-option
+                            data-place-index="26"
+                            data-place-name="German Historical Museum"
+                            data-place-lat="52.518614"
+                            data-place-lng="13.39636"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">27</span>
+                            <span class="places-explorer__option-name">German Historical Museum</span>
+                            <span class="places-explorer__option-price">€7</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-28"
+                            data-place-option
+                            data-place-index="27"
+                            data-place-name="Grunewald Tower"
+                            data-place-lat="52.478233"
+                            data-place-lng="13.196795"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">28</span>
+                            <span class="places-explorer__option-name">Grunewald Tower</span>
+                            <span class="places-explorer__option-price">€5</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-29"
+                            data-place-option
+                            data-place-index="28"
+                            data-place-name="Flakturm Humboldthain"
+                            data-place-lat="52.547494"
+                            data-place-lng="13.385083"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">29</span>
+                            <span class="places-explorer__option-name">Flakturm Humboldthain</span>
+                            <span class="places-explorer__option-price">€17</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-30"
+                            data-place-option
+                            data-place-index="29"
+                            data-place-name="Olympiastadion Berlin"
+                            data-place-lat="52.514678"
+                            data-place-lng="13.239517"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">30</span>
+                            <span class="places-explorer__option-name">Olympiastadion Berlin</span>
+                            <span class="places-explorer__option-price">€11</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-31"
+                            data-place-option
+                            data-place-index="30"
+                            data-place-name="Teufelsberg"
+                            data-place-lat="52.497222"
+                            data-place-lng="13.241111"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">31</span>
+                            <span class="places-explorer__option-name">Teufelsberg</span>
+                            <span class="places-explorer__option-price">€12</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-32"
+                            data-place-option
+                            data-place-index="31"
+                            data-place-name="Kurfürstendamm"
+                            data-place-lat="52.504394"
+                            data-place-lng="13.335348"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">32</span>
+                            <span class="places-explorer__option-name">Kurfürstendamm</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-33"
+                            data-place-option
+                            data-place-index="32"
+                            data-place-name="Bikini Berlin"
+                            data-place-lat="52.505624"
+                            data-place-lng="13.335423"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">33</span>
+                            <span class="places-explorer__option-name">Bikini Berlin</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-34"
+                            data-place-option
+                            data-place-index="33"
+                            data-place-name="Berlin Zoological Garden"
+                            data-place-lat="52.50783"
+                            data-place-lng="13.339416"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">34</span>
+                            <span class="places-explorer__option-name">Berlin Zoological Garden</span>
+                            <span class="places-explorer__option-price">€16</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-35"
+                            data-place-option
+                            data-place-index="34"
+                            data-place-name="Ludwig Erhard Haus"
+                            data-place-lat="52.506462"
+                            data-place-lng="13.328224"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">35</span>
+                            <span class="places-explorer__option-name">Ludwig Erhard Haus</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-36"
+                            data-place-option
+                            data-place-index="35"
+                            data-place-name="Soviet War Memorial Treptow"
+                            data-place-lat="52.486139"
+                            data-place-lng="13.471958"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">36</span>
+                            <span class="places-explorer__option-name">Soviet War Memorial Treptow</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-37"
+                            data-place-option
+                            data-place-index="36"
+                            data-place-name="Molecule Man"
+                            data-place-lat="52.496969"
+                            data-place-lng="13.459071"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">37</span>
+                            <span class="places-explorer__option-name">Molecule Man</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-38"
+                            data-place-option
+                            data-place-index="37"
+                            data-place-name="East Side Gallery"
+                            data-place-lat="52.505022"
+                            data-place-lng="13.439695"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">38</span>
+                            <span class="places-explorer__option-name">East Side Gallery</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-39"
+                            data-place-option
+                            data-place-index="38"
+                            data-place-name="Gardens of the World"
+                            data-place-lat="52.537961"
+                            data-place-lng="13.569278"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">39</span>
+                            <span class="places-explorer__option-name">Gardens of the World</span>
+                            <span class="places-explorer__option-price">€4</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-40"
+                            data-place-option
+                            data-place-index="39"
+                            data-place-name="Kulturbrauerei"
+                            data-place-lat="52.538203"
+                            data-place-lng="13.412713"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">40</span>
+                            <span class="places-explorer__option-name">Kulturbrauerei</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                        </ul>
+                        <p class="places-explorer__empty" data-places-empty hidden>No places match that filter.</p>
+                    </aside>
+                    <div class="places-explorer__stage" data-places-stage>
+                    <nav class="places-stage__stepper" data-places-stepper aria-label="Browse places" hidden>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--prev" data-places-prev aria-label="Previous place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M14.75 5.25 L8.25 12 l6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M9.1 12 H17.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--next" data-places-next aria-label="Next place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M9.25 5.25 L15.75 12 l-6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M6.6 12 H14.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                    </nav>
+                <article
+                    class="places-stage__panel is-active"
+                    data-place-panel
+                    data-place-index="0"
+                    aria-labelledby="place-title-1"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_1.avif" alt="Kaiser Wilhelm Memorial Church" width="1200" height="750" loading="eager" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">01</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-1" class="places-stage__title">Kaiser Wilhelm Memorial Church</h3>
+                        <p class="places-stage__text">The Kaiser Wilhelm Memorial Church on Breitscheidplatz combines the ruined tower of a neo-Romanesque church destroyed in 1943 with a modern belfry and chapel added in the 1960s. The damaged spire was deliberately left unrepaired as a memorial against war. The new buildings use blue glass and concrete in a striking contrast to the old stonework.</p>
+                        <p class="places-stage__coords">52.5048&deg; N / 13.3351&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="1"
+                    aria-labelledby="place-title-2"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_2.avif" alt="Brandenburg Gate" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">02</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-2" class="places-stage__title">Brandenburg Gate</h3>
+                        <p class="places-stage__text">The Brandenburg Gate is an 18th-century neoclassical monument designed by Carl Gotthard Langhans at the western end of Unter den Linden. It marked the entrance to the city on the road to Brandenburg an der Havel. After standing in the shadow of the Berlin Wall, it became a focal point for celebrations of German reunification in 1989.</p>
+                        <p class="places-stage__coords">52.5163&deg; N / 13.3777&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="2"
+                    aria-labelledby="place-title-3"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_3.avif" alt="Berliner Fernsehturm" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">03</span>
+                            <span class="places-stage__admission"><span>Admission</span>€24</span>
+                        </p>
+                        <h3 id="place-title-3" class="places-stage__title">Berliner Fernsehturm</h3>
+                        <p class="places-stage__text">Berliner Fernsehturm is a visitor site in Berlin. The Berlin TV Tower was built in 1969 in Alexanderplatz by the East German government as a visible symbol of socialist modernity. At 368 meters it remains the tallest structure in Germany. An observation deck and revolving restaurant draw visitors for views across both former East and West Berlin districts.</p>
+                        <p class="places-stage__coords">52.5208&deg; N / 13.4094&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="3"
+                    aria-labelledby="place-title-4"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_4.avif" alt="Marx-Engels Forum" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">04</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-4" class="places-stage__title">Marx-Engels Forum</h3>
+                        <p class="places-stage__text">The Marx-Engels Forum is a public square near the Spree featuring bronze statues of Karl Marx and Friedrich Engels seated on a bench. Created in the 1980s by the East German state, it reflects the ideological landscape of the former capital. The square was redesigned after reunification but the monuments remain.</p>
+                        <p class="places-stage__coords">52.5185&deg; N / 13.4048&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="4"
+                    aria-labelledby="place-title-5"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_5.avif" alt="Siegessaule" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">05</span>
+                            <span class="places-stage__admission"><span>Admission</span>€4</span>
+                        </p>
+                        <h3 id="place-title-5" class="places-stage__title">Siegessaule</h3>
+                        <p class="places-stage__text">Siegessaule is a visitor site in Berlin. The Victory Column, or Siegessäule, stands in the Tiergarten and commemorates Prussian military victories in the 19th century. A gilded Victoria figure crowns the 67-meter shaft. The column was moved to its current location by the Nazis and now sits at the center of a major traffic circle.</p>
+                        <p class="places-stage__coords">52.5145&deg; N / 13.3501&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="5"
+                    aria-labelledby="place-title-6"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_6.avif" alt="Grosser Tiergarten" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">06</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-6" class="places-stage__title">Grosser Tiergarten</h3>
+                        <p class="places-stage__text">The Großer Tiergarten is a 210-hectare park in the city center, originally a royal hunting ground laid out in the 16th century. Paths, lawns, and waterways connect monuments including the Victory Column and the Soviet War Memorial. The park provides open green space amid government buildings and embassies.</p>
+                        <p class="places-stage__coords">52.5145&deg; N / 13.3544&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="6"
+                    aria-labelledby="place-title-7"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_7.avif" alt="Richard Wagner Monument" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">07</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-7" class="places-stage__title">Richard Wagner Monument</h3>
+                        <p class="places-stage__text">The Richard Wagner Monument in the Tiergarten is a marble statue of the composer erected in 1908. It was removed during the Nazi era and restored to its original site after the war. The monument honors Wagner&#x27;s influence on German opera and his years spent in Berlin during the 19th century.</p>
+                        <p class="places-stage__coords">52.5101&deg; N / 13.3619&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="7"
+                    aria-labelledby="place-title-8"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_8.avif" alt="Soviet War Memorial Tiergarten" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">08</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-8" class="places-stage__title">Soviet War Memorial Tiergarten</h3>
+                        <p class="places-stage__text">The Soviet War Memorial in the Tiergarten was built in 1945 to honor Red Army soldiers who died in the Battle of Berlin. A curved colonnade frames a central statue of a Soviet soldier, and the grounds contain graves of fallen troops. It was one of the first memorials erected in the defeated city.</p>
+                        <p class="places-stage__coords">52.5166&deg; N / 13.3719&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="8"
+                    aria-labelledby="place-title-9"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_9.avif" alt="Reichstag Building" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">09</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-9" class="places-stage__title">Reichstag Building</h3>
+                        <p class="places-stage__text">The Reichstag building houses the German parliament, recognizable by its Renaissance-style facade and the glass dome added by Norman support after reunification. A fire in 1933 and wartime bombing damaged the structure, which was fully restored for the move of the capital from Bonn to Berlin in 1999. Dome visits require advance registration.</p>
+                        <p class="places-stage__coords">52.5186&deg; N / 13.3762&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="9"
+                    aria-labelledby="place-title-10"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_10.avif" alt="Friedrichswerdersche Church" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">10</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-10" class="places-stage__title">Friedrichswerdersche Church</h3>
+                        <p class="places-stage__text">The Friedrichswerdersche Church was designed by Karl Friedrich Schinkel and completed in 1831 as Berlin&#x27;s first neo-Gothic church. After wartime damage and periods of disuse, it was restored and now is a museum of 19th-century sculpture. The interior&#x27;s slender columns and ribbed vaulting illustrate Schinkel&#x27;s architectural approach.</p>
+                        <p class="places-stage__coords">52.5159&deg; N / 13.3975&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="10"
+                    aria-labelledby="place-title-11"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_11.avif" alt="Berliner Dom" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">11</span>
+                            <span class="places-stage__admission"><span>Admission</span>€15</span>
+                        </p>
+                        <h3 id="place-title-11" class="places-stage__title">Berliner Dom</h3>
+                        <p class="places-stage__text">The Berlin Cathedral, or Berliner Dom, is a Protestant church on Museum Island built as the court church of the Hohenzollern dynasty in the early 20th century. Its large dome and ornate interior were restored after wartime damage. The Hohenzollern crypt below the church holds tombs of princes and emperors.</p>
+                        <p class="places-stage__coords">52.5191&deg; N / 13.4010&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="11"
+                    aria-labelledby="place-title-12"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_12.avif" alt="Checkpoint Charlie" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">12</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-12" class="places-stage__title">Checkpoint Charlie</h3>
+                        <p class="places-stage__text">In Berlin, Checkpoint Charlie is a historic landmark that once served as the third checkpoint for immigration control during the Cold War. It separated the Soviet zone from the American sector and was a significant point for political visits and espionage activities. Today, travellers can explore its documentation center to learn about dramatic escapes, the Berlin Tank Crisis, and other historical events.</p>
+                        <p class="places-stage__coords">52.5074&deg; N / 13.3904&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="12"
+                    aria-labelledby="place-title-13"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_13.avif" alt="Memorial to the Murdered Jews of Europe" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">13</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-13" class="places-stage__title">Memorial to the Murdered Jews of Europe</h3>
+                        <p class="places-stage__text">The memorial is located in Berlin, Germany, and is dedicated to the thousands of Jewish victims of the Nazi genocide. The blocks of concrete are arranged in a mazelike fashion and are said to represent the unending cycle of violence inflicted on the Jews. The information office below the memorial holds records, letters, diaries, and photographs from Holocaust victims.</p>
+                        <p class="places-stage__coords">52.5139&deg; N / 13.3787&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="13"
+                    aria-labelledby="place-title-14"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_14.avif" alt="Potsdamer Platz" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">14</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-14" class="places-stage__title">Potsdamer Platz</h3>
+                        <p class="places-stage__text">Potsdamer Platz is a visitor site in Berlin, Germany. The revitalization began when major corporations like Sony and Daimler established their headquarters here, breathing new life into the area. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">52.5092&deg; N / 13.3761&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="14"
+                    aria-labelledby="place-title-15"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_15.avif" alt="Charlottenburg Palace" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">15</span>
+                            <span class="places-stage__admission"><span>Admission</span>€19</span>
+                        </p>
+                        <h3 id="place-title-15" class="places-stage__title">Charlottenburg Palace</h3>
+                        <p class="places-stage__text">Charlottenburg Palace is a fortified historic site in Berlin, Germany. Charlottenburg Palace, a Baroque summer residence in Berlin, is a treasure trove of history and art. Walls, courtyards, or towers form the main visitor route when the grounds are open.</p>
+                        <p class="places-stage__coords">52.5209&deg; N / 13.2956&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="15"
+                    aria-labelledby="place-title-16"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_16.avif" alt="Funkturm Berlin" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">16</span>
+                            <span class="places-stage__admission"><span>Admission</span>€8</span>
+                        </p>
+                        <h3 id="place-title-16" class="places-stage__title">Funkturm Berlin</h3>
+                        <p class="places-stage__text">The 150 metre high Funkturm Berlin, built in the 1920s, is now a tourist attraction with an observation deck and art-nouveau restaurant. The tower is based on the Eiffel Tower and was inaugurated during the great German Radio Exhibition in 1926. Albert Einstein gave a speech from the tower&#x27;s base in 1924.</p>
+                        <p class="places-stage__coords">52.5050&deg; N / 13.2781&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="16"
+                    aria-labelledby="place-title-17"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_17.avif" alt="World Time Clock" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">17</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-17" class="places-stage__title">World Time Clock</h3>
+                        <p class="places-stage__text">The World Time Clock (Weltzeituhr) is a prominent landmark located in Alexanderplatz, Berlin. Erected in 1969 during the East German era, the large, rotating cylinder displays the current time in major cities across the globe. It remains a popular meeting point and a symbol of the city&#x27;s international connections and Cold War history.</p>
+                        <p class="places-stage__coords">52.5212&deg; N / 13.4133&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="17"
+                    aria-labelledby="place-title-18"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_18.avif" alt="Alexanderplatz" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">18</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-18" class="places-stage__title">Alexanderplatz</h3>
+                        <p class="places-stage__text">Alexanderplatz is a historic meeting and market place in Berlin that has been rebuilt with modern buildings, including the 365-meter TV tower. The area is busy with over 100 stalls selling a variety of items, from handbags to handicrafts, as well as an array of Christmassy snacks. Travellers can also enjoy fairground rides and glide across a huge ice rink. The location is within walking distance to Mitte and offers easy access to the airport.</p>
+                        <p class="places-stage__coords">52.5220&deg; N / 13.4133&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="18"
+                    aria-labelledby="place-title-19"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_19.avif" alt="Nikolaiviertel" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">19</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-19" class="places-stage__title">Nikolaiviertel</h3>
+                        <p class="places-stage__text">Nikolaiviertel, also known as the Nicholas Quarter, is a visitor site in Berlin, Germany. The grounds and principal structures are the main points of interest. Nikolaiviertel remains part of the public visitor circuit in Berlin. Local maps identify Nikolaiviertel within Berlin, Germany.</p>
+                        <p class="places-stage__coords">52.5174&deg; N / 13.4070&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="19"
+                    aria-labelledby="place-title-20"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_20.avif" alt="Bellevue Palace" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">20</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-20" class="places-stage__title">Bellevue Palace</h3>
+                        <p class="places-stage__text">Bellevue Palace, a neoclassical white mansion with three wings, has been the official residence of the President of Germany since 1994. Situated on the banks of River Spree in Berlin, it was originally built for Prince August Ferdinand of Prussia in 1785. Over time, it served various purposes including as a private residence and an art gallery before becoming the presidential residence.</p>
+                        <p class="places-stage__coords">52.5176&deg; N / 13.3528&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="20"
+                    aria-labelledby="place-title-21"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_21.avif" alt="Tiergarten" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">21</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-21" class="places-stage__title">Tiergarten</h3>
+                        <p class="places-stage__text">Tiergarten is a visitor site in Berlin, Germany. The main structures and grounds are the principal points of interest. Local maps mark Tiergarten inside Berlin. Approaches are signed from nearby streets in Berlin, Germany. Posted signs mark the main approach within Berlin.</p>
+                        <p class="places-stage__coords">52.5142&deg; N / 13.3592&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="21"
+                    aria-labelledby="place-title-22"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_22.avif" alt="Berlin Hauptbahnhof" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">22</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-22" class="places-stage__title">Berlin Hauptbahnhof</h3>
+                        <p class="places-stage__text">Berlin Hauptbahnhof is a visitor site in Berlin, Germany. Berlin Central Train Station, located on a historic railway site, offers a range of services including long-distance, regional, and U-Bahn connections. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">52.5251&deg; N / 13.3694&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="22"
+                    aria-labelledby="place-title-23"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_23.avif" alt="Französischer Dom" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">23</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free (viewing platform €8)</span>
+                        </p>
+                        <h3 id="place-title-23" class="places-stage__title">Französischer Dom</h3>
+                        <p class="places-stage__text">The Französischer Dom, In Berlin at Gendarmenmarkt, is a stately 17th-century French church known for its domed tower offering panoramic views of the city. Despite its name, which translates to &#x27;French Cathedral,&#x27; it&#x27;s actually just the tower that bears this title. Climbing 284 steps to the top rewards travellers with a 360-degree view of Berlin from an observation deck situated 40 meters above street level.</p>
+                        <p class="places-stage__coords">52.5144&deg; N / 13.3924&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="23"
+                    aria-labelledby="place-title-24"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_24.avif" alt="Friedrichstadt-Palast" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">24</span>
+                            <span class="places-stage__admission"><span>Admission</span>€20</span>
+                        </p>
+                        <h3 id="place-title-24" class="places-stage__title">Friedrichstadt-Palast</h3>
+                        <p class="places-stage__text">Friedrichstadt-Palast is a historic theater in Berlin with a rich heritage dating back to the 19th century. It has evolved from a circus and vaudeville theatre into one of Europe&#x27;s most modern and spacious theatrical venues. The theater offers a diverse range of performances, including revue shows, children&#x27;s shows, ballets, opera, and dance presentations, it hosts the popular Quatsch Comedy Club in its basement area.</p>
+                        <p class="places-stage__coords">52.5239&deg; N / 13.3888&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="24"
+                    aria-labelledby="place-title-25"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_25.avif" alt="Tränenpalast" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">25</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-25" class="places-stage__title">Tränenpalast</h3>
+                        <p class="places-stage__text">Located Friedrichstrasse, the Tränenpalast, or Palace of Tears, is a reminder of Berlin&#x27;s divided past. Once an active border crossing point between East and West Berlin, this unassuming 1960s building now is a museum that captures the essence of daily life during the Cold War. Travellers can explore heartfelt stories from those who traversed this route between 1962 and 1990, revealing the emotional farewells that took place here.</p>
+                        <p class="places-stage__coords">52.5210&deg; N / 13.3872&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="25"
+                    aria-labelledby="place-title-26"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_26.avif" alt="Lustgarten" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">26</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-26" class="places-stage__title">Lustgarten</h3>
+                        <p class="places-stage__text">Lustgarten is a visitor site in Berlin, Germany. The main structures and grounds are the principal points of interest. Local maps mark Lustgarten inside Berlin. Approaches are signed from nearby streets in Berlin, Germany. Posted signs mark the main approach within Berlin.</p>
+                        <p class="places-stage__coords">52.5187&deg; N / 13.3992&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="26"
+                    aria-labelledby="place-title-27"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_27.avif" alt="German Historical Museum" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">27</span>
+                            <span class="places-stage__admission"><span>Admission</span>€7</span>
+                        </p>
+                        <h3 id="place-title-27" class="places-stage__title">German Historical Museum</h3>
+                        <p class="places-stage__text">German Historical Museum is a museum in Berlin, Germany. The German Historical Museum, also known as the Deutsches Historisches Museum (DHM), was established in 1987 to commemorate Berlin&#x27;s 750th anniversary. It offers a full journey through Germany&#x27;s rich history, featuring artifacts from various periods and events up to the fall of the Berlin Wall. Permanent galleries and temporary displays are open on posted hours.</p>
+                        <p class="places-stage__coords">52.5186&deg; N / 13.3964&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="27"
+                    aria-labelledby="place-title-28"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_28.avif" alt="Grunewald Tower" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">28</span>
+                            <span class="places-stage__admission"><span>Admission</span>€5</span>
+                        </p>
+                        <h3 id="place-title-28" class="places-stage__title">Grunewald Tower</h3>
+                        <p class="places-stage__text">Grunewald Tower, a 19th-century brick tower standing over 180 feet tall, offers an observation deck with views of the surrounding forest. Travellers can began on a bike trip through Grunewald Forest, passing by the Devil&#x27;s Lake and encountering the historical landmark of Grunewald Tower. The tower is situated in Berlin&#x27;s Grunewald Forest and is a lookout point and recreational destination.</p>
+                        <p class="places-stage__coords">52.4782&deg; N / 13.1968&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="28"
+                    aria-labelledby="place-title-29"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_29.avif" alt="Flakturm Humboldthain" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">29</span>
+                            <span class="places-stage__admission"><span>Admission</span>€17</span>
+                        </p>
+                        <h3 id="place-title-29" class="places-stage__title">Flakturm Humboldthain</h3>
+                        <p class="places-stage__text">Flakturm Humboldthain is a visitor site in Berlin. The Flak Tower was built in 1938 to protect the city of Berlin from air attacks. It is now a popular tourist spot with tours available that allow travellers to explore the three floors of the bunker and stare deep down into the building&#x27;s underground landscape.</p>
+                        <p class="places-stage__coords">52.5475&deg; N / 13.3851&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="29"
+                    aria-labelledby="place-title-30"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_30.avif" alt="Olympiastadion Berlin" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">30</span>
+                            <span class="places-stage__admission"><span>Admission</span>€11</span>
+                        </p>
+                        <h3 id="place-title-30" class="places-stage__title">Olympiastadion Berlin</h3>
+                        <p class="places-stage__text">Olympiastadion Berlin, originally constructed for the 1936 Olympics during Adolf Hitler&#x27;s reign, is Germany&#x27;s largest stadium with a capacity of 74,649 seats. The venue retains its original architectural style, featuring imposing columns made from stones brought from the Alps. After much debate about its preservation, the stadium underwent renovations in 2004 and now hosts major sporting events and concerts.</p>
+                        <p class="places-stage__coords">52.5147&deg; N / 13.2395&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="30"
+                    aria-labelledby="place-title-31"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_31.avif" alt="Teufelsberg" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">31</span>
+                            <span class="places-stage__admission"><span>Admission</span>€12</span>
+                        </p>
+                        <h3 id="place-title-31" class="places-stage__title">Teufelsberg</h3>
+                        <p class="places-stage__text">Teufelsberg, located in the western part of Berlin, is a man-made hill that was once home to a former U.S. Listening station during the Cold War. The site is now covered in eye-catching street art and offers panoramic views of the city. Travellers can explore the remnants of large satellite dishes and domed towers while immersing themselves in Cold War history. The area&#x27;s official archives are set to open in 2020, shedding light on its mysterious past.</p>
+                        <p class="places-stage__coords">52.4972&deg; N / 13.2411&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="31"
+                    aria-labelledby="place-title-32"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_32.avif" alt="Kurfürstendamm" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">32</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-32" class="places-stage__title">Kurfürstendamm</h3>
+                        <p class="places-stage__text">Kurfürstendamm, also known as Ku&#x27;damm, is a visitor site in Berlin, Germany. Kurfürstendamm, also known as Ku&#x27;damm, is a legendary boulevard in Berlin that is a must-visit for fashion enthusiasts and shoppers. It is lined with high-end shops, department stores, upscale boutiques, and large shopping centers. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">52.5044&deg; N / 13.3353&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="32"
+                    aria-labelledby="place-title-33"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_33.avif" alt="Bikini Berlin" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">33</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-33" class="places-stage__title">Bikini Berlin</h3>
+                        <p class="places-stage__text">Bikini Berlin is a visitor site in Berlin, Germany. Bikini Berlin, located in Charlottenburg, is a unique retail and dining complex housed in an 1950s building. It offers open spaces and a rooftop terrace with views of the Berlin Zoo. The location also hosts various events and exhibitions. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">52.5056&deg; N / 13.3354&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="33"
+                    aria-labelledby="place-title-34"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_34.avif" alt="Berlin Zoological Garden" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">34</span>
+                            <span class="places-stage__admission"><span>Admission</span>€16</span>
+                        </p>
+                        <h3 id="place-title-34" class="places-stage__title">Berlin Zoological Garden</h3>
+                        <p class="places-stage__text">Berlin Zoological Garden is a public park in Berlin, Germany. Berlin Zoological Garden, located in the city&#x27;s Tiergarten, spans over 85 acres and houses more than 15,000 animals from around 2,000 species. The zoo is home to a diverse range of creatures including lions, giant pandas, Bactrian camels, giraffes, kangaroos, penguins and even a polar bear named Knut. Paths, lawns, and shaded areas make up the main public facilities.</p>
+                        <p class="places-stage__coords">52.5078&deg; N / 13.3394&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="34"
+                    aria-labelledby="place-title-35"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_35.avif" alt="Ludwig Erhard Haus" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">35</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-35" class="places-stage__title">Ludwig Erhard Haus</h3>
+                        <p class="places-stage__text">Ludwig Erhard Haus, also known as the Armadillo, is a visitor site in Berlin, Germany. Ludwig Erhard Haus, also known as the Armadillo, is a futuristic Postmodernist conference and office building designed by architect Sir Nicholas Grimshaw. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">52.5065&deg; N / 13.3282&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="35"
+                    aria-labelledby="place-title-36"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_36.avif" alt="Soviet War Memorial Treptow" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">36</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-36" class="places-stage__title">Soviet War Memorial Treptow</h3>
+                        <p class="places-stage__text">The Soviet War Memorial Treptow is a monumental tribute to the countless Soviet soldiers who lost their lives during World War II, particularly in the fierce Battle of Berlin. While it may not be In the city like other memorials, it draws many travellers, especially on Victory in Europe Day when people gather to honor these brave souls.</p>
+                        <p class="places-stage__coords">52.4861&deg; N / 13.4720&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="36"
+                    aria-labelledby="place-title-37"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_37.avif" alt="Molecule Man" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">37</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-37" class="places-stage__title">Molecule Man</h3>
+                        <p class="places-stage__text">Molecule Man is a visitor site in Berlin, Germany. Molecule Man is a significant sculpture by Jonathan Borofsky located at the former meeting point of East and West Berlin. This artwork represents human molecules coming together to form one existence. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">52.4970&deg; N / 13.4591&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="37"
+                    aria-labelledby="place-title-38"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_38.avif" alt="East Side Gallery" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">38</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-38" class="places-stage__title">East Side Gallery</h3>
+                        <p class="places-stage__text">East Side Gallery is a museum in Berlin, Germany. The East Side Gallery is a preserved graffiti project covering a 1,316m-long remnant of the Berlin Wall in Friedrichshain-Kreuzberg. The site is catalogued as a cultural landmark. Galleries and public rooms are open on posted hours in Berlin.</p>
+                        <p class="places-stage__coords">52.5050&deg; N / 13.4397&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="38"
+                    aria-labelledby="place-title-39"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_39.avif" alt="Gardens of the World" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">39</span>
+                            <span class="places-stage__admission"><span>Admission</span>€4</span>
+                        </p>
+                        <h3 id="place-title-39" class="places-stage__title">Gardens of the World</h3>
+                        <p class="places-stage__text">Gardens of the World is a public park in Berlin, Germany. Paths, lawns, and shaded areas make up the main public facilities. Gardens of the World remains part of the public visitor circuit in Berlin. Local maps identify Gardens of the World within Berlin, Germany.</p>
+                        <p class="places-stage__coords">52.5380&deg; N / 13.5693&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="39"
+                    aria-labelledby="place-title-40"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/berlin_40.avif" alt="Kulturbrauerei" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">40</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-40" class="places-stage__title">Kulturbrauerei</h3>
+                        <p class="places-stage__text">Kulturbrauerei is a visitor site in Berlin, Germany. Kulturbrauerei is a fascinating cultural hub that beautifully marries history with modern entertainment. The enchanting Nordic-themed Lucia Christmas Market adds to its charm, featuring cozy wooden chalets and unique stalls, like one selling absinth, for those seeking a twist on traditional festivities. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">52.5382&deg; N / 13.4127&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="site-footer">
         <div class="page-shell">
             <div class="site-footer__bar">
-                <a href="../../index.html" class="site-footer__brand" aria-label="Global Explorer home">
-                    <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
+                <a href="../../index.html" class="site-footer__mark" aria-label="Global Explorer home">
+                    <svg width="24" height="24" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
-                    <span class="site-footer__brand-name font-display">Global Explorer</span>
+                    Global Explorer
                 </a>
-                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides <span>Berlin: 40 places across Eastern Germany.</span></p>
             </div>
         </div>
     </footer>
 
     <button id="scrollTopBtn" type="button" aria-label="Scroll to top">
-        <i class="ph ph-arrow-up" aria-hidden="true"></i>
+        <svg viewBox="0 0 24 24" width="1.15em" height="1.15em" aria-hidden="true" focusable="false">
+            <path d="M12 5.25 V18.75 M12 5.25 L6.75 10.5 M12 5.25 L17.25 10.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
     </button>
 
     <script defer src="../../assets/dev-destination-toggle.js"></script>
     <script defer src="../../assets/tg-page-chrome.js"></script>
     <script defer src="../../assets/tg-destination-map.js"></script>
+    <script defer src="../../assets/tg-destination-places.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const map = L.map('map').setView([52.514161, 13.372289], 14);
+            const map = L.map('map');
             L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
                 attribution: '&copy; Google Maps',
                 maxZoom: 20
             }).addTo(map);
-            const locations = [{"name": "Kaiser Wilhelm Memorial Church", "lat": 52.504818, "lng": 13.335082}, {"name": "Brandenburg Gate", "lat": 52.516275, "lng": 13.377704}, {"name": "Berliner Fernsehturm", "lat": 52.52082, "lng": 13.409421}, {"name": "Marx-Engels Forum", "lat": 52.518501, "lng": 13.404767}, {"name": "Siegessaule", "lat": 52.514511, "lng": 13.35011}, {"name": "Grosser Tiergarten", "lat": 52.514458, "lng": 13.354375}, {"name": "Richard Wagner Monument", "lat": 52.510066, "lng": 13.361869}, {"name": "Soviet War Memorial Tiergarten", "lat": 52.516626, "lng": 13.371929}, {"name": "Reichstag Building", "lat": 52.51862, "lng": 13.376187}, {"name": "Friedrichswerdersche Church", "lat": 52.5159, "lng": 13.3975}, {"name": "Berliner Dom", "lat": 52.519086, "lng": 13.401028}, {"name": "Checkpoint Charlie", "lat": 52.507443, "lng": 13.390391}, {"name": "Memorial to the Murdered Jews of Europe", "lat": 52.513947, "lng": 13.378713}, {"name": "Potsdamer Platz", "lat": 52.509231, "lng": 13.376105}, {"name": "Charlottenburg Palace", "lat": 52.520932, "lng": 13.295617}, {"name": "Funkturm Berlin", "lat": 52.505033, "lng": 13.278137}, {"name": "World Time Clock", "lat": 52.5211743, "lng": 13.413297}, {"name": "Alexanderplatz", "lat": 52.521981, "lng": 13.413306}, {"name": "Nikolaiviertel", "lat": 52.517403, "lng": 13.40703}, {"name": "Bellevue Palace", "lat": 52.517573, "lng": 13.352793}, {"name": "Tiergarten", "lat": 52.5141516, "lng": 13.3591634}, {"name": "Berlin Hauptbahnhof", "lat": 52.525084, "lng": 13.369402}, {"name": "Französischer Dom", "lat": 52.514393, "lng": 13.392414}, {"name": "Friedrichstadt-Palast", "lat": 52.52393, "lng": 13.388821}, {"name": "Tränenpalast", "lat": 52.520957, "lng": 13.387212}, {"name": "Lustgarten", "lat": 52.5187, "lng": 13.3992}, {"name": "German Historical Museum", "lat": 52.518614, "lng": 13.39636}, {"name": "Grunewald Tower", "lat": 52.478233, "lng": 13.196795}, {"name": "Flakturm Humboldthain", "lat": 52.547494, "lng": 13.385083}, {"name": "Olympiastadion Berlin", "lat": 52.514678, "lng": 13.239517}, {"name": "Teufelsberg", "lat": 52.497222, "lng": 13.241111}, {"name": "Kurfürstendamm", "lat": 52.504394, "lng": 13.335348}, {"name": "Bikini Berlin", "lat": 52.505624, "lng": 13.335423}, {"name": "Berlin Zoological Garden", "lat": 52.50783, "lng": 13.339416}, {"name": "Ludwig Erhard Haus", "lat": 52.506462, "lng": 13.328224}, {"name": "Soviet War Memorial Treptow", "lat": 52.486139, "lng": 13.471958}, {"name": "Molecule Man", "lat": 52.496969, "lng": 13.459071}, {"name": "East Side Gallery", "lat": 52.505022, "lng": 13.439695}, {"name": "Gardens of the World", "lat": 52.537961, "lng": 13.569278}, {"name": "Kulturbrauerei", "lat": 52.538203, "lng": 13.412713}];
+            const locations = Array.from(document.querySelectorAll('[data-place-option]')).map((el) => ({
+                name: el.dataset.placeName || '',
+                lat: Number(el.dataset.placeLat),
+                lng: Number(el.dataset.placeLng),
+            }));
             const customIcon = L.icon({
                 iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
                 iconSize: [32, 32],
@@ -666,14 +1761,45 @@
                 popupAnchor: [0, -32],
             });
             const destinationCenter = [52.514161, 13.372289];
-            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": false, "maxCenterLat": 0.035928, "maxCenterLng": 0.196989};
-            locations.forEach((location) => {
-                L.marker([location.lat, location.lng], { icon: customIcon })
+            const mapContext = {};
+            const markers = locations.map((location) => {
+                const marker = L.marker([location.lat, location.lng], { icon: customIcon })
                     .addTo(map)
                     .bindPopup(`<strong>${location.name}</strong>`);
+                return marker;
             });
             window.TGDestinationMap?.fitToLocations(map, locations, destinationCenter, mapContext);
             window.TGDestinationMap?.bindMobileScrollGuard(map, 'map');
+            window.TGDestinationMap?.registerMarkers(map, markers);
+
+            const heroImage = document.querySelector('[data-destination-hero-image]');
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (heroImage && !reduceMotion) {
+                let framePending = false;
+                let scrolling = false;
+                let scrollEndTimer = 0;
+                const updateHeroPosition = () => {
+                    const offset = Math.min(window.scrollY, window.innerHeight * 1.15) * 0.075;
+                    heroImage.style.transform = `translate3d(0, ${offset}px, 0) scale(1.055)`;
+                    framePending = false;
+                };
+                window.addEventListener('scroll', () => {
+                    if (!scrolling) {
+                        scrolling = true;
+                        heroImage.style.willChange = 'transform';
+                    }
+                    window.clearTimeout(scrollEndTimer);
+                    scrollEndTimer = window.setTimeout(() => {
+                        scrolling = false;
+                        heroImage.style.willChange = 'auto';
+                    }, 150);
+                    if (!framePending) {
+                        window.requestAnimationFrame(updateHeroPosition);
+                        framePending = true;
+                    }
+                }, { passive: true });
+                updateHeroPosition();
+            }
         });
     </script>
 </body>

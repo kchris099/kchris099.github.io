@@ -6,347 +6,818 @@
     <meta name="description" content="Plan a visit to Ottawa with a concise history, interactive attractions map, prices, and curated highlights across the destination.">
     <meta name="theme-color" content="#121417">
     <title>Ottawa Guide | Global Explorer Guides</title>
-    <link rel="stylesheet" href="../../assets/tailwind.css">
-    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
     <link rel="stylesheet" href="../../assets/newindex-fonts.css">
     <link rel="stylesheet" href="../../assets/tg-theme.css">
     <link rel="stylesheet" href="../../assets/tg-site-chrome.css">
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
     <link rel="stylesheet" href="../../assets/tg-modern-polish.css">
+    <link rel="stylesheet" href="../../assets/tg-country-page.css">
+    <link rel="stylesheet" href="../../assets/tg-destination-page-v3.css">
     <script defer src="../../assets/lenis.min.js"></script>
     <script defer src="../../assets/tg-smooth-scroll.js"></script>
     <link rel="preload" as="image" href="images/ottawa_hero.avif" type="image/avif" fetchpriority="high">
     <script defer src="../../assets/leaflet/leaflet.js"></script>
 </head>
-<body class="tg-theme tg-destination-page tg-modern">
-    <header id="site-header" class="header-glass fixed top-0 left-0 right-0 z-50">
+<body class="tg-theme tg-modern tg-country-v2 tg-destination-v3">
+    <a class="skip-link" href="#main-content">Skip to Ottawa guide</a>
+    <header id="site-header" class="header-glass">
         <div class="page-shell header-glass__inner">
-            <a href="../../index.html" class="font-display site-brand" style="display:flex;align-items:center;gap:0.75rem;text-decoration:none;color:inherit;font-size:1.25rem;" aria-label="Global Explorer home">
+            <a href="../../index.html" class="site-brand" aria-label="Global Explorer home">
                 <span class="site-brand__mark" aria-hidden="true">
                     <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
-                        <circle cx="14" cy="14" r="2" fill="#E8B14F"/>
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
                 </span>
                 Global Explorer
             </a>
-            <nav class="header-glass__nav-mobile" aria-label="Mobile navigation">
-                <a href="../../index.html" class="header-glass__icon-link" aria-label="Home">
-                    <i class="ph ph-house" aria-hidden="true"></i>
-                </a>
-                <a href="canada.html" class="header-glass__icon-link" aria-label="Back to Canada">
-                    <i class="ph ph-arrow-left" aria-hidden="true"></i>
-                </a>
-            </nav>
             <nav class="header-glass__nav" aria-label="Primary">
-                <a href="../../index.html" class="nav-link">Home</a>
-                <a href="ottawa.html" class="nav-link" aria-current="page">Ottawa</a>
+                <a href="#main-content" class="nav-link" aria-current="page">Ottawa</a>
+                <a href="#atlas" class="nav-link">Atlas</a>
+                <a href="#places" class="nav-link">Places</a>
                 <a href="canada.html" class="nav-link">Canada</a>
-                <a href="../../index.html#map" class="nav-link">Atlas</a>
             </nav>
         </div>
     </header>
-    <main>
-        <div class="tg-destination-hero-zone">
-            <div class="tg-destination-hero" aria-hidden="true">
-                <div class="tg-destination-hero__image" style="background-image: url('images/ottawa_hero.avif')"></div>
-                <div class="tg-destination-hero__fade"></div>
-            </div>
-            <div class="page-shell tg-destination-hero-zone__content">
-        <nav class="tg-toolbar tg-toolbar--compact" aria-label="Breadcrumb">
-            <div class="tg-breadcrumb">
-                <img src="../../assets/flags/w40/ca.png" alt="" class="w-6 h-auto rounded-[2px]" aria-hidden="true">
-                <span>Canada</span>
-                <span class="tg-breadcrumb__sep" aria-hidden="true">&rsaquo;</span>
-                <span class="tg-breadcrumb__current">Central Canada</span>
-            </div>
-        </nav>
+    <main id="main-content" tabindex="-1">
+        <section class="destination-hero" aria-labelledby="destination-title">
+            <img class="destination-hero__media" data-destination-hero-image src="images/ottawa_hero.avif" alt="" width="1600" height="1067" fetchpriority="high" decoding="sync">
+            <div class="destination-hero__shade" aria-hidden="true"></div>
+            <div class="page-shell destination-hero__content">
+                <button
+                    type="button"
+                    id="destination-active-toggle"
+                    class="country-active-toggle country-active-toggle--inactive"
+                    data-iso2="CA"
+                    data-slug="ottawa"
+                    data-active="false"
+                    data-interactive="true"
+                    aria-label="Toggle Ottawa visibility on Canada guide"
+                    aria-pressed="false"
+                >
+                    <img src="../../assets/flags/w80/ca.png" alt="" aria-hidden="true">
+                    <span class="country-toggle__copy" aria-hidden="true">
+                        <span class="country-toggle__label">Ottawa guide</span>
+                        <strong class="country-toggle__state"></strong>
+                    </span>
+                </button>
 
-        <header class="tg-page-header">
-            <button
-        type="button"
-        id="destination-active-toggle"
-        class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
-        data-iso2="CA"
-        data-slug="ottawa"
-        data-active="false"
-        data-interactive="true"
-        aria-label="Toggle Ottawa visibility on Canada guide"
-        aria-pressed="false"
-    >
-        <i class="ph ph-map-pin text-4xl pointer-events-none" aria-hidden="true"></i>
-    </button>
-            <span class="tg-page-header__eyebrow">Destination Guide — Central Canada</span>
-            <h1 class="tg-page-title font-display">Explore <em>Ottawa</em></h1>
-            <div class="glass-card frosted-panel tg-panel">
-                <h2 class="tg-panel__title font-display">
-                    <i class="ph ph-scroll" aria-hidden="true"></i> A Brief History
-                </h2>
-                <p class="tg-panel__body">Ottawa was chosen as Canada&#x27;s capital by Queen Victoria in 1857 for its location between English-speaking Ontario and French-speaking Quebec along the Ottawa River. Parliament Hill Gothic revival, Rideau Canal locks, and ByWard Market sheds record how lumber rafting, canal defence planning after the War of 1812, and federal civil-service growth shaped a bilingual government city.</p>
-            </div>
-        </header>
+                <div class="hero__route" aria-label="Destination route and coordinates">
+                    <span>Canada / Central Canada</span>
+                    <span>45.4201&deg; N / 75.7003&deg; W</span>
+                </div>
 
-        <div class="tg-section__header tg-section__header--map-end">
-            <span class="tg-section__eyebrow">Map</span>
-            <h2 class="tg-section__title font-display">Attractions Map</h2>
-        </div>
-            </div>
-        </div>
-
-        <div class="page-shell tg-main tg-main--below-hero">
-        <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Ottawa attractions"></div>
-        <section class="tg-section">
-            <div class="tg-section__header">
-                <span class="tg-section__eyebrow">Highlights</span>
-                <h2 class="tg-section__title font-display">Top Sights &amp; Activities</h2>
-            </div>
-            <div class="tg-sights-list">
-            
-            <!-- 1. Parliament Hill -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/ottawa_1.avif" alt="Parliament Hill" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                <h1 id="destination-title" class="destination-hero__title" style="--destination-title-chars: 6">Ottawa</h1>
+                <div class="destination-hero__history">
+                    <p>Ottawa was chosen as Canada&#x27;s capital by Queen Victoria in 1857 for its location between English-speaking Ontario and French-speaking Quebec along the Ottawa River. Parliament Hill Gothic revival, Rideau Canal locks, and ByWard Market sheds record how lumber rafting, canal defence planning after the War of 1812, and federal civil-service growth shaped a bilingual government city.</p>
+                </div>
+                <dl class="destination-hero__facts" aria-label="Ottawa guide facts">
+                    <div>
+                        <dt>Country</dt>
+                        <dd>Canada</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Parliament Hill</h3>
-                    <p class="tg-sight-card__text">Parliament Hill is a majestic neo-Gothic complex that is the Canada&#x27;s legislature, surrounded by beautifully landscaped grounds and adorned with artworks. This site is not only a hub for political activity but also holds significant historical importance, having been the backdrop for important moments in LGBTQ+ rights in Canada, including the first gay protest in 1971 and landmark legal battles.</p>
-                </div>
-            </div>
-            <!-- 2. Centennial Flame -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/ottawa_2.avif" alt="Centennial Flame" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                    <div>
+                        <dt>Region</dt>
+                        <dd>Central Canada</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Centennial Flame</h3>
-                    <p class="tg-sight-card__text">The Centennial Flame, located on Parliament Hill in Ottawa, is a significant landmark dedicated in 1967 to commemorate Canada&#x27;s 100th anniversary of confederation. It has become a popular photo spot for visitors, with the Centre Block and Peace Tower providing a backdrop. While it often draws crowds, lucky visitors may find moments to capture the flame without too many strangers in the frame.</p>
-                </div>
-            </div>
-            <!-- 3. The National War Memorial -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/ottawa_3.avif" alt="The National War Memorial" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                    <div>
+                        <dt>Places</dt>
+                        <dd>16</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">The National War Memorial</h3>
-                    <p class="tg-sight-card__text">The National War Memorial is a monument in Ottawa, Canada. Construction and early use date to around 1939. The National War Memorial, located in Confederation Square, is a significant tribute to the Canadian Armed Forces. Originally built in 1939 to honor those who died in World War I, it has since been rededicated to commemorate all Canadians lost in conflicts past and future. The memorial stands in an open plaza or roadside setting.</p>
-                </div>
-            </div>
-            <!-- 4. Rideau Canal, Locks 1 - 8 - Ottawa -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/ottawa_4.avif" alt="Rideau Canal, Locks 1 - 8 - Ottawa" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free (1-day lockage C$18)
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Rideau Canal, Locks 1 - 8 - Ottawa</h3>
-                    <p class="tg-sight-card__text">Rideau Canal, Locks 1 - 8 in Ottawa is a historic site with manually operated locks dating back to the 19th century. The canal is popular for kayaking, cycling tours, and camping. The Bytown Museum near the last lock tells fascinating stories about Ottawa&#x27;s history and the construction of the canal supervised by Colonel John By. A Celtic cross commemorates the workers who lost their lives during its construction.</p>
-                </div>
-            </div>
-            <!-- 5. Ottawa Sign, ByWard Market -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/ottawa_5.avif" alt="Ottawa Sign, ByWard Market" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Ottawa Sign, ByWard Market</h3>
-                    <p class="tg-sight-card__text">The Ottawa sign in the ByWard Market district marks a pedestrian plaza beside historic produce halls and weekend vendor stalls. The market has operated since 1826 and now mixes farm goods, maple products, and restaurants in converted warehouse blocks east of Parliament Hill. The illuminated sign is a common photo stop for visitors exploring Lower Town.</p>
-                </div>
-            </div>
-            <!-- 6. Notre Dame Cathedral Basilica -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/ottawa_6.avif" alt="Notre Dame Cathedral Basilica" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free (guided tours C$10)
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Notre Dame Cathedral Basilica</h3>
-                    <p class="tg-sight-card__text">Notre Dame Cathedral Basilica is a church in Ottawa, Canada. Notre Dame Cathedral Basilica, dating back to the 19th century, is a significant landmark in Ottawa. It is the oldest and largest church in the city, featuring striking Neo-Gothic architecture with skyline-dominating spires. The exterior and main interior spaces are usually viewable outside service times.</p>
-                </div>
-            </div>
-            <!-- 7. CF Rideau Centre -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/ottawa_7.avif" alt="CF Rideau Centre" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">CF Rideau Centre</h3>
-                    <p class="tg-sight-card__text">CF Rideau Centre is a downtown Ottawa shopping complex connected by indoor walkways to the Rideau Canal and major hotels. Opened in 1983 and expanded several times, it houses national retailers, a food court, and seasonal displays near the canal locks. The mall sits on former canal wharf land between Sussex Drive and Colonel By Drive.</p>
-                </div>
-            </div>
-            <!-- 8. Rideau Canal National Historic Site -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/ottawa_8.avif" alt="Rideau Canal National Historic Site" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free (1-day lockage C$18)
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Rideau Canal National Historic Site</h3>
-                    <p class="tg-sight-card__text">The Rideau Canal National Historic Site is a 202-kilometre waterway that links the Ottawa River to Lake Ontario, making it cherished attractions in Canada&#x27;s capital. This UNESCO World Heritage Site offers a variety of activities year-round, from leisurely summer strolls and bike rides along its scenic trails to witnessing the lock system operated by Parks Canada. In winter, it transforms into the world&#x27;s largest ice-skating rink, stretching an incredible 7.</p>
-                </div>
-            </div>
-            <!-- 9. Rideau Hall -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/ottawa_9.avif" alt="Rideau Hall" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Rideau Hall</h3>
-                    <p class="tg-sight-card__text">Located Ottawa, Rideau Hall is a historic residence dating back to the 1830s and is the official home of Canada&#x27;s Governor General. This grand structure, reminiscent of Buckingham Palace, has an 175 rooms spread over 9,500 square meters and is set within beautifully landscaped grounds that span 88 acres.</p>
-                </div>
-            </div>
-            <!-- 10. Casino du Lac-Leamy -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/ottawa_10.avif" alt="Casino du Lac-Leamy" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Casino du Lac-Leamy</h3>
-                    <p class="tg-sight-card__text">Casino du Lac-Leamy is a visitor site in Ottawa, Canada. Visitors can also enjoy sophisticated dining options, entertainment lineup, and a relaxing spa. Nearby accommodations range from luxurious hotels like Hilton Lac-Leamy to cozy apartments such as Kialaa Studio. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 11. Mackenzie King Estate -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/ottawa_11.avif" alt="Mackenzie King Estate" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free (parking C$16)
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Mackenzie King Estate</h3>
-                    <p class="tg-sight-card__text">The estate of Canada&#x27;s longest-serving prime minister, William Lyon Mackenzie King, is a lakeside property that includes cottages open to the public. The main house contains artifacts from the prime minister&#x27;s life and offers afternoon tea or a meal in the dining room.</p>
-                </div>
-            </div>
-            <!-- 12. Gatineau Park Visitor Centre -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/ottawa_12.avif" alt="Gatineau Park Visitor Centre" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Gatineau Park Visitor Centre</h3>
-                    <p class="tg-sight-card__text">The Gatineau Park Visitor Centre is a large conservation park located just a short trip across the river from Ottawa. It covers over 361 square miles and is the second most visited national park in Canada. The park offers diverse activities such as hiking, biking, skiing, and nature spotting amidst its woods, lakes, and waterfalls.</p>
-                </div>
-            </div>
-            <!-- 13. Mer Bleue Bog -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/ottawa_13.avif" alt="Mer Bleue Bog" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Mer Bleue Bog</h3>
-                    <p class="tg-sight-card__text">Mer Bleue Bog, located just east of Ottawa, is a 7,700-year-old natural bog and in southern Ontario. It offers an interpretive boardwalk trail that winds through pristine wetlands, providing opportunities for birdwatching and photography. The area has diverse plant life including rare orchids and carnivorous plants. Visitors can marvel at the unique northern boreal landscape with its unique wildlife and flora reminiscent of the Arctic.</p>
-                </div>
-            </div>
-            <!-- 14. Dominion Arboretum -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/ottawa_14.avif" alt="Dominion Arboretum" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Dominion Arboretum</h3>
-                    <p class="tg-sight-card__text">The Dominion Arboretum, established in 1889, is Canada&#x27;s oldest arboretum spanning 64 acres of rolling land and showing an extensive collection of 10,000 plants including 4,000 species. With its diverse landscape featuring 1,000 tree species and several microclimates, it offers fantastic panoramic views. This park is a favorite among photographers and nature enthusiasts alike.</p>
-                </div>
-            </div>
-            <!-- 15. Central Experimental Farm -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/ottawa_15.avif" alt="Central Experimental Farm" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Central Experimental Farm</h3>
-                    <p class="tg-sight-card__text">Central Experimental Farm is a visitor site in Ottawa, Canada. The farm is home to an arboretum, specimen plantings, ornamental gardens, wildlife garden, heritage buildings and greenhouses. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 16. Parc des Cèdres -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/ottawa_16.avif" alt="Parc des Cèdres" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Parc des Cèdres</h3>
-                    <p class="tg-sight-card__text">Parc des Cèdres is a National Capital Commission green space on the Ottawa River near the Portage Bridge with lawns, shade trees, and views toward Gatineau. The park forms part of the capital pathway network used by cyclists and pedestrians linking downtown Ottawa to LeBreton Flats and the riverfront promenade.</p>
-                </div>
-            </div>
+                </dl>
             </div>
         </section>
-        </div>
+
+        <section id="atlas" class="destination-atlas" aria-labelledby="atlas-title">
+            <div class="page-shell destination-atlas__layout">
+                <div class="destination-atlas__brief">
+                    <p class="destination-atlas__index">City atlas</p>
+                    <h2 id="atlas-title">Plot the city.</h2>
+                    <p class="destination-atlas__copy">Zoom, pan, and open any marker to focus that place in the catalog below.</p>
+                    <dl class="destination-atlas__facts" aria-label="Map coverage">
+                        <div>
+                            <dt>Plotted</dt>
+                            <dd>16 places</dd>
+                        </div>
+                        <div>
+                            <dt>Center</dt>
+                            <dd>45.4201&deg; N<br>75.7003&deg; W</dd>
+                        </div>
+                    </dl>
+                </div>
+                <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Ottawa attractions"></div>
+            </div>
+        </section>
+
+        <section id="places" class="destination-places" aria-labelledby="places-title">
+            <div class="page-shell">
+                <div class="destination-chapter">
+                    <h2 id="places-title" class="destination-chapter__heading">16 ways into<br>Ottawa.</h2>
+                    <p class="destination-chapter__copy">Browse the index, open a location, and read the essentials without scrolling through a long catalog. Each entry contains its image, admission note, and contextual guide.</p>
+                </div>
+                <div class="places-explorer" data-places-explorer>
+                    <aside class="places-explorer__rail" aria-label="Place index">
+                        <div class="places-explorer__toolbar">
+                            <label class="places-explorer__filter-label" for="places-filter">Filter places</label>
+                            <input
+                                id="places-filter"
+                                class="places-explorer__filter"
+                                type="search"
+                                data-places-filter
+                                placeholder="Search by name"
+                                autocomplete="off"
+                            >
+                            <p class="places-explorer__meta"><strong data-places-count>16</strong> of 16 shown</p>
+                        </div>
+                        <ul class="places-explorer__list" role="listbox" aria-label="Places in Ottawa" data-places-list data-lenis-prevent data-tg-scroll-surface>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option is-active"
+                            role="option"
+                            id="place-option-1"
+                            data-place-option
+                            data-place-index="0"
+                            data-place-name="Parliament Hill"
+                            data-place-lat="45.423594"
+                            data-place-lng="-75.700929"
+                            aria-selected="true"
+                            tabindex="0"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">01</span>
+                            <span class="places-explorer__option-name">Parliament Hill</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-2"
+                            data-place-option
+                            data-place-index="1"
+                            data-place-name="Centennial Flame"
+                            data-place-lat="45.423737"
+                            data-place-lng="-75.698703"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">02</span>
+                            <span class="places-explorer__option-name">Centennial Flame</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-3"
+                            data-place-option
+                            data-place-index="2"
+                            data-place-name="The National War Memorial"
+                            data-place-lat="45.424069"
+                            data-place-lng="-75.695529"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">03</span>
+                            <span class="places-explorer__option-name">The National War Memorial</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-4"
+                            data-place-option
+                            data-place-index="3"
+                            data-place-name="Rideau Canal, Locks 1 - 8 - Ottawa"
+                            data-place-lat="45.424801"
+                            data-place-lng="-75.695228"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">04</span>
+                            <span class="places-explorer__option-name">Rideau Canal, Locks 1 - 8 - Ottawa</span>
+                            <span class="places-explorer__option-price">Free (1-day lockage C$18)</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-5"
+                            data-place-option
+                            data-place-index="4"
+                            data-place-name="Ottawa Sign, ByWard Market"
+                            data-place-lat="45.427509"
+                            data-place-lng="-75.694498"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">05</span>
+                            <span class="places-explorer__option-name">Ottawa Sign, ByWard Market</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-6"
+                            data-place-option
+                            data-place-index="5"
+                            data-place-name="Notre Dame Cathedral Basilica"
+                            data-place-lat="45.429913"
+                            data-place-lng="-75.696196"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">06</span>
+                            <span class="places-explorer__option-name">Notre Dame Cathedral Basilica</span>
+                            <span class="places-explorer__option-price">Free (guided tours C$10)</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-7"
+                            data-place-option
+                            data-place-index="6"
+                            data-place-name="CF Rideau Centre"
+                            data-place-lat="45.425163"
+                            data-place-lng="-75.691271"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">07</span>
+                            <span class="places-explorer__option-name">CF Rideau Centre</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-8"
+                            data-place-option
+                            data-place-index="7"
+                            data-place-name="Rideau Canal National Historic Site"
+                            data-place-lat="45.40694"
+                            data-place-lng="-75.681853"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">08</span>
+                            <span class="places-explorer__option-name">Rideau Canal National Historic Site</span>
+                            <span class="places-explorer__option-price">Free (1-day lockage C$18)</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-9"
+                            data-place-option
+                            data-place-index="8"
+                            data-place-name="Rideau Hall"
+                            data-place-lat="45.444485"
+                            data-place-lng="-75.685791"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">09</span>
+                            <span class="places-explorer__option-name">Rideau Hall</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-10"
+                            data-place-option
+                            data-place-index="9"
+                            data-place-name="Casino du Lac-Leamy"
+                            data-place-lat="45.446449"
+                            data-place-lng="-75.725667"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">10</span>
+                            <span class="places-explorer__option-name">Casino du Lac-Leamy</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-11"
+                            data-place-option
+                            data-place-index="10"
+                            data-place-name="Mackenzie King Estate"
+                            data-place-lat="45.483486"
+                            data-place-lng="-75.847908"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">11</span>
+                            <span class="places-explorer__option-name">Mackenzie King Estate</span>
+                            <span class="places-explorer__option-price">Free (parking C$16)</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-12"
+                            data-place-option
+                            data-place-index="11"
+                            data-place-name="Gatineau Park Visitor Centre"
+                            data-place-lat="45.505823"
+                            data-place-lng="-75.812014"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">12</span>
+                            <span class="places-explorer__option-name">Gatineau Park Visitor Centre</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-13"
+                            data-place-option
+                            data-place-index="12"
+                            data-place-name="Mer Bleue Bog"
+                            data-place-lat="45.394512"
+                            data-place-lng="-75.51276"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">13</span>
+                            <span class="places-explorer__option-name">Mer Bleue Bog</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-14"
+                            data-place-option
+                            data-place-index="13"
+                            data-place-name="Dominion Arboretum"
+                            data-place-lat="45.391139"
+                            data-place-lng="-75.706166"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">14</span>
+                            <span class="places-explorer__option-name">Dominion Arboretum</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-15"
+                            data-place-option
+                            data-place-index="14"
+                            data-place-name="Central Experimental Farm"
+                            data-place-lat="45.393888"
+                            data-place-lng="-75.715827"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">15</span>
+                            <span class="places-explorer__option-name">Central Experimental Farm</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-16"
+                            data-place-option
+                            data-place-index="15"
+                            data-place-name="Parc des Cèdres"
+                            data-place-lat="45.397225"
+                            data-place-lng="-75.858954"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">16</span>
+                            <span class="places-explorer__option-name">Parc des Cèdres</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                        </ul>
+                        <p class="places-explorer__empty" data-places-empty hidden>No places match that filter.</p>
+                    </aside>
+                    <div class="places-explorer__stage" data-places-stage>
+                    <nav class="places-stage__stepper" data-places-stepper aria-label="Browse places" hidden>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--prev" data-places-prev aria-label="Previous place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M14.75 5.25 L8.25 12 l6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M9.1 12 H17.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--next" data-places-next aria-label="Next place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M9.25 5.25 L15.75 12 l-6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M6.6 12 H14.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                    </nav>
+                <article
+                    class="places-stage__panel is-active"
+                    data-place-panel
+                    data-place-index="0"
+                    aria-labelledby="place-title-1"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/ottawa_1.avif" alt="Parliament Hill" width="1200" height="750" loading="eager" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">01</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-1" class="places-stage__title">Parliament Hill</h3>
+                        <p class="places-stage__text">Parliament Hill is a majestic neo-Gothic complex that is the Canada&#x27;s legislature, surrounded by beautifully landscaped grounds and adorned with artworks. This site is not only a hub for political activity but also holds significant historical importance, having been the backdrop for important moments in LGBTQ+ rights in Canada, including the first gay protest in 1971 and landmark legal battles.</p>
+                        <p class="places-stage__coords">45.4236&deg; N / 75.7009&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="1"
+                    aria-labelledby="place-title-2"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/ottawa_2.avif" alt="Centennial Flame" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">02</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-2" class="places-stage__title">Centennial Flame</h3>
+                        <p class="places-stage__text">The Centennial Flame, located on Parliament Hill in Ottawa, is a significant landmark dedicated in 1967 to commemorate Canada&#x27;s 100th anniversary of confederation. It has become a popular photo spot for visitors, with the Centre Block and Peace Tower providing a backdrop. While it often draws crowds, lucky visitors may find moments to capture the flame without too many strangers in the frame.</p>
+                        <p class="places-stage__coords">45.4237&deg; N / 75.6987&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="2"
+                    aria-labelledby="place-title-3"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/ottawa_3.avif" alt="The National War Memorial" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">03</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-3" class="places-stage__title">The National War Memorial</h3>
+                        <p class="places-stage__text">The National War Memorial is a monument in Ottawa, Canada. Construction and early use date to around 1939. The National War Memorial, located in Confederation Square, is a significant tribute to the Canadian Armed Forces. Originally built in 1939 to honor those who died in World War I, it has since been rededicated to commemorate all Canadians lost in conflicts past and future. The memorial stands in an open plaza or roadside setting.</p>
+                        <p class="places-stage__coords">45.4241&deg; N / 75.6955&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="3"
+                    aria-labelledby="place-title-4"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/ottawa_4.avif" alt="Rideau Canal, Locks 1 - 8 - Ottawa" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">04</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free (1-day lockage C$18)</span>
+                        </p>
+                        <h3 id="place-title-4" class="places-stage__title">Rideau Canal, Locks 1 - 8 - Ottawa</h3>
+                        <p class="places-stage__text">Rideau Canal, Locks 1 - 8 in Ottawa is a historic site with manually operated locks dating back to the 19th century. The canal is popular for kayaking, cycling tours, and camping. The Bytown Museum near the last lock tells fascinating stories about Ottawa&#x27;s history and the construction of the canal supervised by Colonel John By. A Celtic cross commemorates the workers who lost their lives during its construction.</p>
+                        <p class="places-stage__coords">45.4248&deg; N / 75.6952&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="4"
+                    aria-labelledby="place-title-5"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/ottawa_5.avif" alt="Ottawa Sign, ByWard Market" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">05</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-5" class="places-stage__title">Ottawa Sign, ByWard Market</h3>
+                        <p class="places-stage__text">The Ottawa sign in the ByWard Market district marks a pedestrian plaza beside historic produce halls and weekend vendor stalls. The market has operated since 1826 and now mixes farm goods, maple products, and restaurants in converted warehouse blocks east of Parliament Hill. The illuminated sign is a common photo stop for visitors exploring Lower Town.</p>
+                        <p class="places-stage__coords">45.4275&deg; N / 75.6945&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="5"
+                    aria-labelledby="place-title-6"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/ottawa_6.avif" alt="Notre Dame Cathedral Basilica" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">06</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free (guided tours C$10)</span>
+                        </p>
+                        <h3 id="place-title-6" class="places-stage__title">Notre Dame Cathedral Basilica</h3>
+                        <p class="places-stage__text">Notre Dame Cathedral Basilica is a church in Ottawa, Canada. Notre Dame Cathedral Basilica, dating back to the 19th century, is a significant landmark in Ottawa. It is the oldest and largest church in the city, featuring striking Neo-Gothic architecture with skyline-dominating spires. The exterior and main interior spaces are usually viewable outside service times.</p>
+                        <p class="places-stage__coords">45.4299&deg; N / 75.6962&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="6"
+                    aria-labelledby="place-title-7"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/ottawa_7.avif" alt="CF Rideau Centre" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">07</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-7" class="places-stage__title">CF Rideau Centre</h3>
+                        <p class="places-stage__text">CF Rideau Centre is a downtown Ottawa shopping complex connected by indoor walkways to the Rideau Canal and major hotels. Opened in 1983 and expanded several times, it houses national retailers, a food court, and seasonal displays near the canal locks. The mall sits on former canal wharf land between Sussex Drive and Colonel By Drive.</p>
+                        <p class="places-stage__coords">45.4252&deg; N / 75.6913&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="7"
+                    aria-labelledby="place-title-8"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/ottawa_8.avif" alt="Rideau Canal National Historic Site" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">08</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free (1-day lockage C$18)</span>
+                        </p>
+                        <h3 id="place-title-8" class="places-stage__title">Rideau Canal National Historic Site</h3>
+                        <p class="places-stage__text">The Rideau Canal National Historic Site is a 202-kilometre waterway that links the Ottawa River to Lake Ontario, making it cherished attractions in Canada&#x27;s capital. This UNESCO World Heritage Site offers a variety of activities year-round, from leisurely summer strolls and bike rides along its scenic trails to witnessing the lock system operated by Parks Canada. In winter, it transforms into the world&#x27;s largest ice-skating rink, stretching an incredible 7.</p>
+                        <p class="places-stage__coords">45.4069&deg; N / 75.6819&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="8"
+                    aria-labelledby="place-title-9"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/ottawa_9.avif" alt="Rideau Hall" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">09</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-9" class="places-stage__title">Rideau Hall</h3>
+                        <p class="places-stage__text">Located Ottawa, Rideau Hall is a historic residence dating back to the 1830s and is the official home of Canada&#x27;s Governor General. This grand structure, reminiscent of Buckingham Palace, has an 175 rooms spread over 9,500 square meters and is set within beautifully landscaped grounds that span 88 acres.</p>
+                        <p class="places-stage__coords">45.4445&deg; N / 75.6858&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="9"
+                    aria-labelledby="place-title-10"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/ottawa_10.avif" alt="Casino du Lac-Leamy" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">10</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-10" class="places-stage__title">Casino du Lac-Leamy</h3>
+                        <p class="places-stage__text">Casino du Lac-Leamy is a visitor site in Ottawa, Canada. Visitors can also enjoy sophisticated dining options, entertainment lineup, and a relaxing spa. Nearby accommodations range from luxurious hotels like Hilton Lac-Leamy to cozy apartments such as Kialaa Studio. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">45.4464&deg; N / 75.7257&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="10"
+                    aria-labelledby="place-title-11"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/ottawa_11.avif" alt="Mackenzie King Estate" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">11</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free (parking C$16)</span>
+                        </p>
+                        <h3 id="place-title-11" class="places-stage__title">Mackenzie King Estate</h3>
+                        <p class="places-stage__text">The estate of Canada&#x27;s longest-serving prime minister, William Lyon Mackenzie King, is a lakeside property that includes cottages open to the public. The main house contains artifacts from the prime minister&#x27;s life and offers afternoon tea or a meal in the dining room.</p>
+                        <p class="places-stage__coords">45.4835&deg; N / 75.8479&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="11"
+                    aria-labelledby="place-title-12"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/ottawa_12.avif" alt="Gatineau Park Visitor Centre" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">12</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-12" class="places-stage__title">Gatineau Park Visitor Centre</h3>
+                        <p class="places-stage__text">The Gatineau Park Visitor Centre is a large conservation park located just a short trip across the river from Ottawa. It covers over 361 square miles and is the second most visited national park in Canada. The park offers diverse activities such as hiking, biking, skiing, and nature spotting amidst its woods, lakes, and waterfalls.</p>
+                        <p class="places-stage__coords">45.5058&deg; N / 75.8120&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="12"
+                    aria-labelledby="place-title-13"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/ottawa_13.avif" alt="Mer Bleue Bog" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">13</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-13" class="places-stage__title">Mer Bleue Bog</h3>
+                        <p class="places-stage__text">Mer Bleue Bog, located just east of Ottawa, is a 7,700-year-old natural bog and in southern Ontario. It offers an interpretive boardwalk trail that winds through pristine wetlands, providing opportunities for birdwatching and photography. The area has diverse plant life including rare orchids and carnivorous plants. Visitors can marvel at the unique northern boreal landscape with its unique wildlife and flora reminiscent of the Arctic.</p>
+                        <p class="places-stage__coords">45.3945&deg; N / 75.5128&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="13"
+                    aria-labelledby="place-title-14"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/ottawa_14.avif" alt="Dominion Arboretum" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">14</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-14" class="places-stage__title">Dominion Arboretum</h3>
+                        <p class="places-stage__text">The Dominion Arboretum, established in 1889, is Canada&#x27;s oldest arboretum spanning 64 acres of rolling land and showing an extensive collection of 10,000 plants including 4,000 species. With its diverse landscape featuring 1,000 tree species and several microclimates, it offers fantastic panoramic views. This park is a favorite among photographers and nature enthusiasts alike.</p>
+                        <p class="places-stage__coords">45.3911&deg; N / 75.7062&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="14"
+                    aria-labelledby="place-title-15"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/ottawa_15.avif" alt="Central Experimental Farm" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">15</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-15" class="places-stage__title">Central Experimental Farm</h3>
+                        <p class="places-stage__text">Central Experimental Farm is a visitor site in Ottawa, Canada. The farm is home to an arboretum, specimen plantings, ornamental gardens, wildlife garden, heritage buildings and greenhouses. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">45.3939&deg; N / 75.7158&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="15"
+                    aria-labelledby="place-title-16"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/ottawa_16.avif" alt="Parc des Cèdres" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">16</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-16" class="places-stage__title">Parc des Cèdres</h3>
+                        <p class="places-stage__text">Parc des Cèdres is a National Capital Commission green space on the Ottawa River near the Portage Bridge with lawns, shade trees, and views toward Gatineau. The park forms part of the capital pathway network used by cyclists and pedestrians linking downtown Ottawa to LeBreton Flats and the riverfront promenade.</p>
+                        <p class="places-stage__coords">45.3972&deg; N / 75.8590&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="site-footer">
         <div class="page-shell">
             <div class="site-footer__bar">
-                <a href="../../index.html" class="site-footer__brand" aria-label="Global Explorer home">
-                    <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
+                <a href="../../index.html" class="site-footer__mark" aria-label="Global Explorer home">
+                    <svg width="24" height="24" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
-                    <span class="site-footer__brand-name font-display">Global Explorer</span>
+                    Global Explorer
                 </a>
-                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides <span>Ottawa: 16 places across Central Canada.</span></p>
             </div>
         </div>
     </footer>
 
     <button id="scrollTopBtn" type="button" aria-label="Scroll to top">
-        <i class="ph ph-arrow-up" aria-hidden="true"></i>
+        <svg viewBox="0 0 24 24" width="1.15em" height="1.15em" aria-hidden="true" focusable="false">
+            <path d="M12 5.25 V18.75 M12 5.25 L6.75 10.5 M12 5.25 L17.25 10.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
     </button>
 
     <script defer src="../../assets/dev-destination-toggle.js"></script>
     <script defer src="../../assets/tg-page-chrome.js"></script>
     <script defer src="../../assets/tg-destination-map.js"></script>
+    <script defer src="../../assets/tg-destination-places.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const map = L.map('map').setView([45.420057, -75.700340], 14);
+            const map = L.map('map');
             L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
                 attribution: '&copy; Google Maps',
                 maxZoom: 20
             }).addTo(map);
-            const locations = [{"name": "Parliament Hill", "lat": 45.423594, "lng": -75.700929}, {"name": "Centennial Flame", "lat": 45.423737, "lng": -75.698703}, {"name": "The National War Memorial", "lat": 45.424069, "lng": -75.695529}, {"name": "Rideau Canal, Locks 1 - 8 - Ottawa", "lat": 45.424801, "lng": -75.695228}, {"name": "Ottawa Sign, ByWard Market", "lat": 45.427509, "lng": -75.694498}, {"name": "Notre Dame Cathedral Basilica", "lat": 45.429913, "lng": -75.696196}, {"name": "CF Rideau Centre", "lat": 45.425163, "lng": -75.691271}, {"name": "Rideau Canal National Historic Site", "lat": 45.40694, "lng": -75.681853}, {"name": "Rideau Hall", "lat": 45.444485, "lng": -75.685791}, {"name": "Casino du Lac-Leamy", "lat": 45.446449, "lng": -75.725667}, {"name": "Mackenzie King Estate", "lat": 45.483486, "lng": -75.847908}, {"name": "Gatineau Park Visitor Centre", "lat": 45.505823, "lng": -75.812014}, {"name": "Mer Bleue Bog", "lat": 45.394512, "lng": -75.51276}, {"name": "Dominion Arboretum", "lat": 45.391139, "lng": -75.706166}, {"name": "Central Experimental Farm", "lat": 45.393888, "lng": -75.715827}, {"name": "Parc des Cèdres", "lat": 45.397225, "lng": -75.858954}];
+            const locations = Array.from(document.querySelectorAll('[data-place-option]')).map((el) => ({
+                name: el.dataset.placeName || '',
+                lat: Number(el.dataset.placeLat),
+                lng: Number(el.dataset.placeLng),
+            }));
             const customIcon = L.icon({
                 iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
                 iconSize: [32, 32],
@@ -354,14 +825,45 @@
                 popupAnchor: [0, -32],
             });
             const destinationCenter = [45.420057, -75.700340];
-            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": false, "maxCenterLat": 0.085766, "maxCenterLng": 0.18758};
-            locations.forEach((location) => {
-                L.marker([location.lat, location.lng], { icon: customIcon })
+            const mapContext = {};
+            const markers = locations.map((location) => {
+                const marker = L.marker([location.lat, location.lng], { icon: customIcon })
                     .addTo(map)
                     .bindPopup(`<strong>${location.name}</strong>`);
+                return marker;
             });
             window.TGDestinationMap?.fitToLocations(map, locations, destinationCenter, mapContext);
             window.TGDestinationMap?.bindMobileScrollGuard(map, 'map');
+            window.TGDestinationMap?.registerMarkers(map, markers);
+
+            const heroImage = document.querySelector('[data-destination-hero-image]');
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (heroImage && !reduceMotion) {
+                let framePending = false;
+                let scrolling = false;
+                let scrollEndTimer = 0;
+                const updateHeroPosition = () => {
+                    const offset = Math.min(window.scrollY, window.innerHeight * 1.15) * 0.075;
+                    heroImage.style.transform = `translate3d(0, ${offset}px, 0) scale(1.055)`;
+                    framePending = false;
+                };
+                window.addEventListener('scroll', () => {
+                    if (!scrolling) {
+                        scrolling = true;
+                        heroImage.style.willChange = 'transform';
+                    }
+                    window.clearTimeout(scrollEndTimer);
+                    scrollEndTimer = window.setTimeout(() => {
+                        scrolling = false;
+                        heroImage.style.willChange = 'auto';
+                    }, 150);
+                    if (!framePending) {
+                        window.requestAnimationFrame(updateHeroPosition);
+                        framePending = true;
+                    }
+                }, { passive: true });
+                updateHeroPosition();
+            }
         });
     </script>
 </body>

@@ -6,529 +6,1364 @@
     <meta name="description" content="Plan a visit to Hamburg with a concise history, interactive attractions map, prices, and curated highlights across the destination.">
     <meta name="theme-color" content="#121417">
     <title>Hamburg Guide | Global Explorer Guides</title>
-    <link rel="stylesheet" href="../../assets/tailwind.css">
-    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
     <link rel="stylesheet" href="../../assets/newindex-fonts.css">
     <link rel="stylesheet" href="../../assets/tg-theme.css">
     <link rel="stylesheet" href="../../assets/tg-site-chrome.css">
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
     <link rel="stylesheet" href="../../assets/tg-modern-polish.css">
+    <link rel="stylesheet" href="../../assets/tg-country-page.css">
+    <link rel="stylesheet" href="../../assets/tg-destination-page-v3.css">
     <script defer src="../../assets/lenis.min.js"></script>
     <script defer src="../../assets/tg-smooth-scroll.js"></script>
     <link rel="preload" as="image" href="images/hamburg_hero.avif" type="image/avif" fetchpriority="high">
     <script defer src="../../assets/leaflet/leaflet.js"></script>
 </head>
-<body class="tg-theme tg-destination-page tg-modern">
-    <header id="site-header" class="header-glass fixed top-0 left-0 right-0 z-50">
+<body class="tg-theme tg-modern tg-country-v2 tg-destination-v3">
+    <a class="skip-link" href="#main-content">Skip to Hamburg guide</a>
+    <header id="site-header" class="header-glass">
         <div class="page-shell header-glass__inner">
-            <a href="../../index.html" class="font-display site-brand" style="display:flex;align-items:center;gap:0.75rem;text-decoration:none;color:inherit;font-size:1.25rem;" aria-label="Global Explorer home">
+            <a href="../../index.html" class="site-brand" aria-label="Global Explorer home">
                 <span class="site-brand__mark" aria-hidden="true">
                     <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
-                        <circle cx="14" cy="14" r="2" fill="#E8B14F"/>
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
                 </span>
                 Global Explorer
             </a>
-            <nav class="header-glass__nav-mobile" aria-label="Mobile navigation">
-                <a href="../../index.html" class="header-glass__icon-link" aria-label="Home">
-                    <i class="ph ph-house" aria-hidden="true"></i>
-                </a>
-                <a href="germany.html" class="header-glass__icon-link" aria-label="Back to Germany">
-                    <i class="ph ph-arrow-left" aria-hidden="true"></i>
-                </a>
-            </nav>
             <nav class="header-glass__nav" aria-label="Primary">
-                <a href="../../index.html" class="nav-link">Home</a>
-                <a href="hamburg.html" class="nav-link" aria-current="page">Hamburg</a>
+                <a href="#main-content" class="nav-link" aria-current="page">Hamburg</a>
+                <a href="#atlas" class="nav-link">Atlas</a>
+                <a href="#places" class="nav-link">Places</a>
                 <a href="germany.html" class="nav-link">Germany</a>
-                <a href="../../index.html#map" class="nav-link">Atlas</a>
             </nav>
         </div>
     </header>
-    <main>
-        <div class="tg-destination-hero-zone">
-            <div class="tg-destination-hero" aria-hidden="true">
-                <div class="tg-destination-hero__image" style="background-image: url('images/hamburg_hero.avif')"></div>
-                <div class="tg-destination-hero__fade"></div>
-            </div>
-            <div class="page-shell tg-destination-hero-zone__content">
-        <nav class="tg-toolbar tg-toolbar--compact" aria-label="Breadcrumb">
-            <div class="tg-breadcrumb">
-                <img src="../../assets/flags/w40/de.png" alt="" class="w-6 h-auto rounded-[2px]" aria-hidden="true">
-                <span>Germany</span>
-                <span class="tg-breadcrumb__sep" aria-hidden="true">&rsaquo;</span>
-                <span class="tg-breadcrumb__current">Northern Germany</span>
-            </div>
-        </nav>
+    <main id="main-content" tabindex="-1">
+        <section class="destination-hero" aria-labelledby="destination-title">
+            <img class="destination-hero__media" data-destination-hero-image src="images/hamburg_hero.avif" alt="" width="1600" height="1067" fetchpriority="high" decoding="sync">
+            <div class="destination-hero__shade" aria-hidden="true"></div>
+            <div class="page-shell destination-hero__content">
+                <button
+                    type="button"
+                    id="destination-active-toggle"
+                    class="country-active-toggle country-active-toggle--inactive"
+                    data-iso2="DE"
+                    data-slug="hamburg"
+                    data-active="false"
+                    data-interactive="true"
+                    aria-label="Toggle Hamburg visibility on Germany guide"
+                    aria-pressed="false"
+                >
+                    <img src="../../assets/flags/w80/de.png" alt="" aria-hidden="true">
+                    <span class="country-toggle__copy" aria-hidden="true">
+                        <span class="country-toggle__label">Hamburg guide</span>
+                        <strong class="country-toggle__state"></strong>
+                    </span>
+                </button>
 
-        <header class="tg-page-header">
-            <button
-        type="button"
-        id="destination-active-toggle"
-        class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
-        data-iso2="DE"
-        data-slug="hamburg"
-        data-active="false"
-        data-interactive="true"
-        aria-label="Toggle Hamburg visibility on Germany guide"
-        aria-pressed="false"
-    >
-        <i class="ph ph-map-pin text-4xl pointer-events-none" aria-hidden="true"></i>
-    </button>
-            <span class="tg-page-header__eyebrow">Destination Guide — Northern Germany</span>
-            <h1 class="tg-page-title font-display">Explore <em>Hamburg</em></h1>
-            <div class="glass-card frosted-panel tg-panel">
-                <h2 class="tg-panel__title font-display">
-                    <i class="ph ph-scroll" aria-hidden="true"></i> A Brief History
-                </h2>
-                <p class="tg-panel__body">Hamburg developed from a Carolingian mission settlement into a leading Hanseatic port commanding trade on the Elbe. The Speicherstadt warehouse quarter and Chilehaus express 19th-century shipping wealth, while the 2017 Elbphilharmonie marks HafenCity regeneration. Allied bombing in 1943 devastated the centre; post-war rebuilding preserved landmarks such as St. Michaelis Church. The city-state joined the Federal Republic in 1949 as a major gateway for emigration and cargo.</p>
-            </div>
-        </header>
+                <div class="hero__route" aria-label="Destination route and coordinates">
+                    <span>Germany / Northern Germany</span>
+                    <span>53.5488&deg; N / 9.9766&deg; E</span>
+                </div>
 
-        <div class="tg-section__header tg-section__header--map-end">
-            <span class="tg-section__eyebrow">Map</span>
-            <h2 class="tg-section__title font-display">Attractions Map</h2>
-        </div>
-            </div>
-        </div>
-
-        <div class="page-shell tg-main tg-main--below-hero">
-        <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Hamburg attractions"></div>
-        <section class="tg-section">
-            <div class="tg-section__header">
-                <span class="tg-section__eyebrow">Highlights</span>
-                <h2 class="tg-section__title font-display">Top Sights &amp; Activities</h2>
-            </div>
-            <div class="tg-sights-list">
-            
-            <!-- 1. Elbe Tunnel -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/hamburg_1.avif" alt="Elbe Tunnel" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                <h1 id="destination-title" class="destination-hero__title" style="--destination-title-chars: 7">Hamburg</h1>
+                <div class="destination-hero__history">
+                    <p>Hamburg developed from a Carolingian mission settlement into a leading Hanseatic port commanding trade on the Elbe. The Speicherstadt warehouse quarter and Chilehaus express 19th-century shipping wealth, while the 2017 Elbphilharmonie marks HafenCity regeneration. Allied bombing in 1943 devastated the centre; post-war rebuilding preserved landmarks such as St. Michaelis Church. The city-state joined the Federal Republic in 1949 as a major gateway for emigration and cargo.</p>
+                </div>
+                <dl class="destination-hero__facts" aria-label="Hamburg guide facts">
+                    <div>
+                        <dt>Country</dt>
+                        <dd>Germany</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Elbe Tunnel</h3>
-                    <p class="tg-sight-card__text">The St. Pauli Elbtunnel opened in 1911 as continental Europe&#x27;s first major underwater road tunnel, linking the Landungsbrücken with Steinwerder island. Two tiled tubes stretch 426 metres beneath the Elbe, reached by historic lifts or a ceremonial staircase. Pedestrians and cyclists pass free around the clock, with harbour views from the south portal.</p>
-                </div>
-            </div>
-            <!-- 2. St. Pauli Piers -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/hamburg_2.avif" alt="St. Pauli Piers" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                    <div>
+                        <dt>Region</dt>
+                        <dd>Northern Germany</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">St. Pauli Piers</h3>
-                    <p class="tg-sight-card__text">The St. Pauli Landungsbrücken are floating piers on the Norderelbe used by harbour ferries, cruise ships, and excursion boats since the 19th century. Green copper roofs and clock towers frame views of the Elbe and container terminals. River buses connect the piers with the Speicherstadt, Elbphilharmonie, and Finkenwerder.</p>
-                </div>
-            </div>
-            <!-- 3. St. Michael&#x27;s Church -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/hamburg_3.avif" alt="St. Michael&#x27;s Church" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free (tower €8)
+                    <div>
+                        <dt>Places</dt>
+                        <dd>30</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">St. Michael&#x27;s Church</h3>
-                    <p class="tg-sight-card__text">Michael&#x27;s Church is a visitor site in Hamburg. Michaelis, known as the Michel, is a Baroque main church completed in 1912 after earlier fires destroyed predecessors. Its copper-clad tower rises 132 metres and offers a viewing platform over the port and Altstadt. The crypt houses exhibitions on Hamburg church history and maritime disasters.</p>
-                </div>
-            </div>
-            <!-- 4. Elbphilharmonie Hamburg -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/hamburg_4.avif" alt="Elbphilharmonie Hamburg" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Elbphilharmonie Hamburg</h3>
-                    <p class="tg-sight-card__text">The Elbphilharmonie concert hall by Herzog and de Meuron crowns a 1960s warehouse in HafenCity with a wave of curved glass completed in 2016. The publicly accessible Plaza at 37 metres is reached via the curved Tube escalator. The vineyard-style Grand Hall seats 2,100 for concerts by the NDR Elbphilharmonie Orchestra.</p>
-                </div>
-            </div>
-            <!-- 5. Miniatur Wunderland -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/hamburg_5.avif" alt="Miniatur Wunderland" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €22
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Miniatur Wunderland</h3>
-                    <p class="tg-sight-card__text">Miniatur Wunderland in the Speicherstadt is the world&#x27;s largest model railway layout, opened in 2001 and expanded across themed sections from Scandinavia to the United States. Detailed miniature airports, harbours, and cities animate with moving trains and ships. The attraction occupies several floors of a historic warehouse block.</p>
-                </div>
-            </div>
-            <!-- 6. Treppenviertel Blankenese -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/hamburg_6.avif" alt="Treppenviertel Blankenese" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Treppenviertel Blankenese</h3>
-                    <p class="tg-sight-card__text">Blankenese&#x27;s Treppenviertel climbs the Elbe bluff in western Hamburg with more than 5,000 steps linking villas, gardens, and river paths. Merchant houses and captains&#x27; homes from the 18th and 19th centuries line winding lanes above sandy beaches. The district was an independent fishing village until annexed by Hamburg in 1927.</p>
-                </div>
-            </div>
-            <!-- 7. Hamburg BUNKER -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/hamburg_7.avif" alt="Hamburg BUNKER" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €20
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Hamburg BUNKER</h3>
-                    <p class="tg-sight-card__text">The St. Pauli bunker on the Heiligengeistfeld is a wartime flak tower now crowned with a rooftop park planted with thousands of trees. Guided tours explain its construction in 1942, post-war use as a media bunker, and recent green conversion. A spiral path leads to panoramic views over the harbour and Millerntor stadium.</p>
-                </div>
-            </div>
-            <!-- 8. Millerntor-Stadion -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/hamburg_8.avif" alt="Millerntor-Stadion" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €16
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Millerntor-Stadion</h3>
-                    <p class="tg-sight-card__text">Millerntor-Stadion is the home ground of FC St. Pauli on the Heiligengeistfeld in the St. Pauli district, rebuilt several times since 1910. Stadium tours visit the Gegengerade stand, dressing rooms, and the club museum documenting supporter culture. The ground seats about 29,500 and lies steps from the Reeperbahn.</p>
-                </div>
-            </div>
-            <!-- 9. Hagenbeck Zoo -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/hamburg_9.avif" alt="Hagenbeck Zoo" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €29
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Hagenbeck Zoo</h3>
-                    <p class="tg-sight-card__text">Tierpark Hagenbeck in Stellingen was founded in 1907 by Carl Hagenbeck as one of the first zoos without barred cages, using moats and naturalistic enclosures. The park combines a zoo, tropical aquarium, and ethnographic displays across landscaped hills. Historic entrance buildings and the Neptune fountain date from the early 20th century.</p>
-                </div>
-            </div>
-            <!-- 10. Chilehaus -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/hamburg_10.avif" alt="Chilehaus" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Chilehaus</h3>
-                    <p class="tg-sight-card__text">The Chilehaus on the Kontorhausviertel is a 1924 expressionist office block designed by Fritz Höger for a shipping merchant trading with Chile. Its sharp prow and stepped brick façade resemble a steamship&#x27;s bow. The Kontorhaus district with the Sprinkenhof and Chilehaus is a UNESCO World Heritage Site.</p>
-                </div>
-            </div>
-            <!-- 11. St. Nikolai Memorial -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/hamburg_11.avif" alt="St. Nikolai Memorial" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €7
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">St. Nikolai Memorial</h3>
-                    <p class="tg-sight-card__text">The Mahnmal St. Nikolai preserves the burnt-out spire of a Gothic church destroyed in the 1943 Operation Gomorrah air raids. A lift ascends the tower for views over the wartime ruins, while the crypt museum documents the bombing and Nazi persecution. The church was once among the tallest buildings in the world.</p>
-                </div>
-            </div>
-            <!-- 12. St. Catherine Church -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/hamburg_12.avif" alt="St. Catherine Church" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">St. Catherine Church</h3>
-                    <p class="tg-sight-card__text">Catherine Church is a visitor site in Hamburg. Katharinen is a brick Gothic church in the harbour quarter, with a nave dating from the 13th century and a copper spire visible from the Speicherstadt. It served Hanseatic merchants and shipwrights and houses medieval artefacts including the lion-head door. The church was heavily damaged in 1943 and restored after the war.</p>
-                </div>
-            </div>
-            <!-- 13. Hamburg Townhall -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/hamburg_13.avif" alt="Hamburg Townhall" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free (guided tour €8)
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Hamburg Townhall</h3>
-                    <p class="tg-sight-card__text">Hamburg Townhall is a visitor site in Hamburg, Germany. It opened or was completed around 1897. The Hamburger Rathaus on Rathausmarkt was completed in 1897 in neo-Renaissance style as the seat of the city-state senate and parliament. The inner courtyard and portico are open to the public when sessions allow. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 14. Town Hall Market -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/hamburg_14.avif" alt="Town Hall Market" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Town Hall Market</h3>
-                    <p class="tg-sight-card__text">Rathausmarkt is the central square before the town hall, used for markets, political rallies, and seasonal events including the Christmas market. The open space is framed by the Rathaus façade, Alsterarkaden arcades, and commercial buildings of the Altstadt. A fountain and flagpoles mark the civic the Free and Hanseatic City.</p>
-                </div>
-            </div>
-            <!-- 15. Alster Arcade -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/hamburg_15.avif" alt="Alster Arcade" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Alster Arcade</h3>
-                    <p class="tg-sight-card__text">The Alsterarkaden are neoclassical shopping arcades built in 1842 along the Kleine Alster canal beside Rathausmarkt. Colonnades shelter boutiques and cafés above the water, rebuilt after the 1842 Great Fire. The arcades link the town hall quarter with Jungfernstieg promenade along the Binnenalster lake.</p>
-                </div>
-            </div>
-            <!-- 16. Stage Theater an der Elbe -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/hamburg_16.avif" alt="Stage Theater an der Elbe" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Stage Theater an der Elbe</h3>
-                    <p class="tg-sight-card__text">The Stage Theater an der Elbe is a riverside musical theatre in the harbour opened in 2000 on the site of former docks. Glass façades face the Elbe and the passing harbour traffic. The venue stages large-scale musical productions with seating for about 1,800 spectators.</p>
-                </div>
-            </div>
-            <!-- 17. Planten un Blomen -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/hamburg_17.avif" alt="Planten un Blomen" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Planten un Blomen</h3>
-                    <p class="tg-sight-card__text">Planten un Blomen is a 47-hectare park in the city centre combining botanical gardens, greenhouses, and themed landscapes from Japanese gardens to rose beds. Summer water-light concerts animate the central lake, while tropical plants fill the Schaugewächshäuser in winter. The park replaced fortifications after Hamburg&#x27;s walls were demolished in the 19th century.</p>
-                </div>
-            </div>
-            <!-- 18. Alsterfontäne -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/hamburg_18.avif" alt="Alsterfontäne" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Alsterfontäne</h3>
-                    <p class="tg-sight-card__text">The Alsterfontäne is a programmable fountain at the Binnenalster lake that shoots water jets up to 60 metres during scheduled displays. Installed in 1989, the fountain marks the head of the Inner Alster and is visible from Jungfernstieg. Displays run on selected afternoons and during city festivals.</p>
-                </div>
-            </div>
-            <!-- 19. Laeiszhalle -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/hamburg_19.avif" alt="Laeiszhalle" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Laeiszhalle</h3>
-                    <p class="tg-sight-card__text">The Laeiszhalle concert hall on Johannes-Brahms-Platz opened in 1908 as the Musikhalle, named for shipping magnate Carl Laeisz. The neo-baroque main hall hosts the Hamburg Philharmonic and visiting orchestras. Brahms, who spent his last years in Hamburg, is commemorated in the adjoining square.</p>
-                </div>
-            </div>
-            <!-- 20. Wildpark Schwarze Berge -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/hamburg_20.avif" alt="Wildpark Schwarze Berge" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €16
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Wildpark Schwarze Berge</h3>
-                    <p class="tg-sight-card__text">Wildpark Schwarze Berge in the Harburg hills south of Hamburg is a woodland wildlife park showing native European species including wolves, lynx, and wild boar in large enclosures. Walking trails loop through forest on the site of a former forester&#x27;s estate. The park targets families with feeding demonstrations and play areas.</p>
-                </div>
-            </div>
-            <!-- 21. Water Art Elbinsel Kaltehofe -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/hamburg_21.avif" alt="Water Art Elbinsel Kaltehofe" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Water Art Elbinsel Kaltehofe</h3>
-                    <p class="tg-sight-card__text">Wasser-Erlebnis Elbinsel Kaltehofe on a harbour island documents Hamburg&#x27;s historic water filtration plant built in 1893 to supply safe drinking water to the growing port. Listed red-brick filter halls and ponds now host exhibitions on urban water management. The site lies beside nature trails on the Elbe island of Kaltehofe.</p>
-                </div>
-            </div>
-            <!-- 22. Panoptikum -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/hamburg_22.avif" alt="Panoptikum" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €10
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Panoptikum</h3>
-                    <p class="tg-sight-card__text">The Panoptikum on Spielbudenplatz is Germany&#x27;s oldest wax museum, founded in 1879 and rebuilt after wartime destruction. Figures from Hamburg musicians to political leaders occupy themed rooms across two floors near the Reeperbahn. The cabinet-of-curiosities tradition continues with horror chambers and local celebrity tableaux.</p>
-                </div>
-            </div>
-            <!-- 23. Reeperbahn -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/hamburg_23.avif" alt="Reeperbahn" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Reeperbahn</h3>
-                    <p class="tg-sight-card__text">The Reeperbahn is St. Pauli&#x27;s main entertainment mile, named for the rope-making trade that once lined the street. Neon clubs, theatres, and bars occupy 19th-century merchant houses between Millerntor and Spielbudenplatz. The Beatles performed in clubs here in 1960-62, and the annual Reeperbahn Festival draws music industry visitors.</p>
-                </div>
-            </div>
-            <!-- 24. St. Peter&#x27;s Church -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/hamburg_24.avif" alt="St. Peter&#x27;s Church" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">St. Peter&#x27;s Church</h3>
-                    <p class="tg-sight-card__text">Peter&#x27;s Church is a visitor site in Hamburg. Petri am Berge is a five-naved hall church in the Altstadt whose tower was the city&#x27;s tallest structure before the Michel. The brick Gothic building dates largely from the 14th century and houses a bronze baptismal font from 1457. Medieval wall paintings were uncovered during post-war restoration of the nave.</p>
-                </div>
-            </div>
-            <!-- 25. Thalia Theater -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/hamburg_25.avif" alt="Thalia Theater" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Thalia Theater</h3>
-                    <p class="tg-sight-card__text">The Thalia Theater on Alstertor is one of Hamburg&#x27;s three municipal theatres, housed in a 1912 neo-baroque building destroyed in 1943 and rebuilt in 1960. The repertoire spans drama, comedy, and contemporary German plays across two stages. The company is among the largest spoken-theatre ensembles in Germany.</p>
-                </div>
-            </div>
-            <!-- 26. Hamburg State Opera -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/hamburg_26.avif" alt="Hamburg State Opera" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Hamburg State Opera</h3>
-                    <p class="tg-sight-card__text">The Hamburgische Staatsoper on Dammtorstraße is the city&#x27;s opera house, opened in 1827 and rebuilt after wartime bombing in 1955. The company stages opera and ballet in a 1,690-seat auditorium. Gustav Mahler served as conductor here in the 1890s before moving to Vienna.</p>
-                </div>
-            </div>
-            <!-- 27. Port of Hamburg -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/hamburg_27.avif" alt="Port of Hamburg" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Port of Hamburg</h3>
-                    <p class="tg-sight-card__text">The Port of Hamburg stretches along the Lower Elbe as Germany&#x27;s largest seaport, handling containers, cruise ships, and bulk cargo since the Middle Ages. Viewing points at Landungsbrücken, Elbphilharmonie Plaza, and harbour tours reveal the working docks and Speicherstadt warehouses. The port drives much of the city-state&#x27;s economy.</p>
-                </div>
-            </div>
-            <!-- 28. Stadtpark -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/hamburg_28.avif" alt="Stadtpark" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Stadtpark</h3>
-                    <p class="tg-sight-card__text">Stadtpark in Winterhude is a 148-hectare landscaped park opened in 1914 with meadows, woods, and the open-air Stadtparksee stage. The Planetarium occupies a former water tower, and sculpture gardens dot the grounds. Hamburg&#x27;s largest inner-city park draws joggers, picnickers, and concert audiences throughout the year.</p>
-                </div>
-            </div>
-            <!-- 29. Isemarkt -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/hamburg_29.avif" alt="Isemarkt" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Isemarkt</h3>
-                    <p class="tg-sight-card__text">The Isemarkt is a weekly street market along the Isebekkanal in Eppendorf, held on Tuesdays and Fridays under the elevated U-Bahn tracks. Stalls sell produce, fish, flowers, and prepared food along one of Europe&#x27;s longest open-air market rows. The market has operated in its covered form since the 1980s.</p>
-                </div>
-            </div>
-            <!-- 30. Deutsches SchauSpielHaus Hamburg -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/hamburg_30.avif" alt="Deutsches SchauSpielHaus Hamburg" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Deutsches SchauSpielHaus Hamburg</h3>
-                    <p class="tg-sight-card__text">The Deutsches SchauSpielHaus on Hartungstraße is Hamburg&#x27;s principal spoken-theatre company, based in a 1900 art-nouveau building in Rotherbaum. The repertoire includes classics, new German drama, and international works on the main stage and Kammerspiele. The theatre employs one of the largest permanent acting ensembles in the German-speaking world.</p>
-                </div>
-            </div>
+                </dl>
             </div>
         </section>
-        </div>
+
+        <section id="atlas" class="destination-atlas" aria-labelledby="atlas-title">
+            <div class="page-shell destination-atlas__layout">
+                <div class="destination-atlas__brief">
+                    <p class="destination-atlas__index">City atlas</p>
+                    <h2 id="atlas-title">Plot the city.</h2>
+                    <p class="destination-atlas__copy">Zoom, pan, and open any marker to focus that place in the catalog below.</p>
+                    <dl class="destination-atlas__facts" aria-label="Map coverage">
+                        <div>
+                            <dt>Plotted</dt>
+                            <dd>30 places</dd>
+                        </div>
+                        <div>
+                            <dt>Center</dt>
+                            <dd>53.5488&deg; N<br>9.9766&deg; E</dd>
+                        </div>
+                    </dl>
+                </div>
+                <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Hamburg attractions"></div>
+            </div>
+        </section>
+
+        <section id="places" class="destination-places" aria-labelledby="places-title">
+            <div class="page-shell">
+                <div class="destination-chapter">
+                    <h2 id="places-title" class="destination-chapter__heading">30 ways into<br>Hamburg.</h2>
+                    <p class="destination-chapter__copy">Browse the index, open a location, and read the essentials without scrolling through a long catalog. Each entry contains its image, admission note, and contextual guide.</p>
+                </div>
+                <div class="places-explorer" data-places-explorer>
+                    <aside class="places-explorer__rail" aria-label="Place index">
+                        <div class="places-explorer__toolbar">
+                            <label class="places-explorer__filter-label" for="places-filter">Filter places</label>
+                            <input
+                                id="places-filter"
+                                class="places-explorer__filter"
+                                type="search"
+                                data-places-filter
+                                placeholder="Search by name"
+                                autocomplete="off"
+                            >
+                            <p class="places-explorer__meta"><strong data-places-count>30</strong> of 30 shown</p>
+                        </div>
+                        <ul class="places-explorer__list" role="listbox" aria-label="Places in Hamburg" data-places-list data-lenis-prevent data-tg-scroll-surface>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option is-active"
+                            role="option"
+                            id="place-option-1"
+                            data-place-option
+                            data-place-index="0"
+                            data-place-name="Elbe Tunnel"
+                            data-place-lat="53.545886"
+                            data-place-lng="9.966588"
+                            aria-selected="true"
+                            tabindex="0"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">01</span>
+                            <span class="places-explorer__option-name">Elbe Tunnel</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-2"
+                            data-place-option
+                            data-place-index="1"
+                            data-place-name="St. Pauli Piers"
+                            data-place-lat="53.54538"
+                            data-place-lng="9.966002"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">02</span>
+                            <span class="places-explorer__option-name">St. Pauli Piers</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-3"
+                            data-place-option
+                            data-place-index="2"
+                            data-place-name="St. Michael&#x27;s Church"
+                            data-place-lat="53.548413"
+                            data-place-lng="9.978798"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">03</span>
+                            <span class="places-explorer__option-name">St. Michael&#x27;s Church</span>
+                            <span class="places-explorer__option-price">Free (tower €8)</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-4"
+                            data-place-option
+                            data-place-index="3"
+                            data-place-name="Elbphilharmonie Hamburg"
+                            data-place-lat="53.541331"
+                            data-place-lng="9.984465"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">04</span>
+                            <span class="places-explorer__option-name">Elbphilharmonie Hamburg</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-5"
+                            data-place-option
+                            data-place-index="4"
+                            data-place-name="Miniatur Wunderland"
+                            data-place-lat="53.543843"
+                            data-place-lng="9.989099"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">05</span>
+                            <span class="places-explorer__option-name">Miniatur Wunderland</span>
+                            <span class="places-explorer__option-price">€22</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-6"
+                            data-place-option
+                            data-place-index="5"
+                            data-place-name="Treppenviertel Blankenese"
+                            data-place-lat="53.557825"
+                            data-place-lng="9.807147"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">06</span>
+                            <span class="places-explorer__option-name">Treppenviertel Blankenese</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-7"
+                            data-place-option
+                            data-place-index="6"
+                            data-place-name="Hamburg BUNKER"
+                            data-place-lat="53.556527"
+                            data-place-lng="9.970173"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">07</span>
+                            <span class="places-explorer__option-name">Hamburg BUNKER</span>
+                            <span class="places-explorer__option-price">€20</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-8"
+                            data-place-option
+                            data-place-index="7"
+                            data-place-name="Millerntor-Stadion"
+                            data-place-lat="53.554587"
+                            data-place-lng="9.967754"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">08</span>
+                            <span class="places-explorer__option-name">Millerntor-Stadion</span>
+                            <span class="places-explorer__option-price">€16</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-9"
+                            data-place-option
+                            data-place-index="8"
+                            data-place-name="Hagenbeck Zoo"
+                            data-place-lat="53.596973"
+                            data-place-lng="9.939508"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">09</span>
+                            <span class="places-explorer__option-name">Hagenbeck Zoo</span>
+                            <span class="places-explorer__option-price">€29</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-10"
+                            data-place-option
+                            data-place-index="9"
+                            data-place-name="Chilehaus"
+                            data-place-lat="53.548304"
+                            data-place-lng="10.002995"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">10</span>
+                            <span class="places-explorer__option-name">Chilehaus</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-11"
+                            data-place-option
+                            data-place-index="10"
+                            data-place-name="St. Nikolai Memorial"
+                            data-place-lat="53.54746"
+                            data-place-lng="9.990671"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">11</span>
+                            <span class="places-explorer__option-name">St. Nikolai Memorial</span>
+                            <span class="places-explorer__option-price">€7</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-12"
+                            data-place-option
+                            data-place-index="11"
+                            data-place-name="St. Catherine Church"
+                            data-place-lat="53.545882"
+                            data-place-lng="9.994447"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">12</span>
+                            <span class="places-explorer__option-name">St. Catherine Church</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-13"
+                            data-place-option
+                            data-place-index="12"
+                            data-place-name="Hamburg Townhall"
+                            data-place-lat="53.550431"
+                            data-place-lng="9.992334"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">13</span>
+                            <span class="places-explorer__option-name">Hamburg Townhall</span>
+                            <span class="places-explorer__option-price">Free (guided tour €8)</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-14"
+                            data-place-option
+                            data-place-index="13"
+                            data-place-name="Town Hall Market"
+                            data-place-lat="53.550808"
+                            data-place-lng="9.993074"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">14</span>
+                            <span class="places-explorer__option-name">Town Hall Market</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-15"
+                            data-place-option
+                            data-place-index="14"
+                            data-place-name="Alster Arcade"
+                            data-place-lat="53.552159"
+                            data-place-lng="9.993093"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">15</span>
+                            <span class="places-explorer__option-name">Alster Arcade</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-16"
+                            data-place-option
+                            data-place-index="15"
+                            data-place-name="Stage Theater an der Elbe"
+                            data-place-lat="53.539752"
+                            data-place-lng="9.974495"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">16</span>
+                            <span class="places-explorer__option-name">Stage Theater an der Elbe</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-17"
+                            data-place-option
+                            data-place-index="16"
+                            data-place-name="Planten un Blomen"
+                            data-place-lat="53.562017"
+                            data-place-lng="9.982065"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">17</span>
+                            <span class="places-explorer__option-name">Planten un Blomen</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-18"
+                            data-place-option
+                            data-place-index="17"
+                            data-place-name="Alsterfontäne"
+                            data-place-lat="53.555063"
+                            data-place-lng="9.995816"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">18</span>
+                            <span class="places-explorer__option-name">Alsterfontäne</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-19"
+                            data-place-option
+                            data-place-index="18"
+                            data-place-name="Laeiszhalle"
+                            data-place-lat="53.555997"
+                            data-place-lng="9.980879"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">19</span>
+                            <span class="places-explorer__option-name">Laeiszhalle</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-20"
+                            data-place-option
+                            data-place-index="19"
+                            data-place-name="Wildpark Schwarze Berge"
+                            data-place-lat="53.442271"
+                            data-place-lng="9.885634"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">20</span>
+                            <span class="places-explorer__option-name">Wildpark Schwarze Berge</span>
+                            <span class="places-explorer__option-price">€16</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-21"
+                            data-place-option
+                            data-place-index="20"
+                            data-place-name="Water Art Elbinsel Kaltehofe"
+                            data-place-lat="53.524291"
+                            data-place-lng="10.052511"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">21</span>
+                            <span class="places-explorer__option-name">Water Art Elbinsel Kaltehofe</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-22"
+                            data-place-option
+                            data-place-index="21"
+                            data-place-name="Panoptikum"
+                            data-place-lat="53.5494674"
+                            data-place-lng="9.9664557"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">22</span>
+                            <span class="places-explorer__option-name">Panoptikum</span>
+                            <span class="places-explorer__option-price">€10</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-23"
+                            data-place-option
+                            data-place-index="22"
+                            data-place-name="Reeperbahn"
+                            data-place-lat="53.54957"
+                            data-place-lng="9.962614"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">23</span>
+                            <span class="places-explorer__option-name">Reeperbahn</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-24"
+                            data-place-option
+                            data-place-index="23"
+                            data-place-name="St. Peter&#x27;s Church"
+                            data-place-lat="53.550401"
+                            data-place-lng="9.996764"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">24</span>
+                            <span class="places-explorer__option-name">St. Peter&#x27;s Church</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-25"
+                            data-place-option
+                            data-place-index="24"
+                            data-place-name="Thalia Theater"
+                            data-place-lat="53.552097"
+                            data-place-lng="9.998642"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">25</span>
+                            <span class="places-explorer__option-name">Thalia Theater</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-26"
+                            data-place-option
+                            data-place-index="25"
+                            data-place-name="Hamburg State Opera"
+                            data-place-lat="53.556794"
+                            data-place-lng="9.988858"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">26</span>
+                            <span class="places-explorer__option-name">Hamburg State Opera</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-27"
+                            data-place-option
+                            data-place-index="26"
+                            data-place-name="Port of Hamburg"
+                            data-place-lat="53.507096"
+                            data-place-lng="9.967923"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">27</span>
+                            <span class="places-explorer__option-name">Port of Hamburg</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-28"
+                            data-place-option
+                            data-place-index="27"
+                            data-place-name="Stadtpark"
+                            data-place-lat="53.596984"
+                            data-place-lng="10.020696"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">28</span>
+                            <span class="places-explorer__option-name">Stadtpark</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-29"
+                            data-place-option
+                            data-place-index="28"
+                            data-place-name="Isemarkt"
+                            data-place-lat="53.580913"
+                            data-place-lng="9.981053"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">29</span>
+                            <span class="places-explorer__option-name">Isemarkt</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-30"
+                            data-place-option
+                            data-place-index="29"
+                            data-place-name="Deutsches SchauSpielHaus Hamburg"
+                            data-place-lat="53.554459"
+                            data-place-lng="10.008845"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">30</span>
+                            <span class="places-explorer__option-name">Deutsches SchauSpielHaus Hamburg</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                        </ul>
+                        <p class="places-explorer__empty" data-places-empty hidden>No places match that filter.</p>
+                    </aside>
+                    <div class="places-explorer__stage" data-places-stage>
+                    <nav class="places-stage__stepper" data-places-stepper aria-label="Browse places" hidden>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--prev" data-places-prev aria-label="Previous place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M14.75 5.25 L8.25 12 l6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M9.1 12 H17.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--next" data-places-next aria-label="Next place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M9.25 5.25 L15.75 12 l-6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M6.6 12 H14.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                    </nav>
+                <article
+                    class="places-stage__panel is-active"
+                    data-place-panel
+                    data-place-index="0"
+                    aria-labelledby="place-title-1"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/hamburg_1.avif" alt="Elbe Tunnel" width="1200" height="750" loading="eager" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">01</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-1" class="places-stage__title">Elbe Tunnel</h3>
+                        <p class="places-stage__text">The St. Pauli Elbtunnel opened in 1911 as continental Europe&#x27;s first major underwater road tunnel, linking the Landungsbrücken with Steinwerder island. Two tiled tubes stretch 426 metres beneath the Elbe, reached by historic lifts or a ceremonial staircase. Pedestrians and cyclists pass free around the clock, with harbour views from the south portal.</p>
+                        <p class="places-stage__coords">53.5459&deg; N / 9.9666&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="1"
+                    aria-labelledby="place-title-2"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/hamburg_2.avif" alt="St. Pauli Piers" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">02</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-2" class="places-stage__title">St. Pauli Piers</h3>
+                        <p class="places-stage__text">The St. Pauli Landungsbrücken are floating piers on the Norderelbe used by harbour ferries, cruise ships, and excursion boats since the 19th century. Green copper roofs and clock towers frame views of the Elbe and container terminals. River buses connect the piers with the Speicherstadt, Elbphilharmonie, and Finkenwerder.</p>
+                        <p class="places-stage__coords">53.5454&deg; N / 9.9660&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="2"
+                    aria-labelledby="place-title-3"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/hamburg_3.avif" alt="St. Michael&#x27;s Church" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">03</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free (tower €8)</span>
+                        </p>
+                        <h3 id="place-title-3" class="places-stage__title">St. Michael&#x27;s Church</h3>
+                        <p class="places-stage__text">Michael&#x27;s Church is a visitor site in Hamburg. Michaelis, known as the Michel, is a Baroque main church completed in 1912 after earlier fires destroyed predecessors. Its copper-clad tower rises 132 metres and offers a viewing platform over the port and Altstadt. The crypt houses exhibitions on Hamburg church history and maritime disasters.</p>
+                        <p class="places-stage__coords">53.5484&deg; N / 9.9788&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="3"
+                    aria-labelledby="place-title-4"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/hamburg_4.avif" alt="Elbphilharmonie Hamburg" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">04</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-4" class="places-stage__title">Elbphilharmonie Hamburg</h3>
+                        <p class="places-stage__text">The Elbphilharmonie concert hall by Herzog and de Meuron crowns a 1960s warehouse in HafenCity with a wave of curved glass completed in 2016. The publicly accessible Plaza at 37 metres is reached via the curved Tube escalator. The vineyard-style Grand Hall seats 2,100 for concerts by the NDR Elbphilharmonie Orchestra.</p>
+                        <p class="places-stage__coords">53.5413&deg; N / 9.9845&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="4"
+                    aria-labelledby="place-title-5"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/hamburg_5.avif" alt="Miniatur Wunderland" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">05</span>
+                            <span class="places-stage__admission"><span>Admission</span>€22</span>
+                        </p>
+                        <h3 id="place-title-5" class="places-stage__title">Miniatur Wunderland</h3>
+                        <p class="places-stage__text">Miniatur Wunderland in the Speicherstadt is the world&#x27;s largest model railway layout, opened in 2001 and expanded across themed sections from Scandinavia to the United States. Detailed miniature airports, harbours, and cities animate with moving trains and ships. The attraction occupies several floors of a historic warehouse block.</p>
+                        <p class="places-stage__coords">53.5438&deg; N / 9.9891&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="5"
+                    aria-labelledby="place-title-6"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/hamburg_6.avif" alt="Treppenviertel Blankenese" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">06</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-6" class="places-stage__title">Treppenviertel Blankenese</h3>
+                        <p class="places-stage__text">Blankenese&#x27;s Treppenviertel climbs the Elbe bluff in western Hamburg with more than 5,000 steps linking villas, gardens, and river paths. Merchant houses and captains&#x27; homes from the 18th and 19th centuries line winding lanes above sandy beaches. The district was an independent fishing village until annexed by Hamburg in 1927.</p>
+                        <p class="places-stage__coords">53.5578&deg; N / 9.8071&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="6"
+                    aria-labelledby="place-title-7"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/hamburg_7.avif" alt="Hamburg BUNKER" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">07</span>
+                            <span class="places-stage__admission"><span>Admission</span>€20</span>
+                        </p>
+                        <h3 id="place-title-7" class="places-stage__title">Hamburg BUNKER</h3>
+                        <p class="places-stage__text">The St. Pauli bunker on the Heiligengeistfeld is a wartime flak tower now crowned with a rooftop park planted with thousands of trees. Guided tours explain its construction in 1942, post-war use as a media bunker, and recent green conversion. A spiral path leads to panoramic views over the harbour and Millerntor stadium.</p>
+                        <p class="places-stage__coords">53.5565&deg; N / 9.9702&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="7"
+                    aria-labelledby="place-title-8"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/hamburg_8.avif" alt="Millerntor-Stadion" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">08</span>
+                            <span class="places-stage__admission"><span>Admission</span>€16</span>
+                        </p>
+                        <h3 id="place-title-8" class="places-stage__title">Millerntor-Stadion</h3>
+                        <p class="places-stage__text">Millerntor-Stadion is the home ground of FC St. Pauli on the Heiligengeistfeld in the St. Pauli district, rebuilt several times since 1910. Stadium tours visit the Gegengerade stand, dressing rooms, and the club museum documenting supporter culture. The ground seats about 29,500 and lies steps from the Reeperbahn.</p>
+                        <p class="places-stage__coords">53.5546&deg; N / 9.9678&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="8"
+                    aria-labelledby="place-title-9"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/hamburg_9.avif" alt="Hagenbeck Zoo" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">09</span>
+                            <span class="places-stage__admission"><span>Admission</span>€29</span>
+                        </p>
+                        <h3 id="place-title-9" class="places-stage__title">Hagenbeck Zoo</h3>
+                        <p class="places-stage__text">Tierpark Hagenbeck in Stellingen was founded in 1907 by Carl Hagenbeck as one of the first zoos without barred cages, using moats and naturalistic enclosures. The park combines a zoo, tropical aquarium, and ethnographic displays across landscaped hills. Historic entrance buildings and the Neptune fountain date from the early 20th century.</p>
+                        <p class="places-stage__coords">53.5970&deg; N / 9.9395&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="9"
+                    aria-labelledby="place-title-10"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/hamburg_10.avif" alt="Chilehaus" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">10</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-10" class="places-stage__title">Chilehaus</h3>
+                        <p class="places-stage__text">The Chilehaus on the Kontorhausviertel is a 1924 expressionist office block designed by Fritz Höger for a shipping merchant trading with Chile. Its sharp prow and stepped brick façade resemble a steamship&#x27;s bow. The Kontorhaus district with the Sprinkenhof and Chilehaus is a UNESCO World Heritage Site.</p>
+                        <p class="places-stage__coords">53.5483&deg; N / 10.0030&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="10"
+                    aria-labelledby="place-title-11"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/hamburg_11.avif" alt="St. Nikolai Memorial" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">11</span>
+                            <span class="places-stage__admission"><span>Admission</span>€7</span>
+                        </p>
+                        <h3 id="place-title-11" class="places-stage__title">St. Nikolai Memorial</h3>
+                        <p class="places-stage__text">The Mahnmal St. Nikolai preserves the burnt-out spire of a Gothic church destroyed in the 1943 Operation Gomorrah air raids. A lift ascends the tower for views over the wartime ruins, while the crypt museum documents the bombing and Nazi persecution. The church was once among the tallest buildings in the world.</p>
+                        <p class="places-stage__coords">53.5475&deg; N / 9.9907&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="11"
+                    aria-labelledby="place-title-12"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/hamburg_12.avif" alt="St. Catherine Church" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">12</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-12" class="places-stage__title">St. Catherine Church</h3>
+                        <p class="places-stage__text">Catherine Church is a visitor site in Hamburg. Katharinen is a brick Gothic church in the harbour quarter, with a nave dating from the 13th century and a copper spire visible from the Speicherstadt. It served Hanseatic merchants and shipwrights and houses medieval artefacts including the lion-head door. The church was heavily damaged in 1943 and restored after the war.</p>
+                        <p class="places-stage__coords">53.5459&deg; N / 9.9944&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="12"
+                    aria-labelledby="place-title-13"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/hamburg_13.avif" alt="Hamburg Townhall" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">13</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free (guided tour €8)</span>
+                        </p>
+                        <h3 id="place-title-13" class="places-stage__title">Hamburg Townhall</h3>
+                        <p class="places-stage__text">Hamburg Townhall is a visitor site in Hamburg, Germany. It opened or was completed around 1897. The Hamburger Rathaus on Rathausmarkt was completed in 1897 in neo-Renaissance style as the seat of the city-state senate and parliament. The inner courtyard and portico are open to the public when sessions allow. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">53.5504&deg; N / 9.9923&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="13"
+                    aria-labelledby="place-title-14"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/hamburg_14.avif" alt="Town Hall Market" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">14</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-14" class="places-stage__title">Town Hall Market</h3>
+                        <p class="places-stage__text">Rathausmarkt is the central square before the town hall, used for markets, political rallies, and seasonal events including the Christmas market. The open space is framed by the Rathaus façade, Alsterarkaden arcades, and commercial buildings of the Altstadt. A fountain and flagpoles mark the civic the Free and Hanseatic City.</p>
+                        <p class="places-stage__coords">53.5508&deg; N / 9.9931&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="14"
+                    aria-labelledby="place-title-15"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/hamburg_15.avif" alt="Alster Arcade" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">15</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-15" class="places-stage__title">Alster Arcade</h3>
+                        <p class="places-stage__text">The Alsterarkaden are neoclassical shopping arcades built in 1842 along the Kleine Alster canal beside Rathausmarkt. Colonnades shelter boutiques and cafés above the water, rebuilt after the 1842 Great Fire. The arcades link the town hall quarter with Jungfernstieg promenade along the Binnenalster lake.</p>
+                        <p class="places-stage__coords">53.5522&deg; N / 9.9931&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="15"
+                    aria-labelledby="place-title-16"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/hamburg_16.avif" alt="Stage Theater an der Elbe" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">16</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-16" class="places-stage__title">Stage Theater an der Elbe</h3>
+                        <p class="places-stage__text">The Stage Theater an der Elbe is a riverside musical theatre in the harbour opened in 2000 on the site of former docks. Glass façades face the Elbe and the passing harbour traffic. The venue stages large-scale musical productions with seating for about 1,800 spectators.</p>
+                        <p class="places-stage__coords">53.5398&deg; N / 9.9745&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="16"
+                    aria-labelledby="place-title-17"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/hamburg_17.avif" alt="Planten un Blomen" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">17</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-17" class="places-stage__title">Planten un Blomen</h3>
+                        <p class="places-stage__text">Planten un Blomen is a 47-hectare park in the city centre combining botanical gardens, greenhouses, and themed landscapes from Japanese gardens to rose beds. Summer water-light concerts animate the central lake, while tropical plants fill the Schaugewächshäuser in winter. The park replaced fortifications after Hamburg&#x27;s walls were demolished in the 19th century.</p>
+                        <p class="places-stage__coords">53.5620&deg; N / 9.9821&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="17"
+                    aria-labelledby="place-title-18"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/hamburg_18.avif" alt="Alsterfontäne" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">18</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-18" class="places-stage__title">Alsterfontäne</h3>
+                        <p class="places-stage__text">The Alsterfontäne is a programmable fountain at the Binnenalster lake that shoots water jets up to 60 metres during scheduled displays. Installed in 1989, the fountain marks the head of the Inner Alster and is visible from Jungfernstieg. Displays run on selected afternoons and during city festivals.</p>
+                        <p class="places-stage__coords">53.5551&deg; N / 9.9958&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="18"
+                    aria-labelledby="place-title-19"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/hamburg_19.avif" alt="Laeiszhalle" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">19</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-19" class="places-stage__title">Laeiszhalle</h3>
+                        <p class="places-stage__text">The Laeiszhalle concert hall on Johannes-Brahms-Platz opened in 1908 as the Musikhalle, named for shipping magnate Carl Laeisz. The neo-baroque main hall hosts the Hamburg Philharmonic and visiting orchestras. Brahms, who spent his last years in Hamburg, is commemorated in the adjoining square.</p>
+                        <p class="places-stage__coords">53.5560&deg; N / 9.9809&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="19"
+                    aria-labelledby="place-title-20"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/hamburg_20.avif" alt="Wildpark Schwarze Berge" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">20</span>
+                            <span class="places-stage__admission"><span>Admission</span>€16</span>
+                        </p>
+                        <h3 id="place-title-20" class="places-stage__title">Wildpark Schwarze Berge</h3>
+                        <p class="places-stage__text">Wildpark Schwarze Berge in the Harburg hills south of Hamburg is a woodland wildlife park showing native European species including wolves, lynx, and wild boar in large enclosures. Walking trails loop through forest on the site of a former forester&#x27;s estate. The park targets families with feeding demonstrations and play areas.</p>
+                        <p class="places-stage__coords">53.4423&deg; N / 9.8856&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="20"
+                    aria-labelledby="place-title-21"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/hamburg_21.avif" alt="Water Art Elbinsel Kaltehofe" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">21</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-21" class="places-stage__title">Water Art Elbinsel Kaltehofe</h3>
+                        <p class="places-stage__text">Wasser-Erlebnis Elbinsel Kaltehofe on a harbour island documents Hamburg&#x27;s historic water filtration plant built in 1893 to supply safe drinking water to the growing port. Listed red-brick filter halls and ponds now host exhibitions on urban water management. The site lies beside nature trails on the Elbe island of Kaltehofe.</p>
+                        <p class="places-stage__coords">53.5243&deg; N / 10.0525&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="21"
+                    aria-labelledby="place-title-22"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/hamburg_22.avif" alt="Panoptikum" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">22</span>
+                            <span class="places-stage__admission"><span>Admission</span>€10</span>
+                        </p>
+                        <h3 id="place-title-22" class="places-stage__title">Panoptikum</h3>
+                        <p class="places-stage__text">The Panoptikum on Spielbudenplatz is Germany&#x27;s oldest wax museum, founded in 1879 and rebuilt after wartime destruction. Figures from Hamburg musicians to political leaders occupy themed rooms across two floors near the Reeperbahn. The cabinet-of-curiosities tradition continues with horror chambers and local celebrity tableaux.</p>
+                        <p class="places-stage__coords">53.5495&deg; N / 9.9665&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="22"
+                    aria-labelledby="place-title-23"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/hamburg_23.avif" alt="Reeperbahn" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">23</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-23" class="places-stage__title">Reeperbahn</h3>
+                        <p class="places-stage__text">The Reeperbahn is St. Pauli&#x27;s main entertainment mile, named for the rope-making trade that once lined the street. Neon clubs, theatres, and bars occupy 19th-century merchant houses between Millerntor and Spielbudenplatz. The Beatles performed in clubs here in 1960-62, and the annual Reeperbahn Festival draws music industry visitors.</p>
+                        <p class="places-stage__coords">53.5496&deg; N / 9.9626&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="23"
+                    aria-labelledby="place-title-24"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/hamburg_24.avif" alt="St. Peter&#x27;s Church" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">24</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-24" class="places-stage__title">St. Peter&#x27;s Church</h3>
+                        <p class="places-stage__text">Peter&#x27;s Church is a visitor site in Hamburg. Petri am Berge is a five-naved hall church in the Altstadt whose tower was the city&#x27;s tallest structure before the Michel. The brick Gothic building dates largely from the 14th century and houses a bronze baptismal font from 1457. Medieval wall paintings were uncovered during post-war restoration of the nave.</p>
+                        <p class="places-stage__coords">53.5504&deg; N / 9.9968&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="24"
+                    aria-labelledby="place-title-25"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/hamburg_25.avif" alt="Thalia Theater" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">25</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-25" class="places-stage__title">Thalia Theater</h3>
+                        <p class="places-stage__text">The Thalia Theater on Alstertor is one of Hamburg&#x27;s three municipal theatres, housed in a 1912 neo-baroque building destroyed in 1943 and rebuilt in 1960. The repertoire spans drama, comedy, and contemporary German plays across two stages. The company is among the largest spoken-theatre ensembles in Germany.</p>
+                        <p class="places-stage__coords">53.5521&deg; N / 9.9986&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="25"
+                    aria-labelledby="place-title-26"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/hamburg_26.avif" alt="Hamburg State Opera" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">26</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-26" class="places-stage__title">Hamburg State Opera</h3>
+                        <p class="places-stage__text">The Hamburgische Staatsoper on Dammtorstraße is the city&#x27;s opera house, opened in 1827 and rebuilt after wartime bombing in 1955. The company stages opera and ballet in a 1,690-seat auditorium. Gustav Mahler served as conductor here in the 1890s before moving to Vienna.</p>
+                        <p class="places-stage__coords">53.5568&deg; N / 9.9889&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="26"
+                    aria-labelledby="place-title-27"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/hamburg_27.avif" alt="Port of Hamburg" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">27</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-27" class="places-stage__title">Port of Hamburg</h3>
+                        <p class="places-stage__text">The Port of Hamburg stretches along the Lower Elbe as Germany&#x27;s largest seaport, handling containers, cruise ships, and bulk cargo since the Middle Ages. Viewing points at Landungsbrücken, Elbphilharmonie Plaza, and harbour tours reveal the working docks and Speicherstadt warehouses. The port drives much of the city-state&#x27;s economy.</p>
+                        <p class="places-stage__coords">53.5071&deg; N / 9.9679&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="27"
+                    aria-labelledby="place-title-28"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/hamburg_28.avif" alt="Stadtpark" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">28</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-28" class="places-stage__title">Stadtpark</h3>
+                        <p class="places-stage__text">Stadtpark in Winterhude is a 148-hectare landscaped park opened in 1914 with meadows, woods, and the open-air Stadtparksee stage. The Planetarium occupies a former water tower, and sculpture gardens dot the grounds. Hamburg&#x27;s largest inner-city park draws joggers, picnickers, and concert audiences throughout the year.</p>
+                        <p class="places-stage__coords">53.5970&deg; N / 10.0207&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="28"
+                    aria-labelledby="place-title-29"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/hamburg_29.avif" alt="Isemarkt" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">29</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-29" class="places-stage__title">Isemarkt</h3>
+                        <p class="places-stage__text">The Isemarkt is a weekly street market along the Isebekkanal in Eppendorf, held on Tuesdays and Fridays under the elevated U-Bahn tracks. Stalls sell produce, fish, flowers, and prepared food along one of Europe&#x27;s longest open-air market rows. The market has operated in its covered form since the 1980s.</p>
+                        <p class="places-stage__coords">53.5809&deg; N / 9.9811&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="29"
+                    aria-labelledby="place-title-30"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/hamburg_30.avif" alt="Deutsches SchauSpielHaus Hamburg" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">30</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-30" class="places-stage__title">Deutsches SchauSpielHaus Hamburg</h3>
+                        <p class="places-stage__text">The Deutsches SchauSpielHaus on Hartungstraße is Hamburg&#x27;s principal spoken-theatre company, based in a 1900 art-nouveau building in Rotherbaum. The repertoire includes classics, new German drama, and international works on the main stage and Kammerspiele. The theatre employs one of the largest permanent acting ensembles in the German-speaking world.</p>
+                        <p class="places-stage__coords">53.5545&deg; N / 10.0088&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="site-footer">
         <div class="page-shell">
             <div class="site-footer__bar">
-                <a href="../../index.html" class="site-footer__brand" aria-label="Global Explorer home">
-                    <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
+                <a href="../../index.html" class="site-footer__mark" aria-label="Global Explorer home">
+                    <svg width="24" height="24" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
-                    <span class="site-footer__brand-name font-display">Global Explorer</span>
+                    Global Explorer
                 </a>
-                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides <span>Hamburg: 30 places across Northern Germany.</span></p>
             </div>
         </div>
     </footer>
 
     <button id="scrollTopBtn" type="button" aria-label="Scroll to top">
-        <i class="ph ph-arrow-up" aria-hidden="true"></i>
+        <svg viewBox="0 0 24 24" width="1.15em" height="1.15em" aria-hidden="true" focusable="false">
+            <path d="M12 5.25 V18.75 M12 5.25 L6.75 10.5 M12 5.25 L17.25 10.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
     </button>
 
     <script defer src="../../assets/dev-destination-toggle.js"></script>
     <script defer src="../../assets/tg-page-chrome.js"></script>
     <script defer src="../../assets/tg-destination-map.js"></script>
+    <script defer src="../../assets/tg-destination-places.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const map = L.map('map').setView([53.548766, 9.976647], 14);
+            const map = L.map('map');
             L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
                 attribution: '&copy; Google Maps',
                 maxZoom: 20
             }).addTo(map);
-            const locations = [{"name": "Elbe Tunnel", "lat": 53.545886, "lng": 9.966588}, {"name": "St. Pauli Piers", "lat": 53.54538, "lng": 9.966002}, {"name": "St. Michael's Church", "lat": 53.548413, "lng": 9.978798}, {"name": "Elbphilharmonie Hamburg", "lat": 53.541331, "lng": 9.984465}, {"name": "Miniatur Wunderland", "lat": 53.543843, "lng": 9.989099}, {"name": "Treppenviertel Blankenese", "lat": 53.557825, "lng": 9.807147}, {"name": "Hamburg BUNKER", "lat": 53.556527, "lng": 9.970173}, {"name": "Millerntor-Stadion", "lat": 53.554587, "lng": 9.967754}, {"name": "Hagenbeck Zoo", "lat": 53.596973, "lng": 9.939508}, {"name": "Chilehaus", "lat": 53.548304, "lng": 10.002995}, {"name": "St. Nikolai Memorial", "lat": 53.54746, "lng": 9.990671}, {"name": "St. Catherine Church", "lat": 53.545882, "lng": 9.994447}, {"name": "Hamburg Townhall", "lat": 53.550431, "lng": 9.992334}, {"name": "Town Hall Market", "lat": 53.550808, "lng": 9.993074}, {"name": "Alster Arcade", "lat": 53.552159, "lng": 9.993093}, {"name": "Stage Theater an der Elbe", "lat": 53.539752, "lng": 9.974495}, {"name": "Planten un Blomen", "lat": 53.562017, "lng": 9.982065}, {"name": "Alsterfontäne", "lat": 53.555063, "lng": 9.995816}, {"name": "Laeiszhalle", "lat": 53.555997, "lng": 9.980879}, {"name": "Wildpark Schwarze Berge", "lat": 53.442271, "lng": 9.885634}, {"name": "Water Art Elbinsel Kaltehofe", "lat": 53.524291, "lng": 10.052511}, {"name": "Panoptikum", "lat": 53.5494674, "lng": 9.9664557}, {"name": "Reeperbahn", "lat": 53.54957, "lng": 9.962614}, {"name": "St. Peter's Church", "lat": 53.550401, "lng": 9.996764}, {"name": "Thalia Theater", "lat": 53.552097, "lng": 9.998642}, {"name": "Hamburg State Opera", "lat": 53.556794, "lng": 9.988858}, {"name": "Port of Hamburg", "lat": 53.507096, "lng": 9.967923}, {"name": "Stadtpark", "lat": 53.596984, "lng": 10.020696}, {"name": "Isemarkt", "lat": 53.580913, "lng": 9.981053}, {"name": "Deutsches SchauSpielHaus Hamburg", "lat": 53.554459, "lng": 10.008845}];
+            const locations = Array.from(document.querySelectorAll('[data-place-option]')).map((el) => ({
+                name: el.dataset.placeName || '',
+                lat: Number(el.dataset.placeLat),
+                lng: Number(el.dataset.placeLng),
+            }));
             const customIcon = L.icon({
                 iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
                 iconSize: [32, 32],
@@ -536,14 +1371,45 @@
                 popupAnchor: [0, -32],
             });
             const destinationCenter = [53.548766, 9.976647];
-            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": true, "compactRegion": false, "denseUrban": false, "maxCenterLat": 0.106495, "maxCenterLng": 0.1695};
-            locations.forEach((location) => {
-                L.marker([location.lat, location.lng], { icon: customIcon })
+            const mapContext = {"spreadUrban": true};
+            const markers = locations.map((location) => {
+                const marker = L.marker([location.lat, location.lng], { icon: customIcon })
                     .addTo(map)
                     .bindPopup(`<strong>${location.name}</strong>`);
+                return marker;
             });
             window.TGDestinationMap?.fitToLocations(map, locations, destinationCenter, mapContext);
             window.TGDestinationMap?.bindMobileScrollGuard(map, 'map');
+            window.TGDestinationMap?.registerMarkers(map, markers);
+
+            const heroImage = document.querySelector('[data-destination-hero-image]');
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (heroImage && !reduceMotion) {
+                let framePending = false;
+                let scrolling = false;
+                let scrollEndTimer = 0;
+                const updateHeroPosition = () => {
+                    const offset = Math.min(window.scrollY, window.innerHeight * 1.15) * 0.075;
+                    heroImage.style.transform = `translate3d(0, ${offset}px, 0) scale(1.055)`;
+                    framePending = false;
+                };
+                window.addEventListener('scroll', () => {
+                    if (!scrolling) {
+                        scrolling = true;
+                        heroImage.style.willChange = 'transform';
+                    }
+                    window.clearTimeout(scrollEndTimer);
+                    scrollEndTimer = window.setTimeout(() => {
+                        scrolling = false;
+                        heroImage.style.willChange = 'auto';
+                    }, 150);
+                    if (!framePending) {
+                        window.requestAnimationFrame(updateHeroPosition);
+                        framePending = true;
+                    }
+                }, { passive: true });
+                updateHeroPosition();
+            }
         });
     </script>
 </body>

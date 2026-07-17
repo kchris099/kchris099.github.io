@@ -6,269 +6,584 @@
     <meta name="description" content="Plan a visit to Banff with a concise history, interactive attractions map, prices, and curated highlights across the destination.">
     <meta name="theme-color" content="#121417">
     <title>Banff Guide | Global Explorer Guides</title>
-    <link rel="stylesheet" href="../../assets/tailwind.css">
-    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
     <link rel="stylesheet" href="../../assets/newindex-fonts.css">
     <link rel="stylesheet" href="../../assets/tg-theme.css">
     <link rel="stylesheet" href="../../assets/tg-site-chrome.css">
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
     <link rel="stylesheet" href="../../assets/tg-modern-polish.css">
+    <link rel="stylesheet" href="../../assets/tg-country-page.css">
+    <link rel="stylesheet" href="../../assets/tg-destination-page-v3.css">
     <script defer src="../../assets/lenis.min.js"></script>
     <script defer src="../../assets/tg-smooth-scroll.js"></script>
     <link rel="preload" as="image" href="images/banff_hero.avif" type="image/avif" fetchpriority="high">
     <script defer src="../../assets/leaflet/leaflet.js"></script>
 </head>
-<body class="tg-theme tg-destination-page tg-modern">
-    <header id="site-header" class="header-glass fixed top-0 left-0 right-0 z-50">
+<body class="tg-theme tg-modern tg-country-v2 tg-destination-v3">
+    <a class="skip-link" href="#main-content">Skip to Banff guide</a>
+    <header id="site-header" class="header-glass">
         <div class="page-shell header-glass__inner">
-            <a href="../../index.html" class="font-display site-brand" style="display:flex;align-items:center;gap:0.75rem;text-decoration:none;color:inherit;font-size:1.25rem;" aria-label="Global Explorer home">
+            <a href="../../index.html" class="site-brand" aria-label="Global Explorer home">
                 <span class="site-brand__mark" aria-hidden="true">
                     <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
-                        <circle cx="14" cy="14" r="2" fill="#E8B14F"/>
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
                 </span>
                 Global Explorer
             </a>
-            <nav class="header-glass__nav-mobile" aria-label="Mobile navigation">
-                <a href="../../index.html" class="header-glass__icon-link" aria-label="Home">
-                    <i class="ph ph-house" aria-hidden="true"></i>
-                </a>
-                <a href="canada.html" class="header-glass__icon-link" aria-label="Back to Canada">
-                    <i class="ph ph-arrow-left" aria-hidden="true"></i>
-                </a>
-            </nav>
             <nav class="header-glass__nav" aria-label="Primary">
-                <a href="../../index.html" class="nav-link">Home</a>
-                <a href="banff.html" class="nav-link" aria-current="page">Banff</a>
+                <a href="#main-content" class="nav-link" aria-current="page">Banff</a>
+                <a href="#atlas" class="nav-link">Atlas</a>
+                <a href="#places" class="nav-link">Places</a>
                 <a href="canada.html" class="nav-link">Canada</a>
-                <a href="../../index.html#map" class="nav-link">Atlas</a>
             </nav>
         </div>
     </header>
-    <main>
-        <div class="tg-destination-hero-zone">
-            <div class="tg-destination-hero" aria-hidden="true">
-                <div class="tg-destination-hero__image" style="background-image: url('images/banff_hero.avif')"></div>
-                <div class="tg-destination-hero__fade"></div>
-            </div>
-            <div class="page-shell tg-destination-hero-zone__content">
-        <nav class="tg-toolbar tg-toolbar--compact" aria-label="Breadcrumb">
-            <div class="tg-breadcrumb">
-                <img src="../../assets/flags/w40/ca.png" alt="" class="w-6 h-auto rounded-[2px]" aria-hidden="true">
-                <span>Canada</span>
-                <span class="tg-breadcrumb__sep" aria-hidden="true">&rsaquo;</span>
-                <span class="tg-breadcrumb__current">Pacific Canada</span>
-            </div>
-        </nav>
+    <main id="main-content" tabindex="-1">
+        <section class="destination-hero" aria-labelledby="destination-title">
+            <img class="destination-hero__media" data-destination-hero-image src="images/banff_hero.avif" alt="" width="1600" height="1067" fetchpriority="high" decoding="sync">
+            <div class="destination-hero__shade" aria-hidden="true"></div>
+            <div class="page-shell destination-hero__content">
+                <button
+                    type="button"
+                    id="destination-active-toggle"
+                    class="country-active-toggle country-active-toggle--inactive"
+                    data-iso2="CA"
+                    data-slug="banff"
+                    data-active="false"
+                    data-interactive="true"
+                    aria-label="Toggle Banff visibility on Canada guide"
+                    aria-pressed="false"
+                >
+                    <img src="../../assets/flags/w80/ca.png" alt="" aria-hidden="true">
+                    <span class="country-toggle__copy" aria-hidden="true">
+                        <span class="country-toggle__label">Banff guide</span>
+                        <strong class="country-toggle__state"></strong>
+                    </span>
+                </button>
 
-        <header class="tg-page-header">
-            <button
-        type="button"
-        id="destination-active-toggle"
-        class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
-        data-iso2="CA"
-        data-slug="banff"
-        data-active="false"
-        data-interactive="true"
-        aria-label="Toggle Banff visibility on Canada guide"
-        aria-pressed="false"
-    >
-        <i class="ph ph-map-pin text-4xl pointer-events-none" aria-hidden="true"></i>
-    </button>
-            <span class="tg-page-header__eyebrow">Destination Guide — Pacific Canada</span>
-            <h1 class="tg-page-title font-display">Explore <em>Banff</em></h1>
-            <div class="glass-card frosted-panel tg-panel">
-                <h2 class="tg-panel__title font-display">
-                    <i class="ph ph-scroll" aria-hidden="true"></i> A Brief History
-                </h2>
-                <p class="tg-panel__body">Established in the 1880s following the discovery of hot springs by railway workers, Banff became Canada&#x27;s first national park. The arrival of the Canadian Pacific Railway drove early tourism, transforming a rugged wilderness camp into an internationally known alpine destination. Visitors today can clearly trace the detailed layers of this unique heritage throughout the preserved streets and monuments.</p>
-            </div>
-        </header>
+                <div class="hero__route" aria-label="Destination route and coordinates">
+                    <span>Canada / Pacific Canada</span>
+                    <span>51.1726&deg; N / 115.5676&deg; W</span>
+                </div>
 
-        <div class="tg-section__header tg-section__header--map-end">
-            <span class="tg-section__eyebrow">Map</span>
-            <h2 class="tg-section__title font-display">Attractions Map</h2>
-        </div>
-            </div>
-        </div>
-
-        <div class="page-shell tg-main tg-main--below-hero">
-        <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Banff attractions"></div>
-        <section class="tg-section">
-            <div class="tg-section__header">
-                <span class="tg-section__eyebrow">Highlights</span>
-                <h2 class="tg-section__title font-display">Top Sights &amp; Activities</h2>
-            </div>
-            <div class="tg-sights-list">
-            
-            <!-- 1. Cave and Basin National Historic Site -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/banff_1.avif" alt="Cave and Basin National Historic Site" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> C$10
+                <h1 id="destination-title" class="destination-hero__title" style="--destination-title-chars: 5">Banff</h1>
+                <div class="destination-hero__history">
+                    <p>Established in the 1880s following the discovery of hot springs by railway workers, Banff became Canada&#x27;s first national park. The arrival of the Canadian Pacific Railway drove early tourism, transforming a rugged wilderness camp into an internationally known alpine destination. Visitors today can clearly trace the detailed layers of this unique heritage throughout the preserved streets and monuments.</p>
+                </div>
+                <dl class="destination-hero__facts" aria-label="Banff guide facts">
+                    <div>
+                        <dt>Country</dt>
+                        <dd>Canada</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Cave and Basin National Historic Site</h3>
-                    <p class="tg-sight-card__text">Cave and Basin National Historic Site is a significant landmark in Canada, as it was the birthplace of the country&#x27;s national parks system. Discovered by railway workers in 1883, this site offers interactive exhibits that showcase Canada&#x27;s network of protected places. Visitors can take guided tours of the original cave to learn about its history and culture, including lantern tours for an after-dark experience.</p>
-                </div>
-            </div>
-            <!-- 2. Banff Gondola -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/banff_2.avif" alt="Banff Gondola" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> C$55
+                    <div>
+                        <dt>Region</dt>
+                        <dd>Pacific Canada</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Banff Gondola</h3>
-                    <p class="tg-sight-card__text">The Banff Gondola offers a scenic eight-minute ride to the summit of Sulphur Mountain, providing unparalleled views of the town of Banff, the Bow Valley, and six surrounding mountain ranges. At the summit, visitors can explore the observation deck, dine at the mountaintop restaurants, and walk the boardwalk to the historic Sanson&#x27;s Peak meteorological station.</p>
-                </div>
-            </div>
-            <!-- 3. Banff Upper Hot Springs -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/banff_3.avif" alt="Banff Upper Hot Springs" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> C$20
+                    <div>
+                        <dt>Places</dt>
+                        <dd>10</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Banff Upper Hot Springs</h3>
-                    <p class="tg-sight-card__text">Banff Upper Hot Springs is a historic thermal mineral springs located in Banff National Park, Canada. The hot springs were discovered in the late 1880s and have since become a popular destination for visitors seeking relaxation and rejuvenation. Situated at an elevation of over 5,000ft in the Rocky Mountains, the natural pool offers panoramic views of the surrounding landscape.</p>
-                </div>
-            </div>
-            <!-- 4. Bow Falls Viewpoint -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/banff_4.avif" alt="Bow Falls Viewpoint" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Bow Falls Viewpoint</h3>
-                    <p class="tg-sight-card__text">Bow Falls Viewpoint is a popular spot in Banff, known for its scenic waterfall that has been featured in 1950s films. The trail alongside the Bow River offers an easy stroll with views of the river and surrounding mountains. Starting at the south base of the pedestrian bridge, the trail passes through a forested area with benches for taking in the scenery.</p>
-                </div>
-            </div>
-            <!-- 5. Surprise Corner Viewpoint -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/banff_5.avif" alt="Surprise Corner Viewpoint" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Surprise Corner Viewpoint</h3>
-                    <p class="tg-sight-card__text">Surprise Corner Viewpoint is a popular spot in Banff that offers views of the 1888 Fairmont Banff Springs Hotel and Sulphur Mountain. The name &#x27;Surprise Corner&#x27; comes from the unexpected and vistas that greet visitors as they round the corner. It&#x27;s a budget-friendly option for travelers, as it&#x27;s one of the many free things to do in Banff.</p>
-                </div>
-            </div>
-            <!-- 6. Mount Norquay -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/banff_6.avif" alt="Mount Norquay" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> C$89
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Mount Norquay</h3>
-                    <p class="tg-sight-card__text">Mount Norquay is a popular ski resort and year-round alpine destination located just minutes from the town of Banff. Established in 1926, it is one of the oldest ski areas in Canada. In the summer, it offers scenic chairlift rides, hiking trails, and a via ferrata climbing experience, providing dramatic views of Mount Rundle and the Bow Valley.</p>
-                </div>
-            </div>
-            <!-- 7. Cascade of Time Garden -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/banff_7.avif" alt="Cascade of Time Garden" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Cascade of Time Garden</h3>
-                    <p class="tg-sight-card__text">Cascade of Time Garden is a public park in Banff, Canada. Records associated with the site include 1930. Just a short walk from downtown Banff, it provides a perfect vantage point for admiring the surrounding mountains and blooming flowers during the warmer months. Paths, lawns, and shaded areas make up the main public facilities.</p>
-                </div>
-            </div>
-            <!-- 8. Banff Visitor Centre -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/banff_8.avif" alt="Banff Visitor Centre" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Banff Visitor Centre</h3>
-                    <p class="tg-sight-card__text">When exploring the landscapes of Banff National Park, a visit to the Banff Visitor Centre is an essential stop. Located Banff village on Banff Avenue, this hub is staffed by knowledgeable representatives from various local organizations, including Parks Canada and Friends of Banff. They are eager to assist visitors with valuable insights about regional hikes, parks, and other activities that will enhance visitor adventure.</p>
-                </div>
-            </div>
-            <!-- 9. Banff Town Sign -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/banff_9.avif" alt="Banff Town Sign" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Banff Town Sign</h3>
-                    <p class="tg-sight-card__text">The Banff Town Sign is a popular, rustic wooden landmark located at the entrance to the town of Banff. Featuring the town&#x27;s name carved in a distinctive, park-style font, it is a welcoming photo opportunity for visitors entering the national park. The sign is set against a backdrop of dense pine forests and the dramatic peaks of the Canadian Rockies.</p>
-                </div>
-            </div>
-            <!-- 10. Hoodoos Viewpoint -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/banff_10.avif" alt="Hoodoos Viewpoint" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Hoodoos Viewpoint</h3>
-                    <p class="tg-sight-card__text">Hoodoos Viewpoint offers a vantage point of the Bow River Valley and Mount Rundle, with the added bonus of potentially spotting wildlife like elk crossing the river below. The Surprise Corner to Hoodoos Trail is an easy hike that leads to this viewpoint, passing by the Banff Springs Hotel along the way. There are two scenic trails leading to the Hoodoos, which are unique rock formations offering views of the surrounding area.</p>
-                </div>
-            </div>
+                </dl>
             </div>
         </section>
-        </div>
+
+        <section id="atlas" class="destination-atlas" aria-labelledby="atlas-title">
+            <div class="page-shell destination-atlas__layout">
+                <div class="destination-atlas__brief">
+                    <p class="destination-atlas__index">City atlas</p>
+                    <h2 id="atlas-title">Plot the city.</h2>
+                    <p class="destination-atlas__copy">Zoom, pan, and open any marker to focus that place in the catalog below.</p>
+                    <dl class="destination-atlas__facts" aria-label="Map coverage">
+                        <div>
+                            <dt>Plotted</dt>
+                            <dd>10 places</dd>
+                        </div>
+                        <div>
+                            <dt>Center</dt>
+                            <dd>51.1726&deg; N<br>115.5676&deg; W</dd>
+                        </div>
+                    </dl>
+                </div>
+                <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Banff attractions"></div>
+            </div>
+        </section>
+
+        <section id="places" class="destination-places" aria-labelledby="places-title">
+            <div class="page-shell">
+                <div class="destination-chapter">
+                    <h2 id="places-title" class="destination-chapter__heading">10 ways into<br>Banff.</h2>
+                    <p class="destination-chapter__copy">Browse the index, open a location, and read the essentials without scrolling through a long catalog. Each entry contains its image, admission note, and contextual guide.</p>
+                </div>
+                <div class="places-explorer" data-places-explorer>
+                    <aside class="places-explorer__rail" aria-label="Place index">
+                        <div class="places-explorer__toolbar">
+                            <label class="places-explorer__filter-label" for="places-filter">Filter places</label>
+                            <input
+                                id="places-filter"
+                                class="places-explorer__filter"
+                                type="search"
+                                data-places-filter
+                                placeholder="Search by name"
+                                autocomplete="off"
+                            >
+                            <p class="places-explorer__meta"><strong data-places-count>10</strong> of 10 shown</p>
+                        </div>
+                        <ul class="places-explorer__list" role="listbox" aria-label="Places in Banff" data-places-list data-lenis-prevent data-tg-scroll-surface>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option is-active"
+                            role="option"
+                            id="place-option-1"
+                            data-place-option
+                            data-place-index="0"
+                            data-place-name="Cave and Basin National Historic Site"
+                            data-place-lat="51.169071"
+                            data-place-lng="-115.591522"
+                            aria-selected="true"
+                            tabindex="0"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">01</span>
+                            <span class="places-explorer__option-name">Cave and Basin National Historic Site</span>
+                            <span class="places-explorer__option-price">C$10</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-2"
+                            data-place-option
+                            data-place-index="1"
+                            data-place-name="Banff Gondola"
+                            data-place-lat="51.1479059"
+                            data-place-lng="-115.555579"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">02</span>
+                            <span class="places-explorer__option-name">Banff Gondola</span>
+                            <span class="places-explorer__option-price">C$55</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-3"
+                            data-place-option
+                            data-place-index="2"
+                            data-place-name="Banff Upper Hot Springs"
+                            data-place-lat="51.150769"
+                            data-place-lng="-115.560991"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">03</span>
+                            <span class="places-explorer__option-name">Banff Upper Hot Springs</span>
+                            <span class="places-explorer__option-price">C$20</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-4"
+                            data-place-option
+                            data-place-index="3"
+                            data-place-name="Bow Falls Viewpoint"
+                            data-place-lat="51.165749"
+                            data-place-lng="-115.560096"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">04</span>
+                            <span class="places-explorer__option-name">Bow Falls Viewpoint</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-5"
+                            data-place-option
+                            data-place-index="4"
+                            data-place-name="Surprise Corner Viewpoint"
+                            data-place-lat="51.167256"
+                            data-place-lng="-115.55916"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">05</span>
+                            <span class="places-explorer__option-name">Surprise Corner Viewpoint</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-6"
+                            data-place-option
+                            data-place-index="5"
+                            data-place-name="Mount Norquay"
+                            data-place-lat="51.2053287"
+                            data-place-lng="-115.6067986"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">06</span>
+                            <span class="places-explorer__option-name">Mount Norquay</span>
+                            <span class="places-explorer__option-price">C$89</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-7"
+                            data-place-option
+                            data-place-index="6"
+                            data-place-name="Cascade of Time Garden"
+                            data-place-lat="51.171379"
+                            data-place-lng="-115.571752"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">07</span>
+                            <span class="places-explorer__option-name">Cascade of Time Garden</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-8"
+                            data-place-option
+                            data-place-index="7"
+                            data-place-name="Banff Visitor Centre"
+                            data-place-lat="51.177969"
+                            data-place-lng="-115.570234"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">08</span>
+                            <span class="places-explorer__option-name">Banff Visitor Centre</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-9"
+                            data-place-option
+                            data-place-index="8"
+                            data-place-name="Banff Town Sign"
+                            data-place-lat="51.1822001"
+                            data-place-lng="-115.5799505"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">09</span>
+                            <span class="places-explorer__option-name">Banff Town Sign</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-10"
+                            data-place-option
+                            data-place-index="9"
+                            data-place-name="Hoodoos Viewpoint"
+                            data-place-lat="51.188503"
+                            data-place-lng="-115.520248"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">10</span>
+                            <span class="places-explorer__option-name">Hoodoos Viewpoint</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                        </ul>
+                        <p class="places-explorer__empty" data-places-empty hidden>No places match that filter.</p>
+                    </aside>
+                    <div class="places-explorer__stage" data-places-stage>
+                    <nav class="places-stage__stepper" data-places-stepper aria-label="Browse places" hidden>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--prev" data-places-prev aria-label="Previous place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M14.75 5.25 L8.25 12 l6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M9.1 12 H17.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--next" data-places-next aria-label="Next place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M9.25 5.25 L15.75 12 l-6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M6.6 12 H14.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                    </nav>
+                <article
+                    class="places-stage__panel is-active"
+                    data-place-panel
+                    data-place-index="0"
+                    aria-labelledby="place-title-1"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/banff_1.avif" alt="Cave and Basin National Historic Site" width="1200" height="750" loading="eager" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">01</span>
+                            <span class="places-stage__admission"><span>Admission</span>C$10</span>
+                        </p>
+                        <h3 id="place-title-1" class="places-stage__title">Cave and Basin National Historic Site</h3>
+                        <p class="places-stage__text">Cave and Basin National Historic Site is a significant landmark in Canada, as it was the birthplace of the country&#x27;s national parks system. Discovered by railway workers in 1883, this site offers interactive exhibits that showcase Canada&#x27;s network of protected places. Visitors can take guided tours of the original cave to learn about its history and culture, including lantern tours for an after-dark experience.</p>
+                        <p class="places-stage__coords">51.1691&deg; N / 115.5915&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="1"
+                    aria-labelledby="place-title-2"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/banff_2.avif" alt="Banff Gondola" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">02</span>
+                            <span class="places-stage__admission"><span>Admission</span>C$55</span>
+                        </p>
+                        <h3 id="place-title-2" class="places-stage__title">Banff Gondola</h3>
+                        <p class="places-stage__text">The Banff Gondola offers a scenic eight-minute ride to the summit of Sulphur Mountain, providing unparalleled views of the town of Banff, the Bow Valley, and six surrounding mountain ranges. At the summit, visitors can explore the observation deck, dine at the mountaintop restaurants, and walk the boardwalk to the historic Sanson&#x27;s Peak meteorological station.</p>
+                        <p class="places-stage__coords">51.1479&deg; N / 115.5556&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="2"
+                    aria-labelledby="place-title-3"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/banff_3.avif" alt="Banff Upper Hot Springs" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">03</span>
+                            <span class="places-stage__admission"><span>Admission</span>C$20</span>
+                        </p>
+                        <h3 id="place-title-3" class="places-stage__title">Banff Upper Hot Springs</h3>
+                        <p class="places-stage__text">Banff Upper Hot Springs is a historic thermal mineral springs located in Banff National Park, Canada. The hot springs were discovered in the late 1880s and have since become a popular destination for visitors seeking relaxation and rejuvenation. Situated at an elevation of over 5,000ft in the Rocky Mountains, the natural pool offers panoramic views of the surrounding landscape.</p>
+                        <p class="places-stage__coords">51.1508&deg; N / 115.5610&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="3"
+                    aria-labelledby="place-title-4"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/banff_4.avif" alt="Bow Falls Viewpoint" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">04</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-4" class="places-stage__title">Bow Falls Viewpoint</h3>
+                        <p class="places-stage__text">Bow Falls Viewpoint is a popular spot in Banff, known for its scenic waterfall that has been featured in 1950s films. The trail alongside the Bow River offers an easy stroll with views of the river and surrounding mountains. Starting at the south base of the pedestrian bridge, the trail passes through a forested area with benches for taking in the scenery.</p>
+                        <p class="places-stage__coords">51.1657&deg; N / 115.5601&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="4"
+                    aria-labelledby="place-title-5"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/banff_5.avif" alt="Surprise Corner Viewpoint" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">05</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-5" class="places-stage__title">Surprise Corner Viewpoint</h3>
+                        <p class="places-stage__text">Surprise Corner Viewpoint is a popular spot in Banff that offers views of the 1888 Fairmont Banff Springs Hotel and Sulphur Mountain. The name &#x27;Surprise Corner&#x27; comes from the unexpected and vistas that greet visitors as they round the corner. It&#x27;s a budget-friendly option for travelers, as it&#x27;s one of the many free things to do in Banff.</p>
+                        <p class="places-stage__coords">51.1673&deg; N / 115.5592&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="5"
+                    aria-labelledby="place-title-6"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/banff_6.avif" alt="Mount Norquay" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">06</span>
+                            <span class="places-stage__admission"><span>Admission</span>C$89</span>
+                        </p>
+                        <h3 id="place-title-6" class="places-stage__title">Mount Norquay</h3>
+                        <p class="places-stage__text">Mount Norquay is a popular ski resort and year-round alpine destination located just minutes from the town of Banff. Established in 1926, it is one of the oldest ski areas in Canada. In the summer, it offers scenic chairlift rides, hiking trails, and a via ferrata climbing experience, providing dramatic views of Mount Rundle and the Bow Valley.</p>
+                        <p class="places-stage__coords">51.2053&deg; N / 115.6068&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="6"
+                    aria-labelledby="place-title-7"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/banff_7.avif" alt="Cascade of Time Garden" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">07</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-7" class="places-stage__title">Cascade of Time Garden</h3>
+                        <p class="places-stage__text">Cascade of Time Garden is a public park in Banff, Canada. Records associated with the site include 1930. Just a short walk from downtown Banff, it provides a perfect vantage point for admiring the surrounding mountains and blooming flowers during the warmer months. Paths, lawns, and shaded areas make up the main public facilities.</p>
+                        <p class="places-stage__coords">51.1714&deg; N / 115.5718&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="7"
+                    aria-labelledby="place-title-8"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/banff_8.avif" alt="Banff Visitor Centre" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">08</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-8" class="places-stage__title">Banff Visitor Centre</h3>
+                        <p class="places-stage__text">When exploring the landscapes of Banff National Park, a visit to the Banff Visitor Centre is an essential stop. Located Banff village on Banff Avenue, this hub is staffed by knowledgeable representatives from various local organizations, including Parks Canada and Friends of Banff. They are eager to assist visitors with valuable insights about regional hikes, parks, and other activities that will enhance visitor adventure.</p>
+                        <p class="places-stage__coords">51.1780&deg; N / 115.5702&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="8"
+                    aria-labelledby="place-title-9"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/banff_9.avif" alt="Banff Town Sign" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">09</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-9" class="places-stage__title">Banff Town Sign</h3>
+                        <p class="places-stage__text">The Banff Town Sign is a popular, rustic wooden landmark located at the entrance to the town of Banff. Featuring the town&#x27;s name carved in a distinctive, park-style font, it is a welcoming photo opportunity for visitors entering the national park. The sign is set against a backdrop of dense pine forests and the dramatic peaks of the Canadian Rockies.</p>
+                        <p class="places-stage__coords">51.1822&deg; N / 115.5800&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="9"
+                    aria-labelledby="place-title-10"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/banff_10.avif" alt="Hoodoos Viewpoint" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">10</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-10" class="places-stage__title">Hoodoos Viewpoint</h3>
+                        <p class="places-stage__text">Hoodoos Viewpoint offers a vantage point of the Bow River Valley and Mount Rundle, with the added bonus of potentially spotting wildlife like elk crossing the river below. The Surprise Corner to Hoodoos Trail is an easy hike that leads to this viewpoint, passing by the Banff Springs Hotel along the way. There are two scenic trails leading to the Hoodoos, which are unique rock formations offering views of the surrounding area.</p>
+                        <p class="places-stage__coords">51.1885&deg; N / 115.5202&deg; W</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="site-footer">
         <div class="page-shell">
             <div class="site-footer__bar">
-                <a href="../../index.html" class="site-footer__brand" aria-label="Global Explorer home">
-                    <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
+                <a href="../../index.html" class="site-footer__mark" aria-label="Global Explorer home">
+                    <svg width="24" height="24" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
-                    <span class="site-footer__brand-name font-display">Global Explorer</span>
+                    Global Explorer
                 </a>
-                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides <span>Banff: 10 places across Pacific Canada.</span></p>
             </div>
         </div>
     </footer>
 
     <button id="scrollTopBtn" type="button" aria-label="Scroll to top">
-        <i class="ph ph-arrow-up" aria-hidden="true"></i>
+        <svg viewBox="0 0 24 24" width="1.15em" height="1.15em" aria-hidden="true" focusable="false">
+            <path d="M12 5.25 V18.75 M12 5.25 L6.75 10.5 M12 5.25 L17.25 10.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
     </button>
 
     <script defer src="../../assets/dev-destination-toggle.js"></script>
     <script defer src="../../assets/tg-page-chrome.js"></script>
     <script defer src="../../assets/tg-destination-map.js"></script>
+    <script defer src="../../assets/tg-destination-places.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const map = L.map('map').setView([51.172613, -115.567633], 14);
+            const map = L.map('map');
             L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
                 attribution: '&copy; Google Maps',
                 maxZoom: 20
             }).addTo(map);
-            const locations = [{"name": "Cave and Basin National Historic Site", "lat": 51.169071, "lng": -115.591522}, {"name": "Banff Gondola", "lat": 51.1479059, "lng": -115.555579}, {"name": "Banff Upper Hot Springs", "lat": 51.150769, "lng": -115.560991}, {"name": "Bow Falls Viewpoint", "lat": 51.165749, "lng": -115.560096}, {"name": "Surprise Corner Viewpoint", "lat": 51.167256, "lng": -115.55916}, {"name": "Mount Norquay", "lat": 51.2053287, "lng": -115.6067986}, {"name": "Cascade of Time Garden", "lat": 51.171379, "lng": -115.571752}, {"name": "Banff Visitor Centre", "lat": 51.177969, "lng": -115.570234}, {"name": "Banff Town Sign", "lat": 51.1822001, "lng": -115.5799505}, {"name": "Hoodoos Viewpoint", "lat": 51.188503, "lng": -115.520248}];
+            const locations = Array.from(document.querySelectorAll('[data-place-option]')).map((el) => ({
+                name: el.dataset.placeName || '',
+                lat: Number(el.dataset.placeLat),
+                lng: Number(el.dataset.placeLng),
+            }));
             const customIcon = L.icon({
                 iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
                 iconSize: [32, 32],
@@ -276,14 +591,45 @@
                 popupAnchor: [0, -32],
             });
             const destinationCenter = [51.172613, -115.567633];
-            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.032716, "maxCenterLng": 0.047385};
-            locations.forEach((location) => {
-                L.marker([location.lat, location.lng], { icon: customIcon })
+            const mapContext = {"denseUrban": true};
+            const markers = locations.map((location) => {
+                const marker = L.marker([location.lat, location.lng], { icon: customIcon })
                     .addTo(map)
                     .bindPopup(`<strong>${location.name}</strong>`);
+                return marker;
             });
             window.TGDestinationMap?.fitToLocations(map, locations, destinationCenter, mapContext);
             window.TGDestinationMap?.bindMobileScrollGuard(map, 'map');
+            window.TGDestinationMap?.registerMarkers(map, markers);
+
+            const heroImage = document.querySelector('[data-destination-hero-image]');
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (heroImage && !reduceMotion) {
+                let framePending = false;
+                let scrolling = false;
+                let scrollEndTimer = 0;
+                const updateHeroPosition = () => {
+                    const offset = Math.min(window.scrollY, window.innerHeight * 1.15) * 0.075;
+                    heroImage.style.transform = `translate3d(0, ${offset}px, 0) scale(1.055)`;
+                    framePending = false;
+                };
+                window.addEventListener('scroll', () => {
+                    if (!scrolling) {
+                        scrolling = true;
+                        heroImage.style.willChange = 'transform';
+                    }
+                    window.clearTimeout(scrollEndTimer);
+                    scrollEndTimer = window.setTimeout(() => {
+                        scrolling = false;
+                        heroImage.style.willChange = 'auto';
+                    }, 150);
+                    if (!framePending) {
+                        window.requestAnimationFrame(updateHeroPosition);
+                        framePending = true;
+                    }
+                }, { passive: true });
+                updateHeroPosition();
+            }
         });
     </script>
 </body>

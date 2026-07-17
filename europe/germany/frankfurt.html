@@ -6,503 +6,1286 @@
     <meta name="description" content="Plan a visit to Frankfurt with a concise history, interactive attractions map, prices, and curated highlights across the destination.">
     <meta name="theme-color" content="#121417">
     <title>Frankfurt Guide | Global Explorer Guides</title>
-    <link rel="stylesheet" href="../../assets/tailwind.css">
-    <link rel="stylesheet" href="../../assets/phosphor-regular.css">
     <link rel="stylesheet" href="../../assets/newindex-fonts.css">
     <link rel="stylesheet" href="../../assets/tg-theme.css">
     <link rel="stylesheet" href="../../assets/tg-site-chrome.css">
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
     <link rel="stylesheet" href="../../assets/tg-modern-polish.css">
+    <link rel="stylesheet" href="../../assets/tg-country-page.css">
+    <link rel="stylesheet" href="../../assets/tg-destination-page-v3.css">
     <script defer src="../../assets/lenis.min.js"></script>
     <script defer src="../../assets/tg-smooth-scroll.js"></script>
     <link rel="preload" as="image" href="images/frankfurt_hero.avif" type="image/avif" fetchpriority="high">
     <script defer src="../../assets/leaflet/leaflet.js"></script>
 </head>
-<body class="tg-theme tg-destination-page tg-modern">
-    <header id="site-header" class="header-glass fixed top-0 left-0 right-0 z-50">
+<body class="tg-theme tg-modern tg-country-v2 tg-destination-v3">
+    <a class="skip-link" href="#main-content">Skip to Frankfurt guide</a>
+    <header id="site-header" class="header-glass">
         <div class="page-shell header-glass__inner">
-            <a href="../../index.html" class="font-display site-brand" style="display:flex;align-items:center;gap:0.75rem;text-decoration:none;color:inherit;font-size:1.25rem;" aria-label="Global Explorer home">
+            <a href="../../index.html" class="site-brand" aria-label="Global Explorer home">
                 <span class="site-brand__mark" aria-hidden="true">
                     <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
-                        <circle cx="14" cy="14" r="2" fill="#E8B14F"/>
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
                 </span>
                 Global Explorer
             </a>
-            <nav class="header-glass__nav-mobile" aria-label="Mobile navigation">
-                <a href="../../index.html" class="header-glass__icon-link" aria-label="Home">
-                    <i class="ph ph-house" aria-hidden="true"></i>
-                </a>
-                <a href="germany.html" class="header-glass__icon-link" aria-label="Back to Germany">
-                    <i class="ph ph-arrow-left" aria-hidden="true"></i>
-                </a>
-            </nav>
             <nav class="header-glass__nav" aria-label="Primary">
-                <a href="../../index.html" class="nav-link">Home</a>
-                <a href="frankfurt.html" class="nav-link" aria-current="page">Frankfurt</a>
+                <a href="#main-content" class="nav-link" aria-current="page">Frankfurt</a>
+                <a href="#atlas" class="nav-link">Atlas</a>
+                <a href="#places" class="nav-link">Places</a>
                 <a href="germany.html" class="nav-link">Germany</a>
-                <a href="../../index.html#map" class="nav-link">Atlas</a>
             </nav>
         </div>
     </header>
-    <main>
-        <div class="tg-destination-hero-zone">
-            <div class="tg-destination-hero" aria-hidden="true">
-                <div class="tg-destination-hero__image" style="background-image: url('images/frankfurt_hero.avif')"></div>
-                <div class="tg-destination-hero__fade"></div>
-            </div>
-            <div class="page-shell tg-destination-hero-zone__content">
-        <nav class="tg-toolbar tg-toolbar--compact" aria-label="Breadcrumb">
-            <div class="tg-breadcrumb">
-                <img src="../../assets/flags/w40/de.png" alt="" class="w-6 h-auto rounded-[2px]" aria-hidden="true">
-                <span>Germany</span>
-                <span class="tg-breadcrumb__sep" aria-hidden="true">&rsaquo;</span>
-                <span class="tg-breadcrumb__current">Western Germany</span>
-            </div>
-        </nav>
+    <main id="main-content" tabindex="-1">
+        <section class="destination-hero" aria-labelledby="destination-title">
+            <img class="destination-hero__media" data-destination-hero-image src="images/frankfurt_hero.avif" alt="" width="1600" height="1067" fetchpriority="high" decoding="sync">
+            <div class="destination-hero__shade" aria-hidden="true"></div>
+            <div class="page-shell destination-hero__content">
+                <button
+                    type="button"
+                    id="destination-active-toggle"
+                    class="country-active-toggle country-active-toggle--active"
+                    data-iso2="DE"
+                    data-slug="frankfurt"
+                    data-active="true"
+                    data-interactive="true"
+                    aria-label="Toggle Frankfurt visibility on Germany guide"
+                    aria-pressed="true"
+                >
+                    <img src="../../assets/flags/w80/de.png" alt="" aria-hidden="true">
+                    <span class="country-toggle__copy" aria-hidden="true">
+                        <span class="country-toggle__label">Frankfurt guide</span>
+                        <strong class="country-toggle__state"></strong>
+                    </span>
+                </button>
 
-        <header class="tg-page-header">
-            <button
-        type="button"
-        id="destination-active-toggle"
-        class="country-active-toggle country-active-toggle--active country-active-toggle--readonly"
-        data-iso2="DE"
-        data-slug="frankfurt"
-        data-active="true"
-        data-interactive="true"
-        aria-label="Toggle Frankfurt visibility on Germany guide"
-        aria-pressed="true"
-    >
-        <i class="ph ph-map-pin text-4xl pointer-events-none" aria-hidden="true"></i>
-    </button>
-            <span class="tg-page-header__eyebrow">Destination Guide — Western Germany</span>
-            <h1 class="tg-page-title font-display">Explore <em>Frankfurt</em></h1>
-            <div class="glass-card frosted-panel tg-panel">
-                <h2 class="tg-panel__title font-display">
-                    <i class="ph ph-scroll" aria-hidden="true"></i> A Brief History
-                </h2>
-                <p class="tg-panel__body">Frankfurt developed as a free imperial city, a major trade fair center, the site of imperial elections and coronations, and later one of Germany&#x27;s main financial capitals. The station, cathedral quarter, Romerberg, churches, museums, and river crossings show the city&#x27;s mix of medieval core, bourgeois culture, constitutional history, and modern commerce.</p>
-            </div>
-        </header>
+                <div class="hero__route" aria-label="Destination route and coordinates">
+                    <span>Germany / Western Germany</span>
+                    <span>50.1106&deg; N / 8.6821&deg; E</span>
+                </div>
 
-        <div class="tg-section__header tg-section__header--map-end">
-            <span class="tg-section__eyebrow">Map</span>
-            <h2 class="tg-section__title font-display">Attractions Map</h2>
-        </div>
-            </div>
-        </div>
-
-        <div class="page-shell tg-main tg-main--below-hero">
-        <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Frankfurt attractions"></div>
-        <section class="tg-section">
-            <div class="tg-section__header">
-                <span class="tg-section__eyebrow">Highlights</span>
-                <h2 class="tg-section__title font-display">Top Sights &amp; Activities</h2>
-            </div>
-            <div class="tg-sights-list">
-            
-            <!-- 1. Frankfurt Hauptbahnhof -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/frankfurt_1.avif" alt="Frankfurt Hauptbahnhof" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                <h1 id="destination-title" class="destination-hero__title" style="--destination-title-chars: 9">Frankfurt</h1>
+                <div class="destination-hero__history">
+                    <p>Frankfurt developed as a free imperial city, a major trade fair center, the site of imperial elections and coronations, and later one of Germany&#x27;s main financial capitals. The station, cathedral quarter, Romerberg, churches, museums, and river crossings show the city&#x27;s mix of medieval core, bourgeois culture, constitutional history, and modern commerce.</p>
+                </div>
+                <dl class="destination-hero__facts" aria-label="Frankfurt guide facts">
+                    <div>
+                        <dt>Country</dt>
+                        <dd>Germany</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Frankfurt Hauptbahnhof</h3>
-                    <p class="tg-sight-card__text">Frankfurt Hauptbahnhof opened in 1888 as one of Germany&#x27;s largest 19th-century termini, with a neo-Renaissance facade and vaulted train shed. More than 450,000 passengers use the station daily, connecting the city to European rail networks. It remains the usual gateway from long-distance travel into the inner city.</p>
-                </div>
-            </div>
-            <!-- 2. Frankfurt Cathedral -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/frankfurt_2.avif" alt="Frankfurt Cathedral" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                    <div>
+                        <dt>Region</dt>
+                        <dd>Western Germany</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Frankfurt Cathedral</h3>
-                    <p class="tg-sight-card__text">Frankfurt Cathedral, dedicated to St Bartholomew, was the coronation church of Holy Roman emperors from 1562 to 1792. The red sandstone tower and Gothic choir dominate the eastern old town. The election and coronation tradition linked Frankfurt&#x27;s civic identity to imperial ceremony for over two centuries.</p>
-                </div>
-            </div>
-            <!-- 3. Römerberg -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/frankfurt_3.avif" alt="Römerberg" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
+                    <div>
+                        <dt>Places</dt>
+                        <dd>28</dd>
                     </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Römerberg</h3>
-                    <p class="tg-sight-card__text">The Römerberg is Frankfurt&#x27;s historic market square, lined with reconstructed half-timbered houses and the Justice Fountain. Imperial coronation feasts and medieval trade fairs once filled the space. Today it hosts markets and public events and forms the ceremonial the rebuilt old town.</p>
-                </div>
-            </div>
-            <!-- 4. Frankfurter Römer -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/frankfurt_4.avif" alt="Frankfurter Römer" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Frankfurter Römer</h3>
-                    <p class="tg-sight-card__text">The Römer is Frankfurt&#x27;s medieval town hall, with stepped gables acquired from the 15th century onward and council chambers used continuously for city government. The Kaisersaal hosted coronation banquets after imperial ceremonies in the cathedral. The complex remains a working seat of municipal administration and civic symbol.</p>
-                </div>
-            </div>
-            <!-- 5. Old St Nicholas Church -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/frankfurt_5.avif" alt="Old St Nicholas Church" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Old St Nicholas Church</h3>
-                    <p class="tg-sight-card__text">The Old St Nicholas Church is a compact Gothic hall church on the Römerberg, documented from the 13th century. Its modest scale balances the civic facades of the square with an older parish presence. Services and concerts continue in a building closely tied to Frankfurt&#x27;s market and town hall history.</p>
-                </div>
-            </div>
-            <!-- 6. Historical Museum Frankfurt -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/frankfurt_6.avif" alt="Historical Museum Frankfurt" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €8
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Historical Museum Frankfurt</h3>
-                    <p class="tg-sight-card__text">The Historical Museum Frankfurt on the Saalgasse documents the city&#x27;s development from medieval trade fair town to modern financial center. Permanent and temporary exhibitions cover the Romerberg, riverfront, and Jewish history. The riverside site helps connect the old core with wider social and commercial change.</p>
-                </div>
-            </div>
-            <!-- 7. St. Paul&#x27;s Church -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/frankfurt_7.avif" alt="St. Paul&#x27;s Church" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">St. Paul&#x27;s Church</h3>
-                    <p class="tg-sight-card__text">St Paul&#x27;s Church on Paulsplatz is a circular neoclassical building remembered for the Frankfurt Parliament of 1848, the first freely elected German national assembly. Though the church interior is modest, it is a monument to democratic constitutional history. Exhibitions explain the assembly and its failure to achieve unification.</p>
-                </div>
-            </div>
-            <!-- 8. Frankfurter Goethe-Haus -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/frankfurt_8.avif" alt="Frankfurter Goethe-Haus" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €12
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Frankfurter Goethe-Haus</h3>
-                    <p class="tg-sight-card__text">The Goethe-Haus on Großer Hirschgraben reconstructs the 18th-century family home where Johann Wolfgang von Goethe was born in 1749 and spent his youth. Period rooms, furniture, and manuscripts illustrate Frankfurt bourgeois and literary culture. The museum ties the old town to the early life of Germany&#x27;s most widely read writer.</p>
-                </div>
-            </div>
-            <!-- 9. Goethe-Denkmal -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/frankfurt_9.avif" alt="Goethe-Denkmal" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Goethe-Denkmal</h3>
-                    <p class="tg-sight-card__text">The Goethe monument on Goetheplatz was erected in 1844 and shows the writer standing before allegorical figures of poetry and science. Public sculpture of this scale reflected Frankfurt&#x27;s pride in its native author during the 19th century. The square links the memorial with nearby cultural institutions in the inner city.</p>
-                </div>
-            </div>
-            <!-- 10. Alte Oper -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/frankfurt_10.avif" alt="Alte Oper" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Alte Oper</h3>
-                    <p class="tg-sight-card__text">The Alte Oper on Opernplatz opened in 1880 as Frankfurt&#x27;s opera house in Renaissance revival style and was rebuilt after wartime damage, reopening in 1981. Concerts and events now use the hall rather than full opera seasons. The building anchors the western monumental axis of the inner city.</p>
-                </div>
-            </div>
-            <!-- 11. Große Bockenheimer Str. -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/frankfurt_11.avif" alt="Große Bockenheimer Str." class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Große Bockenheimer Str.</h3>
-                    <p class="tg-sight-card__text">Große Bockenheimer Straße, nicknamed Fressgass for its food shops and restaurants, runs between Opernplatz and Eschenheimer Tor. Delicatessens, wine bars, and cafés line a street that developed as a bourgeois shopping route west of the medieval core. It represents the commercial Frankfurt beyond the ceremonial old town.</p>
-                </div>
-            </div>
-            <!-- 12. Bulle &amp; Bär -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/frankfurt_12.avif" alt="Bulle &amp; Bär" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Bulle &amp; Bär</h3>
-                    <p class="tg-sight-card__text">Bulle &amp; Bär is a visitor site in Frankfurt. The Bull and Bear bronze sculptures by Reinhard Dachlauer stand outside the Frankfurt Stock Exchange on Börsenplatz, installed in 1988. The figures symbolize rising and falling markets and mark the city&#x27;s role as a European financial center. The small square remains a reference point in discussions of Frankfurt&#x27;s economy.</p>
-                </div>
-            </div>
-            <!-- 13. St. Catherine&#x27;s Church -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/frankfurt_13.avif" alt="St. Catherine&#x27;s Church" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">St. Catherine&#x27;s Church</h3>
-                    <p class="tg-sight-card__text">St Catherine&#x27;s Church on the Hauptwache is a Gothic hall church rebuilt after wartime loss and is the main Protestant parish church of the inner city. Its tower rises beside one of Frankfurt&#x27;s busiest transport and shopping nodes. The building preserves an older religious presence amid modern retail and offices.</p>
-                </div>
-            </div>
-            <!-- 14. Liebfrauen, Frankfurt -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/frankfurt_14.avif" alt="Liebfrauen, Frankfurt" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Liebfrauen, Frankfurt</h3>
-                    <p class="tg-sight-card__text">Liebfrauen is a Gothic city church on Liebfrauenberg with a courtyard that offers quiet space in the dense commercial center. Devotional traditions and parish life continue beside banking and retail districts. The church provides a counterpoint to the office blocks and shops of the surrounding blocks.</p>
-                </div>
-            </div>
-            <!-- 15. Städel Museum -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/frankfurt_15.avif" alt="Städel Museum" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €19
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Städel Museum</h3>
-                    <p class="tg-sight-card__text">The Städel Museum on the Museumsufer holds European paintings from the 14th century to the present, including works by Dürer, Rembrandt, and Monet. Founded in 1815 by banker Johann Friedrich Städel, it anchors Frankfurt&#x27;s museum row on the south bank of the Main. The collection connects civic patronage with international art history.</p>
-                </div>
-            </div>
-            <!-- 16. Eiserner Steg -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/frankfurt_16.avif" alt="Eiserner Steg" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Eiserner Steg</h3>
-                    <p class="tg-sight-card__text">The Eiserner Steg is a pedestrian iron bridge across the Main, first built in 1869 and rebuilt after the war. Views from the bridge take in the cathedral, Römer, and modern skyline. It links the historic north bank with the Museumsufer and Sachsenhausen promenades on the south side.</p>
-                </div>
-            </div>
-            <!-- 17. Schlosspark Bad Homburg -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/frankfurt_17.avif" alt="Schlosspark Bad Homburg" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Schlosspark Bad Homburg</h3>
-                    <p class="tg-sight-card__text">Schlosspark Bad Homburg is a public park in Frankfurt, Germany. Schlosspark Bad Homburg is a destination that offers a mix of nature and history. The lake, home to wild ducks and geese, adds to the charm, while ancient trees create a sense of walking through history itself. Paths, lawns, and shaded areas make up the main public facilities.</p>
-                </div>
-            </div>
-            <!-- 18. Zoo Frankfurt -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/frankfurt_18.avif" alt="Zoo Frankfurt" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €12
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Zoo Frankfurt</h3>
-                    <p class="tg-sight-card__text">Established in 1858, Zoo Frankfurt is home to a diverse array of animal species growing in naturalistic environments. The zoo is one of the top attractions in Frankfurt, alongside other popular sights like Romerberg, Stadel Museum, and Palmengarten. Travellers can immerse themselves in local culture and explore the city&#x27;s active restaurant scene.</p>
-                </div>
-            </div>
-            <!-- 19. MyZeil -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/frankfurt_19.avif" alt="MyZeil" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">MyZeil</h3>
-                    <p class="tg-sight-card__text">MyZeil is a visitor site in Frankfurt, Germany. It opened or was completed around 2009. MyZeil is a large shopping mall in Frankfurt, known for its unique and contemporary architecture. Opened in 2009, MyZeil has a gigantic curved glass-and-steel facade housing 77,000 square meters of retail space. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 20. Kleinmarkthalle -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/frankfurt_20.avif" alt="Kleinmarkthalle" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Kleinmarkthalle</h3>
-                    <p class="tg-sight-card__text">Kleinmarkthalle is a visitor site in Frankfurt, Germany. Kleinmarkthalle is a busy market hall in Frankfurt, housing over 60 vendors offering a diverse range of groceries, flowers, wine, and prepared foods. Travellers can explore an array of fresh produce including cheese, meat, vegetables, fruit, confectionery, bread, and pastries from the region. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 21. New Old Town -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/frankfurt_21.avif" alt="New Old Town" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">New Old Town</h3>
-                    <p class="tg-sight-card__text">New Old Town, also known as Frankfurts Old Town, is a visitor site in Frankfurt, Germany. New Old Town in Frankfurt, also known as Frankfurts Old Town, is a district that was partly destroyed during World War II but has been restored to its prewar look. Notable landmarks include the Alte Oper opera house and the Haus zur goldenen Waage. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 22. Eschenheimer Turm -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/frankfurt_22.avif" alt="Eschenheimer Turm" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Eschenheimer Turm</h3>
-                    <p class="tg-sight-card__text">Eschenheimer Turm, also known as Eschenheim Tower, is a unique 15th-century landmark in Frankfurt. It is the oldest unchanged landmark in the city and was designed by Madern Gerthener. The tower now houses a restaurant serving global cuisine, a cozy lounge, and outdoor seating. Located in Frankfurt&#x27;s LGBTQ+-friendly area known as Bermudadreieck, it is surrounded by some of the gay bars in the city.</p>
-                </div>
-            </div>
-            <!-- 23. Alter Flugplatz Frankfurt am Main -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/frankfurt_23.avif" alt="Alter Flugplatz Frankfurt am Main" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Alter Flugplatz Frankfurt am Main</h3>
-                    <p class="tg-sight-card__text">Alter Flugplatz Frankfurt am Main is a visitor site in Frankfurt. An old airport offers a cafe &amp; exhibition space plus space for picnics &amp; idle walks. It&#x27;s an interesting place with some old airport buildings around and information boards about the history of the old airport. The old runway is great for kids to practice their cycling, roller blading, and skating skills. There&#x27;s not much to do but it&#x27;s nice to walk around!</p>
-                </div>
-            </div>
-            <!-- 24. MAIN TOWER -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/frankfurt_24.avif" alt="MAIN TOWER" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €9
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">MAIN TOWER</h3>
-                    <p class="tg-sight-card__text">MAIN TOWER is a visitor site in Frankfurt, Germany. In Frankfurt, there are numerous attractions and activities to explore, including the Main Tower. This skyscraper offers unparalleled panoramic views of the city from its public viewing observatory. The grounds and principal structures are the main points of interest.</p>
-                </div>
-            </div>
-            <!-- 25. Palmengarten Frankfurt -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/frankfurt_25.avif" alt="Palmengarten Frankfurt" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> €9
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Palmengarten Frankfurt</h3>
-                    <p class="tg-sight-card__text">Palmengarten Frankfurt is a large botanical garden established in the 19th century, featuring an collection of palm and orchid species showcased within its greenhouses. This known attraction is part of the sights and activities in Frankfurt, alongside other landmarks such as Romerberg, Stadel Museum, and Frankfurt Zoo.</p>
-                </div>
-            </div>
-            <!-- 26. MesseTurm Service GmbH -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/frankfurt_26.avif" alt="MesseTurm Service GmbH" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">MesseTurm Service GmbH</h3>
-                    <p class="tg-sight-card__text">MesseTurm is a postmodern office building in Frankfurt, completed in 1991. It stands at 843 feet and was once the tallest building in Germany. The skyscraper has 63 floors and offers about 0.6 million square feet of office space. Despite its name meaning Trade Fair Towers, it is solely used for office purposes.</p>
-                </div>
-            </div>
-            <!-- 27. Festhalle Messe Frankfurt -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/frankfurt_27.avif" alt="Festhalle Messe Frankfurt" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Festhalle Messe Frankfurt</h3>
-                    <p class="tg-sight-card__text">Festhalle Messe Frankfurt is a grand exhibition hall that has been attracting hundreds of thousands of travellers annually since its opening in 1909. The neo-baroque design and the soaring 40-meter interior dome make for an sight. It hosts a variety of events, including the top hematology hybrid congress, offering full programs and networking opportunities with global experts.</p>
-                </div>
-            </div>
-            <!-- 28. Batschkapp -->
-            <div class="tg-sight-card">
-                <div class="tg-sight-card__media">
-                    <img src="images/frankfurt_28.avif" alt="Batschkapp" class="w-full h-full object-cover" loading="lazy" decoding="async">
-                    <div class="tg-sight-card__badge">
-                        <i class="ph ph-ticket"></i> Free
-                    </div>
-                </div>
-                <div class="tg-sight-card__body">
-                    <h3 class="tg-sight-card__title">Batschkapp</h3>
-                    <p class="tg-sight-card__text">Located a repurposed plastics factory, Batschkapp is a active rock and pop concert venue that has been music lovers since its inception in 1976. Originally located elsewhere in Frankfurt, this spot relocated in 2016 to accommodate larger crowds while maintaining its intimate atmosphere.</p>
-                </div>
-            </div>
+                </dl>
             </div>
         </section>
-        </div>
+
+        <section id="atlas" class="destination-atlas" aria-labelledby="atlas-title">
+            <div class="page-shell destination-atlas__layout">
+                <div class="destination-atlas__brief">
+                    <p class="destination-atlas__index">City atlas</p>
+                    <h2 id="atlas-title">Plot the city.</h2>
+                    <p class="destination-atlas__copy">Zoom, pan, and open any marker to focus that place in the catalog below.</p>
+                    <dl class="destination-atlas__facts" aria-label="Map coverage">
+                        <div>
+                            <dt>Plotted</dt>
+                            <dd>28 places</dd>
+                        </div>
+                        <div>
+                            <dt>Center</dt>
+                            <dd>50.1106&deg; N<br>8.6821&deg; E</dd>
+                        </div>
+                    </dl>
+                </div>
+                <div id="map" class="tg-map-frame" role="region" aria-label="Interactive map of Frankfurt attractions"></div>
+            </div>
+        </section>
+
+        <section id="places" class="destination-places" aria-labelledby="places-title">
+            <div class="page-shell">
+                <div class="destination-chapter">
+                    <h2 id="places-title" class="destination-chapter__heading">28 ways into<br>Frankfurt.</h2>
+                    <p class="destination-chapter__copy">Browse the index, open a location, and read the essentials without scrolling through a long catalog. Each entry contains its image, admission note, and contextual guide.</p>
+                </div>
+                <div class="places-explorer" data-places-explorer>
+                    <aside class="places-explorer__rail" aria-label="Place index">
+                        <div class="places-explorer__toolbar">
+                            <label class="places-explorer__filter-label" for="places-filter">Filter places</label>
+                            <input
+                                id="places-filter"
+                                class="places-explorer__filter"
+                                type="search"
+                                data-places-filter
+                                placeholder="Search by name"
+                                autocomplete="off"
+                            >
+                            <p class="places-explorer__meta"><strong data-places-count>28</strong> of 28 shown</p>
+                        </div>
+                        <ul class="places-explorer__list" role="listbox" aria-label="Places in Frankfurt" data-places-list data-lenis-prevent data-tg-scroll-surface>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option is-active"
+                            role="option"
+                            id="place-option-1"
+                            data-place-option
+                            data-place-index="0"
+                            data-place-name="Frankfurt Hauptbahnhof"
+                            data-place-lat="50.106654"
+                            data-place-lng="8.662581"
+                            aria-selected="true"
+                            tabindex="0"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">01</span>
+                            <span class="places-explorer__option-name">Frankfurt Hauptbahnhof</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-2"
+                            data-place-option
+                            data-place-index="1"
+                            data-place-name="Frankfurt Cathedral"
+                            data-place-lat="50.110674"
+                            data-place-lng="8.685349"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">02</span>
+                            <span class="places-explorer__option-name">Frankfurt Cathedral</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-3"
+                            data-place-option
+                            data-place-index="2"
+                            data-place-name="Römerberg"
+                            data-place-lat="50.110209"
+                            data-place-lng="8.682175"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">03</span>
+                            <span class="places-explorer__option-name">Römerberg</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-4"
+                            data-place-option
+                            data-place-index="3"
+                            data-place-name="Frankfurter Römer"
+                            data-place-lat="50.110468"
+                            data-place-lng="8.681659"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">04</span>
+                            <span class="places-explorer__option-name">Frankfurter Römer</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-5"
+                            data-place-option
+                            data-place-index="4"
+                            data-place-name="Old St Nicholas Church"
+                            data-place-lat="50.11013"
+                            data-place-lng="8.68239"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">05</span>
+                            <span class="places-explorer__option-name">Old St Nicholas Church</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-6"
+                            data-place-option
+                            data-place-index="5"
+                            data-place-name="Historical Museum Frankfurt"
+                            data-place-lat="50.109603"
+                            data-place-lng="8.682443"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">06</span>
+                            <span class="places-explorer__option-name">Historical Museum Frankfurt</span>
+                            <span class="places-explorer__option-price">€8</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-7"
+                            data-place-option
+                            data-place-index="6"
+                            data-place-name="St. Paul&#x27;s Church"
+                            data-place-lat="50.111389"
+                            data-place-lng="8.679722"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">07</span>
+                            <span class="places-explorer__option-name">St. Paul&#x27;s Church</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-8"
+                            data-place-option
+                            data-place-index="7"
+                            data-place-name="Frankfurter Goethe-Haus"
+                            data-place-lat="50.111212"
+                            data-place-lng="8.677559"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">08</span>
+                            <span class="places-explorer__option-name">Frankfurter Goethe-Haus</span>
+                            <span class="places-explorer__option-price">€12</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-9"
+                            data-place-option
+                            data-place-index="8"
+                            data-place-name="Goethe-Denkmal"
+                            data-place-lat="50.11327"
+                            data-place-lng="8.676577"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">09</span>
+                            <span class="places-explorer__option-name">Goethe-Denkmal</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-10"
+                            data-place-option
+                            data-place-index="9"
+                            data-place-name="Alte Oper"
+                            data-place-lat="50.116033"
+                            data-place-lng="8.671988"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">10</span>
+                            <span class="places-explorer__option-name">Alte Oper</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-11"
+                            data-place-option
+                            data-place-index="10"
+                            data-place-name="Große Bockenheimer Str."
+                            data-place-lat="50.114249"
+                            data-place-lng="8.675324"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">11</span>
+                            <span class="places-explorer__option-name">Große Bockenheimer Str.</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-12"
+                            data-place-option
+                            data-place-index="11"
+                            data-place-name="Bulle &amp; Bär"
+                            data-place-lat="50.114864"
+                            data-place-lng="8.678222"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">12</span>
+                            <span class="places-explorer__option-name">Bulle &amp; Bär</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-13"
+                            data-place-option
+                            data-place-index="12"
+                            data-place-name="St. Catherine&#x27;s Church"
+                            data-place-lat="50.113056"
+                            data-place-lng="8.679167"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">13</span>
+                            <span class="places-explorer__option-name">St. Catherine&#x27;s Church</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-14"
+                            data-place-option
+                            data-place-index="13"
+                            data-place-name="Liebfrauen, Frankfurt"
+                            data-place-lat="50.116982"
+                            data-place-lng="8.683153"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">14</span>
+                            <span class="places-explorer__option-name">Liebfrauen, Frankfurt</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-15"
+                            data-place-option
+                            data-place-index="14"
+                            data-place-name="Städel Museum"
+                            data-place-lat="50.103295"
+                            data-place-lng="8.673858"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">15</span>
+                            <span class="places-explorer__option-name">Städel Museum</span>
+                            <span class="places-explorer__option-price">€19</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-16"
+                            data-place-option
+                            data-place-index="15"
+                            data-place-name="Eiserner Steg"
+                            data-place-lat="50.108053"
+                            data-place-lng="8.68214"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">16</span>
+                            <span class="places-explorer__option-name">Eiserner Steg</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-17"
+                            data-place-option
+                            data-place-index="16"
+                            data-place-name="Schlosspark Bad Homburg"
+                            data-place-lat="50.22727"
+                            data-place-lng="8.609109"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">17</span>
+                            <span class="places-explorer__option-name">Schlosspark Bad Homburg</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-18"
+                            data-place-option
+                            data-place-index="17"
+                            data-place-name="Zoo Frankfurt"
+                            data-place-lat="50.116471"
+                            data-place-lng="8.699298"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">18</span>
+                            <span class="places-explorer__option-name">Zoo Frankfurt</span>
+                            <span class="places-explorer__option-price">€12</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-19"
+                            data-place-option
+                            data-place-index="18"
+                            data-place-name="MyZeil"
+                            data-place-lat="50.114734"
+                            data-place-lng="8.681467"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">19</span>
+                            <span class="places-explorer__option-name">MyZeil</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-20"
+                            data-place-option
+                            data-place-index="19"
+                            data-place-name="Kleinmarkthalle"
+                            data-place-lat="50.112667"
+                            data-place-lng="8.682885"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">20</span>
+                            <span class="places-explorer__option-name">Kleinmarkthalle</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-21"
+                            data-place-option
+                            data-place-index="20"
+                            data-place-name="New Old Town"
+                            data-place-lat="50.110664"
+                            data-place-lng="8.683709"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">21</span>
+                            <span class="places-explorer__option-name">New Old Town</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-22"
+                            data-place-option
+                            data-place-index="21"
+                            data-place-name="Eschenheimer Turm"
+                            data-place-lat="50.116939"
+                            data-place-lng="8.679689"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">22</span>
+                            <span class="places-explorer__option-name">Eschenheimer Turm</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-23"
+                            data-place-option
+                            data-place-index="22"
+                            data-place-name="Alter Flugplatz Frankfurt am Main"
+                            data-place-lat="50.17778"
+                            data-place-lng="8.659651"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">23</span>
+                            <span class="places-explorer__option-name">Alter Flugplatz Frankfurt am Main</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-24"
+                            data-place-option
+                            data-place-index="23"
+                            data-place-name="MAIN TOWER"
+                            data-place-lat="50.11254"
+                            data-place-lng="8.67214"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">24</span>
+                            <span class="places-explorer__option-name">MAIN TOWER</span>
+                            <span class="places-explorer__option-price">€9</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-25"
+                            data-place-option
+                            data-place-index="24"
+                            data-place-name="Palmengarten Frankfurt"
+                            data-place-lat="50.123215"
+                            data-place-lng="8.65783"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">25</span>
+                            <span class="places-explorer__option-name">Palmengarten Frankfurt</span>
+                            <span class="places-explorer__option-price">€9</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-26"
+                            data-place-option
+                            data-place-index="25"
+                            data-place-name="MesseTurm Service GmbH"
+                            data-place-lat="50.112502"
+                            data-place-lng="8.652887"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">26</span>
+                            <span class="places-explorer__option-name">MesseTurm Service GmbH</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-27"
+                            data-place-option
+                            data-place-index="26"
+                            data-place-name="Festhalle Messe Frankfurt"
+                            data-place-lat="50.111863"
+                            data-place-lng="8.650864"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">27</span>
+                            <span class="places-explorer__option-name">Festhalle Messe Frankfurt</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="places-explorer__option"
+                            role="option"
+                            id="place-option-28"
+                            data-place-option
+                            data-place-index="27"
+                            data-place-name="Batschkapp"
+                            data-place-lat="50.13512"
+                            data-place-lng="8.738852"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            <span class="places-explorer__option-index" aria-hidden="true">28</span>
+                            <span class="places-explorer__option-name">Batschkapp</span>
+                            <span class="places-explorer__option-price">Free</span>
+                        </button>
+                    </li>
+                        </ul>
+                        <p class="places-explorer__empty" data-places-empty hidden>No places match that filter.</p>
+                    </aside>
+                    <div class="places-explorer__stage" data-places-stage>
+                    <nav class="places-stage__stepper" data-places-stepper aria-label="Browse places" hidden>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--prev" data-places-prev aria-label="Previous place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M14.75 5.25 L8.25 12 l6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M9.1 12 H17.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                        <button type="button" class="places-stage__arrow places-stage__arrow--next" data-places-next aria-label="Next place">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M9.25 5.25 L15.75 12 l-6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M6.6 12 H14.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
+                            </svg>
+                        </button>
+                    </nav>
+                <article
+                    class="places-stage__panel is-active"
+                    data-place-panel
+                    data-place-index="0"
+                    aria-labelledby="place-title-1"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/frankfurt_1.avif" alt="Frankfurt Hauptbahnhof" width="1200" height="750" loading="eager" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">01</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-1" class="places-stage__title">Frankfurt Hauptbahnhof</h3>
+                        <p class="places-stage__text">Frankfurt Hauptbahnhof opened in 1888 as one of Germany&#x27;s largest 19th-century termini, with a neo-Renaissance facade and vaulted train shed. More than 450,000 passengers use the station daily, connecting the city to European rail networks. It remains the usual gateway from long-distance travel into the inner city.</p>
+                        <p class="places-stage__coords">50.1067&deg; N / 8.6626&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="1"
+                    aria-labelledby="place-title-2"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/frankfurt_2.avif" alt="Frankfurt Cathedral" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">02</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-2" class="places-stage__title">Frankfurt Cathedral</h3>
+                        <p class="places-stage__text">Frankfurt Cathedral, dedicated to St Bartholomew, was the coronation church of Holy Roman emperors from 1562 to 1792. The red sandstone tower and Gothic choir dominate the eastern old town. The election and coronation tradition linked Frankfurt&#x27;s civic identity to imperial ceremony for over two centuries.</p>
+                        <p class="places-stage__coords">50.1107&deg; N / 8.6853&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="2"
+                    aria-labelledby="place-title-3"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/frankfurt_3.avif" alt="Römerberg" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">03</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-3" class="places-stage__title">Römerberg</h3>
+                        <p class="places-stage__text">The Römerberg is Frankfurt&#x27;s historic market square, lined with reconstructed half-timbered houses and the Justice Fountain. Imperial coronation feasts and medieval trade fairs once filled the space. Today it hosts markets and public events and forms the ceremonial the rebuilt old town.</p>
+                        <p class="places-stage__coords">50.1102&deg; N / 8.6822&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="3"
+                    aria-labelledby="place-title-4"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/frankfurt_4.avif" alt="Frankfurter Römer" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">04</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-4" class="places-stage__title">Frankfurter Römer</h3>
+                        <p class="places-stage__text">The Römer is Frankfurt&#x27;s medieval town hall, with stepped gables acquired from the 15th century onward and council chambers used continuously for city government. The Kaisersaal hosted coronation banquets after imperial ceremonies in the cathedral. The complex remains a working seat of municipal administration and civic symbol.</p>
+                        <p class="places-stage__coords">50.1105&deg; N / 8.6817&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="4"
+                    aria-labelledby="place-title-5"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/frankfurt_5.avif" alt="Old St Nicholas Church" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">05</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-5" class="places-stage__title">Old St Nicholas Church</h3>
+                        <p class="places-stage__text">The Old St Nicholas Church is a compact Gothic hall church on the Römerberg, documented from the 13th century. Its modest scale balances the civic facades of the square with an older parish presence. Services and concerts continue in a building closely tied to Frankfurt&#x27;s market and town hall history.</p>
+                        <p class="places-stage__coords">50.1101&deg; N / 8.6824&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="5"
+                    aria-labelledby="place-title-6"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/frankfurt_6.avif" alt="Historical Museum Frankfurt" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">06</span>
+                            <span class="places-stage__admission"><span>Admission</span>€8</span>
+                        </p>
+                        <h3 id="place-title-6" class="places-stage__title">Historical Museum Frankfurt</h3>
+                        <p class="places-stage__text">The Historical Museum Frankfurt on the Saalgasse documents the city&#x27;s development from medieval trade fair town to modern financial center. Permanent and temporary exhibitions cover the Romerberg, riverfront, and Jewish history. The riverside site helps connect the old core with wider social and commercial change.</p>
+                        <p class="places-stage__coords">50.1096&deg; N / 8.6824&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="6"
+                    aria-labelledby="place-title-7"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/frankfurt_7.avif" alt="St. Paul&#x27;s Church" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">07</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-7" class="places-stage__title">St. Paul&#x27;s Church</h3>
+                        <p class="places-stage__text">St Paul&#x27;s Church on Paulsplatz is a circular neoclassical building remembered for the Frankfurt Parliament of 1848, the first freely elected German national assembly. Though the church interior is modest, it is a monument to democratic constitutional history. Exhibitions explain the assembly and its failure to achieve unification.</p>
+                        <p class="places-stage__coords">50.1114&deg; N / 8.6797&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="7"
+                    aria-labelledby="place-title-8"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/frankfurt_8.avif" alt="Frankfurter Goethe-Haus" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">08</span>
+                            <span class="places-stage__admission"><span>Admission</span>€12</span>
+                        </p>
+                        <h3 id="place-title-8" class="places-stage__title">Frankfurter Goethe-Haus</h3>
+                        <p class="places-stage__text">The Goethe-Haus on Großer Hirschgraben reconstructs the 18th-century family home where Johann Wolfgang von Goethe was born in 1749 and spent his youth. Period rooms, furniture, and manuscripts illustrate Frankfurt bourgeois and literary culture. The museum ties the old town to the early life of Germany&#x27;s most widely read writer.</p>
+                        <p class="places-stage__coords">50.1112&deg; N / 8.6776&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="8"
+                    aria-labelledby="place-title-9"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/frankfurt_9.avif" alt="Goethe-Denkmal" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">09</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-9" class="places-stage__title">Goethe-Denkmal</h3>
+                        <p class="places-stage__text">The Goethe monument on Goetheplatz was erected in 1844 and shows the writer standing before allegorical figures of poetry and science. Public sculpture of this scale reflected Frankfurt&#x27;s pride in its native author during the 19th century. The square links the memorial with nearby cultural institutions in the inner city.</p>
+                        <p class="places-stage__coords">50.1133&deg; N / 8.6766&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="9"
+                    aria-labelledby="place-title-10"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/frankfurt_10.avif" alt="Alte Oper" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">10</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-10" class="places-stage__title">Alte Oper</h3>
+                        <p class="places-stage__text">The Alte Oper on Opernplatz opened in 1880 as Frankfurt&#x27;s opera house in Renaissance revival style and was rebuilt after wartime damage, reopening in 1981. Concerts and events now use the hall rather than full opera seasons. The building anchors the western monumental axis of the inner city.</p>
+                        <p class="places-stage__coords">50.1160&deg; N / 8.6720&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="10"
+                    aria-labelledby="place-title-11"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/frankfurt_11.avif" alt="Große Bockenheimer Str." width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">11</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-11" class="places-stage__title">Große Bockenheimer Str.</h3>
+                        <p class="places-stage__text">Große Bockenheimer Straße, nicknamed Fressgass for its food shops and restaurants, runs between Opernplatz and Eschenheimer Tor. Delicatessens, wine bars, and cafés line a street that developed as a bourgeois shopping route west of the medieval core. It represents the commercial Frankfurt beyond the ceremonial old town.</p>
+                        <p class="places-stage__coords">50.1142&deg; N / 8.6753&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="11"
+                    aria-labelledby="place-title-12"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/frankfurt_12.avif" alt="Bulle &amp; Bär" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">12</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-12" class="places-stage__title">Bulle &amp; Bär</h3>
+                        <p class="places-stage__text">Bulle &amp; Bär is a visitor site in Frankfurt. The Bull and Bear bronze sculptures by Reinhard Dachlauer stand outside the Frankfurt Stock Exchange on Börsenplatz, installed in 1988. The figures symbolize rising and falling markets and mark the city&#x27;s role as a European financial center. The small square remains a reference point in discussions of Frankfurt&#x27;s economy.</p>
+                        <p class="places-stage__coords">50.1149&deg; N / 8.6782&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="12"
+                    aria-labelledby="place-title-13"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/frankfurt_13.avif" alt="St. Catherine&#x27;s Church" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">13</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-13" class="places-stage__title">St. Catherine&#x27;s Church</h3>
+                        <p class="places-stage__text">St Catherine&#x27;s Church on the Hauptwache is a Gothic hall church rebuilt after wartime loss and is the main Protestant parish church of the inner city. Its tower rises beside one of Frankfurt&#x27;s busiest transport and shopping nodes. The building preserves an older religious presence amid modern retail and offices.</p>
+                        <p class="places-stage__coords">50.1131&deg; N / 8.6792&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="13"
+                    aria-labelledby="place-title-14"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/frankfurt_14.avif" alt="Liebfrauen, Frankfurt" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">14</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-14" class="places-stage__title">Liebfrauen, Frankfurt</h3>
+                        <p class="places-stage__text">Liebfrauen is a Gothic city church on Liebfrauenberg with a courtyard that offers quiet space in the dense commercial center. Devotional traditions and parish life continue beside banking and retail districts. The church provides a counterpoint to the office blocks and shops of the surrounding blocks.</p>
+                        <p class="places-stage__coords">50.1170&deg; N / 8.6832&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="14"
+                    aria-labelledby="place-title-15"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/frankfurt_15.avif" alt="Städel Museum" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">15</span>
+                            <span class="places-stage__admission"><span>Admission</span>€19</span>
+                        </p>
+                        <h3 id="place-title-15" class="places-stage__title">Städel Museum</h3>
+                        <p class="places-stage__text">The Städel Museum on the Museumsufer holds European paintings from the 14th century to the present, including works by Dürer, Rembrandt, and Monet. Founded in 1815 by banker Johann Friedrich Städel, it anchors Frankfurt&#x27;s museum row on the south bank of the Main. The collection connects civic patronage with international art history.</p>
+                        <p class="places-stage__coords">50.1033&deg; N / 8.6739&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="15"
+                    aria-labelledby="place-title-16"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/frankfurt_16.avif" alt="Eiserner Steg" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">16</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-16" class="places-stage__title">Eiserner Steg</h3>
+                        <p class="places-stage__text">The Eiserner Steg is a pedestrian iron bridge across the Main, first built in 1869 and rebuilt after the war. Views from the bridge take in the cathedral, Römer, and modern skyline. It links the historic north bank with the Museumsufer and Sachsenhausen promenades on the south side.</p>
+                        <p class="places-stage__coords">50.1081&deg; N / 8.6821&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="16"
+                    aria-labelledby="place-title-17"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/frankfurt_17.avif" alt="Schlosspark Bad Homburg" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">17</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-17" class="places-stage__title">Schlosspark Bad Homburg</h3>
+                        <p class="places-stage__text">Schlosspark Bad Homburg is a public park in Frankfurt, Germany. Schlosspark Bad Homburg is a destination that offers a mix of nature and history. The lake, home to wild ducks and geese, adds to the charm, while ancient trees create a sense of walking through history itself. Paths, lawns, and shaded areas make up the main public facilities.</p>
+                        <p class="places-stage__coords">50.2273&deg; N / 8.6091&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="17"
+                    aria-labelledby="place-title-18"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/frankfurt_18.avif" alt="Zoo Frankfurt" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">18</span>
+                            <span class="places-stage__admission"><span>Admission</span>€12</span>
+                        </p>
+                        <h3 id="place-title-18" class="places-stage__title">Zoo Frankfurt</h3>
+                        <p class="places-stage__text">Established in 1858, Zoo Frankfurt is home to a diverse array of animal species growing in naturalistic environments. The zoo is one of the top attractions in Frankfurt, alongside other popular sights like Romerberg, Stadel Museum, and Palmengarten. Travellers can immerse themselves in local culture and explore the city&#x27;s active restaurant scene.</p>
+                        <p class="places-stage__coords">50.1165&deg; N / 8.6993&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="18"
+                    aria-labelledby="place-title-19"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/frankfurt_19.avif" alt="MyZeil" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">19</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-19" class="places-stage__title">MyZeil</h3>
+                        <p class="places-stage__text">MyZeil is a visitor site in Frankfurt, Germany. It opened or was completed around 2009. MyZeil is a large shopping mall in Frankfurt, known for its unique and contemporary architecture. Opened in 2009, MyZeil has a gigantic curved glass-and-steel facade housing 77,000 square meters of retail space. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">50.1147&deg; N / 8.6815&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="19"
+                    aria-labelledby="place-title-20"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/frankfurt_20.avif" alt="Kleinmarkthalle" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">20</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-20" class="places-stage__title">Kleinmarkthalle</h3>
+                        <p class="places-stage__text">Kleinmarkthalle is a visitor site in Frankfurt, Germany. Kleinmarkthalle is a busy market hall in Frankfurt, housing over 60 vendors offering a diverse range of groceries, flowers, wine, and prepared foods. Travellers can explore an array of fresh produce including cheese, meat, vegetables, fruit, confectionery, bread, and pastries from the region. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">50.1127&deg; N / 8.6829&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="20"
+                    aria-labelledby="place-title-21"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/frankfurt_21.avif" alt="New Old Town" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">21</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-21" class="places-stage__title">New Old Town</h3>
+                        <p class="places-stage__text">New Old Town, also known as Frankfurts Old Town, is a visitor site in Frankfurt, Germany. New Old Town in Frankfurt, also known as Frankfurts Old Town, is a district that was partly destroyed during World War II but has been restored to its prewar look. Notable landmarks include the Alte Oper opera house and the Haus zur goldenen Waage. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">50.1107&deg; N / 8.6837&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="21"
+                    aria-labelledby="place-title-22"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/frankfurt_22.avif" alt="Eschenheimer Turm" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">22</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-22" class="places-stage__title">Eschenheimer Turm</h3>
+                        <p class="places-stage__text">Eschenheimer Turm, also known as Eschenheim Tower, is a unique 15th-century landmark in Frankfurt. It is the oldest unchanged landmark in the city and was designed by Madern Gerthener. The tower now houses a restaurant serving global cuisine, a cozy lounge, and outdoor seating. Located in Frankfurt&#x27;s LGBTQ+-friendly area known as Bermudadreieck, it is surrounded by some of the gay bars in the city.</p>
+                        <p class="places-stage__coords">50.1169&deg; N / 8.6797&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="22"
+                    aria-labelledby="place-title-23"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/frankfurt_23.avif" alt="Alter Flugplatz Frankfurt am Main" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">23</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-23" class="places-stage__title">Alter Flugplatz Frankfurt am Main</h3>
+                        <p class="places-stage__text">Alter Flugplatz Frankfurt am Main is a visitor site in Frankfurt. An old airport offers a cafe &amp; exhibition space plus space for picnics &amp; idle walks. It&#x27;s an interesting place with some old airport buildings around and information boards about the history of the old airport. The old runway is great for kids to practice their cycling, roller blading, and skating skills. There&#x27;s not much to do but it&#x27;s nice to walk around!</p>
+                        <p class="places-stage__coords">50.1778&deg; N / 8.6597&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="23"
+                    aria-labelledby="place-title-24"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/frankfurt_24.avif" alt="MAIN TOWER" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">24</span>
+                            <span class="places-stage__admission"><span>Admission</span>€9</span>
+                        </p>
+                        <h3 id="place-title-24" class="places-stage__title">MAIN TOWER</h3>
+                        <p class="places-stage__text">MAIN TOWER is a visitor site in Frankfurt, Germany. In Frankfurt, there are numerous attractions and activities to explore, including the Main Tower. This skyscraper offers unparalleled panoramic views of the city from its public viewing observatory. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__coords">50.1125&deg; N / 8.6721&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="24"
+                    aria-labelledby="place-title-25"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/frankfurt_25.avif" alt="Palmengarten Frankfurt" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">25</span>
+                            <span class="places-stage__admission"><span>Admission</span>€9</span>
+                        </p>
+                        <h3 id="place-title-25" class="places-stage__title">Palmengarten Frankfurt</h3>
+                        <p class="places-stage__text">Palmengarten Frankfurt is a large botanical garden established in the 19th century, featuring an collection of palm and orchid species showcased within its greenhouses. This known attraction is part of the sights and activities in Frankfurt, alongside other landmarks such as Romerberg, Stadel Museum, and Frankfurt Zoo.</p>
+                        <p class="places-stage__coords">50.1232&deg; N / 8.6578&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="25"
+                    aria-labelledby="place-title-26"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/frankfurt_26.avif" alt="MesseTurm Service GmbH" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">26</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-26" class="places-stage__title">MesseTurm Service GmbH</h3>
+                        <p class="places-stage__text">MesseTurm is a postmodern office building in Frankfurt, completed in 1991. It stands at 843 feet and was once the tallest building in Germany. The skyscraper has 63 floors and offers about 0.6 million square feet of office space. Despite its name meaning Trade Fair Towers, it is solely used for office purposes.</p>
+                        <p class="places-stage__coords">50.1125&deg; N / 8.6529&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="26"
+                    aria-labelledby="place-title-27"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/frankfurt_27.avif" alt="Festhalle Messe Frankfurt" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">27</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-27" class="places-stage__title">Festhalle Messe Frankfurt</h3>
+                        <p class="places-stage__text">Festhalle Messe Frankfurt is a grand exhibition hall that has been attracting hundreds of thousands of travellers annually since its opening in 1909. The neo-baroque design and the soaring 40-meter interior dome make for an sight. It hosts a variety of events, including the top hematology hybrid congress, offering full programs and networking opportunities with global experts.</p>
+                        <p class="places-stage__coords">50.1119&deg; N / 8.6509&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                <article
+                    class="places-stage__panel"
+                    data-place-panel
+                    data-place-index="27"
+                    aria-labelledby="place-title-28"
+                >
+                    <div class="places-stage__media">
+                        <img src="images/frankfurt_28.avif" alt="Batschkapp" width="1200" height="750" loading="lazy" decoding="async">
+                    </div>
+                    <div class="places-stage__body">
+                        <p class="places-stage__meta">
+                            <span class="places-stage__index" aria-hidden="true">28</span>
+                            <span class="places-stage__admission"><span>Admission</span>Free</span>
+                        </p>
+                        <h3 id="place-title-28" class="places-stage__title">Batschkapp</h3>
+                        <p class="places-stage__text">Located a repurposed plastics factory, Batschkapp is a active rock and pop concert venue that has been music lovers since its inception in 1976. Originally located elsewhere in Frankfurt, this spot relocated in 2016 to accommodate larger crowds while maintaining its intimate atmosphere.</p>
+                        <p class="places-stage__coords">50.1351&deg; N / 8.7389&deg; E</p>
+                        <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
+                    </div>
+                </article>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="site-footer">
         <div class="page-shell">
             <div class="site-footer__bar">
-                <a href="../../index.html" class="site-footer__brand" aria-label="Global Explorer home">
-                    <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                        <circle cx="14" cy="14" r="12" stroke="#E8B14F" stroke-width="1.5"/>
-                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="#E8B14F" stroke-width="1.5" fill="none"/>
+                <a href="../../index.html" class="site-footer__mark" aria-label="Global Explorer home">
+                    <svg width="24" height="24" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                        <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="14" cy="14" r="2" fill="currentColor"/>
                     </svg>
-                    <span class="site-footer__brand-name font-display">Global Explorer</span>
+                    Global Explorer
                 </a>
-                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides. Designed for the modern traveler.</p>
+                <p class="site-footer__copy">&copy; 2026 Global Explorer Guides <span>Frankfurt: 28 places across Western Germany.</span></p>
             </div>
         </div>
     </footer>
 
     <button id="scrollTopBtn" type="button" aria-label="Scroll to top">
-        <i class="ph ph-arrow-up" aria-hidden="true"></i>
+        <svg viewBox="0 0 24 24" width="1.15em" height="1.15em" aria-hidden="true" focusable="false">
+            <path d="M12 5.25 V18.75 M12 5.25 L6.75 10.5 M12 5.25 L17.25 10.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
     </button>
 
     <script defer src="../../assets/dev-destination-toggle.js"></script>
     <script defer src="../../assets/tg-page-chrome.js"></script>
     <script defer src="../../assets/tg-destination-map.js"></script>
+    <script defer src="../../assets/tg-destination-places.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const map = L.map('map').setView([50.110644, 8.682092], 14);
+            const map = L.map('map');
             L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
                 attribution: '&copy; Google Maps',
                 maxZoom: 20
             }).addTo(map);
-            const locations = [{"name": "Frankfurt Hauptbahnhof", "lat": 50.106654, "lng": 8.662581}, {"name": "Frankfurt Cathedral", "lat": 50.110674, "lng": 8.685349}, {"name": "Römerberg", "lat": 50.110209, "lng": 8.682175}, {"name": "Frankfurter Römer", "lat": 50.110468, "lng": 8.681659}, {"name": "Old St Nicholas Church", "lat": 50.11013, "lng": 8.68239}, {"name": "Historical Museum Frankfurt", "lat": 50.109603, "lng": 8.682443}, {"name": "St. Paul's Church", "lat": 50.111389, "lng": 8.679722}, {"name": "Frankfurter Goethe-Haus", "lat": 50.111212, "lng": 8.677559}, {"name": "Goethe-Denkmal", "lat": 50.11327, "lng": 8.676577}, {"name": "Alte Oper", "lat": 50.116033, "lng": 8.671988}, {"name": "Große Bockenheimer Str.", "lat": 50.114249, "lng": 8.675324}, {"name": "Bulle & Bär", "lat": 50.114864, "lng": 8.678222}, {"name": "St. Catherine's Church", "lat": 50.113056, "lng": 8.679167}, {"name": "Liebfrauen, Frankfurt", "lat": 50.116982, "lng": 8.683153}, {"name": "Städel Museum", "lat": 50.103295, "lng": 8.673858}, {"name": "Eiserner Steg", "lat": 50.108053, "lng": 8.68214}, {"name": "Schlosspark Bad Homburg", "lat": 50.22727, "lng": 8.609109}, {"name": "Zoo Frankfurt", "lat": 50.116471, "lng": 8.699298}, {"name": "MyZeil", "lat": 50.114734, "lng": 8.681467}, {"name": "Kleinmarkthalle", "lat": 50.112667, "lng": 8.682885}, {"name": "New Old Town", "lat": 50.110664, "lng": 8.683709}, {"name": "Eschenheimer Turm", "lat": 50.116939, "lng": 8.679689}, {"name": "Alter Flugplatz Frankfurt am Main", "lat": 50.17778, "lng": 8.659651}, {"name": "MAIN TOWER", "lat": 50.11254, "lng": 8.67214}, {"name": "Palmengarten Frankfurt", "lat": 50.123215, "lng": 8.65783}, {"name": "MesseTurm Service GmbH", "lat": 50.112502, "lng": 8.652887}, {"name": "Festhalle Messe Frankfurt", "lat": 50.111863, "lng": 8.650864}, {"name": "Batschkapp", "lat": 50.13512, "lng": 8.738852}];
+            const locations = Array.from(document.querySelectorAll('[data-place-option]')).map((el) => ({
+                name: el.dataset.placeName || '',
+                lat: Number(el.dataset.placeLat),
+                lng: Number(el.dataset.placeLng),
+            }));
             const customIcon = L.icon({
                 iconUrl: '../../assets/leaflet/images/marker-icon-red.png',
                 iconSize: [32, 32],
@@ -510,14 +1293,45 @@
                 popupAnchor: [0, -32],
             });
             const destinationCenter = [50.110644, 8.682092];
-            const mapContext = {"largeRegion": false, "nationalPark": false, "scenicCorridor": false, "islandCity": false, "spreadUrban": false, "compactRegion": false, "denseUrban": true, "maxCenterLat": 0.116626, "maxCenterLng": 0.072983};
-            locations.forEach((location) => {
-                L.marker([location.lat, location.lng], { icon: customIcon })
+            const mapContext = {"denseUrban": true};
+            const markers = locations.map((location) => {
+                const marker = L.marker([location.lat, location.lng], { icon: customIcon })
                     .addTo(map)
                     .bindPopup(`<strong>${location.name}</strong>`);
+                return marker;
             });
             window.TGDestinationMap?.fitToLocations(map, locations, destinationCenter, mapContext);
             window.TGDestinationMap?.bindMobileScrollGuard(map, 'map');
+            window.TGDestinationMap?.registerMarkers(map, markers);
+
+            const heroImage = document.querySelector('[data-destination-hero-image]');
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (heroImage && !reduceMotion) {
+                let framePending = false;
+                let scrolling = false;
+                let scrollEndTimer = 0;
+                const updateHeroPosition = () => {
+                    const offset = Math.min(window.scrollY, window.innerHeight * 1.15) * 0.075;
+                    heroImage.style.transform = `translate3d(0, ${offset}px, 0) scale(1.055)`;
+                    framePending = false;
+                };
+                window.addEventListener('scroll', () => {
+                    if (!scrolling) {
+                        scrolling = true;
+                        heroImage.style.willChange = 'transform';
+                    }
+                    window.clearTimeout(scrollEndTimer);
+                    scrollEndTimer = window.setTimeout(() => {
+                        scrolling = false;
+                        heroImage.style.willChange = 'auto';
+                    }, 150);
+                    if (!framePending) {
+                        window.requestAnimationFrame(updateHeroPosition);
+                        framePending = true;
+                    }
+                }, { passive: true });
+                updateHeroPosition();
+            }
         });
     </script>
 </body>
