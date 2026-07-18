@@ -6,13 +6,12 @@
     <meta name="description" content="Plan a visit to Ronda with a concise history, interactive attractions map, prices, and curated highlights across the destination.">
     <meta name="theme-color" content="#121417">
     <title>Ronda Guide | Global Explorer Guides</title>
-    <link rel="stylesheet" href="../../assets/newindex-fonts.css">
     <link rel="stylesheet" href="../../assets/tg-theme.css">
     <link rel="stylesheet" href="../../assets/tg-site-chrome.css">
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
     <link rel="stylesheet" href="../../assets/tg-modern-polish.css">
-    <link rel="stylesheet" href="../../assets/tg-country-page.css">
+    <link rel="stylesheet" href="../../assets/tg-editorial-chrome.css">
     <link rel="stylesheet" href="../../assets/tg-destination-page-v3.css">
     <script defer src="../../assets/lenis.min.js"></script>
     <script defer src="../../assets/tg-smooth-scroll.js"></script>
@@ -49,7 +48,7 @@
                 <button
                     type="button"
                     id="destination-active-toggle"
-                    class="country-active-toggle country-active-toggle--active"
+                    class="country-active-toggle country-active-toggle--active country-active-toggle--readonly"
                     data-iso2="ES"
                     data-slug="ronda"
                     data-active="true"
@@ -114,7 +113,7 @@
         <section id="places" class="destination-places" aria-labelledby="places-title">
             <div class="page-shell">
                 <div class="destination-chapter">
-                    <h2 id="places-title" class="destination-chapter__heading">3 ways into<br>Ronda.</h2>
+                    <h2 id="places-title" class="destination-chapter__heading">3 ways into<br><em>Ronda</em>.</h2>
                     <p class="destination-chapter__copy">Browse the index, open a location, and read the essentials without scrolling through a long catalog. Each entry contains its image, admission note, and contextual guide.</p>
                 </div>
                 <div class="places-explorer" data-places-explorer>
@@ -193,20 +192,6 @@
                         <p class="places-explorer__empty" data-places-empty hidden>No places match that filter.</p>
                     </aside>
                     <div class="places-explorer__stage" data-places-stage>
-                    <nav class="places-stage__stepper" data-places-stepper aria-label="Browse places" hidden>
-                        <button type="button" class="places-stage__arrow places-stage__arrow--prev" data-places-prev aria-label="Previous place">
-                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                                <path d="M14.75 5.25 L8.25 12 l6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
-                                <path d="M9.1 12 H17.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
-                            </svg>
-                        </button>
-                        <button type="button" class="places-stage__arrow places-stage__arrow--next" data-places-next aria-label="Next place">
-                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                                <path d="M9.25 5.25 L15.75 12 l-6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
-                                <path d="M6.6 12 H14.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
-                            </svg>
-                        </button>
-                    </nav>
                 <article
                     class="places-stage__panel is-active"
                     data-place-panel
@@ -242,7 +227,7 @@
                             <span class="places-stage__admission"><span>Admission</span>Free</span>
                         </p>
                         <h3 id="place-title-2" class="places-stage__title">Puerta del Almocábar</h3>
-                        <p class="places-stage__text">Puerta de Almocábar is a medieval gate in the eastern walls of Ronda&#x27;s old town. It marked the route from the lower quarter toward the Arab quarter after Christian reconquest. The gate and adjacent walls preserve masonry from the fortified edge above the gorge.</p>
+                        <p class="places-stage__text">Puerta de Almocábar opens through the eastern walls of Ronda&#x27;s old town toward the former Arab quarter below the plateau. Masonry in the gate and adjoining walls belongs to the fortified rim above the Tajo gorge. The arch remains a clear entry on walks around the walls.</p>
                         <p class="places-stage__coords">36.7369&deg; N / 5.1618&deg; W</p>
                         <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
                     </div>
@@ -262,7 +247,7 @@
                             <span class="places-stage__admission"><span>Admission</span>€9</span>
                         </p>
                         <h3 id="place-title-3" class="places-stage__title">Bullring of the Royal Cavalry of Ronda</h3>
-                        <p class="places-stage__text">Ronda&#x27;s bullring was completed in 1785 for the Real Maestranza de Caballería and is among the oldest purpose-built arenas in Spain. Its stone arcades and diameter influenced later plaza design. A museum documents the town&#x27;s bullfighting tradition and cavalry history.</p>
+                        <p class="places-stage__text">Ronda&#x27;s bullring was completed in the late eighteenth century for the Real Maestranza cavalry brotherhood. Two levels of stone arcades surround a broad sand arena, while museum displays address horsemanship, bullfighting, costumes, and local families associated with the practice. The building is architecturally influential but remains tied to a contested spectacle.</p>
                         <p class="places-stage__coords">36.7422&deg; N / 5.1672&deg; W</p>
                         <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
                     </div>
@@ -328,35 +313,7 @@
             window.TGDestinationMap?.fitToLocations(map, locations, destinationCenter, mapContext);
             window.TGDestinationMap?.bindMobileScrollGuard(map, 'map');
             window.TGDestinationMap?.registerMarkers(map, markers);
-
-            const heroImage = document.querySelector('[data-destination-hero-image]');
-            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            if (heroImage && !reduceMotion) {
-                let framePending = false;
-                let scrolling = false;
-                let scrollEndTimer = 0;
-                const updateHeroPosition = () => {
-                    const offset = Math.min(window.scrollY, window.innerHeight * 1.15) * 0.075;
-                    heroImage.style.transform = `translate3d(0, ${offset}px, 0) scale(1.055)`;
-                    framePending = false;
-                };
-                window.addEventListener('scroll', () => {
-                    if (!scrolling) {
-                        scrolling = true;
-                        heroImage.style.willChange = 'transform';
-                    }
-                    window.clearTimeout(scrollEndTimer);
-                    scrollEndTimer = window.setTimeout(() => {
-                        scrolling = false;
-                        heroImage.style.willChange = 'auto';
-                    }, 150);
-                    if (!framePending) {
-                        window.requestAnimationFrame(updateHeroPosition);
-                        framePending = true;
-                    }
-                }, { passive: true });
-                updateHeroPosition();
-            }
+            window.TGDestinationMap?.bindHeroParallax?.();
         });
     </script>
 </body>

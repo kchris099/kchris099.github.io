@@ -103,7 +103,6 @@
         }
 
         let swipe = null;
-        let activeTransition = null;
         let mediaSlideTimer = 0;
 
         function visibleOptions() {
@@ -284,9 +283,8 @@
         }
 
         /**
-         * Slide the photo without View Transitions. VT snapshots the place copy and
-         * leaves the previous title/body ghosted under the new text — unacceptable.
-         * Text swaps instantly in `mutate`; only the outgoing photo covers the new one.
+         * Slide the photo with a cover layer. Text swaps instantly in `mutate`;
+         * only the outgoing photo covers the new one during the transition.
          */
         function runWithTransition(mutate, direction, durationMs = TRANSITION_MS_DEFAULT) {
             const fromMedia = activeMedia();
@@ -296,19 +294,11 @@
             const ms = clamp(Number(durationMs) || TRANSITION_MS_DEFAULT, TRANSITION_MS_MIN, TRANSITION_MS_MAX);
 
             cancelMediaSlide();
-            if (activeTransition?.skipTransition) {
-                try {
-                    activeTransition.skipTransition();
-                } catch (_) {
-                    /* ignore */
-                }
-                activeTransition = null;
-            }
 
             // Instant DOM swap — title/body update with no crossfade layer.
             mutate();
 
-            if (REDUCE_MOTION || !fromSrc || !mediaSafeForViewTransition()) {
+            if (REDUCE_MOTION || !fromSrc || !mediaSafeForSlide()) {
                 return;
             }
 
@@ -371,7 +361,7 @@
         }
 
         /** True when the active photo is fully clear of the fixed header. */
-        function mediaSafeForViewTransition() {
+        function mediaSafeForSlide() {
             const media = activeMedia();
             if (!media) {
                 return false;
@@ -381,7 +371,7 @@
                 return false;
             }
             const headerBottom = mediaScrollClearance() - 12;
-            // Any overlap with the header (or off the top) → skip VT.
+            // Any overlap with the header (or off the top) → skip the slide cover.
             if (rect.top < headerBottom - 1) {
                 return false;
             }
@@ -442,6 +432,40 @@
             });
         }
 
+        /**
+         * Keep the active filter row in view by scrolling only the list pane.
+         * Below the fold → pin to the bottom edge; above → pin to the top.
+         * Avoids scrollIntoView, which can drag the page.
+         */
+        function scrollOptionIntoList(option) {
+            if (!option || option.hidden || !list) {
+                return;
+            }
+            const row = option.closest("li") || option;
+            const listRect = list.getBoundingClientRect();
+            const rowRect = row.getBoundingClientRect();
+            const fullyVisible =
+                rowRect.top >= listRect.top - 0.5 && rowRect.bottom <= listRect.bottom + 0.5;
+            if (fullyVisible) {
+                return;
+            }
+
+            let delta = 0;
+            if (rowRect.bottom > listRect.bottom) {
+                delta = rowRect.bottom - listRect.bottom;
+            } else if (rowRect.top < listRect.top) {
+                delta = rowRect.top - listRect.top;
+            }
+            if (!delta) {
+                return;
+            }
+
+            list.scrollTo({
+                top: list.scrollTop + delta,
+                behavior: REDUCE_MOTION ? "auto" : "smooth",
+            });
+        }
+
         function setActive(index, {
             scrollOption = true,
             fromMap = false,
@@ -479,7 +503,7 @@
                 updateStepControls();
 
                 if (scrollOption && !option.hidden) {
-                    option.scrollIntoView({ block: "nearest", behavior: REDUCE_MOTION ? "auto" : "smooth" });
+                    scrollOptionIntoList(option);
                 }
                 if (focusOption) {
                     option.focus({ preventScroll: true });
@@ -510,21 +534,14 @@
                 runWithTransition(apply, direction, durationMs);
             } else {
                 // Instant swap keeps the photo hittable for the next mobile swipe.
-                if (activeTransition?.skipTransition) {
-                    try {
-                        activeTransition.skipTransition();
-                    } catch (_) {
-                        /* ignore */
-                    }
-                }
                 apply();
             }
         }
 
         /**
          * Arrow/swipe steps remount the stepper (and may change body height). If a
-         * control is focused, mobile browsers scroll it back into view — pin Y.
-         * Keep pinning for the whole view-transition so VT cannot drift scroll.
+         * control is focused, mobile browsers scroll it back into view — pin Y
+         * for a couple of frames while the DOM settles (not for the whole slide).
          */
         function withPinnedScroll(fn) {
             const y = window.scrollY;
@@ -565,13 +582,11 @@
                 restore();
             };
 
-            if (activeTransition?.finished) {
-                activeTransition.finished.then(release).catch(release);
-            } else {
-                requestAnimationFrame(() => {
-                    requestAnimationFrame(release);
-                });
-            }
+            // Two frames is enough for remount/focus settle; holding for the full
+            // media-slide duration fights Lenis and makes browsing feel sticky.
+            requestAnimationFrame(() => {
+                requestAnimationFrame(release);
+            });
             return result;
         }
 
@@ -581,8 +596,9 @@
                 return false;
             }
             // Keep page scroll put during swipe / arrow steps so mobile does not jump.
+            // Still advance the filter list so the active place stays in view.
             return withPinnedScroll(() => {
-                setActive(next, { scrollOption: false, direction: delta, useTransition, durationMs });
+                setActive(next, { scrollOption: true, direction: delta, useTransition, durationMs });
                 return true;
             });
         }
@@ -838,13 +854,6 @@
 
             // Drop any leftover slide so the active photo is hittable immediately.
             cancelMediaSlide();
-            if (activeTransition?.skipTransition) {
-                try {
-                    activeTransition.skipTransition();
-                } catch (_) {
-                    /* ignore */
-                }
-            }
 
             swipe = {
                 pointerId: event.pointerId,
@@ -920,8 +929,8 @@
                 flickVelocity,
                 media.offsetWidth,
             );
-            // Reset live drag/peek so the View Transition captures the same
-            // clean current→neighbor slide as an arrow click.
+            // Reset live drag/peek so the media slide captures the same
+            // clean current→neighbor motion as an arrow click.
             clearDrag(media);
             if (!stepBy(delta, { useTransition: true, durationMs })) {
                 bounceDrag(media);

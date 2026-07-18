@@ -6,13 +6,12 @@
     <meta name="description" content="Plan a visit to Harrisburg, PA with a concise history, interactive attractions map, prices, and curated highlights across the destination.">
     <meta name="theme-color" content="#121417">
     <title>Harrisburg, PA Guide | Global Explorer Guides</title>
-    <link rel="stylesheet" href="../../assets/newindex-fonts.css">
     <link rel="stylesheet" href="../../assets/tg-theme.css">
     <link rel="stylesheet" href="../../assets/tg-site-chrome.css">
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
     <link rel="stylesheet" href="../../assets/tg-modern-polish.css">
-    <link rel="stylesheet" href="../../assets/tg-country-page.css">
+    <link rel="stylesheet" href="../../assets/tg-editorial-chrome.css">
     <link rel="stylesheet" href="../../assets/tg-destination-page-v3.css">
     <script defer src="../../assets/lenis.min.js"></script>
     <script defer src="../../assets/tg-smooth-scroll.js"></script>
@@ -49,7 +48,7 @@
                 <button
                     type="button"
                     id="destination-active-toggle"
-                    class="country-active-toggle country-active-toggle--active"
+                    class="country-active-toggle country-active-toggle--active country-active-toggle--readonly"
                     data-iso2="US"
                     data-slug="harrisburg-pa"
                     data-active="true"
@@ -114,7 +113,7 @@
         <section id="places" class="destination-places" aria-labelledby="places-title">
             <div class="page-shell">
                 <div class="destination-chapter">
-                    <h2 id="places-title" class="destination-chapter__heading">2 ways into<br>Harrisburg, PA.</h2>
+                    <h2 id="places-title" class="destination-chapter__heading">2 ways into<br><em>Harrisburg, PA</em>.</h2>
                     <p class="destination-chapter__copy">Browse the index, open a location, and read the essentials without scrolling through a long catalog. Each entry contains its image, admission note, and contextual guide.</p>
                 </div>
                 <div class="places-explorer" data-places-explorer>
@@ -174,20 +173,6 @@
                         <p class="places-explorer__empty" data-places-empty hidden>No places match that filter.</p>
                     </aside>
                     <div class="places-explorer__stage" data-places-stage>
-                    <nav class="places-stage__stepper" data-places-stepper aria-label="Browse places" hidden>
-                        <button type="button" class="places-stage__arrow places-stage__arrow--prev" data-places-prev aria-label="Previous place">
-                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                                <path d="M14.75 5.25 L8.25 12 l6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
-                                <path d="M9.1 12 H17.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
-                            </svg>
-                        </button>
-                        <button type="button" class="places-stage__arrow places-stage__arrow--next" data-places-next aria-label="Next place">
-                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                                <path d="M9.25 5.25 L15.75 12 l-6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
-                                <path d="M6.6 12 H14.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
-                            </svg>
-                        </button>
-                    </nav>
                 <article
                     class="places-stage__panel is-active"
                     data-place-panel
@@ -203,7 +188,7 @@
                             <span class="places-stage__admission"><span>Admission</span>Free</span>
                         </p>
                         <h3 id="place-title-1" class="places-stage__title">Pennsylvania State Capitol</h3>
-                        <p class="places-stage__text">Pennsylvania State Capitol is a visitor site in Harrisburg, PA, United States. Records associated with the site include 1906. The Pennsylvania State Capitol was dedicated in 1906 after designs by Joseph Huston in American Renaissance style. Its dome, rotunda, and Senate and House chambers contain murals, marble, and stained glass documenting state history. The grounds and principal structures are the main points of interest.</p>
+                        <p class="places-stage__text">Joseph Huston designed Pennsylvania&#x27;s State Capitol in American Renaissance style, dedicated in 1906 in Harrisburg. The dome and rotunda lead into Senate and House chambers lined with murals, marble, and stained glass. Guided and self-guided visits focus on the art program that documents state history inside a working legislature.</p>
                         <p class="places-stage__coords">40.2640&deg; N / 76.8847&deg; W</p>
                         <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
                     </div>
@@ -223,7 +208,7 @@
                             <span class="places-stage__admission"><span>Admission</span>$50</span>
                         </p>
                         <h3 id="place-title-2" class="places-stage__title">Hersheypark</h3>
-                        <p class="places-stage__text">Hersheypark is a major family amusement park located in Hershey, Pennsylvania. Originally created in 1906 as a leisure park for the employees of the Hershey Chocolate Company, it has expanded into a massive entertainment complex featuring numerous roller coasters, a large water park, and a zoo, all maintaining a distinct chocolate theme.</p>
+                        <p class="places-stage__text">Begun in 1906 as a leisure ground for Hershey Chocolate Company workers, Hersheypark grew into a large amusement complex of roller coasters, a water park, and a zoo under a chocolate theme. Rides and midways fill the Hershey campus. Seasonal calendars govern which areas operate.</p>
                         <p class="places-stage__coords">40.2883&deg; N / 76.6550&deg; W</p>
                         <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
                     </div>
@@ -289,35 +274,7 @@
             window.TGDestinationMap?.fitToLocations(map, locations, destinationCenter, mapContext);
             window.TGDestinationMap?.bindMobileScrollGuard(map, 'map');
             window.TGDestinationMap?.registerMarkers(map, markers);
-
-            const heroImage = document.querySelector('[data-destination-hero-image]');
-            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            if (heroImage && !reduceMotion) {
-                let framePending = false;
-                let scrolling = false;
-                let scrollEndTimer = 0;
-                const updateHeroPosition = () => {
-                    const offset = Math.min(window.scrollY, window.innerHeight * 1.15) * 0.075;
-                    heroImage.style.transform = `translate3d(0, ${offset}px, 0) scale(1.055)`;
-                    framePending = false;
-                };
-                window.addEventListener('scroll', () => {
-                    if (!scrolling) {
-                        scrolling = true;
-                        heroImage.style.willChange = 'transform';
-                    }
-                    window.clearTimeout(scrollEndTimer);
-                    scrollEndTimer = window.setTimeout(() => {
-                        scrolling = false;
-                        heroImage.style.willChange = 'auto';
-                    }, 150);
-                    if (!framePending) {
-                        window.requestAnimationFrame(updateHeroPosition);
-                        framePending = true;
-                    }
-                }, { passive: true });
-                updateHeroPosition();
-            }
+            window.TGDestinationMap?.bindHeroParallax?.();
         });
     </script>
 </body>

@@ -1,18 +1,21 @@
 /*
  * Editorial destination guide presentation.
  * Destination-specific data and imagery remain in each generated document.
- * Site chrome and the color system are inherited from tg-country-page.css.
+ * Site chrome and the color system are inherited from tg-editorial-chrome.css.
  */
 
 html:has(body.tg-destination-v3) {
     scroll-padding-top: 7rem;
     background: var(--basalt);
+    /* Image/map layout shifts near atlas/places must not yank the viewport. */
+    overflow-anchor: none;
 }
 
 body.tg-destination-v3 {
     min-width: 320px;
     overflow-x: hidden;
     background: var(--basalt);
+    overflow-anchor: none;
 }
 
 /* Full-screen photographic opening.
@@ -64,6 +67,11 @@ body.tg-destination-v3 .destination-hero__media {
     object-position: center 42%;
     transform: translate3d(0, 0, 0) scale(1.055);
     transform-origin: center top;
+}
+
+/* Parallax freezes once the atlas is on-screen; keep the last transform stable. */
+body.tg-destination-v3 .destination-hero.is-parallax-frozen .destination-hero__media {
+    will-change: auto;
 }
 
 body.tg-destination-v3 .destination-hero__shade {
@@ -174,17 +182,6 @@ body.tg-destination-v3 .destination-chapter {
     align-items: start;
 }
 
-body.tg-destination-v3 .destination-chapter__index {
-    grid-column: 1 / 3;
-    margin: -.12em 0 0;
-    color: var(--brass);
-    font-family: var(--font-display);
-    font-size: clamp(4.75rem, 8vw, 8rem);
-    font-weight: 400;
-    line-height: .85;
-    letter-spacing: -.06em;
-}
-
 body.tg-destination-v3 .destination-chapter__heading {
     grid-column: 1 / 7;
     margin: 0;
@@ -195,6 +192,13 @@ body.tg-destination-v3 .destination-chapter__heading {
     line-height: .96;
     letter-spacing: -.05em;
     text-wrap: balance;
+}
+
+/* Match country .section-title em (e.g. Explore <em>Germany</em>). */
+body.tg-destination-v3 .destination-chapter__heading em {
+    color: var(--sunlit);
+    font-style: normal;
+    font-weight: inherit;
 }
 
 body.tg-destination-v3 .destination-chapter__copy {
@@ -214,6 +218,7 @@ body.tg-destination-v3 .destination-atlas {
     padding: clamp(6rem, 10vw, 10rem) 0 clamp(6rem, 10vw, 10rem);
     background: var(--basalt);
     scroll-margin-top: 7rem;
+    overflow-anchor: none;
 }
 
 body.tg-destination-v3 .destination-atlas__layout {
@@ -337,6 +342,7 @@ body.tg-destination-v3 .destination-places {
     padding: clamp(7rem, 12vw, 12rem) 0 clamp(7rem, 11vw, 11rem);
     background: var(--basalt-deep);
     scroll-margin-top: 7rem;
+    overflow-anchor: none;
 }
 
 body.tg-destination-v3 .destination-places .destination-chapter { margin-bottom: clamp(2.5rem, 5vw, 4rem); }
@@ -348,6 +354,7 @@ body.tg-destination-v3 .places-explorer {
     gap: clamp(1.5rem, 3vw, 2.75rem);
     align-items: start;
     min-height: min(720px, calc(100svh - 8rem));
+    overflow-anchor: none;
 }
 
 body.tg-destination-v3 .places-explorer__rail {
@@ -362,6 +369,9 @@ body.tg-destination-v3 .places-explorer__rail {
     padding: 1.15rem 1rem 1rem;
     background: var(--basalt-raised);
     border: 1px solid rgba(240, 239, 235, .08);
+    /* Avoid transform here — it creates a containing block that can jitter
+       sticky positioning under Lenis. Paint isolation is enough. */
+    backface-visibility: hidden;
 }
 
 body.tg-destination-v3 .places-explorer__toolbar {
@@ -513,6 +523,10 @@ body.tg-destination-v3 .places-explorer__stage {
 body.tg-destination-v3 .places-stage__panel {
     display: grid;
     gap: 1.35rem;
+    /* Allow long compound titles (e.g. Heinzelmännchenbrunnen) to shrink
+       instead of expanding the photo past the stage and clipping the next arrow. */
+    min-width: 0;
+    width: 100%;
     overflow-anchor: none;
 }
 
@@ -529,6 +543,8 @@ body.tg-destination-v3 .places-explorer.is-enhanced .places-stage__panel.is-acti
 
 body.tg-destination-v3 .places-stage__media {
     position: relative;
+    min-width: 0;
+    max-width: 100%;
     overflow: hidden;
     background: var(--basalt-raised);
     clip-path: polygon(0 0, calc(100% - 28px) 0, 100% 28px, 100% 100%, 0 100%);
@@ -750,6 +766,7 @@ body.tg-destination-v3 .places-stage__arrow:disabled svg {
 }
 
 body.tg-destination-v3 .places-stage__body {
+    min-width: 0;
     max-width: 40rem;
 }
 
@@ -807,6 +824,7 @@ body.tg-destination-v3 .places-stage__title {
     line-height: .98;
     letter-spacing: -.045em;
     text-wrap: balance;
+    overflow-wrap: break-word;
 }
 
 body.tg-destination-v3 .places-stage__text {
@@ -993,13 +1011,26 @@ body.tg-destination-v3 .leaflet-marker-icon.tg-map-marker--active {
     }
 
     body.tg-destination-v3 .destination-chapter { grid-template-columns: repeat(6, minmax(0, 1fr)); row-gap: 2rem; }
-    body.tg-destination-v3 .destination-chapter__index { grid-column: 1 / 3; }
     body.tg-destination-v3 .destination-chapter__heading { grid-column: 1 / 7; }
     body.tg-destination-v3 .destination-chapter__copy { grid-column: 1 / 7; }
     body.tg-theme.tg-modern.tg-destination-v3 .tg-map-frame {
         height: clamp(300px, 44svh, 380px);
         min-height: 300px;
-        clip-path: polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 0 100%);
+        /* Paint the corner (don't clip through to section --basalt) so the
+           triangle matches the raised brief while side gutters stay dark. */
+        clip-path: none;
+    }
+    body.tg-theme.tg-modern.tg-destination-v3 .tg-map-frame::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 450;
+        width: 24px;
+        height: 24px;
+        pointer-events: none;
+        background: var(--basalt-raised);
+        clip-path: polygon(0 0, 100% 0, 100% 100%);
     }
 
     body.tg-destination-v3 .places-explorer__rail { padding: 1rem .85rem; }
@@ -1061,4 +1092,5 @@ body.tg-destination-v3 .leaflet-marker-icon.tg-map-marker--active {
     body.tg-destination-v3 .destination-hero__shade { background: rgba(0, 0, 0, .64); }
     body.tg-destination-v3 .tg-map-frame,
     body.tg-destination-v3 .places-stage__media { clip-path: none; }
+    body.tg-theme.tg-modern.tg-destination-v3 .tg-map-frame::before { content: none; }
 }

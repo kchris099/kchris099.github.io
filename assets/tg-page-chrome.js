@@ -88,70 +88,19 @@
 })();
 
 (function initHeroTitleFit() {
+    // Country hero titles are sized in CSS via --hero-title-chars.
+    // Do not measure/scale on load, fonts.ready, or ResizeObserver — those
+    // paths reintroduced a visible shrink flash on long names (e.g. Bosnia).
+    // Clear any stale inline scale left from older page-chrome builds.
     if (!document.body?.classList.contains("tg-country-v2")) {
         return;
     }
 
-    const titles = Array.from(document.querySelectorAll(".hero__title"));
-    if (!titles.length) {
-        return;
-    }
-
-    let frame = 0;
-
-    const fitTitle = (title) => {
-        const available = title.clientWidth;
-        const needed = title.scrollWidth;
-        if (!available || !needed) {
-            return;
+    document.querySelectorAll(".hero__title").forEach((title) => {
+        if (title.style.getPropertyValue("--hero-title-scale")) {
+            title.style.removeProperty("--hero-title-scale");
         }
-        const next = Math.min(1, available / needed);
-        const current = Number.parseFloat(
-            title.style.getPropertyValue("--hero-title-scale") || "1",
-        );
-        // Skip tiny adjustments — CSS char-fit handles first paint; this is
-        // only a safety net for resize / odd metrics.
-        if (Math.abs(next - current) < 0.008) {
-            return;
-        }
-        title.style.setProperty(
-            "--hero-title-scale",
-            next < 0.999 ? next.toFixed(4) : "1",
-        );
-    };
-
-    const fitAll = () => {
-        titles.forEach(fitTitle);
-    };
-
-    const scheduleFit = () => {
-        if (frame) {
-            cancelAnimationFrame(frame);
-        }
-        frame = requestAnimationFrame(() => {
-            frame = 0;
-            fitAll();
-        });
-    };
-
-    // First paint is sized by CSS (--hero-title-chars). Only re-fit on
-    // viewport/font changes so load does not flash a transform scale.
-
-    if (document.fonts?.ready) {
-        document.fonts.ready.then(scheduleFit).catch(() => {});
-    }
-
-    window.addEventListener("resize", scheduleFit, { passive: true });
-
-    if (typeof ResizeObserver === "function") {
-        const observer = new ResizeObserver(scheduleFit);
-        titles.forEach((title) => {
-            observer.observe(title);
-            if (title.parentElement) {
-                observer.observe(title.parentElement);
-            }
-        });
-    }
+    });
 })();
 
 (function initTgPageChrome() {

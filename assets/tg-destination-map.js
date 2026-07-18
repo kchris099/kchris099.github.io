@@ -283,8 +283,99 @@
         reveal();
     }
 
+    /**
+     * Subtle hero parallax on [data-destination-hero-image].
+     *
+     * The hero stacks above the atlas (z-index 30 over 4) so its mask can fade
+     * over that section. Continuing to mutate transform while the atlas is on
+     * screen recomposites that stacked layer every Lenis frame and reads as
+     * sections flickering up/down. Freeze as soon as the atlas enters the
+     * viewport (with hysteresis), not only after the hero has fully left.
+     */
+    function bindHeroParallax() {
+        const heroImage = document.querySelector("[data-destination-hero-image]");
+        const heroSection = heroImage?.closest(".destination-hero");
+        const atlas = document.querySelector(".destination-atlas");
+        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (!heroImage || !heroSection || reduceMotion) {
+            return;
+        }
+
+        let framePending = false;
+        let lastOffset = null;
+        let frozen = false;
+        const FREEZE_ENTER = 12;
+        const FREEZE_EXIT = 48;
+
+        const readScrollY = () => {
+            const lenis = window.TGSmoothScroll?.lenis;
+            if (lenis && Number.isFinite(lenis.scroll)) {
+                return lenis.scroll;
+            }
+            return window.scrollY || window.pageYOffset || 0;
+        };
+
+        const shouldFreeze = () => {
+            const heroBottom = heroSection.getBoundingClientRect().bottom;
+            if (heroBottom <= 0) {
+                return true;
+            }
+            if (!atlas) {
+                return false;
+            }
+            const atlasTop = atlas.getBoundingClientRect().top;
+            const viewH = window.innerHeight;
+            // Hysteresis: freeze earlier than we unfreeze so the boundary does
+            // not chatter when Lenis eases near the atlas edge.
+            if (frozen) {
+                return atlasTop < viewH + FREEZE_EXIT;
+            }
+            return atlasTop < viewH - FREEZE_ENTER;
+        };
+
+        const updateHeroPosition = () => {
+            framePending = false;
+            if (shouldFreeze()) {
+                if (!frozen) {
+                    frozen = true;
+                    heroImage.style.willChange = "auto";
+                    heroSection.classList.add("is-parallax-frozen");
+                }
+                return;
+            }
+            if (frozen) {
+                frozen = false;
+                heroSection.classList.remove("is-parallax-frozen");
+            }
+            const offset = Math.round(
+                Math.min(Math.max(readScrollY(), 0), window.innerHeight * 1.15) * 0.075,
+            );
+            if (lastOffset !== null && offset === lastOffset) {
+                return;
+            }
+            lastOffset = offset;
+            heroImage.style.transform = `translate3d(0, ${offset}px, 0) scale(1.055)`;
+        };
+
+        const onScroll = () => {
+            if (!framePending) {
+                framePending = true;
+                window.requestAnimationFrame(updateHeroPosition);
+            }
+        };
+
+        const lenis = window.TGSmoothScroll?.lenis;
+        if (lenis && typeof lenis.on === "function") {
+            lenis.on("scroll", onScroll);
+        } else {
+            window.addEventListener("scroll", onScroll, { passive: true });
+        }
+        updateHeroPosition();
+    }
+
     window.TGDestinationMap = {
         attachViewResetControl,
+        bindHeroParallax,
         bindMobileScrollGuard,
         fitToLocations,
         registerMarkers,

@@ -6,13 +6,12 @@
     <meta name="description" content="Plan a visit to Dali with a concise history, interactive attractions map, prices, and curated highlights across the destination.">
     <meta name="theme-color" content="#121417">
     <title>Dali Guide | Global Explorer Guides</title>
-    <link rel="stylesheet" href="../../assets/newindex-fonts.css">
     <link rel="stylesheet" href="../../assets/tg-theme.css">
     <link rel="stylesheet" href="../../assets/tg-site-chrome.css">
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
     <link rel="stylesheet" href="../../assets/tg-modern-polish.css">
-    <link rel="stylesheet" href="../../assets/tg-country-page.css">
+    <link rel="stylesheet" href="../../assets/tg-editorial-chrome.css">
     <link rel="stylesheet" href="../../assets/tg-destination-page-v3.css">
     <script defer src="../../assets/lenis.min.js"></script>
     <script defer src="../../assets/tg-smooth-scroll.js"></script>
@@ -49,7 +48,7 @@
                 <button
                     type="button"
                     id="destination-active-toggle"
-                    class="country-active-toggle country-active-toggle--inactive"
+                    class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
                     data-iso2="CN"
                     data-slug="dali"
                     data-active="false"
@@ -114,7 +113,7 @@
         <section id="places" class="destination-places" aria-labelledby="places-title">
             <div class="page-shell">
                 <div class="destination-chapter">
-                    <h2 id="places-title" class="destination-chapter__heading">2 ways into<br>Dali.</h2>
+                    <h2 id="places-title" class="destination-chapter__heading">2 ways into<br><em>Dali</em>.</h2>
                     <p class="destination-chapter__copy">Browse the index, open a location, and read the essentials without scrolling through a long catalog. Each entry contains its image, admission note, and contextual guide.</p>
                 </div>
                 <div class="places-explorer" data-places-explorer>
@@ -174,20 +173,6 @@
                         <p class="places-explorer__empty" data-places-empty hidden>No places match that filter.</p>
                     </aside>
                     <div class="places-explorer__stage" data-places-stage>
-                    <nav class="places-stage__stepper" data-places-stepper aria-label="Browse places" hidden>
-                        <button type="button" class="places-stage__arrow places-stage__arrow--prev" data-places-prev aria-label="Previous place">
-                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                                <path d="M14.75 5.25 L8.25 12 l6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
-                                <path d="M9.1 12 H17.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
-                            </svg>
-                        </button>
-                        <button type="button" class="places-stage__arrow places-stage__arrow--next" data-places-next aria-label="Next place">
-                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                                <path d="M9.25 5.25 L15.75 12 l-6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
-                                <path d="M6.6 12 H14.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
-                            </svg>
-                        </button>
-                    </nav>
                 <article
                     class="places-stage__panel is-active"
                     data-place-panel
@@ -203,7 +188,7 @@
                             <span class="places-stage__admission"><span>Admission</span>¥120</span>
                         </p>
                         <h3 id="place-title-1" class="places-stage__title">Three Pagodas</h3>
-                        <p class="places-stage__text">Three Pagodas is a religious building in Dali, China. The exterior and main interior spaces are usually viewable outside service times. Three Pagodas remains part of the public visitor circuit in Dali. Local maps identify Three Pagodas within Dali, China.</p>
+                        <p class="places-stage__text">North of Dali Old Town, three brick pagodas record the Buddhist culture of the Nanzhao and Dali kingdoms. The square central Qianxun Pagoda is a historic and tallest, while two smaller octagonal towers stand behind it in a balanced triangular arrangement. Reflecting pools, restored temple halls, and mountain views surround the sealed monuments.</p>
                         <p class="places-stage__coords">25.7062&deg; N / 100.1494&deg; E</p>
                         <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
                     </div>
@@ -223,7 +208,7 @@
                             <span class="places-stage__admission"><span>Admission</span>Free</span>
                         </p>
                         <h3 id="place-title-2" class="places-stage__title">Dali Ancient City</h3>
-                        <p class="places-stage__text">Dali Ancient City, also known as Double Crane Tower or Cheng&#x27;en Tower, is a visitor site in Dali, China. The grounds and principal structures are the main points of interest. Dali Ancient City remains part of the public visitor circuit in Dali. Local maps identify Dali Ancient City within Dali, China.</p>
+                        <p class="places-stage__text">Dali Ancient City is the walled old town at the base of the Cang Mountains beside Erhai Lake, with south and north gates, stone lanes, and Bai-style courtyard houses. Shops and inns fill the grid inside the walls, while the Three Pagodas stand a short distance north of the historic core.</p>
                         <p class="places-stage__coords">25.6891&deg; N / 100.1620&deg; E</p>
                         <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
                     </div>
@@ -289,35 +274,7 @@
             window.TGDestinationMap?.fitToLocations(map, locations, destinationCenter, mapContext);
             window.TGDestinationMap?.bindMobileScrollGuard(map, 'map');
             window.TGDestinationMap?.registerMarkers(map, markers);
-
-            const heroImage = document.querySelector('[data-destination-hero-image]');
-            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            if (heroImage && !reduceMotion) {
-                let framePending = false;
-                let scrolling = false;
-                let scrollEndTimer = 0;
-                const updateHeroPosition = () => {
-                    const offset = Math.min(window.scrollY, window.innerHeight * 1.15) * 0.075;
-                    heroImage.style.transform = `translate3d(0, ${offset}px, 0) scale(1.055)`;
-                    framePending = false;
-                };
-                window.addEventListener('scroll', () => {
-                    if (!scrolling) {
-                        scrolling = true;
-                        heroImage.style.willChange = 'transform';
-                    }
-                    window.clearTimeout(scrollEndTimer);
-                    scrollEndTimer = window.setTimeout(() => {
-                        scrolling = false;
-                        heroImage.style.willChange = 'auto';
-                    }, 150);
-                    if (!framePending) {
-                        window.requestAnimationFrame(updateHeroPosition);
-                        framePending = true;
-                    }
-                }, { passive: true });
-                updateHeroPosition();
-            }
+            window.TGDestinationMap?.bindHeroParallax?.();
         });
     </script>
 </body>

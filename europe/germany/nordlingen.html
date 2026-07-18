@@ -6,13 +6,12 @@
     <meta name="description" content="Plan a visit to Nördlingen with a concise history, interactive attractions map, prices, and curated highlights across the destination.">
     <meta name="theme-color" content="#121417">
     <title>Nördlingen Guide | Global Explorer Guides</title>
-    <link rel="stylesheet" href="../../assets/newindex-fonts.css">
     <link rel="stylesheet" href="../../assets/tg-theme.css">
     <link rel="stylesheet" href="../../assets/tg-site-chrome.css">
     <link rel="stylesheet" href="../../assets/dev-country-toggle.css">
     <link rel="stylesheet" href="../../assets/leaflet/leaflet.css" />
     <link rel="stylesheet" href="../../assets/tg-modern-polish.css">
-    <link rel="stylesheet" href="../../assets/tg-country-page.css">
+    <link rel="stylesheet" href="../../assets/tg-editorial-chrome.css">
     <link rel="stylesheet" href="../../assets/tg-destination-page-v3.css">
     <script defer src="../../assets/lenis.min.js"></script>
     <script defer src="../../assets/tg-smooth-scroll.js"></script>
@@ -49,7 +48,7 @@
                 <button
                     type="button"
                     id="destination-active-toggle"
-                    class="country-active-toggle country-active-toggle--inactive"
+                    class="country-active-toggle country-active-toggle--inactive country-active-toggle--readonly"
                     data-iso2="DE"
                     data-slug="nordlingen"
                     data-active="false"
@@ -114,7 +113,7 @@
         <section id="places" class="destination-places" aria-labelledby="places-title">
             <div class="page-shell">
                 <div class="destination-chapter">
-                    <h2 id="places-title" class="destination-chapter__heading">6 ways into<br>Nördlingen.</h2>
+                    <h2 id="places-title" class="destination-chapter__heading">6 ways into<br><em>Nördlingen</em>.</h2>
                     <p class="destination-chapter__copy">Browse the index, open a location, and read the essentials without scrolling through a long catalog. Each entry contains its image, admission note, and contextual guide.</p>
                 </div>
                 <div class="places-explorer" data-places-explorer>
@@ -250,20 +249,6 @@
                         <p class="places-explorer__empty" data-places-empty hidden>No places match that filter.</p>
                     </aside>
                     <div class="places-explorer__stage" data-places-stage>
-                    <nav class="places-stage__stepper" data-places-stepper aria-label="Browse places" hidden>
-                        <button type="button" class="places-stage__arrow places-stage__arrow--prev" data-places-prev aria-label="Previous place">
-                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                                <path d="M14.75 5.25 L8.25 12 l6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
-                                <path d="M9.1 12 H17.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
-                            </svg>
-                        </button>
-                        <button type="button" class="places-stage__arrow places-stage__arrow--next" data-places-next aria-label="Next place">
-                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                                <path d="M9.25 5.25 L15.75 12 l-6.5 6.75" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"/>
-                                <path d="M6.6 12 H14.9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/>
-                            </svg>
-                        </button>
-                    </nav>
                 <article
                     class="places-stage__panel is-active"
                     data-place-panel
@@ -319,7 +304,7 @@
                             <span class="places-stage__admission"><span>Admission</span>Free</span>
                         </p>
                         <h3 id="place-title-3" class="places-stage__title">City Walls and Gates</h3>
-                        <p class="places-stage__text">City Walls and Gates is a visitor site in Nördlingen. Nördlingen is one of the few German towns whose entire medieval wall can still be walked without interruption, a circuit of about 2.6 kilometers. Covered wooden galleries and guard towers punctuate the route. The elevated walk gives a continuous view of rooftops and the surrounding Ries crater landscape.</p>
+                        <p class="places-stage__text">Nördlingen&#x27;s intact medieval wall can be walked for about 2.6 kilometres on covered wooden galleries between guard towers. The elevated circuit overlooks rooftops and the Ries crater plain beyond. Few German towns still offer such a continuous unbroken wall walk.</p>
                         <p class="places-stage__coords">48.8559&deg; N / 10.4889&deg; E</p>
                         <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
                     </div>
@@ -359,7 +344,7 @@
                             <span class="places-stage__admission"><span>Admission</span>Free</span>
                         </p>
                         <h3 id="place-title-5" class="places-stage__title">St. George&#x27;s Church and the &#x27;Daniel</h3>
-                        <p class="places-stage__text">St. George&#x27;s Church dominates the town center with a 90-meter tower known locally as the Daniel. Climbing about 350 steps to the viewing platform reveals the full circular shape of the old town and the flat crater rim beyond. The late-Gothic nave is one of the largest hall churches in southern Germany.</p>
+                        <p class="places-stage__text">St. George&#x27;s Church fills Nördlingen&#x27;s market center with a late Gothic hall nave and a ninety-metre tower called Daniel. Stone from the Ries impact crater region was used in construction, and the tower stair opens toward the circular walls, tiled roofs, and crater plain. A tower watch tradition and repeated restoration add social history beyond the church&#x27;s scale and elevated view.</p>
                         <p class="places-stage__coords">48.8497&deg; N / 10.4925&deg; E</p>
                         <button type="button" class="places-stage__map-link" data-place-show-map>Show on map</button>
                     </div>
@@ -445,35 +430,7 @@
             window.TGDestinationMap?.fitToLocations(map, locations, destinationCenter, mapContext);
             window.TGDestinationMap?.bindMobileScrollGuard(map, 'map');
             window.TGDestinationMap?.registerMarkers(map, markers);
-
-            const heroImage = document.querySelector('[data-destination-hero-image]');
-            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            if (heroImage && !reduceMotion) {
-                let framePending = false;
-                let scrolling = false;
-                let scrollEndTimer = 0;
-                const updateHeroPosition = () => {
-                    const offset = Math.min(window.scrollY, window.innerHeight * 1.15) * 0.075;
-                    heroImage.style.transform = `translate3d(0, ${offset}px, 0) scale(1.055)`;
-                    framePending = false;
-                };
-                window.addEventListener('scroll', () => {
-                    if (!scrolling) {
-                        scrolling = true;
-                        heroImage.style.willChange = 'transform';
-                    }
-                    window.clearTimeout(scrollEndTimer);
-                    scrollEndTimer = window.setTimeout(() => {
-                        scrolling = false;
-                        heroImage.style.willChange = 'auto';
-                    }, 150);
-                    if (!framePending) {
-                        window.requestAnimationFrame(updateHeroPosition);
-                        framePending = true;
-                    }
-                }, { passive: true });
-                updateHeroPosition();
-            }
+            window.TGDestinationMap?.bindHeroParallax?.();
         });
     </script>
 </body>
