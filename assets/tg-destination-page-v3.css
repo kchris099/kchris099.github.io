@@ -992,7 +992,21 @@ body.tg-destination-v3 .leaflet-marker-icon.tg-map-marker--active {
         min-height: 0;
     }
     body.tg-destination-v3 .destination-atlas__brief {
+        position: relative;
+        z-index: 2;
         padding: 1.35rem 1.25rem 1.5rem;
+    }
+    body.tg-destination-v3 .destination-atlas__brief::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        bottom: -24px;
+        z-index: 2;
+        width: 24px;
+        height: 24px;
+        pointer-events: none;
+        background: var(--basalt-raised);
+        clip-path: polygon(0 0, 100% 0, 100% 100%);
     }
     body.tg-destination-v3 .destination-atlas__index { margin-bottom: .8rem; }
     body.tg-destination-v3 .destination-atlas__brief h2 {
@@ -1016,21 +1030,13 @@ body.tg-destination-v3 .leaflet-marker-icon.tg-map-marker--active {
     body.tg-theme.tg-modern.tg-destination-v3 .tg-map-frame {
         height: clamp(300px, 44svh, 380px);
         min-height: 300px;
-        /* Paint the corner (don't clip through to section --basalt) so the
-           triangle matches the raised brief while side gutters stay dark. */
-        clip-path: none;
+        /* Keep the corner cut on the map itself. The former pseudo-element
+           workaround could be promoted over Leaflet as a full-width overlay
+           on mobile. */
+        clip-path: polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 0 100%);
     }
     body.tg-theme.tg-modern.tg-destination-v3 .tg-map-frame::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        right: 0;
-        z-index: 450;
-        width: 24px;
-        height: 24px;
-        pointer-events: none;
-        background: var(--basalt-raised);
-        clip-path: polygon(0 0, 100% 0, 100% 100%);
+        content: none;
     }
 
     body.tg-destination-v3 .places-explorer__rail { padding: 1rem .85rem; }
